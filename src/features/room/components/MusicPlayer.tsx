@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import supabase from '@/config/supabase';
+import { toast } from "sonner";
 
 const AMBIENT_SOUNDS = [
     { id: "rain", name: "Lluvia", icon: CloudRain, file: "/sounds/rain.ogg" },
@@ -167,10 +168,10 @@ export const MusicPlayer = React.memo(function MusicPlayer({ roomId }: { roomId?
         const finalState = { ...roomState, ...newState, updatedAt: new Date().toISOString() };
         setRoomState(finalState);
 
-        const { error } = await supabase.from("rooms").update({ music_state: finalState }).eq("id", roomId);
+        const { error } = await supabase.rpc("update_room_sync", { p_room_id: roomId, p_music_state: finalState });
         if (error) {
             console.error("Error Supabase sincronizando música:", error);
-            alert("⚠️ Error: No se pudo sincronizar la música con la sala.\n\nPor favor, asegúrate de haber creado la columna 'music_state' (tipo JSONB) en la tabla 'rooms' de tu Supabase.");
+            toast.error("No se pudo sincronizar la música con la sala.");
         }
     };
 
