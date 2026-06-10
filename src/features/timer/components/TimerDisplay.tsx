@@ -68,8 +68,8 @@ export const TimerDisplay = ({ link, codigo, roomId }: { link: string, codigo: s
                 updatedAt: new Date().toISOString()
             };
 
-            // Subir a Supabase
-            const { error } = await supabase.from("rooms").update({ timer_state: newState }).eq("id", roomId);
+            // Subir a Supabase vía RPC (valida membresía y solo toca timer_state/music_state)
+            const { error } = await supabase.rpc("update_room_sync", { p_room_id: roomId, p_timer_state: newState });
             if (error) {
                 console.error("Timer update error:", error);
             }

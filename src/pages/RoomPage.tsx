@@ -131,6 +131,18 @@ const RoomPage = () => {
         const initRoomData = async () => {
             setCargandoInvitacion(true);
 
+            // Asegurar membresía antes de leer la sala: las policies RLS por
+            // membresía exigen una fila en room_members para ver tareas/timer y
+            // sincronizar timer/música. Variante permisiva: cualquiera con el
+            // link de la sala (/room/:id) se une. Es idempotente y persistente.
+            const { error: joinError } = await supabase.rpc("join_room_by_id", { p_room_id: roomId });
+            if (joinError) {
+                console.error("Error al unirse a la sala:", joinError);
+                setCargandoInvitacion(false);
+                setError(joinError.message || "No se pudo acceder a la sala.");
+                return;
+            }
+
             // [async-parallel] Ejecutar requests de red independientes en paralelo
             const [inviteRes, tasksRes, clockRes] = await Promise.all([
                 supabase
@@ -156,8 +168,9 @@ const RoomPage = () => {
             setCargandoInvitacion(false);
 
             if (inviteRes.error) {
+                // El código de invitación es secundario (solo para compartir):
+                // un fallo acá no debe bloquear la sala.
                 console.error("Supabase error room_invites:", inviteRes.error);
-                setError(inviteRes.error.message);
                 setInvitacion(null);
             } else {
                 const inv = inviteRes.data?.[0] ?? null;
@@ -288,6 +301,22 @@ const RoomPage = () => {
         }
     }, [tareas, taskTab, roomId]);
 
+
+    if (error) {
+        return (
+            <Empty className="w-full h-screen flex flex-col items-center justify-center">
+                <EmptyHeader>
+                    <EmptyTitle>No se pudo acceder a la sala</EmptyTitle>
+                    <EmptyDescription>{error}</EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                    <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+                        Volver al inicio
+                    </Button>
+                </EmptyContent>
+            </Empty>
+        );
+    }
 
     return (
         <div className="w-full min-h-dvh py-6 lg:py-24 px-4 bg-background selection:bg-primary/20 overflow-x-hidden">
