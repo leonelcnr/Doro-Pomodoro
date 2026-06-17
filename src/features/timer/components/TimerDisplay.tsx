@@ -1,33 +1,23 @@
 import { useTimer } from '../hooks/useTimerActions';
 import { Button } from '@/components/ui/button'
-import { SlidingNumber } from '@/components/animate-ui/primitives/texts/sliding-number'
 import DialogShare from './Dialog-Share';
-import DialogSettings from './DialogSettings';
-import { Play, Pause, RotateCcw, Copy, PictureInPicture2, ChevronRight, ChevronLeft } from 'lucide-react';
+import { RotateCcw, PictureInPicture2 } from 'lucide-react';
 import { useTimerStore } from '@/store/timerStore';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useDocumentPiP } from '@/hooks/useDocumentPiP';
 import { FloatingTimer } from './FloatingTimer';
 import { MusicPlayer } from '@/features/room/components/MusicPlayer';
+import { IndicadorModo } from './IndicadorModo';
+import { RelojDigital } from './RelojDigital';
+import { ControlesTimer } from './ControlesTimer';
 import type { TimerSettings } from '@/types/timer';
 
-// Renderiza un número en dos dígitos animados (decena + unidad)
-function DosDigitos({ value }: { value: number }) {
-    const decena = Math.floor(value / 10);
-    const unidad = value % 10;
-
-    return (
-        <span className="inline-flex">
-            <SlidingNumber number={decena} initiallyStable />
-            <SlidingNumber number={unidad} initiallyStable />
-        </span>
-    );
-}
-
 /**
- * Componente principal del reloj: muestra el tiempo, el indicador de modo y los
- * controles (compartir, música, reset, play/pausa, PiP y configuración).
+ * Reloj de la sala: contenedor que conecta el store/hook del temporizador con
+ * las piezas presentacionales (`IndicadorModo`, `RelojDigital`, `ControlesTimer`)
+ * y los controles auxiliares (compartir, música, reset, Picture-in-Picture).
+ *
  * Es presentacional respecto de la sala: `salaId` solo se reenvía a `MusicPlayer`.
  * La sincronización del reloj con Supabase la maneja `useSincronizacionReloj`
  * (invocado desde `RoomPage`), no este componente.
@@ -98,90 +88,24 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
 
                 {/* Contenedor del Reloj y el Indicador de Modo */}
                 <div className="relative flex flex-col items-center justify-center order-1 md:order-2">
-                    {/* Indicador de Modo Minimalista */}
-                    <div className="absolute -top-6 md:-top-10 flex items-center justify-center transition-all duration-300 group w-full">
-                        {modo === 'stopwatch' ? (
-                            <div className="relative flex items-center justify-center cursor-default">
-                                {/* Botón para volver al temporizador */}
-                                <div className="absolute right-full mr-1 md:mr-2 flex items-center h-full">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={ponerPomodoro}
-                                        className="w-6 h-6 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
-                                        title="Volver a Temporizador"
-                                    >
-                                        <ChevronLeft className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors select-none">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.5)] transition-colors duration-300" />
-                                    <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
-                                        Cronómetro
-                                    </span>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="relative flex items-center justify-center">
-                                <button
-                                    onClick={manejarClickModo}
-                                    className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 md:px-3 px-2 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                >
-                                    <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${modo === 'pomodoro' ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]' :
-                                        modo === 'shortBreak' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                                            'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]'
-                                        }`} />
-                                    <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase select-none whitespace-nowrap">
-                                        {modo === 'pomodoro' ? 'Pomodoro' : modo === 'shortBreak' ? 'Descanso Corto' : 'Descanso Largo'}
-                                    </span>
-                                </button>
-
-                                {/* Botón para ir a cronómetro */}
-                                <div className="absolute left-full ml-1 md:ml-2 flex items-center h-full">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={ponerCronometro}
-                                        className="w-6 h-6 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
-                                        title="Ir a cronómetro"
-                                    >
-                                        <ChevronRight className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* El Reloj Minimalista */}
-                    <div className={`flex items-baseline gap-2 font-mono ${estaActivo ? 'text-[5rem] md:text-[8rem] lg:text-[9.5rem]' : 'text-[4.5rem] md:text-[7rem] lg:text-[8rem]'} leading-none font-medium tracking-tighter transition-all duration-500 select-none`}>
-                        <DosDigitos value={Math.floor(tiempoRestante / 60)} />
-                        <span className={`opacity-20 transition-all duration-500`}>:</span>
-                        <DosDigitos value={tiempoRestante % 60} />
-                    </div>
+                    <IndicadorModo
+                        modo={modo}
+                        onClickModo={manejarClickModo}
+                        onPomodoro={ponerPomodoro}
+                        onCronometro={ponerCronometro}
+                    />
+                    <RelojDigital tiempoRestante={tiempoRestante} estaActivo={estaActivo} />
                 </div>
 
                 {/* Controles Derecha: Play/Pausa, PiP, Configuración */}
-                <div className="flex items-center gap-3 order-3">
-                    <Button
-                        onClick={alternarTemporizador}
-                        size="icon"
-                        variant={estaActivo ? "outline" : "default"}
-                        className={`h-10 w-10 shadow-sm transition-all duration-200 ${!estaActivo && 'bg-primary hover:bg-primary/90'}`}>
-                        {estaActivo ? <Pause className="fill-current w-5 h-5" /> : <Play className="fill-current w-5 h-5 ml-1" />}
-                    </Button>
-                    {esSoportado && (
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={alternarPiP}
-                            className="h-10 w-10 text-muted-foreground hover:text-foreground transition-all shadow-sm"
-                            title="Abrir en ventana flotante"
-                        >
-                            <PictureInPicture2 className="w-5 h-5" />
-                        </Button>
-                    )}
-                    <DialogSettings configuracionActual={configuracion} alGuardarConfiguracion={manejarGuardarConfiguracion} />
-                </div>
+                <ControlesTimer
+                    estaActivo={estaActivo}
+                    onAlternar={alternarTemporizador}
+                    esSoportadoPiP={esSoportado}
+                    onAlternarPiP={alternarPiP}
+                    configuracion={configuracion}
+                    onGuardarConfiguracion={manejarGuardarConfiguracion}
+                />
             </div>
 
             {ventanaPiP && (

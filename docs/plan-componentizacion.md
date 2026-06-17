@@ -139,14 +139,20 @@ Se sacó el estado + efectos (incluido **realtime**) de las páginas hacia hooks
 
 *Resultado:* las páginas quedaron delgadas y la lógica se reusa entre `Home` y `RoomPage`; ya no hay `supabase.channel/from/rpc` de estos dominios dentro de componentes. Verificado con `tsc -b` (en verde) y el build de Vite (9974 módulos, en verde).
 
-### Fase 3 — Descomponer componentes grandes
-- **`RoomPage`** → contenedor delgado que orquesta hooks + subcomponentes: `CabeceraSala`, `AvataresUsuarios`, panel de tareas. La presencia, tareas y reloj vienen de los hooks de la Fase 2.
-- **`TimerDisplay`** → separar en presentacional + contenedor:
-  - `RelojDigital` (los dígitos), `IndicadorModo`, `ControlesTimer` (botones).
-  - `TimerDisplay` pasa a ser UI pura que recibe estado y callbacks; un contenedor (o el hook `useSincronizacionReloj`, ya creado en la Fase 2) conecta el store y la sincronización.
-- **`MusicPlayer`** → `ReproductorAudioSinCortes` (ya está aislado), `MezcladorAmbiente`, `ReproductorLocal`, `ReproductorSala`, y un util `parsearUrlMedia` (las regex de YouTube/Spotify).
+### Fase 3 — Descomponer componentes grandes ✅ **HECHA (2026-06-17)**
+- ✅ **`RoomPage`** (~284 → ~140 líneas) quedó como contenedor delgado que orquesta los hooks de la Fase 2 y compone subcomponentes nuevos en `features/room/components/`:
+  - `AvataresUsuarios.tsx` (presentacional: conteo + grupo de avatares),
+  - `CabeceraSala.tsx` (botón "Salir" con confirmación + `AvataresUsuarios`),
+  - `PanelTareas.tsx` (pestañas Mis Tareas / Tareas de la Sala, contador de "no vistas" y la tabla; dueño solo de su estado de UI, recibe datos + persistencia por props).
+  RoomPage solo conserva la carga de la invitación, que es propia de la página.
+- ✅ **`TimerDisplay`** pasó a ser contenedor que conecta el store/hook con piezas presentacionales nuevas en `features/timer/components/`:
+  - `RelojDigital.tsx` (los dígitos animados), `IndicadorModo.tsx` (la fase actual + alternar), `ControlesTimer.tsx` (play/pausa, PiP, configuración).
+  - La sincronización con Supabase ya la maneja `useSincronizacionReloj` (Fase 2). El cluster auxiliar (compartir, música, reset) quedó compuesto en el contenedor.
+- ✅ **`MusicPlayer`** (~400 → ~145 líneas) se partió en `features/room/components/music/`:
+  - `ReproductorAudioSinCortes.tsx` (motor gapless), `MezcladorAmbiente.tsx` (sliders), `ReproductorLocal.tsx` y `ReproductorSala.tsx` (pestañas, presentacionales/controladas), `ambientSounds.ts` (catálogo) y el util `parsearUrlMedia.ts` (regex YouTube/Spotify → URL embebida).
+  - `MusicPlayer` quedó como contenedor: mantiene los motores de audio montados de forma persistente (fuera de las pestañas, que se desmontan) y conserva el estado de los reproductores para que persista al cambiar de pestaña.
 
-*Resultado:* archivos chicos, con una responsabilidad cada uno.
+*Resultado:* archivos chicos con una responsabilidad cada uno; comportamiento preservado. Verificado con `tsc -b` (en verde) y el build de Vite (en verde).
 
 ### Fase 4 — Tipado de dominio (quitar `any`)
 - Definir `Usuario`, `Tarea`, `UsuarioEnSala`, `EstadoReloj` en `src/types/`.
