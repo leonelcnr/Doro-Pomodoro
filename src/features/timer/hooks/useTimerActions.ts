@@ -3,165 +3,176 @@ import { useTimerStore } from '@/store/timerStore';
 import supabase from '@/lib/supabase';
 import { useAuth } from '@/features/auth/context/AuthContext';
 
-// Import assets so Vite handles them correctly
-import tickSoundPath from '@/assets/sounds/tick.mp3';
-import alarmSoundPath from '@/assets/sounds/alarm.mp3';
+// Importamos los audios para que Vite los procese y entregue la URL final
+import rutaSonidoTick from '@/assets/sounds/tick.mp3';
+import rutaSonidoAlarma from '@/assets/sounds/alarm.mp3';
 
-// Create global Audio instances so they get loaded and unlocked by user interaction
-const alarmAudio = new Audio(alarmSoundPath);
-alarmAudio.volume = 0.5;
+// Instancias globales de Audio: se crean una sola vez y quedan "desbloqueadas"
+// tras la primera interacción del usuario, evitando recrearlas en cada render.
+const audioAlarma = new Audio(rutaSonidoAlarma);
+audioAlarma.volume = 0.5;
 
-const tickAudio = new Audio(tickSoundPath);
-tickAudio.volume = 0.4;
+const audioTick = new Audio(rutaSonidoTick);
+audioTick.volume = 0.4;
 
+/**
+ * Hook con la lógica del reloj: corre el intervalo de cuenta regresiva
+ * (temporizador) o progresiva (cronómetro), reproduce sonidos, persiste las
+ * sesiones de estudio en Supabase y expone las acciones para los botones.
+ */
 export const useTimer = () => {
   const { user } = useAuth();
-  // Traemos las funciones y estados persistentes de Zustand
-  const { 
-    timeLeft, isActive, mode, settings, 
-    targetEndTime, stopwatchStartTime,
-    setTimeLeft, setIsActive, setMode, setTargetEndTime, setStopwatchStartTime
+  // Traemos estado y acciones persistentes desde el store de Zustand
+  const {
+    tiempoRestante, estaActivo, modo, configuracion,
+    tiempoFinObjetivo, tiempoInicioCronometro,
+    establecerTiempoRestante, establecerEstaActivo, establecerModo,
+    establecerTiempoFinObjetivo, establecerTiempoInicioCronometro
   } = useTimerStore();
 
   useEffect(() => {
-    let interval: number | any;
+    let intervalo: number | any;
 
-    if (isActive) {
-      if (mode === 'stopwatch') {
-        // Lógica del Cronómetro (cuenta progresiva)
-        if (!stopwatchStartTime) {
-          // Si no hay startTime guardado, lo inicializamos para recuperar la sesión
-          setStopwatchStartTime(Date.now() - timeLeft * 1000);
-          return; // Esperamos al siguiente render con el stopwatchStartTime establecido
+    if (estaActivo) {
+      if (modo === 'stopwatch') {
+        // --- Lógica del Cronómetro (cuenta progresiva) ---
+        if (!tiempoInicioCronometro) {
+          // Sin instante de inicio guardado: lo fijamos para poder recuperar la sesión
+          establecerTiempoInicioCronometro(Date.now() - tiempoRestante * 1000);
+          return; // Esperamos al siguiente render ya con el inicio establecido
         }
 
-        interval = setInterval(() => {
-          const now = Date.now();
-          const difference = now - stopwatchStartTime;
-          const secondsElapsed = Math.floor(difference / 1000);
+        intervalo = setInterval(() => {
+          const ahora = Date.now();
+          const diferencia = ahora - tiempoInicioCronometro;
+          const segundosTranscurridos = Math.floor(diferencia / 1000);
 
-          if (secondsElapsed !== timeLeft) {
-            setTimeLeft(secondsElapsed);
+          if (segundosTranscurridos !== tiempoRestante) {
+            establecerTiempoRestante(segundosTranscurridos);
           }
         }, 200);
 
-      } else if (timeLeft > 0) {
-        // Lógica del Temporizador (cuenta regresiva)
-        // 1. Si acabamos de arrancar (o reanudar), usamos el targetEndTime guardado o lo creamos
-      if (!targetEndTime) {
-        setTargetEndTime(Date.now() + timeLeft * 1000);
-        return; // Esperamos al siguiente render con el targetEndTime
+      } else if (tiempoRestante > 0) {
+        // --- Lógica del Temporizador (cuenta regresiva) ---
+        // 1. Si recién arrancamos (o reanudamos), usamos el instante objetivo
+        //    guardado o lo creamos a partir del tiempo restante.
+      if (!tiempoFinObjetivo) {
+        establecerTiempoFinObjetivo(Date.now() + tiempoRestante * 1000);
+        return; // Esperamos al siguiente render con el objetivo establecido
       }
 
-      // 2. Iniciamos el intervalo
-      interval = setInterval(() => {
-        const now = Date.now();
-        // Calculamos cuánto falta restando la meta (targetEndTime) menos el ahora
-        const difference = targetEndTime - now;
-        
+      // 2. Arrancamos el intervalo
+      intervalo = setInterval(() => {
+        const ahora = Date.now();
+        // Cuánto falta = instante objetivo de fin menos el ahora
+        const diferencia = tiempoFinObjetivo - ahora;
+
         // Convertimos milisegundos a segundos
-        const secondsLeft = Math.ceil(difference / 1000);
+        const segundosRestantes = Math.ceil(diferencia / 1000);
 
-        if (secondsLeft <= 0) {
-          // TERMINÓ EL TIMER
-          setTimeLeft(0);
-          setIsActive(false);
-          setTargetEndTime(null); // Limpiamos la referencia guardada
-          
-          // AQUÍ DISPARAMOS UN SONIDO
-          alarmAudio.currentTime = 0;
-          alarmAudio.play().catch(e => console.error("Audio play failed:", e));
+        if (segundosRestantes <= 0) {
+          // EL TEMPORIZADOR TERMINÓ
+          establecerTiempoRestante(0);
+          establecerEstaActivo(false);
+          establecerTiempoFinObjetivo(null); // Limpiamos la referencia guardada
 
-          clearInterval(interval);
-          
-          // Guardar sesión de estudio si estábamos en pomodoro
-          if (mode === 'pomodoro' && user) {
-            const minutesToSave = settings.pomodoro;
-            
-            supabase.rpc('update_user_stats', { extra_minutes: minutesToSave })
-              .then(({ error: statsError }) => {
-                if (statsError) console.error("Error update_user_stats:", statsError);
+          // Disparamos el sonido de alarma
+          audioAlarma.currentTime = 0;
+          audioAlarma.play().catch(e => console.error("Falló la reproducción de audio:", e));
+
+          clearInterval(intervalo);
+
+          // Guardamos la sesión de estudio si veníamos de un pomodoro
+          if (modo === 'pomodoro' && user) {
+            const minutosAGuardar = configuracion.pomodoro;
+
+            // RPC que acumula los minutos totales del usuario (nombre y parámetro fijados por Supabase)
+            supabase.rpc('update_user_stats', { extra_minutes: minutosAGuardar })
+              .then(({ error: errorEstadisticas }) => {
+                if (errorEstadisticas) console.error("Error update_user_stats:", errorEstadisticas);
               });
 
+            // Registramos la sesión individual de estudio
             supabase.from('study_sessions').insert([
-              { user_id: user.id, duration_minutes: minutesToSave }
-            ]).then(({ error: sessionError }) => {
-              if (sessionError) console.error("Error inserting study_session:", sessionError);
+              { user_id: user.id, duration_minutes: minutosAGuardar }
+            ]).then(({ error: errorSesion }) => {
+              if (errorSesion) console.error("Error al insertar study_session:", errorSesion);
             });
           }
 
-          // Lógica de transición al finalizar la sesión actual
-          if (mode === 'pomodoro') {
-            setMode('shortBreak');
-            if (settings.autoBreak) {
-              setTimeout(() => setIsActive(true), 0);
+          // Transición automática al terminar la fase actual
+          if (modo === 'pomodoro') {
+            establecerModo('shortBreak');
+            if (configuracion.autoBreak) {
+              setTimeout(() => establecerEstaActivo(true), 0);
             }
           } else {
-            // Si estábamos en break, volvemos a pomodoro
-            setMode('pomodoro');
-            if (settings.autoBreak) {
-              setTimeout(() => setIsActive(true), 0);
+            // Si veníamos de un descanso, volvemos a pomodoro
+            establecerModo('pomodoro');
+            if (configuracion.autoBreak) {
+              setTimeout(() => establecerEstaActivo(true), 0);
             }
           }
         } else {
-          // Play tick sounds catching possible jumps (throttled interval in background tabs)
-          const crossed10 = timeLeft > 10 && secondsLeft <= 10;
-          const crossed5 = timeLeft > 5 && secondsLeft <= 5;
-          const crossed3 = timeLeft > 3 && secondsLeft <= 3;
-          const crossed2 = timeLeft > 2 && secondsLeft <= 2;
-          const crossed1 = timeLeft > 1 && secondsLeft <= 1;
+          // Reproducimos los "ticks" detectando saltos (el intervalo se ralentiza
+          // en pestañas en segundo plano), comprobando si cruzamos cada umbral.
+          const cruzo10 = tiempoRestante > 10 && segundosRestantes <= 10;
+          const cruzo5 = tiempoRestante > 5 && segundosRestantes <= 5;
+          const cruzo3 = tiempoRestante > 3 && segundosRestantes <= 3;
+          const cruzo2 = tiempoRestante > 2 && segundosRestantes <= 2;
+          const cruzo1 = tiempoRestante > 1 && segundosRestantes <= 1;
 
-          // Checking if we exactly hit or jumped over 10 or 5 seconds
-          if (crossed10 || crossed5 || crossed3 || crossed2 || crossed1) {
-             // Only play the tick sound for 10 and 5 
-             if ((crossed10 && secondsLeft > 5) || crossed5) {
-                tickAudio.currentTime = 0;
-                tickAudio.play().catch(e => console.error("Audio tick failed:", e));
+          // Verificamos si justo tocamos o saltamos los 10 o 5 segundos
+          if (cruzo10 || cruzo5 || cruzo3 || cruzo2 || cruzo1) {
+             // Solo sonamos el tick en los 10 y 5 segundos
+             if ((cruzo10 && segundosRestantes > 5) || cruzo5) {
+                audioTick.currentTime = 0;
+                audioTick.play().catch(e => console.error("Falló el tick de audio:", e));
              }
           }
 
-          // Actualizamos el estado
-          if (secondsLeft !== timeLeft) {
-             setTimeLeft(secondsLeft);
+          // Actualizamos el estado solo si cambió el segundo
+          if (segundosRestantes !== tiempoRestante) {
+             establecerTiempoRestante(segundosRestantes);
           }
         }
-      }, 200); // Checkeamos cada 200ms para mayor fluidez visual, aunque el cálculo es exacto
+      }, 200); // Chequeamos cada 200ms para fluidez visual, aunque el cálculo es exacto
       }
     } else {
-      // Si pausamos o la condición de timeLeft no se cumple, limpiamos el intervalo
-      if (interval) clearInterval(interval);
-      // No seteamos a null aquí para no causar render extra en useEffect, se maneja en los botones
+      // Si pausamos (o no se cumple la condición de tiempo), limpiamos el intervalo
+      if (intervalo) clearInterval(intervalo);
+      // No reseteamos a null acá para no provocar un render extra; se maneja en los botones
     }
 
-    // Cleanup: Si el componente se desmonta, limpiamos el intervalo
-    return () => clearInterval(interval);
-  }, [isActive, setTimeLeft, setIsActive, timeLeft, mode, settings.pomodoro, user, setMode, settings.autoBreak, targetEndTime, stopwatchStartTime, setTargetEndTime, setStopwatchStartTime]); // Dependencias
+    // Limpieza: al desmontar el componente, cancelamos el intervalo
+    return () => clearInterval(intervalo);
+  }, [estaActivo, establecerTiempoRestante, establecerEstaActivo, tiempoRestante, modo, configuracion.pomodoro, user, establecerModo, configuracion.autoBreak, tiempoFinObjetivo, tiempoInicioCronometro, establecerTiempoFinObjetivo, establecerTiempoInicioCronometro]); // Dependencias
 
-  // Funciones para que usen los botones
-  const toggleTimer = () => {
-    if (isActive) {
-      // Si estamos pausando, limpiamos las horas de finalización objetivo
-      setTargetEndTime(null);
-      setStopwatchStartTime(null);
+  // --- Funciones que disparan los botones de la interfaz ---
+  const alternarTemporizador = () => {
+    if (estaActivo) {
+      // Si estamos pausando, descartamos los instantes objetivo guardados
+      establecerTiempoFinObjetivo(null);
+      establecerTiempoInicioCronometro(null);
     }
-    setIsActive(!isActive);
+    establecerEstaActivo(!estaActivo);
   };
-  
-  const handleReset = () => {
-    if (mode === 'stopwatch') {
-      setTimeLeft(0);
-      setIsActive(false);
-      setStopwatchStartTime(null);
+
+  const manejarReinicio = () => {
+    if (modo === 'stopwatch') {
+      establecerTiempoRestante(0);
+      establecerEstaActivo(false);
+      establecerTiempoInicioCronometro(null);
     } else {
-      setMode('pomodoro');
-      setTargetEndTime(null);
+      establecerModo('pomodoro');
+      establecerTiempoFinObjetivo(null);
     }
   };
 
-  const setPomodoro = () => setMode('pomodoro');
-  const setLongBreak = () => setMode('longBreak');
-  const setShortBreak = () => setMode('shortBreak');
-  const setStopwatch = () => setMode('stopwatch');
-  
-  return { timeLeft, isActive, mode, toggleTimer, handleReset, setPomodoro, setLongBreak, setShortBreak, setStopwatch };
+  const ponerPomodoro = () => establecerModo('pomodoro');
+  const ponerDescansoLargo = () => establecerModo('longBreak');
+  const ponerDescansoCorto = () => establecerModo('shortBreak');
+  const ponerCronometro = () => establecerModo('stopwatch');
+
+  return { tiempoRestante, estaActivo, modo, alternarTemporizador, manejarReinicio, ponerPomodoro, ponerDescansoLargo, ponerDescansoCorto, ponerCronometro };
 };

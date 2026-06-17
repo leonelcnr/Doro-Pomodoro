@@ -31,7 +31,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/features/auth/context/AuthContext";
 
-type Invitacion = { // va en ingles porque asi quedo definido en el supabase
+// Los nombres de campos van en inglés porque así están definidos en Supabase
+type Invitacion = {
     code: string;
     expires_at: string | null;
     max_uses: number | null;
@@ -39,6 +40,7 @@ type Invitacion = { // va en ingles porque asi quedo definido en el supabase
     created_at: string;
 };
 
+// Una invitación es válida si no expiró y todavía le quedan usos disponibles
 function InvitacionValida(inv: Invitacion) {
     const noExpirada = !inv.expires_at || new Date(inv.expires_at).getTime() > Date.now();
     const tieneUsos = inv.max_uses == null || inv.uses < inv.max_uses;
@@ -46,56 +48,66 @@ function InvitacionValida(inv: Invitacion) {
 }
 
 
+/**
+ * Página de una sala de estudio compartida. Coordina:
+ *  - la presencia en tiempo real de los usuarios conectados,
+ *  - el reloj compartido sincronizado vía la columna `timer_state`,
+ *  - y las tareas (personales y de la sala) con suscripción en tiempo real.
+ */
 const RoomPage = () => {
+    // `roomId` proviene del parámetro de la ruta (contrato con el router)
     const { roomId } = useParams();
-    const [invitacion, setInvitacion] = useState<Invitacion | null>();
-    const [cargandoInvitacion, setCargandoInvitacion] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [invitacion, establecerInvitacion] = useState<Invitacion | null>();
+    const [cargandoInvitacion, establecerCargandoInvitacion] = useState<boolean>(false);
+    const [error, establecerError] = useState<string | null>(null);
     const navigate = useNavigate();
     const auth = useAuth();
     const usuario = auth.user;
-    const setTimerState = useTimerStore((state) => state.setTimerState);
+    // Acción del store para aplicar el estado del reloj recibido desde la sala
+    const establecerEstadoTemporizador = useTimerStore((estado) => estado.establecerEstadoTemporizador);
 
-    // Para manejar los usuarios conectados a la sala
-    const [usuariosEnSala, setUsuariosEnSala] = useState<any[]>([]);
+    // Usuarios actualmente conectados a la sala (presencia en tiempo real)
+    const [usuariosEnSala, establecerUsuariosEnSala] = useState<any[]>([]);
 
     // Tareas
-    const [tareas, setTareas] = useState<any[]>([]);
-    const [taskTab, setTaskTab] = useState<"personal" | "room">("personal");
-    const [unseenCount, setUnseenCount] = useState(0);
-    const prevRoomCount = useRef<number | null>(null);
-    const tasksLoaded = useRef(false);
+    const [tareas, establecerTareas] = useState<any[]>([]);
+    const [pestanaTareas, establecerPestanaTareas] = useState<"personal" | "sala">("personal");
+    const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
+    const conteoSalaPrevio = useRef<number | null>(null);
+    const tareasCargadas = useRef(false);
 
+    // Lleva la cuenta de tareas de sala "no vistas" mientras se está en la pestaña personal
     useEffect(() => {
-        if (!tasksLoaded.current) return;
+        if (!tareasCargadas.current) return;
 
-        const currentRoomCount = tareas.filter(t => t.room_id === roomId).length;
+        const conteoSalaActual = tareas.filter(t => t.room_id === roomId).length;
 
-        if (prevRoomCount.current === null) {
-            prevRoomCount.current = currentRoomCount;
+        if (conteoSalaPrevio.current === null) {
+            conteoSalaPrevio.current = conteoSalaActual;
             return;
         }
 
-        if (taskTab === "room") {
-            setUnseenCount(0);
-            prevRoomCount.current = currentRoomCount;
-        } else if (currentRoomCount !== prevRoomCount.current) {
-            // Count increased (other user added a task or dragged a task over)
-            if (currentRoomCount > prevRoomCount.current) {
-                const newTasksCount = currentRoomCount - prevRoomCount.current;
-                setUnseenCount(prev => prev + newTasksCount);
+        if (pestanaTareas === "sala") {
+            establecerCantidadNoVistas(0);
+            conteoSalaPrevio.current = conteoSalaActual;
+        } else if (conteoSalaActual !== conteoSalaPrevio.current) {
+            // El conteo aumentó (otro usuario agregó o movió una tarea a la sala)
+            if (conteoSalaActual > conteoSalaPrevio.current) {
+                const cantidadTareasNuevas = conteoSalaActual - conteoSalaPrevio.current;
+                establecerCantidadNoVistas(previa => previa + cantidadTareasNuevas);
             }
-            prevRoomCount.current = currentRoomCount;
+            conteoSalaPrevio.current = conteoSalaActual;
         }
-    }, [tareas, taskTab, roomId]);
+    }, [tareas, pestanaTareas, roomId]);
 
+    // Presencia en tiempo real: registra y escucha quién está conectado a la sala
     useEffect(() => {
         if (!roomId || !usuario) return;
 
-        // Limpiar el estado anterior si se cambia de sala (por seguridad)
-        setUsuariosEnSala([]);
+        // Limpiamos el estado anterior al cambiar de sala (por seguridad)
+        establecerUsuariosEnSala([]);
 
-        const channel = supabase.channel(`room-${roomId}`, {
+        const canal = supabase.channel(`room-${roomId}`, {
             config: {
                 presence: {
                     key: usuario.id,
@@ -103,16 +115,16 @@ const RoomPage = () => {
             },
         });
 
-        channel
+        canal
             .on("presence", { event: "sync" }, () => {
-                const state = channel.presenceState();
-                // Extraer los usuarios únicos
-                const users = Object.values(state).map((presenceInfo: any) => presenceInfo[0]);
-                setUsuariosEnSala(users);
+                const estado = canal.presenceState();
+                // Extraemos los usuarios únicos
+                const usuarios = Object.values(estado).map((infoPresencia: any) => infoPresencia[0]);
+                establecerUsuariosEnSala(usuarios);
             })
             .subscribe(async (status) => {
                 if (status === "SUBSCRIBED") {
-                    await channel.track({
+                    await canal.track({
                         id: usuario.id,
                         name: usuario.email?.split("@")[0] || "Usuario",
                         avatarUrl: usuario.avatar_url,
@@ -121,18 +133,19 @@ const RoomPage = () => {
             });
 
         return () => {
-            supabase.removeChannel(channel);
+            supabase.removeChannel(canal);
         };
     }, [roomId, usuario]);
 
+    // Carga inicial de datos de la sala y suscripciones en tiempo real (tareas y reloj)
     useEffect(() => {
         if (!roomId || !usuario) return;
 
-        const initRoomData = async () => {
-            setCargandoInvitacion(true);
+        const inicializarDatosSala = async () => {
+            establecerCargandoInvitacion(true);
 
-            // [async-parallel] Ejecutar requests de red independientes en paralelo
-            const [inviteRes, tasksRes, clockRes] = await Promise.all([
+            // [async-parallel] Lanzamos las peticiones independientes en paralelo
+            const [respInvitacion, respTareas, respReloj] = await Promise.all([
                 supabase
                     .from("room_invites")
                     .select("code, expires_at, max_uses, uses, created_at")
@@ -152,25 +165,25 @@ const RoomPage = () => {
                     .single()
             ]);
 
-            // React 18 agrupará estos setStates (Batched updates) previniendo multiples re-renders
-            setCargandoInvitacion(false);
+            // React 18 agrupa estos setStates (batched updates) evitando re-renders múltiples
+            establecerCargandoInvitacion(false);
 
-            if (inviteRes.error) {
-                console.error("Supabase error room_invites:", inviteRes.error);
-                setError(inviteRes.error.message);
-                setInvitacion(null);
+            if (respInvitacion.error) {
+                console.error("Error de Supabase en room_invites:", respInvitacion.error);
+                establecerError(respInvitacion.error.message);
+                establecerInvitacion(null);
             } else {
-                const inv = inviteRes.data?.[0] ?? null;
-                setInvitacion(inv && InvitacionValida(inv) ? inv : null);
+                const inv = respInvitacion.data?.[0] ?? null;
+                establecerInvitacion(inv && InvitacionValida(inv) ? inv : null);
             }
 
-            if (!tasksRes.error && tasksRes.data) {
-                tasksLoaded.current = true;
-                setTareas(tasksRes.data);
+            if (!respTareas.error && respTareas.data) {
+                tareasCargadas.current = true;
+                establecerTareas(respTareas.data);
             }
 
-            if (clockRes.data?.timer_state) {
-                setTimerState(clockRes.data.timer_state);
+            if (respReloj.data?.timer_state) {
+                establecerEstadoTemporizador(respReloj.data.timer_state);
             }
         };
 
@@ -181,13 +194,13 @@ const RoomPage = () => {
                 .or(`room_id.eq.${roomId},and(room_id.is.null,user_id.eq.${usuario.id})`)
                 .order("order_index", { ascending: true, nullsFirst: false })
                 .order("created_at", { ascending: false });
-             if (!error && data) setTareas(data);
+             if (!error && data) establecerTareas(data);
         };
 
-        initRoomData();
+        inicializarDatosSala();
 
-        // Suscribirse a Tareas de la Sala
-        const channelTasks = supabase
+        // Suscripción a las Tareas de la Sala
+        const canalTareas = supabase
             .channel(`realtime-tasks-${roomId}`)
             .on(
                 "postgres_changes",
@@ -201,44 +214,46 @@ const RoomPage = () => {
             )
             .subscribe();
 
-        // Suscribirse a Cambios de la Sala (para el Reloj Compartido)
-        const channelRoom = supabase
+        // Suscripción a los cambios de la Sala (para el Reloj Compartido)
+        const canalSala = supabase
             .channel(`realtime-room-${roomId}`)
             .on(
                 "postgres_changes",
                 { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` },
                 (payload) => {
                     if (payload.new && payload.new.timer_state) {
-                        setTimerState(payload.new.timer_state);
+                        establecerEstadoTemporizador(payload.new.timer_state);
                     }
                 }
             )
             .subscribe();
 
         return () => {
-            supabase.removeChannel(channelTasks);
-            supabase.removeChannel(channelRoom);
+            supabase.removeChannel(canalTareas);
+            supabase.removeChannel(canalSala);
         };
     }, [roomId, usuario]);
 
-    const handleTasksChange = useCallback(async (newTasksState: any[]) => {
-        const newIds = new Set(newTasksState.map(t => t.id));
+    // Sincroniza hacia Supabase los cambios hechos sobre la tabla de tareas (drag & drop, edición)
+    const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: any[]) => {
+        const nuevosIds = new Set(nuevoEstadoTareas.map(t => t.id));
 
-        const currentTabTasks = taskTab === "personal"
+        const tareasPestanaActual = pestanaTareas === "personal"
             ? tareas.filter(t => t.room_id === null)
             : tareas.filter(t => t.room_id === roomId);
 
-        const deletedIds = currentTabTasks.filter(t => !newIds.has(t.id)).map(t => t.id);
-        if (deletedIds.length > 0) {
-            await supabase.from("tasks").delete().in("id", deletedIds);
+        const idsEliminados = tareasPestanaActual.filter(t => !nuevosIds.has(t.id)).map(t => t.id);
+        if (idsEliminados.length > 0) {
+            await supabase.from("tasks").delete().in("id", idsEliminados);
         }
 
-        const existingTasksToUpdate: any[] = [];
-        const newTasksToInsert: any[] = [];
+        const tareasExistentesActualizar: any[] = [];
+        const tareasNuevasInsertar: any[] = [];
 
-        newTasksState.forEach((t) => {
-            const esPersonal = taskTab === "personal";
-            const newTaskData = {
+        nuevoEstadoTareas.forEach((t) => {
+            const esPersonal = pestanaTareas === "personal";
+            // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
+            const datosNuevaTarea = {
                 user_id: usuario?.id,
                 room_id: (t.room_id) ? t.room_id : (esPersonal ? null : roomId),
                 header: t.header,
@@ -250,43 +265,46 @@ const RoomPage = () => {
             };
 
             if (t.id && t.id < 1000000) {
-                existingTasksToUpdate.push({ id: t.id, ...newTaskData });
+                tareasExistentesActualizar.push({ id: t.id, ...datosNuevaTarea });
             } else {
-                newTasksToInsert.push(newTaskData);
+                tareasNuevasInsertar.push(datosNuevaTarea);
             }
         });
 
-        if (existingTasksToUpdate.length > 0) {
-            const { error } = await supabase.from("tasks").upsert(existingTasksToUpdate);
-            if (error) console.error("Supabase upsert error:", error);
+        if (tareasExistentesActualizar.length > 0) {
+            const { error } = await supabase.from("tasks").upsert(tareasExistentesActualizar);
+            if (error) console.error("Error de upsert en Supabase:", error);
         }
 
-        if (newTasksToInsert.length > 0) {
-            const { error } = await supabase.from("tasks").insert(newTasksToInsert);
-            if (error) console.error("Supabase insert error:", error);
+        if (tareasNuevasInsertar.length > 0) {
+            const { error } = await supabase.from("tasks").insert(tareasNuevasInsertar);
+            if (error) console.error("Error de insert en Supabase:", error);
         }
-    }, [taskTab, tareas, roomId, usuario?.id]);
+    }, [pestanaTareas, tareas, roomId, usuario?.id]);
 
-    const handleMoveTask = useCallback(async (taskId: number) => {
-        const task = tareas.find(t => t.id === taskId);
-        if (!task) return;
+    // Mueve una tarea entre el ámbito personal y el de la sala (alterna su room_id)
+    const manejarMoverTarea = useCallback(async (tareaId: number) => {
+        const tarea = tareas.find(t => t.id === tareaId);
+        if (!tarea) return;
 
-        const newRoomId = task.room_id ? null : roomId;
-        await supabase.from("tasks").update({ room_id: newRoomId }).eq("id", taskId);
+        const nuevaSalaId = tarea.room_id ? null : roomId;
+        await supabase.from("tasks").update({ room_id: nuevaSalaId }).eq("id", tareaId);
     }, [tareas, roomId]);
 
-    const linkInvitacion = useMemo(() => {
+    // Arma el enlace de invitación a partir del código vigente
+    const enlaceInvitacion = useMemo(() => {
         if (!invitacion?.code) return null;
         return `${window.location.origin}/invitacion/${invitacion.code}`;
     }, [invitacion?.code]);
 
+    // Tareas a mostrar según la pestaña activa (personales o de la sala)
     const tareasMostradas = useMemo(() => {
-        if (taskTab === "personal") {
+        if (pestanaTareas === "personal") {
             return tareas.filter(t => t.room_id === null);
         } else {
             return tareas.filter(t => t.room_id === roomId);
         }
-    }, [tareas, taskTab, roomId]);
+    }, [tareas, pestanaTareas, roomId]);
 
 
     return (
@@ -368,7 +386,7 @@ const RoomPage = () => {
                 ) : (
                     <>
                         <div className="flex items-center justify-center border border-dashed rounded-3xl bg-card/10 w-full min-h-80 lg:h-96 py-8 lg:py-0">
-                            <TimerDisplay link={linkInvitacion || ""} codigo={invitacion?.code || ""} roomId={roomId} />
+                            <TimerDisplay enlace={enlaceInvitacion || ""} codigo={invitacion?.code || ""} salaId={roomId} />
                         </div>
 
                         <div className="space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-0 lg:px-2">
@@ -376,33 +394,33 @@ const RoomPage = () => {
                                 <div className="flex flex-col gap-1 mb-2">
                                     <h1 className="text-2xl font-bold tracking-tight">Tareas</h1>
                                     <p className="text-muted-foreground text-sm">
-                                        Aquí tienes una lista de tus tareas de {taskTab === 'personal' ? 'forma personal' : 'sala'}.
+                                        Aquí tienes una lista de tus tareas de {pestanaTareas === 'personal' ? 'forma personal' : 'sala'}.
                                     </p>
                                 </div>
                                 <div className="flex border-b border-border/50 mb-4">
                                     <button
-                                        className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${taskTab === 'personal' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                                        onClick={() => setTaskTab("personal")}
+                                        className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${pestanaTareas === 'personal' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                                        onClick={() => establecerPestanaTareas("personal")}
                                     >
                                         Mis Tareas
                                     </button>
                                     <button
-                                        className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${taskTab === 'room' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                                        onClick={() => setTaskTab("room")}
+                                        className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${pestanaTareas === 'sala' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                                        onClick={() => establecerPestanaTareas("sala")}
                                     >
                                         Tareas de la Sala
-                                        {unseenCount > 0 && (
+                                        {cantidadNoVistas > 0 && (
                                             <span className="flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-violet-500 text-[10px] font-bold text-white shadow-sm transition-all dark:bg-violet-600">
-                                                {unseenCount}
+                                                {cantidadNoVistas}
                                             </span>
                                         )}
                                     </button>
                                 </div>
                                 <DataTable
                                     data={tareasMostradas}
-                                    onTasksChange={handleTasksChange}
-                                    onMoveTask={handleMoveTask}
-                                    key={taskTab} // Forza un re-render del DataTable al cambiar de tab
+                                    onTasksChange={manejarCambioTareas}
+                                    onMoveTask={manejarMoverTarea}
+                                    key={pestanaTareas} // Forza un re-render del DataTable al cambiar de pestaña
                                 />
                             </div>
                         </div>

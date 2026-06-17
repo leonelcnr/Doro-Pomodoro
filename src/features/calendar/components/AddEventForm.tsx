@@ -33,6 +33,8 @@ import {
 import { useMemo } from "react"
 import type { CalendarEvent, EventType } from "../calendarService"
 
+// Esquema de validación del formulario (zod). Las claves (title, date, type,
+// description) son los nombres de campo de react-hook-form, por eso se mantienen.
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "El título debe tener al menos 2 caracteres.",
@@ -42,62 +44,68 @@ const formSchema = z.object({
   description: z.string().optional(),
 })
 
-interface AddEventFormProps {
-  onSuccess?: () => void;
-  /** When provided, form enters edit mode */
-  event?: CalendarEvent;
-  initialDate?: Date;
-  onSubmitEvent: (
-    values: { title: string; date: Date; type: EventType; description?: string },
+interface PropsAddEventForm {
+  alExito?: () => void;
+  /** Si se provee, el formulario entra en modo edición */
+  evento?: CalendarEvent;
+  fechaInicial?: Date;
+  alEnviarEvento: (
+    valores: { title: string; date: Date; type: EventType; description?: string },
     id?: string
   ) => Promise<void>;
-  onDelete?: (id: string) => Promise<void>;
+  alEliminar?: (id: string) => Promise<void>;
 }
 
+/**
+ * Formulario para crear o editar un evento del calendario. Funciona en modo
+ * alta o edición según reciba (o no) un `evento`. Delega el guardado y el
+ * borrado en los callbacks que recibe por props (la lógica vive en el hook).
+ */
 export function AddEventForm({
-  onSuccess,
-  event,
-  initialDate,
-  onSubmitEvent,
-  onDelete,
-}: AddEventFormProps) {
-  const isEdit = !!event;
+  alExito,
+  evento,
+  fechaInicial,
+  alEnviarEvento,
+  alEliminar,
+}: PropsAddEventForm) {
+  const esEdicion = !!evento;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: event?.title ?? "",
-      type: (event?.type as EventType) ?? "Examen",
-      date: event ? new Date(event.event_date + "T00:00:00") : initialDate,
-      description: event?.description ?? "",
+      title: evento?.title ?? "",
+      type: (evento?.type as EventType) ?? "Examen",
+      date: evento ? new Date(evento.event_date + "T00:00:00") : fechaInicial,
+      description: evento?.description ?? "",
     },
   })
 
-  const startOfToday = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return today;
+  // Fecha de hoy a las 00:00, para deshabilitar la selección de fechas pasadas
+  const inicioDeHoy = useMemo(() => {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return hoy;
   }, [])
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Close the dialog immediately — background work reports via toast
+  async function manejarEnvio(valores: z.infer<typeof formSchema>) {
+    // Cerramos el diálogo de inmediato — el trabajo en segundo plano avisa por toast
     form.reset();
-    onSuccess?.();
-    // Fire-and-forget: hook handles optimistic update + error rollback
-    onSubmitEvent(values, event?.id);
+    alExito?.();
+    // Disparar y olvidar: el hook maneja la actualización optimista y el rollback ante error
+    alEnviarEvento(valores, evento?.id);
   }
 
-  async function handleDelete() {
-    if (event && onDelete) {
-      // Close dialog immediately — hook handles optimistic removal + rollback
-      onSuccess?.();
-      onDelete(event.id);
+  async function manejarEliminar() {
+    if (evento && alEliminar) {
+      // Cerramos el diálogo de inmediato — el hook maneja la baja optimista + rollback
+      alExito?.();
+      alEliminar(evento.id);
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(manejarEnvio)} className="space-y-4">
         <FormField
           control={form.control}
           name="title"
@@ -166,7 +174,7 @@ export function AddEventForm({
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date < startOfToday}
+                    disabled={(date) => date < inicioDeHoy}
                     autoFocus
                   />
                 </PopoverContent>
@@ -193,20 +201,20 @@ export function AddEventForm({
           )}
         />
 
-        <div className={cn("flex gap-2", isEdit ? "flex-row justify-between" : "flex-col")}>
-          {isEdit && onDelete && (
+        <div className={cn("flex gap-2", esEdicion ? "flex-row justify-between" : "flex-col")}>
+          {esEdicion && alEliminar && (
             <Button
               type="button"
               variant="destructive"
-              onClick={handleDelete}
+              onClick={manejarEliminar}
               className="gap-2"
             >
               <Trash2 className="h-4 w-4" />
               Eliminar
             </Button>
           )}
-          <Button type="submit" className={cn(!isEdit && "w-full")}>
-            {isEdit ? "Guardar Cambios" : "Guardar Evento"}
+          <Button type="submit" className={cn(!esEdicion && "w-full")}>
+            {esEdicion ? "Guardar Cambios" : "Guardar Evento"}
           </Button>
         </div>
       </form>

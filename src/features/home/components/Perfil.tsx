@@ -1,5 +1,4 @@
-
-
+// Tarjeta simple que muestra los datos básicos de un perfil: nombre, correo y foto
 const Perfil = ({ usuario = "Usuario", correo = "Correo", foto = "Foto" }: any) => {
     return (
         <div className="flex flex-row items-center justify-between p-3 rounded-lg gap-4 bg-card border shadow-sm">

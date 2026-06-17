@@ -4,16 +4,21 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 
+/**
+ * Tipo del contexto de autenticación. Los nombres se mantienen en inglés porque
+ * forman la API pública del contexto, consumida también por componentes de
+ * plantilla (nav-user, app-sidebar, login-form) que quedan fuera de la traducción.
+ */
 interface AuthContextType {
-    user: any;
-    signInWithGoogle: () => any;
-    signInWithGithub: () => any;
-    signInWithDiscord: () => any;
-    signInAnonymously: () => void;
-    linkAccount: (provider: 'google' | 'github' | 'discord') => any;
-    connectGoogleCalendar: () => Promise<void>;
-    hasGoogleLinked: boolean;
-    signOut: () => any;
+    user: any;                                                    // Usuario actual (o null si no hay sesión)
+    signInWithGoogle: () => any;                                  // Inicia sesión con Google (OAuth)
+    signInWithGithub: () => any;                                  // Inicia sesión con GitHub (OAuth)
+    signInWithDiscord: () => any;                                 // Inicia sesión con Discord (OAuth)
+    signInAnonymously: () => void;                                // Crea una sesión anónima
+    linkAccount: (provider: 'google' | 'github' | 'discord') => any; // Vincula otro proveedor a la cuenta actual
+    connectGoogleCalendar: () => Promise<void>;                   // Pide permisos de Google Calendar
+    hasGoogleLinked: boolean;                                     // Si la sesión tiene una identidad de Google vinculada
+    signOut: () => any;                                           // Cierra la sesión
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,12 +33,17 @@ const AuthContext = createContext<AuthContextType>({
     signOut: () => { },
 });
 
+/**
+ * Proveedor de autenticación: escucha los cambios de sesión de Supabase, expone
+ * los métodos de login/logout y mantiene el usuario actual disponible en toda la app.
+ */
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<any>(null);
     const [hasGoogleLinked, setHasGoogleLinked] = useState(false);
     const navigate = useNavigate();
     const [params] = useSearchParams();
 
+    // Inicia el flujo OAuth de Google; `prompt: select_account` permite elegir cuenta
     const signInWithGoogle = async () => {
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
@@ -52,6 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    // Inicia el flujo OAuth de GitHub
     const signInWithGithub = async () => {
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
@@ -67,6 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    // Inicia el flujo OAuth de Discord
     const signInWithDiscord = async () => {
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
@@ -82,6 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    // Crea una sesión anónima y guarda un nombre por defecto en localStorage
     const signInAnonymously = async () => {
         try {
             const { data, error } = await supabase.auth.signInAnonymously();
@@ -91,9 +104,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 localStorage.setItem('anon_name', 'Anónimo');
             }
 
+            // Respetamos el parámetro `redirect` de la URL si existe (ej: venir de una invitación)
             if (params.get("redirect")) {
-                const redirect = params.get("redirect");
-                navigate(redirect ? decodeURIComponent(redirect) : "/", { replace: true });
+                const redireccion = params.get("redirect");
+                navigate(redireccion ? decodeURIComponent(redireccion) : "/", { replace: true });
             } else {
                 navigate("/", { replace: true });
             }
@@ -102,13 +116,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
-    const linkAccount = async (provider: 'google' | 'github' | 'discord') => {
+    // Vincula una identidad adicional (Google/GitHub/Discord) a la cuenta actual
+    const linkAccount = async (proveedor: 'google' | 'github' | 'discord') => {
         try {
             const { data, error } = await supabase.auth.linkIdentity({
-                provider: provider,
+                provider: proveedor,
                 options: {
                     redirectTo: `${window.location.origin}/`,
-                    queryParams: provider === 'google' ? { prompt: 'select_account' } : undefined,
+                    queryParams: proveedor === 'google' ? { prompt: 'select_account' } : undefined,
                 }
             })
             if (error) throw error
@@ -119,44 +134,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     /**
-     * Connect Google Calendar for any user type:
-     * - Google users: re-authenticate with calendar scope
-     * - Discord/anon users: link Google identity with calendar scope
-     * We request offline access so Supabase saves the provider_refresh_token
-     * which our Edge Function will then use.
+     * Conecta Google Calendar para cualquier tipo de usuario:
+     * - Usuarios de Google: se reautentican pidiendo el scope de calendario.
+     * - Usuarios de Discord/anónimos: vinculan la identidad de Google con ese scope.
+     * Pedimos acceso offline para que Supabase guarde el provider_refresh_token,
+     * que luego usará nuestra Edge Function.
      */
     const connectGoogleCalendar = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        const provider = session?.user?.app_metadata?.provider;
-        const identities = session?.user?.identities ?? [];
-        const hasGoogle = identities.some((i: any) => i.provider === 'google');
+        const { data: { session: sesion } } = await supabase.auth.getSession();
+        const identidades = sesion?.user?.identities ?? [];
+        const tieneGoogle = identidades.some((i: any) => i.provider === 'google');
 
-        const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar';
-        const REDIRECT = `${window.location.origin}/calendar`;
+        const ALCANCE_CALENDARIO = 'https://www.googleapis.com/auth/calendar';
+        const REDIRECCION = `${window.location.origin}/calendar`;
 
-        if (hasGoogle) {
-            // Re-authenticate to get calendar scope (Google gives refresh_token if 'consent' is prompted)
+        if (tieneGoogle) {
+            // Reautenticamos para obtener el scope de calendario (Google entrega refresh_token si se pide 'consent')
             await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: REDIRECT,
-                    scopes: CALENDAR_SCOPE,
+                    redirectTo: REDIRECCION,
+                    scopes: ALCANCE_CALENDARIO,
                     queryParams: { prompt: 'consent', access_type: 'offline' },
                 },
             });
         } else {
-            // Link Google to the existing (Discord/anon) account
+            // Vinculamos Google a la cuenta existente (Discord/anónima)
             await supabase.auth.linkIdentity({
                 provider: 'google',
                 options: {
-                    redirectTo: REDIRECT,
-                    scopes: CALENDAR_SCOPE,
+                    redirectTo: REDIRECCION,
+                    scopes: ALCANCE_CALENDARIO,
                     queryParams: { prompt: 'consent', access_type: 'offline' },
                 },
             });
         }
     };
 
+    // Cierra la sesión y limpia el usuario en memoria
     const signOut = async () => {
         try {
             const { error } = await supabase.auth.signOut()
@@ -171,63 +186,64 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     useEffect(() => {
-        // Interceptar errores de OAuth o Vinculación desde la URL
-        const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-        const queryParams = new URLSearchParams(window.location.search);
-        const errorCode = hashParams.get('error_code') || queryParams.get('error_code');
+        // Interceptamos errores de OAuth o de vinculación que vengan en la URL
+        const paramsHash = new URLSearchParams(window.location.hash.replace('#', '?'));
+        const paramsConsulta = new URLSearchParams(window.location.search);
+        const codigoError = paramsHash.get('error_code') || paramsConsulta.get('error_code');
 
-        if (errorCode) {
-            if (errorCode === 'identity_already_exists') {
+        if (codigoError) {
+            if (codigoError === 'identity_already_exists') {
                 toast.error("Esta cuenta ya está registrada", {
                     description: "La cuenta de Google/Github intentada ya pertenece a otro usuario registrado. Por favor, inicia sesión normalmente con ella."
                 });
             } else {
-                const errorDesc = hashParams.get('error_description') || queryParams.get('error_description');
+                const descripcionError = paramsHash.get('error_description') || paramsConsulta.get('error_description');
                 toast.error("Error de autenticación", {
-                    description: errorDesc?.replace(/\+/g, ' ') || "No se pudo vincular la cuenta."
+                    description: descripcionError?.replace(/\+/g, ' ') || "No se pudo vincular la cuenta."
                 });
             }
-            // Limpiar la URL para evitar mostrar el error en recargas
+            // Limpiamos la URL para no mostrar el error en las recargas
             window.history.replaceState(null, '', window.location.pathname);
         }
 
-        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session == null) {
+        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, sesion) => {
+            if (sesion == null) {
                 navigate("/login", { replace: true });
             } else {
-                const isAnon = session.user.is_anonymous;
-                const anonName = localStorage.getItem('anon_name') || 'Anónimo';
+                const esAnonimo = sesion.user.is_anonymous;
+                const nombreAnonimo = localStorage.getItem('anon_name') || 'Anónimo';
 
-                // Track whether this session has a Google identity linked
-                const identities = session.user.identities ?? [];
-                setHasGoogleLinked(identities.some((i: any) => i.provider === 'google'));
+                // Registramos si esta sesión tiene una identidad de Google vinculada
+                const identidades = sesion.user.identities ?? [];
+                setHasGoogleLinked(identidades.some((i: any) => i.provider === 'google'));
 
-                // FIXED: Guardo el refresh token en user_metadata porque Supabase Auth a veces no actualiza identity_data
-                // al reconectar una cuenta ya existente.
-                if (session.provider_refresh_token && session.provider_refresh_token !== session.user.user_metadata?.provider_refresh_token) {
+                // CORRECCIÓN: guardamos el refresh token en user_metadata porque Supabase Auth a veces
+                // no actualiza identity_data al reconectar una cuenta ya existente.
+                if (sesion.provider_refresh_token && sesion.provider_refresh_token !== sesion.user.user_metadata?.provider_refresh_token) {
                     supabase.auth.updateUser({
-                        data: { provider_refresh_token: session.provider_refresh_token }
+                        data: { provider_refresh_token: sesion.provider_refresh_token }
                     });
                 }
 
-                setUser((prev: any) => {
-                    if (prev?.id === session.user.id && prev?.isAnonymous === isAnon) {
-                        return prev;
+                setUser((previo: any) => {
+                    // Evitamos recrear el objeto si no cambió (mismo id y mismo estado anónimo)
+                    if (previo?.id === sesion.user.id && previo?.isAnonymous === esAnonimo) {
+                        return previo;
                     }
                     return {
-                        ...session.user.user_metadata,
-                        id: session.user.id,
-                        email: isAnon ? '' : session.user.email,
-                        isAnonymous: isAnon,
-                        name: isAnon ? anonName : (session.user.user_metadata?.name || session.user.email?.split("@")[0] || "Usuario"),
-                        avatar_url: session.user.user_metadata?.avatar_url || "",
-                        provider_token: session.provider_token ?? null,
+                        ...sesion.user.user_metadata,
+                        id: sesion.user.id,
+                        email: esAnonimo ? '' : sesion.user.email,
+                        isAnonymous: esAnonimo,
+                        name: esAnonimo ? nombreAnonimo : (sesion.user.user_metadata?.name || sesion.user.email?.split("@")[0] || "Usuario"),
+                        avatar_url: sesion.user.user_metadata?.avatar_url || "",
+                        provider_token: sesion.provider_token ?? null,
                     };
                 });
 
                 if (params.get("redirect")) {
-                    const redirect = params.get("redirect");
-                    navigate(redirect ? decodeURIComponent(redirect) : "/", { replace: true });
+                    const redireccion = params.get("redirect");
+                    navigate(redireccion ? decodeURIComponent(redireccion) : "/", { replace: true });
                 }
             }
         });
@@ -245,6 +261,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+// Hook de conveniencia para consumir el contexto de autenticación
 export const useAuth = () => {
     return useContext(AuthContext);
 }

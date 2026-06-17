@@ -13,57 +13,54 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Settings, Minus, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import type { TimerSettings } from "@/types/timer";
 
-// Definimos la estructura de la configuración
-export interface TimerSettings {
-    pomodoro: number;
-    shortBreak: number;
-    longBreak: number;
-    autoBreak: boolean;
+interface PropsDialogSettings {
+    configuracionActual: TimerSettings;
+    alGuardarConfiguracion: (nuevaConfiguracion: TimerSettings) => void;
 }
 
-interface DialogSettingsProps {
-    currentSettings: TimerSettings;
-    onSaveSettings: (newSettings: TimerSettings) => void;
-}
-
-interface NumberInputProps {
+interface PropsEntradaNumero {
     id: string;
-    value: number;
-    onChange: (val: number) => void;
-    min?: number;
+    valor: number;
+    alCambiar: (valor: number) => void;
+    minimo?: number;
 }
 
-const NumberInput: React.FC<NumberInputProps> = ({ id, value, onChange, min = 1 }) => {
-    const [localValue, setLocalValue] = useState(value.toString());
+/**
+ * Input numérico controlado con botones +/-. Mantiene un estado local de texto
+ * para permitir escribir libremente y valida/normaliza recién al perder el foco.
+ */
+const EntradaNumero: React.FC<PropsEntradaNumero> = ({ id, valor, alCambiar, minimo = 1 }) => {
+    const [valorLocal, establecerValorLocal] = useState(valor.toString());
 
-    // Sync local state when external value changes
+    // Sincronizamos el estado local cuando el valor externo cambia
     useEffect(() => {
-        setLocalValue(value.toString());
-    }, [value]);
+        establecerValorLocal(valor.toString());
+    }, [valor]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setLocalValue(val);
+    const manejarCambio = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const texto = e.target.value;
+        establecerValorLocal(texto);
 
-        // Update parent immediately if valid so saving works smoothly
-        if (val !== "") {
-            const parsed = parseInt(val, 10);
-            if (!isNaN(parsed)) {
-                onChange(parsed);
+        // Avisamos al padre de inmediato si el valor es válido, para que guardar funcione fluido
+        if (texto !== "") {
+            const parseado = parseInt(texto, 10);
+            if (!isNaN(parseado)) {
+                alCambiar(parseado);
             }
         }
     };
 
-    const handleBlur = () => {
-        // Restore to min value or current valid value if input is empty or invalid
-        const parsed = parseInt(localValue, 10);
-        if (localValue === "" || isNaN(parsed) || parsed < min) {
-            setLocalValue(min.toString());
-            onChange(min);
+    const manejarBlur = () => {
+        // Si el campo quedó vacío o inválido, restauramos al mínimo (o al valor válido)
+        const parseado = parseInt(valorLocal, 10);
+        if (valorLocal === "" || isNaN(parseado) || parseado < minimo) {
+            establecerValorLocal(minimo.toString());
+            alCambiar(minimo);
         } else {
-            setLocalValue(parsed.toString());
-            onChange(parsed);
+            establecerValorLocal(parseado.toString());
+            alCambiar(parseado);
         }
     };
 
@@ -72,10 +69,10 @@ const NumberInput: React.FC<NumberInputProps> = ({ id, value, onChange, min = 1 
             <input
                 id={id}
                 type="number"
-                min={min}
-                value={localValue}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                min={minimo}
+                value={valorLocal}
+                onChange={manejarCambio}
+                onBlur={manejarBlur}
                 className="w-16 bg-transparent text-center text-sm outline-none px-2 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-white"
             />
             <div className="flex items-center border-l border-input">
@@ -84,9 +81,9 @@ const NumberInput: React.FC<NumberInputProps> = ({ id, value, onChange, min = 1 
                     variant="ghost"
                     className="h-9 w-9 rounded-none hover:bg-accent hover:text-accent-foreground p-0 text-muted-foreground"
                     onClick={() => {
-                        const next = Math.max(min, value - 1);
-                        setLocalValue(next.toString());
-                        onChange(next);
+                        const siguiente = Math.max(minimo, valor - 1);
+                        establecerValorLocal(siguiente.toString());
+                        alCambiar(siguiente);
                     }}
                 >
                     <Minus className="h-4 w-4" />
@@ -97,9 +94,9 @@ const NumberInput: React.FC<NumberInputProps> = ({ id, value, onChange, min = 1 
                     variant="ghost"
                     className="h-9 w-9 rounded-none hover:bg-accent hover:text-accent-foreground p-0 text-muted-foreground"
                     onClick={() => {
-                        const next = value + 1;
-                        setLocalValue(next.toString());
-                        onChange(next);
+                        const siguiente = valor + 1;
+                        establecerValorLocal(siguiente.toString());
+                        alCambiar(siguiente);
                     }}
                 >
                     <Plus className="h-4 w-4" />
@@ -109,22 +106,28 @@ const NumberInput: React.FC<NumberInputProps> = ({ id, value, onChange, min = 1 
     );
 };
 
-const DialogSettings: React.FC<DialogSettingsProps> = ({
-    currentSettings,
-    onSaveSettings
+/**
+ * Diálogo de configuración del reloj: permite ajustar las duraciones de cada
+ * fase y activar el descanso automático. Trabaja sobre una copia local de la
+ * configuración y la confirma con "Guardar Cambios".
+ */
+const DialogSettings: React.FC<PropsDialogSettings> = ({
+    configuracionActual,
+    alGuardarConfiguracion
 }) => {
     // Estado local para manejar los inputs antes de guardar
-    const [settings, setSettings] = useState<TimerSettings>(currentSettings);
+    const [configuracion, establecerConfiguracion] = useState<TimerSettings>(configuracionActual);
 
-    const handleUpdate = <K extends keyof TimerSettings>(name: K, value: TimerSettings[K]) => {
-        setSettings((prev) => ({
-            ...prev,
-            [name]: value,
+    // Actualiza un único campo de la configuración local de forma tipada
+    const manejarActualizacion = <K extends keyof TimerSettings>(nombre: K, valor: TimerSettings[K]) => {
+        establecerConfiguracion((previa) => ({
+            ...previa,
+            [nombre]: valor,
         }));
     };
 
-    const handleSave = () => {
-        onSaveSettings(settings);
+    const manejarGuardar = () => {
+        alGuardarConfiguracion(configuracion);
     };
 
     return (
@@ -152,10 +155,10 @@ const DialogSettings: React.FC<DialogSettingsProps> = ({
                             </Label>
                             <span className="text-sm text-muted-foreground">Duración de la sesión de enfoque.</span>
                         </div>
-                        <NumberInput
+                        <EntradaNumero
                             id="pomodoro"
-                            value={settings.pomodoro}
-                            onChange={(val) => handleUpdate("pomodoro", val)}
+                            valor={configuracion.pomodoro}
+                            alCambiar={(valor) => manejarActualizacion("pomodoro", valor)}
                         />
                     </div>
 
@@ -167,10 +170,10 @@ const DialogSettings: React.FC<DialogSettingsProps> = ({
                             </Label>
                             <span className="text-sm text-muted-foreground">Pausa breve entre pomodoros.</span>
                         </div>
-                        <NumberInput
+                        <EntradaNumero
                             id="shortBreak"
-                            value={settings.shortBreak}
-                            onChange={(val) => handleUpdate("shortBreak", val)}
+                            valor={configuracion.shortBreak}
+                            alCambiar={(valor) => manejarActualizacion("shortBreak", valor)}
                         />
                     </div>
 
@@ -182,10 +185,10 @@ const DialogSettings: React.FC<DialogSettingsProps> = ({
                             </Label>
                             <span className="text-sm text-muted-foreground">Pausa más extensa tras varios ciclos.</span>
                         </div>
-                        <NumberInput
+                        <EntradaNumero
                             id="longBreak"
-                            value={settings.longBreak}
-                            onChange={(val) => handleUpdate("longBreak", val)}
+                            valor={configuracion.longBreak}
+                            alCambiar={(valor) => manejarActualizacion("longBreak", valor)}
                         />
                     </div>
 
@@ -199,8 +202,8 @@ const DialogSettings: React.FC<DialogSettingsProps> = ({
                         </div>
                         <Switch
                             id="autoBreak"
-                            checked={settings.autoBreak}
-                            onCheckedChange={(val) => handleUpdate("autoBreak", val)}
+                            checked={configuracion.autoBreak}
+                            onCheckedChange={(valor) => manejarActualizacion("autoBreak", valor)}
                         />
                     </div>
                 </div>
@@ -209,7 +212,7 @@ const DialogSettings: React.FC<DialogSettingsProps> = ({
                     <DialogClose asChild>
                         <Button
                             type="submit"
-                            onClick={handleSave}
+                            onClick={manejarGuardar}
                         >
                             Guardar Cambios
                         </Button>

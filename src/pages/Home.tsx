@@ -13,14 +13,19 @@ import supabase from "@/lib/supabase"
 import { useAuth } from "@/features/auth/context/AuthContext"
 
 
+/**
+ * Página de inicio: muestra el panel para crear/unirse a salas y la lista de
+ * tareas personales del usuario, sincronizada en tiempo real con Supabase.
+ */
 const Home = () => {
     const auth = useAuth();
     const usuario = auth.user;
-    const [tareas, setTareas] = useState<any[]>([]);
+    const [tareas, establecerTareas] = useState<any[]>([]);
 
     useEffect(() => {
         if (!usuario) return;
 
+        // Trae las tareas personales (sin sala asociada) del usuario actual
         const cargarTareas = async () => {
 
             const { data, error } = await supabase
@@ -31,14 +36,13 @@ const Home = () => {
                 .order("order_index", { ascending: true, nullsFirst: false })
                 .order("created_at", { ascending: false });
 
-            if (!error && data) setTareas(data);
+            if (!error && data) establecerTareas(data);
         };
 
         cargarTareas();
 
-        // Suscribirse a Tareas Personales
-
-        const channelTasks = supabase
+        // Suscripción en tiempo real a las Tareas Personales
+        const canalTareas = supabase
             .channel("realtime-home-tasks")
             .on(
                 "postgres_changes",
@@ -53,22 +57,24 @@ const Home = () => {
             .subscribe();
 
         return () => {
-            supabase.removeChannel(channelTasks);
+            supabase.removeChannel(canalTareas);
         };
     }, [usuario]);
 
-    const handleTasksChange = async (newTasksState: any[]) => {
-        const newIds = new Set(newTasksState.map(t => t.id));
+    // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
+    const manejarCambioTareas = async (nuevoEstadoTareas: any[]) => {
+        const nuevosIds = new Set(nuevoEstadoTareas.map(t => t.id));
 
-        // Tareas eliminadas: comparar contra nuestro estado local
-        const deletedTasks = tareas.filter(t => !newIds.has(t.id));
-        for (const t of deletedTasks) {
+        // Tareas eliminadas: las que estaban en el estado local y ya no figuran
+        const tareasEliminadas = tareas.filter(t => !nuevosIds.has(t.id));
+        for (const t of tareasEliminadas) {
             await supabase.from("tasks").delete().eq("id", t.id);
         }
 
         // Tareas añadidas o actualizadas
-        for (const t of newTasksState) {
-            const taskData: any = {
+        for (const t of nuevoEstadoTareas) {
+            // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
+            const datosTarea: any = {
                 user_id: usuario?.id,
                 room_id: null,
                 header: t.header,
@@ -80,17 +86,17 @@ const Home = () => {
             };
 
             if (t.id && t.id < 1000000) {
-                // Actualizar
-                const { error } = await supabase.from("tasks").update(taskData).eq("id", t.id);
+                // Actualizar una tarea existente
+                const { error } = await supabase.from("tasks").update(datosTarea).eq("id", t.id);
                 if (error) {
-                    console.error("Supabase update error:", error);
+                    console.error("Error de update en Supabase:", error);
                     alert(`Error al actualizar la tarea: ${error.message} (Detalles: ${error.details})`);
                 }
             } else {
-                // Insertar nueva
-                const { error } = await supabase.from("tasks").insert([taskData]);
+                // Insertar una tarea nueva
+                const { error } = await supabase.from("tasks").insert([datosTarea]);
                 if (error) {
-                    console.error("Supabase insert error:", error);
+                    console.error("Error de insert en Supabase:", error);
                     alert(`Error al crear la tarea: ${error.message} (Detalles: ${error.details})`);
                 }
             }
@@ -129,7 +135,7 @@ const Home = () => {
                                             Aquí tienes una lista de tus tareas.
                                         </p>
                                     </div>
-                                    <DataTable data={tareas} onTasksChange={handleTasksChange} />
+                                    <DataTable data={tareas} onTasksChange={manejarCambioTareas} />
                                 </div>
                             </div>
                         </div>

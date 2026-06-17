@@ -14,6 +14,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 
+// Configuración de colores/etiquetas de los gráficos de barras (claves = dataKeys de recharts)
 const chartConfig = {
   minutes: {
     label: "Minutos",
@@ -25,13 +26,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-// Formato estático fuera del componente para evitar re-renderizados de Heatmap
-const formatMinutes = (m: number) => {
+// Funciones de formato definidas fuera del componente para evitar re-renderizados del Heatmap
+
+// Formatea minutos a "Xm" o "Yh Zm"
+const formatearMinutos = (m: number) => {
   if (!m) return "0m";
   if (m < 60) return `${Math.floor(m)}m`;
   return `${Math.floor(m / 60)}h ${Math.floor(m % 60)}m`;
 };
-const heatmapDateDisplayFunction = (d: Date) => new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+// Formatea una fecha completa en español para los tooltips del mapa de calor
+const formatearFechaMapaCalor = (d: Date) => new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 
 import { Clock, CheckCircle2, TrendingUp, Timer } from "lucide-react"
 import { useState, useMemo } from "react"
@@ -39,9 +43,14 @@ import { useAuth } from "@/features/auth/context/AuthContext"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDashboardStats, type TimeRange } from "@/features/dashboard/hooks/useDashboardStats"
 
+/**
+ * Página de estadísticas ("Tu Momentum"): tarjetas resumen, gráfico de flujo de
+ * concentración, distribución de tareas por categoría, tareas recientes, días más
+ * productivos y un mapa de calor anual. Todos los datos vienen de useDashboardStats.
+ */
 export default function Dashboard() {
   const { user } = useAuth();
-  const [timeRange, setTimeRange] = useState<TimeRange>('week');
+  const [rangoTiempo, establecerRangoTiempo] = useState<TimeRange>('week');
 
   const {
     stats,
@@ -52,7 +61,8 @@ export default function Dashboard() {
     isLoading
   } = useDashboardStats(user?.id);
 
-  const currentStats = statsByRange[timeRange] || {
+  // Estadísticas correspondientes al rango de tiempo seleccionado
+  const estadisticasActuales = statsByRange[rangoTiempo] || {
     chartData: [],
     displayMinutes: 0,
     avgSessionMinutes: 0,
@@ -60,34 +70,36 @@ export default function Dashboard() {
     pieChartData: []
   };
 
-  const { chartData, displayMinutes, avgSessionMinutes, displayCompletedTasks, pieChartData } = currentStats;
+  const { chartData, displayMinutes, avgSessionMinutes, displayCompletedTasks, pieChartData } = estadisticasActuales;
 
-  // Fechas del Heatmap estáticas
-  const heatmapDates = useMemo(() => {
-    const end = new Date();
-    const start = new Date();
-    start.setFullYear(end.getFullYear() - 1);
-    return { start, end };
+  // Rango de fechas del mapa de calor: el último año hasta hoy
+  const fechasMapaCalor = useMemo(() => {
+    const fin = new Date();
+    const inicio = new Date();
+    inicio.setFullYear(fin.getFullYear() - 1);
+    return { start: inicio, end: fin };
   }, []);
 
-  const PIE_COLORS = ['#8b5cf6', '#f97316', '#10b981', '#3b82f6', '#ec4899', '#f43f5e', '#eab308'];
+  const COLORES_TORTA = ['#8b5cf6', '#f97316', '#10b981', '#3b82f6', '#ec4899', '#f43f5e', '#eab308'];
 
-  const pieChartConfig = useMemo(() => {
+  // Configuración (etiquetas + colores) del gráfico de torta, derivada de los datos
+  const configTorta = useMemo(() => {
     const config: Record<string, any> = {};
-    pieChartData.forEach((entry, index) => {
-      config[entry.name] = {
-        label: entry.name,
-        color: PIE_COLORS[index % PIE_COLORS.length],
+    pieChartData.forEach((entrada, indice) => {
+      config[entrada.name] = {
+        label: entrada.name,
+        color: COLORES_TORTA[indice % COLORES_TORTA.length],
       };
     });
     return config satisfies ChartConfig;
   }, [pieChartData]);
 
-  const pieDataWithFill = useMemo(() => {
-    return pieChartData.map((entry, index) => {
+  // Datos de la torta con su color de relleno asignado
+  const datosTortaConColor = useMemo(() => {
+    return pieChartData.map((entrada, indice) => {
       return {
-        ...entry,
-        fill: PIE_COLORS[index % PIE_COLORS.length]
+        ...entrada,
+        fill: COLORES_TORTA[indice % COLORES_TORTA.length]
       }
     });
   }, [pieChartData]);
@@ -104,13 +116,13 @@ export default function Dashboard() {
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-6xl mx-auto w-full min-w-0">
 
-          {/* Header & Global Time Filter */}
+          {/* Cabecera y filtro global de tiempo */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Tu Momentum</h1>
               <p className="text-muted-foreground mt-1 text-sm">Resumen de tus bloques de enfoque y tareas completadas.</p>
             </div>
-            <Tabs value={timeRange} onValueChange={(v: any) => setTimeRange(v)} className="w-full sm:w-auto">
+            <Tabs value={rangoTiempo} onValueChange={(v: any) => establecerRangoTiempo(v)} className="w-full sm:w-auto">
               <TabsList className="grid grid-cols-5 w-full sm:w-[400px]">
                 <TabsTrigger value="day">Día</TabsTrigger>
                 <TabsTrigger value="week">Semana</TabsTrigger>
@@ -121,7 +133,7 @@ export default function Dashboard() {
             </Tabs>
           </div>
 
-          {/* Cards resumen */}
+          {/* Tarjetas resumen */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
             <Card className="bg-card shadow-none overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
@@ -132,10 +144,10 @@ export default function Dashboard() {
                 {isLoading ? (
                   <Skeleton className="h-8 w-24 mb-1" />
                 ) : (
-                  <div className="text-2xl font-bold truncate">{formatMinutes(displayMinutes)}</div>
+                  <div className="text-2xl font-bold truncate">{formatearMinutos(displayMinutes)}</div>
                 )}
                 <p className="text-xs text-muted-foreground mt-1 truncate">
-                  {timeRange === 'total' ? 'Total acumulado' : `En este periodo`}
+                  {rangoTiempo === 'total' ? 'Total acumulado' : `En este periodo`}
                 </p>
               </CardContent>
             </Card>
@@ -177,9 +189,9 @@ export default function Dashboard() {
                 {isLoading ? (
                   <Skeleton className="h-8 w-24 mb-1" />
                 ) : (
-                  <div className="text-2xl font-bold truncate">{formatMinutes(avgSessionMinutes)}</div>
+                  <div className="text-2xl font-bold truncate">{formatearMinutos(avgSessionMinutes)}</div>
                 )}
-                <p className="text-xs text-muted-foreground mt-1 truncate">Por sesión ({timeRange === 'total' ? 'histórico' : 'rango actual'})</p>
+                <p className="text-xs text-muted-foreground mt-1 truncate">Por sesión ({rangoTiempo === 'total' ? 'histórico' : 'rango actual'})</p>
               </CardContent>
             </Card>
           </div>
@@ -191,7 +203,7 @@ export default function Dashboard() {
                 <div>
                   <CardTitle className="truncate">Flujo de Concentración</CardTitle>
                   <CardDescription>
-                    Mostrando el tiempo de estudio en {timeRange === 'day' ? 'el día de hoy' : timeRange === 'week' ? 'la semana' : timeRange === 'month' ? 'el mes' : timeRange === 'year' ? 'el año' : 'total'}
+                    Mostrando el tiempo de estudio en {rangoTiempo === 'day' ? 'el día de hoy' : rangoTiempo === 'week' ? 'la semana' : rangoTiempo === 'month' ? 'el mes' : rangoTiempo === 'year' ? 'el año' : 'total'}
                   </CardDescription>
                 </div>
               </CardHeader>
@@ -243,9 +255,9 @@ export default function Dashboard() {
               <CardContent className="flex flex-col items-center justify-center">
                 {isLoading ? (
                   <Skeleton className="h-[250px] w-[250px] rounded-full mx-auto" />
-                ) : pieDataWithFill.length > 0 ? (
+                ) : datosTortaConColor.length > 0 ? (
                   <ChartContainer
-                    config={pieChartConfig}
+                    config={configTorta}
                     className="mx-auto aspect-square max-h-[250px] w-full pb-0"
                   >
                     <PieChart>
@@ -254,7 +266,7 @@ export default function Dashboard() {
                         content={<ChartTooltipContent hideLabel />}
                       />
                       <Pie
-                        data={pieDataWithFill}
+                        data={datosTortaConColor}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -287,14 +299,14 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentTasks.map(task => (
-                  <div key={task.id} className="flex items-center gap-3">
+                  {recentTasks.map(tarea => (
+                  <div key={tarea.id} className="flex items-center gap-3">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500/80 shrink-0" />
                     <div className="flex flex-col overflow-hidden">
-                      <span className="text-sm font-medium line-through text-muted-foreground truncate">{task.header}</span>
+                      <span className="text-sm font-medium line-through text-muted-foreground truncate">{tarea.header}</span>
                       <div className="flex items-center mt-0.5">
                         <span className="sr-only">Tipo de tarea: </span>
-                        <span className="text-[10px] text-secondary-foreground bg-secondary px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-bold">{task.type}</span>
+                        <span className="text-[10px] text-secondary-foreground bg-secondary px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-bold">{tarea.type}</span>
                       </div>
                     </div>
                   </div>
@@ -361,8 +373,8 @@ export default function Dashboard() {
               <div className="min-w-[800px] flex justify-center">
                 <Heatmap
                   data={heatmapData}
-                  startDate={heatmapDates.start}
-                  endDate={heatmapDates.end}
+                  startDate={fechasMapaCalor.start}
+                  endDate={fechasMapaCalor.end}
                   colorMode="discrete"
                   colorScale={[
                     "var(--heatmap-0)",
@@ -373,8 +385,8 @@ export default function Dashboard() {
                   ]}
                   cellSize={14}
                   gap={4}
-                  valueDisplayFunction={formatMinutes}
-                  dateDisplayFunction={heatmapDateDisplayFunction}
+                  valueDisplayFunction={formatearMinutos}
+                  dateDisplayFunction={formatearFechaMapaCalor}
                 />
               </div>
             </CardContent>

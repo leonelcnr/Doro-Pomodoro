@@ -1,80 +1,89 @@
 import { useState, useCallback, useEffect } from 'react';
 
+/**
+ * Hook que encapsula la API de "Document Picture-in-Picture" del navegador.
+ * Permite abrir una ventana flotante siempre visible, copiándole los estilos y
+ * manteniendo sincronizado el tema (modo claro/oscuro) con la pestaña principal.
+ */
 export function useDocumentPiP() {
-    const [isSupported, setIsSupported] = useState(false);
-    const [pipWindow, setPipWindow] = useState<Window | null>(null);
+    const [esSoportado, establecerEsSoportado] = useState(false);
+    const [ventanaPiP, establecerVentanaPiP] = useState<Window | null>(null);
 
+    // Detectamos si el navegador soporta la API al montar
     useEffect(() => {
-        setIsSupported('documentPictureInPicture' in window);
+        establecerEsSoportado('documentPictureInPicture' in window);
     }, []);
 
-    const requestPiP = useCallback(async (optionsContext?: { width?: number; height?: number }) => {
-        if (!isSupported || !window.documentPictureInPicture) {
-            console.warn('Document Picture-in-Picture API is not supported in this browser.');
+    // Abre la ventana flotante con el tamaño indicado y le clona los estilos
+    const solicitarPiP = useCallback(async (opciones?: { width?: number; height?: number }) => {
+        if (!esSoportado || !window.documentPictureInPicture) {
+            console.warn('La API Document Picture-in-Picture no está soportada en este navegador.');
             return null;
         }
 
         try {
-            // Close existing PiP window if it exists
+            // Cerramos una ventana PiP previa si ya existía
             if (window.documentPictureInPicture.window) {
                 window.documentPictureInPicture.window.close();
             }
 
-            const pip = await window.documentPictureInPicture.requestWindow({
-                width: optionsContext?.width || 300,
-                height: optionsContext?.height || 200,
+            const ventana = await window.documentPictureInPicture.requestWindow({
+                width: opciones?.width || 300,
+                height: opciones?.height || 200,
             });
 
-            // Copy exactly the stylesheets to the new window
-            [...document.styleSheets].forEach((styleSheet) => {
+            // Copiamos exactamente las hojas de estilo a la ventana nueva
+            [...document.styleSheets].forEach((hojaEstilo) => {
                 try {
-                    const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
-                    const style = document.createElement('style');
-                    style.textContent = cssRules;
-                    pip.document.head.appendChild(style);
+                    const reglasCss = [...hojaEstilo.cssRules].map((regla) => regla.cssText).join('');
+                    const estilo = document.createElement('style');
+                    estilo.textContent = reglasCss;
+                    ventana.document.head.appendChild(estilo);
                 } catch (e) {
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    if (styleSheet.href) {
-                        link.href = styleSheet.href;
-                        pip.document.head.appendChild(link);
+                    // Si la hoja es de otro origen no podemos leer sus reglas: la enlazamos por href
+                    const enlace = document.createElement('link');
+                    enlace.rel = 'stylesheet';
+                    if (hojaEstilo.href) {
+                        enlace.href = hojaEstilo.href;
+                        ventana.document.head.appendChild(enlace);
                     }
                 }
             });
 
-            // Copy root classes for theme support (e.g. Tailwind dark mode)
-            pip.document.documentElement.className = document.documentElement.className;
-            pip.document.documentElement.style.cssText = document.documentElement.style.cssText;
-            
-            // Keep theme in sync via a MutationObserver
-            const observer = new MutationObserver(() => {
-                pip.document.documentElement.className = document.documentElement.className;
-                pip.document.documentElement.style.cssText = document.documentElement.style.cssText;
+            // Copiamos las clases del elemento raíz para conservar el tema (ej: dark mode de Tailwind)
+            ventana.document.documentElement.className = document.documentElement.className;
+            ventana.document.documentElement.style.cssText = document.documentElement.style.cssText;
+
+            // Mantenemos el tema sincronizado mediante un MutationObserver
+            const observador = new MutationObserver(() => {
+                ventana.document.documentElement.className = document.documentElement.className;
+                ventana.document.documentElement.style.cssText = document.documentElement.style.cssText;
             });
-            observer.observe(document.documentElement, { attributes: true });
+            observador.observe(document.documentElement, { attributes: true });
 
-            setPipWindow(pip);
+            establecerVentanaPiP(ventana);
 
-            // Listen for when the user closes the PiP window natively
-            pip.addEventListener('pagehide', () => {
-                observer.disconnect();
-                setPipWindow(null);
+            // Escuchamos cuando el usuario cierra la ventana PiP de forma nativa
+            ventana.addEventListener('pagehide', () => {
+                observador.disconnect();
+                establecerVentanaPiP(null);
             });
 
-            return pip;
+            return ventana;
         } catch (error) {
-            console.error('Failed to open PiP window:', error);
-            setPipWindow(null);
+            console.error('Falló la apertura de la ventana PiP:', error);
+            establecerVentanaPiP(null);
             return null;
         }
-    }, [isSupported]);
+    }, [esSoportado]);
 
-    const closePiP = useCallback(() => {
-        if (pipWindow) {
-            pipWindow.close();
-            setPipWindow(null);
+    // Cierra la ventana flotante por código (ej: botón "devolver a la pestaña")
+    const cerrarPiP = useCallback(() => {
+        if (ventanaPiP) {
+            ventanaPiP.close();
+            establecerVentanaPiP(null);
         }
-    }, [pipWindow]);
+    }, [ventanaPiP]);
 
-    return { isSupported, pipWindow, requestPiP, closePiP };
+    return { esSoportado, ventanaPiP, solicitarPiP, cerrarPiP };
 }

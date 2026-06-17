@@ -22,6 +22,8 @@ import {
     type ChartConfig,
 } from "@/components/ui/chart"
 
+// Gráfico radial de ejemplo (basado en el bloque de shadcn/ui charts). Conserva
+// los datos y claves de demostración; sirve como plantilla para visualizaciones.
 export const description = "A radial chart with a custom shape"
 
 const chartData = [

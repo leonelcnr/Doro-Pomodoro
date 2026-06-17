@@ -1,4 +1,9 @@
-// src/routes.tsx
+// src/Routes.tsx
+// Definición central de rutas de la app (react-router). Estructura anidada:
+//  - AuthProviderLayout: provee el contexto de autenticación a todo lo de adentro.
+//    - HomeLayout: páginas principales con sesión (inicio, dashboard, calendario, sala).
+//    - AuthLayout: páginas de login y registro.
+//    - Páginas sueltas: invitación, términos y privacidad.
 import { createBrowserRouter } from "react-router-dom";
 import AuthProviderLayout from "./layouts/AuthProviderLayout";
 import HomeLayout from "./layouts/HomeLayout";

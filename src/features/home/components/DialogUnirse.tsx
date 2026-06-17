@@ -17,36 +17,39 @@ import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import DialogCargando from "@/features/home/components/DialogCargando"
 
 
+// Diálogo para unirse a una sala existente ingresando su código o enlace de invitación
 const DialogUnirse = () => {
-    const [value, setValue] = useState("");
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [valor, establecerValor] = useState("");
+    const [mensajeError, establecerMensajeError] = useState<string | null>(null);
+    const [cargando, establecerCargando] = useState(false);
     const navigate = useNavigate();
 
-    const join = async (currentValue?: string) => {
+    // Valida el código ingresado y llama a la RPC `join_room` para entrar a la sala
+    const unirse = async (valorActual?: string) => {
 
 
-        setErrorMsg(null);
-        const codeToParse = currentValue !== undefined ? currentValue : value;
-        const code = parsearInvitacion(codeToParse);
-        if (!code) {
-            setErrorMsg("Pegá un código válido o un link de invitación.");
+        establecerMensajeError(null);
+        const codigoAParsear = valorActual !== undefined ? valorActual : valor;
+        const codigo = parsearInvitacion(codigoAParsear);
+        if (!codigo) {
+            establecerMensajeError("Pegá un código válido o un link de invitación.");
             return;
         }
 
-        setLoading(true);
-        const { data: roomId, error } = await supabase.rpc("join_room", { p_code: code });
-        setLoading(false);
+        establecerCargando(true);
+        const { data: salaId, error } = await supabase.rpc("join_room", { p_code: codigo });
+        establecerCargando(false);
 
         if (error) {
-            setErrorMsg(error.message || "No se pudo unir.");
+            establecerMensajeError(error.message || "No se pudo unir.");
             return;
         }
-        navigate(`/room/${roomId}`);
+        navigate(`/room/${salaId}`);
     };
 
 
-    if (loading) {
+    // Mientras se procesa el ingreso, mostramos el estado de carga
+    if (cargando) {
         return (
             <Dialog>
                 <DialogTrigger asChild><Button variant="outline" className="w-full h-10">Unirse</Button></DialogTrigger>
@@ -69,18 +72,18 @@ const DialogUnirse = () => {
                         Introduce el código de la sala
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={(e) => { 
-                    e.preventDefault(); 
-                    join(); 
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    unirse();
                 }}>
                     <div>
-                        <Input 
-                            placeholder="Código" 
-                            value={value} 
-                            onChange={(e) => setValue(e.target.value)}
+                        <Input
+                            placeholder="Código"
+                            value={valor}
+                            onChange={(e) => establecerValor(e.target.value)}
                         />
                     </div>
-                    {errorMsg && <p className="text-destructive text-sm mt-2">{errorMsg}</p>}
+                    {mensajeError && <p className="text-destructive text-sm mt-2">{mensajeError}</p>}
                     <DialogFooter className="sm:justify-start mt-6">
                         <DialogClose asChild>
                             <Button variant="outline" type="button">Cancelar</Button>

@@ -1,112 +1,129 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { Modo, TimerSettings } from '@/types/timer';
 
-// Definimos los tipos de datos
-interface TimerState {
-  timeLeft: number;      // Tiempo restante en segundos
-  initialTime: number;   // Para poder resetear (ej: 25 * 60)
-  isActive: boolean;     // ¿Está corriendo el reloj?
-  mode: 'pomodoro' | 'shortBreak' | 'longBreak' | 'stopwatch'; // El modo actual
-  settings: {
-    pomodoro: number;
-    shortBreak: number;
-    longBreak: number;
-    autoBreak: boolean;
-  };
+/**
+ * Store global del temporizador (Zustand) con persistencia en localStorage.
+ *
+ * Centraliza el estado del reloj Pomodoro/cronómetro para que cualquier
+ * componente (visualizador, ventana flotante, sala compartida) lea y modifique
+ * la misma fuente de verdad. Gracias al middleware `persist`, el estado
+ * sobrevive a recargas de página.
+ *
+ * NOTA sobre contratos: los VALORES del campo `modo`
+ * ('pomodoro' | 'shortBreak' | 'longBreak' | 'stopwatch') y las CLAVES de
+ * `configuracion` se mantienen en inglés a propósito, porque se usan como
+ * índices entre sí (`configuracion[modo]`) y se sincronizan tal cual con la
+ * columna `timer_state` de Supabase compartida entre clientes.
+ */
+interface EstadoTemporizador {
+  tiempoRestante: number;      // Tiempo restante en segundos
+  tiempoInicial: number;       // Valor para poder resetear (ej: 25 * 60)
+  estaActivo: boolean;         // ¿Está corriendo el reloj?
+  modo: Modo;                  // Fase/modo actual
+  configuracion: TimerSettings;
 
-  // Acciones (funciones que modifican el estado)
-  setTimeLeft: (time: number) => void;
-  setIsActive: (active: boolean) => void;
-  setMode: (mode: 'pomodoro' | 'shortBreak' | 'longBreak' | 'stopwatch') => void;
-  setSettings: (settings: { pomodoro: number; shortBreak: number; longBreak: number; autoBreak: boolean }) => void;
-  resetTimer: () => void;
-  // Para recuperación al recargar la página (nuevo)
-  targetEndTime: number | null; 
-  stopwatchStartTime: number | null;
-  setTargetEndTime: (time: number | null) => void;
-  setStopwatchStartTime: (time: number | null) => void;
+  // --- Acciones (funciones que modifican el estado) ---
+  establecerTiempoRestante: (tiempo: number) => void;
+  establecerEstaActivo: (activo: boolean) => void;
+  establecerModo: (modo: Modo) => void;
+  establecerConfiguracion: (configuracion: TimerSettings) => void;
+  reiniciarTemporizador: () => void;
 
-  // Para la sincronización
-  setTimerState: (state: { timeLeft: number; isActive: boolean; mode: 'pomodoro' | 'shortBreak' | 'longBreak' | 'stopwatch'; updatedAt?: string }) => void;
-  lastLocalUpdate: number;
+  // Campos para recuperar el conteo exacto al recargar la página:
+  // guardan el instante objetivo de fin (temporizador) o de inicio (cronómetro).
+  tiempoFinObjetivo: number | null;
+  tiempoInicioCronometro: number | null;
+  establecerTiempoFinObjetivo: (tiempo: number | null) => void;
+  establecerTiempoInicioCronometro: (tiempo: number | null) => void;
+
+  // Sincronización con la sala compartida (Supabase)
+  establecerEstadoTemporizador: (estado: { tiempoRestante: number; estaActivo: boolean; modo: Modo; actualizadoEn?: string }) => void;
+  // Marca temporal del último cambio originado en este cliente (para disparar la sincronización)
+  ultimaActualizacionLocal: number;
 }
 
-export const useTimerStore = create<TimerState>()(
+export const useTimerStore = create<EstadoTemporizador>()(
   persist(
     (set, get) => ({
-  timeLeft: 25 * 60, // 25 minutos por defecto
-  initialTime: 25 * 60,
-  isActive: false,
-  mode: 'pomodoro',
-  settings: {
+  tiempoRestante: 25 * 60, // 25 minutos por defecto
+  tiempoInicial: 25 * 60,
+  estaActivo: false,
+  modo: 'pomodoro',
+  configuracion: {
     pomodoro: 25,
     shortBreak: 5,
     longBreak: 15,
     autoBreak: false,
   },
-  targetEndTime: null,
-  stopwatchStartTime: null,
-  lastLocalUpdate: Date.now(),
+  tiempoFinObjetivo: null,
+  tiempoInicioCronometro: null,
+  ultimaActualizacionLocal: Date.now(),
 
-  setTimeLeft: (time) => set({ timeLeft: time }),
-  setIsActive: (active) => set({ isActive: active, lastLocalUpdate: Date.now() }),
-  setTargetEndTime: (time) => set({ targetEndTime: time }),
-  setStopwatchStartTime: (time) => set({ stopwatchStartTime: time }),
-  setSettings: (settings) => set((state) => {
-    const updates: Partial<TimerState> = { settings };
-    
-    if (!state.isActive && state.mode !== 'stopwatch') {
-      const times = {
-        pomodoro: settings.pomodoro * 60,
-        shortBreak: settings.shortBreak * 60,
-        longBreak: settings.longBreak * 60,
+  establecerTiempoRestante: (tiempo) => set({ tiempoRestante: tiempo }),
+  // Al activar/pausar registramos la marca de tiempo local para que se sincronice
+  establecerEstaActivo: (activo) => set({ estaActivo: activo, ultimaActualizacionLocal: Date.now() }),
+  establecerTiempoFinObjetivo: (tiempo) => set({ tiempoFinObjetivo: tiempo }),
+  establecerTiempoInicioCronometro: (tiempo) => set({ tiempoInicioCronometro: tiempo }),
+  establecerConfiguracion: (configuracion) => set((estado) => {
+    const cambios: Partial<EstadoTemporizador> = { configuracion };
+
+    // Si el reloj está pausado y no es cronómetro, aplicamos la nueva duración
+    // del modo actual de inmediato (para reflejar el cambio en pantalla).
+    if (!estado.estaActivo && estado.modo !== 'stopwatch') {
+      const tiempos = {
+        pomodoro: configuracion.pomodoro * 60,
+        shortBreak: configuracion.shortBreak * 60,
+        longBreak: configuracion.longBreak * 60,
       };
-      updates.timeLeft = times[state.mode];
-      updates.initialTime = times[state.mode];
+      cambios.tiempoRestante = tiempos[estado.modo];
+      cambios.tiempoInicial = tiempos[estado.modo];
     }
-    
-    updates.lastLocalUpdate = Date.now();
-    return updates;
+
+    cambios.ultimaActualizacionLocal = Date.now();
+    return cambios;
   }),
-  setMode: (mode) => {
-    const { settings } = get();
-    // Cuando cambiamos a stopwatch, empezamos en 0. Si no, reseteamos el tiempo según el modo
-    if (mode === 'stopwatch') {
-      set({ mode, timeLeft: 0, initialTime: 0, isActive: false, lastLocalUpdate: Date.now() });
+  establecerModo: (modo) => {
+    const { configuracion } = get();
+    // Al pasar a cronómetro arrancamos en 0; en los demás modos reseteamos el
+    // tiempo según la duración configurada de ese modo.
+    if (modo === 'stopwatch') {
+      set({ modo, tiempoRestante: 0, tiempoInicial: 0, estaActivo: false, ultimaActualizacionLocal: Date.now() });
       return;
     }
-    const times = {
-      pomodoro: settings.pomodoro * 60,
-      shortBreak: settings.shortBreak * 60,
-      longBreak: settings.longBreak * 60,
+    const tiempos = {
+      pomodoro: configuracion.pomodoro * 60,
+      shortBreak: configuracion.shortBreak * 60,
+      longBreak: configuracion.longBreak * 60,
     };
-    set({ mode, timeLeft: times[mode], initialTime: times[mode], isActive: false, lastLocalUpdate: Date.now() });
+    set({ modo, tiempoRestante: tiempos[modo], tiempoInicial: tiempos[modo], estaActivo: false, ultimaActualizacionLocal: Date.now() });
   },
-  resetTimer: () => set({ timeLeft: get().initialTime, isActive: false, targetEndTime: null, stopwatchStartTime: null, lastLocalUpdate: Date.now() }),
-  setTimerState: (payload) => set((state) => {
-    // Si viene la fecha de actualización y el reloj está activo, calculamos la desviación
-    let newTimeLeft = payload.timeLeft;
-    if (payload.isActive && payload.updatedAt) {
-      const elapsedMilliseconds = Date.now() - new Date(payload.updatedAt).getTime();
-      const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
-      newTimeLeft = Math.max(0, payload.timeLeft - elapsedSeconds);
+  reiniciarTemporizador: () => set({ tiempoRestante: get().tiempoInicial, estaActivo: false, tiempoFinObjetivo: null, tiempoInicioCronometro: null, ultimaActualizacionLocal: Date.now() }),
+  establecerEstadoTemporizador: (datos) => set((estado) => {
+    // Si llega la fecha de actualización y el reloj está activo, compensamos la
+    // latencia de red restando los segundos transcurridos desde ese instante.
+    let nuevoTiempoRestante = datos.tiempoRestante;
+    if (datos.estaActivo && datos.actualizadoEn) {
+      const milisegundosTranscurridos = Date.now() - new Date(datos.actualizadoEn).getTime();
+      const segundosTranscurridos = Math.floor(milisegundosTranscurridos / 1000);
+      nuevoTiempoRestante = Math.max(0, datos.tiempoRestante - segundosTranscurridos);
     }
-    
-    // Si cambia el modo por red, actualizamos también initialTime
-    let initialTime = state.initialTime;
-    if (state.mode !== payload.mode) {
-       if (payload.mode === 'stopwatch') {
-           initialTime = 0;
+
+    // Si el modo cambió por red, recalculamos también el tiempo inicial
+    let tiempoInicial = estado.tiempoInicial;
+    if (estado.modo !== datos.modo) {
+       if (datos.modo === 'stopwatch') {
+           tiempoInicial = 0;
        } else {
-           initialTime = state.settings[payload.mode] * 60;
+           tiempoInicial = estado.configuracion[datos.modo] * 60;
        }
     }
 
     return {
-      timeLeft: newTimeLeft,
-      isActive: payload.isActive,
-      mode: payload.mode,
-      initialTime
+      tiempoRestante: nuevoTiempoRestante,
+      estaActivo: datos.estaActivo,
+      modo: datos.modo,
+      tiempoInicial
     };
   }),
 }),
