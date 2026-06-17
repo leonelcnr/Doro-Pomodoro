@@ -121,12 +121,14 @@ src/
 
 *Resultado:* base limpia, sin cambios de comportamiento. Verificado con `tsc -b` y `vite build` (ambos en verde).
 
-### Fase 1 — Capa de servicios por dominio
-Replicar el patrón de `calendarService` para los dominios que hoy hablan con Supabase desde la UI:
-- `tasks/services/tareasService.ts`: `obtenerTareas`, `crearTarea`, `actualizarTarea`, `eliminarTarea`, `moverTarea` (todo lo que hoy está inline en `RoomPage.manejarCambioTareas`/`manejarMoverTarea` y `Home.manejarCambioTareas`).
-- `room/services/salasService.ts`: `crearSala` (RPC `create_room`), `unirseASala` (RPC `join_room`), `obtenerInvitacion`, `obtenerEstadoReloj`, `guardarEstadoReloj`.
+### Fase 1 — Capa de servicios por dominio ✅ **HECHA (2026-06-17)**
+Se replicó el patrón de `calendarService` para los dominios que hablaban con Supabase desde la UI:
+- ✅ `src/features/tasks/services/tareasService.ts`: `obtenerTareasDeSala`, `obtenerTareasPersonales`, `eliminarTareas`, `actualizarTarea`, `insertarTareas`, `upsertTareas`, `moverTarea`. Consumido por `Home` y `RoomPage` (antes tenían la lógica inline y duplicada).
+- ✅ `src/features/room/services/salasService.ts`: `crearSala` (RPC `create_room`), `unirseASala` (RPC `join_room`), `obtenerInvitacion`, `obtenerEstadoReloj`, `guardarEstadoReloj`. Consumido por `SalaNueva`, `DialogUnirse`, `InvitacionPage`, `RoomPage` y `TimerDisplay`.
 
-*Resultado:* todas las llamadas a Supabase de estos dominios quedan en un solo lugar, tipado y testeable.
+*Resultado:* las operaciones de datos de **tareas** y **salas** quedaron centralizadas; ya no hay `supabase.from/rpc` de esos dominios dentro de componentes. Verificado con `tsc -b` y `vite build`.
+
+> **Pendiente para fases siguientes** (otros dominios que aún llaman a Supabase desde hooks/componentes): música de sala (`MusicPlayer` → `music_state`), estadísticas (`useDashboardStats`), racha (`daily-streak`) y sesiones de estudio (`useTimerActions` → `study_sessions`/`update_user_stats`). Las **suscripciones realtime** y la orquestación siguen en los componentes; se moverán a hooks de dominio en la Fase 2.
 
 ### Fase 2 — Hooks de dominio
 Sacar el estado + efectos (incluido **realtime**) de las páginas hacia hooks:

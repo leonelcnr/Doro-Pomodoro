@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import { useNavigate } from 'react-router-dom';
-import supabase from "@/lib/supabase"
+import * as salasService from "@/features/room/services/salasService"
 import { toast } from "sonner"
 
 
@@ -11,39 +11,31 @@ import { toast } from "sonner"
 export const SalaNueva = () => {
     const navigate = useNavigate();
 
-    // CREAR SALA NUEVA: invoca la RPC `create_room` y navega a la sala recién creada
+    // CREAR SALA NUEVA: crea la sala vía el servicio y navega a la recién creada
     const crearSala = async () => {
-        const { data, error } = await supabase.rpc("create_room", {
-            p_name: "Sala de estudio",
-            p_is_public: false,
-            p_max_uses: null,
-            p_expires_minutes: null,
-        });
-        if (error) return;
-
-        // `room_id` es la columna devuelta por la RPC (se mantiene en inglés)
-        const { room_id } = data[0];
-        console.log(room_id);
-        navigate(`/room/${room_id}`);
+        try {
+            const salaId = await salasService.crearSala();
+            navigate(`/room/${salaId}`);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
 
     // UNIRSE A SALA
     const [codigoSala, establecerCodigoSala] = useState('');
 
-    // Valida el código y entra a la sala mediante la RPC `join_room`
+    // Valida el código y entra a la sala mediante el servicio de salas
     const unirse = async () => {
-
         const codigo = parsearInvitacion(codigoSala);
 
-        const { data: salaId, error } = await supabase.rpc("join_room", { p_code: codigo });
-
-        if (error) {
-            console.log(error.message);
-            toast.error(error.message || "No se pudo unir.");
-            return;
+        try {
+            const salaId = await salasService.unirseASala(codigo);
+            navigate(`/room/${salaId}`);
+        } catch (error: any) {
+            console.log(error?.message);
+            toast.error(error?.message || "No se pudo unir.");
         }
-        navigate(`/room/${salaId}`);
     };
 
 

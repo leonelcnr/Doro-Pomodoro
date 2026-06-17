@@ -7,7 +7,7 @@ import { Play, Pause, RotateCcw, Copy, PictureInPicture2, ChevronRight, ChevronL
 import { useTimerStore } from '@/store/timerStore';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import supabase from '@/lib/supabase';
+import * as salasService from '@/features/room/services/salasService';
 import { useDocumentPiP } from '@/hooks/useDocumentPiP';
 import { FloatingTimer } from './FloatingTimer';
 import { MusicPlayer } from '@/features/room/components/MusicPlayer';
@@ -71,9 +71,10 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
                 actualizadoEn: new Date().toISOString()
             };
 
-            // Subimos el estado a Supabase
-            const { error } = await supabase.from("rooms").update({ timer_state: nuevoEstado }).eq("id", salaId);
-            if (error) {
+            // Subimos el estado a Supabase a través del servicio de salas
+            try {
+                await salasService.guardarEstadoReloj(salaId, nuevoEstado);
+            } catch (error) {
                 console.error("Error al actualizar el temporizador:", error);
             }
         };

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import supabase from "@/lib/supabase";
+import * as tareasService from "@/features/tasks/services/tareasService";
+import * as salasService from "@/features/room/services/salasService";
 import { TimerDisplay } from "@/features/timer/components/TimerDisplay";
 import { useTimerStore } from "@/store/timerStore";
 import { DataTable } from "@/components/data-table";
@@ -143,58 +145,35 @@ const RoomPage = () => {
 
         const inicializarDatosSala = async () => {
             establecerCargandoInvitacion(true);
+            try {
+                // [async-parallel] Lanzamos las peticiones independientes en paralelo (vía servicios)
+                const [invitacionData, tareasData, estadoReloj] = await Promise.all([
+                    salasService.obtenerInvitacion(roomId),
+                    tareasService.obtenerTareasDeSala(roomId, usuario.id),
+                    salasService.obtenerEstadoReloj(roomId),
+                ]);
 
-            // [async-parallel] Lanzamos las peticiones independientes en paralelo
-            const [respInvitacion, respTareas, respReloj] = await Promise.all([
-                supabase
-                    .from("room_invites")
-                    .select("code, expires_at, max_uses, uses, created_at")
-                    .eq("room_id", roomId)
-                    .order("created_at", { ascending: false })
-                    .limit(1),
-                supabase
-                    .from("tasks")
-                    .select("*")
-                    .or(`room_id.eq.${roomId},and(room_id.is.null,user_id.eq.${usuario.id})`)
-                    .order("order_index", { ascending: true, nullsFirst: false })
-                    .order("created_at", { ascending: false }),
-                supabase
-                    .from("rooms")
-                    .select("timer_state")
-                    .eq("id", roomId)
-                    .single()
-            ]);
-
-            // React 18 agrupa estos setStates (batched updates) evitando re-renders múltiples
-            establecerCargandoInvitacion(false);
-
-            if (respInvitacion.error) {
-                console.error("Error de Supabase en room_invites:", respInvitacion.error);
-                establecerError(respInvitacion.error.message);
-                establecerInvitacion(null);
-            } else {
-                const inv = respInvitacion.data?.[0] ?? null;
-                establecerInvitacion(inv && InvitacionValida(inv) ? inv : null);
-            }
-
-            if (!respTareas.error && respTareas.data) {
+                // React 18 agrupa estos setStates (batched updates) evitando re-renders múltiples
+                establecerCargandoInvitacion(false);
+                establecerInvitacion(invitacionData && InvitacionValida(invitacionData) ? invitacionData : null);
                 tareasCargadas.current = true;
-                establecerTareas(respTareas.data);
-            }
-
-            if (respReloj.data?.timer_state) {
-                establecerEstadoTemporizador(respReloj.data.timer_state);
+                establecerTareas(tareasData);
+                if (estadoReloj) establecerEstadoTemporizador(estadoReloj);
+            } catch (error: any) {
+                establecerCargandoInvitacion(false);
+                console.error("Error al inicializar la sala:", error);
+                establecerError(error?.message ?? "No se pudo cargar la sala.");
+                establecerInvitacion(null);
             }
         };
 
         const recargarTareas = async () => {
-             const { data, error } = await supabase
-                .from("tasks")
-                .select("*")
-                .or(`room_id.eq.${roomId},and(room_id.is.null,user_id.eq.${usuario.id})`)
-                .order("order_index", { ascending: true, nullsFirst: false })
-                .order("created_at", { ascending: false });
-             if (!error && data) establecerTareas(data);
+            try {
+                const data = await tareasService.obtenerTareasDeSala(roomId, usuario.id);
+                establecerTareas(data);
+            } catch (error) {
+                console.error("Error al recargar las tareas:", error);
+            }
         };
 
         inicializarDatosSala();
@@ -243,9 +222,6 @@ const RoomPage = () => {
             : tareas.filter(t => t.room_id === roomId);
 
         const idsEliminados = tareasPestanaActual.filter(t => !nuevosIds.has(t.id)).map(t => t.id);
-        if (idsEliminados.length > 0) {
-            await supabase.from("tasks").delete().in("id", idsEliminados);
-        }
 
         const tareasExistentesActualizar: any[] = [];
         const tareasNuevasInsertar: any[] = [];
@@ -271,14 +247,12 @@ const RoomPage = () => {
             }
         });
 
-        if (tareasExistentesActualizar.length > 0) {
-            const { error } = await supabase.from("tasks").upsert(tareasExistentesActualizar);
-            if (error) console.error("Error de upsert en Supabase:", error);
-        }
-
-        if (tareasNuevasInsertar.length > 0) {
-            const { error } = await supabase.from("tasks").insert(tareasNuevasInsertar);
-            if (error) console.error("Error de insert en Supabase:", error);
+        try {
+            await tareasService.eliminarTareas(idsEliminados);
+            await tareasService.upsertTareas(tareasExistentesActualizar);
+            await tareasService.insertarTareas(tareasNuevasInsertar);
+        } catch (error) {
+            console.error("Error al sincronizar las tareas en Supabase:", error);
         }
     }, [pestanaTareas, tareas, roomId, usuario?.id]);
 
@@ -287,8 +261,12 @@ const RoomPage = () => {
         const tarea = tareas.find(t => t.id === tareaId);
         if (!tarea) return;
 
-        const nuevaSalaId = tarea.room_id ? null : roomId;
-        await supabase.from("tasks").update({ room_id: nuevaSalaId }).eq("id", tareaId);
+        const nuevaSalaId = tarea.room_id ? null : (roomId ?? null);
+        try {
+            await tareasService.moverTarea(tareaId, nuevaSalaId);
+        } catch (error) {
+            console.error("Error al mover la tarea:", error);
+        }
     }, [tareas, roomId]);
 
     // Arma el enlace de invitación a partir del código vigente

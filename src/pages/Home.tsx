@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import SalaNueva from "../features/home/components/SalaNueva"
 import { useEffect, useState } from "react"
 import supabase from "@/lib/supabase"
+import * as tareasService from "@/features/tasks/services/tareasService"
 import { useAuth } from "@/features/auth/context/AuthContext"
 
 
@@ -27,16 +28,12 @@ const Home = () => {
 
         // Trae las tareas personales (sin sala asociada) del usuario actual
         const cargarTareas = async () => {
-
-            const { data, error } = await supabase
-                .from("tasks")
-                .select("*")
-                .eq("user_id", usuario.id)
-                .is("room_id", null)
-                .order("order_index", { ascending: true, nullsFirst: false })
-                .order("created_at", { ascending: false });
-
-            if (!error && data) establecerTareas(data);
+            try {
+                const data = await tareasService.obtenerTareasPersonales(usuario.id);
+                establecerTareas(data);
+            } catch (error) {
+                console.error("Error al cargar las tareas:", error);
+            }
         };
 
         cargarTareas();
@@ -67,39 +64,35 @@ const Home = () => {
 
         // Tareas eliminadas: las que estaban en el estado local y ya no figuran
         const tareasEliminadas = tareas.filter(t => !nuevosIds.has(t.id));
-        for (const t of tareasEliminadas) {
-            await supabase.from("tasks").delete().eq("id", t.id);
-        }
 
-        // Tareas añadidas o actualizadas
-        for (const t of nuevoEstadoTareas) {
-            // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
-            const datosTarea: any = {
-                user_id: usuario?.id,
-                room_id: null,
-                header: t.header,
-                type: t.type,
-                status: t.status,
-                priority: t.priority,
-                favorite: t.favorite,
-                order_index: t.order_index,
-            };
+        try {
+            await tareasService.eliminarTareas(tareasEliminadas.map(t => t.id));
 
-            if (t.id && t.id < 1000000) {
-                // Actualizar una tarea existente
-                const { error } = await supabase.from("tasks").update(datosTarea).eq("id", t.id);
-                if (error) {
-                    console.error("Error de update en Supabase:", error);
-                    alert(`Error al actualizar la tarea: ${error.message} (Detalles: ${error.details})`);
-                }
-            } else {
-                // Insertar una tarea nueva
-                const { error } = await supabase.from("tasks").insert([datosTarea]);
-                if (error) {
-                    console.error("Error de insert en Supabase:", error);
-                    alert(`Error al crear la tarea: ${error.message} (Detalles: ${error.details})`);
+            // Tareas añadidas o actualizadas
+            for (const t of nuevoEstadoTareas) {
+                // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
+                const datosTarea: any = {
+                    user_id: usuario?.id,
+                    room_id: null,
+                    header: t.header,
+                    type: t.type,
+                    status: t.status,
+                    priority: t.priority,
+                    favorite: t.favorite,
+                    order_index: t.order_index,
+                };
+
+                if (t.id && t.id < 1000000) {
+                    // Actualizar una tarea existente
+                    await tareasService.actualizarTarea(t.id, datosTarea);
+                } else {
+                    // Insertar una tarea nueva
+                    await tareasService.insertarTareas([datosTarea]);
                 }
             }
+        } catch (error: any) {
+            console.error("Error al guardar las tareas en Supabase:", error);
+            alert(`Error al guardar la tarea: ${error?.message ?? 'desconocido'}${error?.details ? ` (Detalles: ${error.details})` : ''}`);
         }
     };
 

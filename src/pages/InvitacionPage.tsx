@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabase from "@/lib/supabase";
+import * as salasService from "@/features/room/services/salasService";
 import { Button } from "@/components/ui/button"
 import {
     Empty,
@@ -39,15 +40,14 @@ const Invitacion = () => {
                 return;
             }
 
-            // 2) Nos unimos a la sala mediante la RPC
-            const { data: salaId, error } = await supabase.rpc("join_room", { p_code: codigoInvitacion });
-            if (error) {
-                establecerMensajeError(error.message || "No se pudo unir a la sala.");
-                return;
+            // 2) Nos unimos a la sala mediante el servicio de salas
+            try {
+                const salaId = await salasService.unirseASala(codigoInvitacion);
+                // 3) Entramos a la sala
+                navigate(`/room/${salaId}`, { replace: true });
+            } catch (error: any) {
+                establecerMensajeError(error?.message || "No se pudo unir a la sala.");
             }
-
-            // 3) Entramos a la sala
-            navigate(`/room/${salaId}`, { replace: true });
         };
 
         procesarInvitacion();

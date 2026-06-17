@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import supabase from "@/lib/supabase"
+import * as salasService from "@/features/room/services/salasService"
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import DialogCargando from "@/features/home/components/DialogCargando"
 
@@ -37,14 +37,14 @@ const DialogUnirse = () => {
         }
 
         establecerCargando(true);
-        const { data: salaId, error } = await supabase.rpc("join_room", { p_code: codigo });
-        establecerCargando(false);
-
-        if (error) {
-            establecerMensajeError(error.message || "No se pudo unir.");
-            return;
+        try {
+            const salaId = await salasService.unirseASala(codigo);
+            establecerCargando(false);
+            navigate(`/room/${salaId}`);
+        } catch (error: any) {
+            establecerCargando(false);
+            establecerMensajeError(error?.message || "No se pudo unir.");
         }
-        navigate(`/room/${salaId}`);
     };
 
 
