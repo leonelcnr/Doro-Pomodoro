@@ -5,7 +5,8 @@ import { Music, X, Play, Radio, CloudRain, Flame, Waves, CloudLightning, Users, 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import supabase from '@/lib/supabase';
+import { useMusicaSala } from "@/features/room/hooks/useMusicaSala";
+import { useAudioAmbiente } from "@/features/room/hooks/useAudioAmbiente";
 
 // Catálogo de sonidos ambientales. Los `id` y las rutas `archivo` deben coincidir
 // con los archivos reales en /public/sounds, por eso se mantienen en inglés.
@@ -122,19 +123,23 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId }: { salaId?
     const [estaAbierto, establecerEstaAbierto] = useState(false);
     const refDesplegable = useRef<HTMLDivElement>(null);
 
-    // Estado del modo Ambiental
-    const [volumenesAmbiente, establecerVolumenesAmbiente] = useState<Record<string, number>>({});
-    const [ambienteActivo, establecerAmbienteActivo] = useState(true);
+    // Estado del modo Ambiental (hook: mezclador de sonidos locales, sin Supabase)
+    const {
+        volumenes: volumenesAmbiente,
+        activo: ambienteActivo,
+        establecerActivo: establecerAmbienteActivo,
+        establecerVolumen: establecerVolumenAmbiente,
+        hayAmbienteActivo,
+    } = useAudioAmbiente();
 
     // Estado del modo Local (solo para este usuario)
     const [entradaUrlLocal, establecerEntradaUrlLocal] = useState("");
     const [urlIncrustadaLocal, establecerUrlIncrustadaLocal] = useState<string | null>(null);
     const [errorLocal, establecerErrorLocal] = useState<string | null>(null);
 
-    // Estado del modo Sala (sincronizado entre usuarios). Las claves url/isPlaying
-    // se mantienen porque viajan tal cual en la columna `music_state`.
+    // Estado del modo Sala (sincronizado entre usuarios vía hook + Supabase)
     const [entradaUrlSala, establecerEntradaUrlSala] = useState("");
-    const [estadoSala, establecerEstadoSala] = useState({ url: "", isPlaying: false });
+    const { estadoSala, actualizarEstadoSala } = useMusicaSala(salaId);
     const [errorSala, establecerErrorSala] = useState<string | null>(null);
 
     // Expresiones regulares para validar enlaces de YouTube / Spotify
@@ -151,44 +156,6 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId }: { salaId?
         if (estaAbierto) document.addEventListener("mousedown", manejarClickFuera);
         return () => document.removeEventListener("mousedown", manejarClickFuera);
     }, [estaAbierto]);
-
-    // Suscripción a Supabase para la Música de la Sala (sincronización en tiempo real)
-    useEffect(() => {
-        if (!salaId) return;
-
-        const obtenerEstado = async () => {
-            const { data } = await supabase.from("rooms").select("music_state").eq("id", salaId).single();
-            if (data?.music_state) {
-                establecerEstadoSala(data.music_state);
-            }
-        };
-        obtenerEstado();
-
-        const canal = supabase.channel(`room-music-${salaId}`)
-            .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` }, (payload) => {
-                if (payload.new && payload.new.music_state) {
-                    establecerEstadoSala(payload.new.music_state);
-                }
-            })
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(canal);
-        };
-    }, [salaId]);
-
-    // Actualiza el estado de la música de la sala en local y lo persiste/sincroniza en Supabase
-    const actualizarEstadoSala = async (nuevoEstado: Partial<typeof estadoSala>) => {
-        if (!salaId) return;
-        const estadoFinal = { ...estadoSala, ...nuevoEstado, updatedAt: new Date().toISOString() };
-        establecerEstadoSala(estadoFinal);
-
-        const { error } = await supabase.from("rooms").update({ music_state: estadoFinal }).eq("id", salaId);
-        if (error) {
-            console.error("Error de Supabase sincronizando música:", error);
-            alert("⚠️ Error: No se pudo sincronizar la música con la sala.\n\nPor favor, asegúrate de haber creado la columna 'music_state' (tipo JSONB) en la tabla 'rooms' de tu Supabase.");
-        }
-    };
 
     // Carga un enlace de YouTube/Spotify en el reproductor local (solo este usuario)
     const manejarCargarLocal = (e: React.FormEvent) => {
@@ -228,7 +195,7 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId }: { salaId?
     };
 
     // Indica si hay alguna fuente de audio activa (para resaltar el botón del reproductor)
-    const musicaActiva = urlIncrustadaLocal || estadoSala.url || (ambienteActivo && Object.values(volumenesAmbiente).some(v => v > 0));
+    const musicaActiva = urlIncrustadaLocal || estadoSala.url || hayAmbienteActivo;
 
     return (
         <div className="relative flex items-center" ref={refDesplegable}>
@@ -302,7 +269,7 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId }: { salaId?
                                                 value={[volumen]}
                                                 max={100}
                                                 step={1}
-                                                onValueChange={(valores) => establecerVolumenesAmbiente(previa => ({ ...previa, [sonido.id]: valores[0] }))}
+                                                onValueChange={(valores) => establecerVolumenAmbiente(sonido.id, valores[0] ?? 0)}
                                                 disabled={!ambienteActivo}
                                                 className={`transition-opacity ${!ambienteActivo ? "opacity-40" : ""}`}
                                             />

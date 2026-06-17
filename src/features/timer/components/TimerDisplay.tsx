@@ -7,7 +7,6 @@ import { Play, Pause, RotateCcw, Copy, PictureInPicture2, ChevronRight, ChevronL
 import { useTimerStore } from '@/store/timerStore';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import * as salasService from '@/features/room/services/salasService';
 import { useDocumentPiP } from '@/hooks/useDocumentPiP';
 import { FloatingTimer } from './FloatingTimer';
 import { MusicPlayer } from '@/features/room/components/MusicPlayer';
@@ -29,11 +28,13 @@ function DosDigitos({ value }: { value: number }) {
 /**
  * Componente principal del reloj: muestra el tiempo, el indicador de modo y los
  * controles (compartir, música, reset, play/pausa, PiP y configuración).
- * Si recibe `salaId`, sincroniza cada cambio local de estado hacia Supabase.
+ * Es presentacional respecto de la sala: `salaId` solo se reenvía a `MusicPlayer`.
+ * La sincronización del reloj con Supabase la maneja `useSincronizacionReloj`
+ * (invocado desde `RoomPage`), no este componente.
  */
 export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codigo: string, salaId?: string }) => {
     const { tiempoRestante, estaActivo, modo, alternarTemporizador, manejarReinicio, ponerPomodoro, ponerDescansoLargo, ponerDescansoCorto, ponerCronometro } = useTimer();
-    const { configuracion, establecerConfiguracion, ultimaActualizacionLocal } = useTimerStore();
+    const { configuracion, establecerConfiguracion } = useTimerStore();
 
     // Avanza cíclicamente entre las fases al tocar el indicador de modo
     const manejarClickModo = () => {
@@ -55,33 +56,6 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
             await solicitarPiP({ width: 320, height: 240 });
         }
     };
-
-    // Sincroniza hacia Supabase cuando se detecta un cambio de estado local
-    React.useEffect(() => {
-        // Solo sincronizamos si hay sala y existe un cambio originado en este cliente
-        if (!salaId || !ultimaActualizacionLocal) return;
-
-        const sincronizarConSupabase = async () => {
-            const estado = useTimerStore.getState();
-            // Objeto que se guarda en la columna `timer_state` y se comparte entre clientes
-            const nuevoEstado = {
-                tiempoRestante: estado.tiempoRestante,
-                estaActivo: estado.estaActivo,
-                modo: estado.modo,
-                actualizadoEn: new Date().toISOString()
-            };
-
-            // Subimos el estado a Supabase a través del servicio de salas
-            try {
-                await salasService.guardarEstadoReloj(salaId, nuevoEstado);
-            } catch (error) {
-                console.error("Error al actualizar el temporizador:", error);
-            }
-        };
-
-        sincronizarConSupabase();
-    }, [ultimaActualizacionLocal, salaId]);
-
 
     // Ocultamos el cursor del body mientras el PiP está activo, como feedback visual
     useEffect(() => {

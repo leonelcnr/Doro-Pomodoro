@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import supabase from "@/lib/supabase";
-import * as tareasService from "@/features/tasks/services/tareasService";
 import * as salasService from "@/features/room/services/salasService";
 import { TimerDisplay } from "@/features/timer/components/TimerDisplay";
-import { useTimerStore } from "@/store/timerStore";
+import { useTareas } from "@/features/tasks/hooks/useTareas";
+import { usePresenciaSala } from "@/features/room/hooks/usePresenciaSala";
+import { useSincronizacionReloj } from "@/features/timer/hooks/useSincronizacionReloj";
 import { DataTable } from "@/components/data-table";
 import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -65,22 +65,21 @@ const RoomPage = () => {
     const navigate = useNavigate();
     const auth = useAuth();
     const usuario = auth.user;
-    // Acción del store para aplicar el estado del reloj recibido desde la sala
-    const establecerEstadoTemporizador = useTimerStore((estado) => estado.establecerEstadoTemporizador);
 
-    // Usuarios actualmente conectados a la sala (presencia en tiempo real)
-    const [usuariosEnSala, establecerUsuariosEnSala] = useState<any[]>([]);
+    // Hooks de dominio: presencia, tareas y sincronización del reloj compartido.
+    // La página ya no maneja canales de Supabase ni el estado de tareas a mano.
+    const usuariosEnSala = usePresenciaSala(roomId);
+    const { tareas, cargado, guardarCambios, moverTarea } = useTareas(roomId);
+    useSincronizacionReloj(roomId);
 
-    // Tareas
-    const [tareas, establecerTareas] = useState<any[]>([]);
+    // Estado de UI de la sección de tareas (pestaña activa + contador de "no vistas")
     const [pestanaTareas, establecerPestanaTareas] = useState<"personal" | "sala">("personal");
     const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
     const conteoSalaPrevio = useRef<number | null>(null);
-    const tareasCargadas = useRef(false);
 
     // Lleva la cuenta de tareas de sala "no vistas" mientras se está en la pestaña personal
     useEffect(() => {
-        if (!tareasCargadas.current) return;
+        if (!cargado) return;
 
         const conteoSalaActual = tareas.filter(t => t.room_id === roomId).length;
 
@@ -100,65 +99,18 @@ const RoomPage = () => {
             }
             conteoSalaPrevio.current = conteoSalaActual;
         }
-    }, [tareas, pestanaTareas, roomId]);
+    }, [tareas, pestanaTareas, roomId, cargado]);
 
-    // Presencia en tiempo real: registra y escucha quién está conectado a la sala
+    // Carga la invitación vigente de la sala (lo demás lo resuelven los hooks)
     useEffect(() => {
         if (!roomId || !usuario) return;
 
-        // Limpiamos el estado anterior al cambiar de sala (por seguridad)
-        establecerUsuariosEnSala([]);
-
-        const canal = supabase.channel(`room-${roomId}`, {
-            config: {
-                presence: {
-                    key: usuario.id,
-                },
-            },
-        });
-
-        canal
-            .on("presence", { event: "sync" }, () => {
-                const estado = canal.presenceState();
-                // Extraemos los usuarios únicos
-                const usuarios = Object.values(estado).map((infoPresencia: any) => infoPresencia[0]);
-                establecerUsuariosEnSala(usuarios);
-            })
-            .subscribe(async (status) => {
-                if (status === "SUBSCRIBED") {
-                    await canal.track({
-                        id: usuario.id,
-                        name: usuario.email?.split("@")[0] || "Usuario",
-                        avatarUrl: usuario.avatar_url,
-                    });
-                }
-            });
-
-        return () => {
-            supabase.removeChannel(canal);
-        };
-    }, [roomId, usuario]);
-
-    // Carga inicial de datos de la sala y suscripciones en tiempo real (tareas y reloj)
-    useEffect(() => {
-        if (!roomId || !usuario) return;
-
-        const inicializarDatosSala = async () => {
+        const cargarInvitacion = async () => {
             establecerCargandoInvitacion(true);
             try {
-                // [async-parallel] Lanzamos las peticiones independientes en paralelo (vía servicios)
-                const [invitacionData, tareasData, estadoReloj] = await Promise.all([
-                    salasService.obtenerInvitacion(roomId),
-                    tareasService.obtenerTareasDeSala(roomId, usuario.id),
-                    salasService.obtenerEstadoReloj(roomId),
-                ]);
-
-                // React 18 agrupa estos setStates (batched updates) evitando re-renders múltiples
+                const invitacionData = await salasService.obtenerInvitacion(roomId);
                 establecerCargandoInvitacion(false);
                 establecerInvitacion(invitacionData && InvitacionValida(invitacionData) ? invitacionData : null);
-                tareasCargadas.current = true;
-                establecerTareas(tareasData);
-                if (estadoReloj) establecerEstadoTemporizador(estadoReloj);
             } catch (error: any) {
                 establecerCargandoInvitacion(false);
                 console.error("Error al inicializar la sala:", error);
@@ -167,107 +119,26 @@ const RoomPage = () => {
             }
         };
 
-        const recargarTareas = async () => {
-            try {
-                const data = await tareasService.obtenerTareasDeSala(roomId, usuario.id);
-                establecerTareas(data);
-            } catch (error) {
-                console.error("Error al recargar las tareas:", error);
-            }
-        };
-
-        inicializarDatosSala();
-
-        // Suscripción a las Tareas de la Sala
-        const canalTareas = supabase
-            .channel(`realtime-tasks-${roomId}`)
-            .on(
-                "postgres_changes",
-                { event: "*", schema: "public", table: "tasks", filter: `room_id=eq.${roomId}` },
-                recargarTareas
-            )
-            .on(
-                "postgres_changes",
-                { event: "*", schema: "public", table: "tasks", filter: `user_id=eq.${usuario.id}` },
-                recargarTareas
-            )
-            .subscribe();
-
-        // Suscripción a los cambios de la Sala (para el Reloj Compartido)
-        const canalSala = supabase
-            .channel(`realtime-room-${roomId}`)
-            .on(
-                "postgres_changes",
-                { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` },
-                (payload) => {
-                    if (payload.new && payload.new.timer_state) {
-                        establecerEstadoTemporizador(payload.new.timer_state);
-                    }
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(canalTareas);
-            supabase.removeChannel(canalSala);
-        };
+        cargarInvitacion();
     }, [roomId, usuario]);
 
     // Sincroniza hacia Supabase los cambios hechos sobre la tabla de tareas (drag & drop, edición)
     const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: any[]) => {
-        const nuevosIds = new Set(nuevoEstadoTareas.map(t => t.id));
-
-        const tareasPestanaActual = pestanaTareas === "personal"
-            ? tareas.filter(t => t.room_id === null)
-            : tareas.filter(t => t.room_id === roomId);
-
-        const idsEliminados = tareasPestanaActual.filter(t => !nuevosIds.has(t.id)).map(t => t.id);
-
-        const tareasExistentesActualizar: any[] = [];
-        const tareasNuevasInsertar: any[] = [];
-
-        nuevoEstadoTareas.forEach((t) => {
-            const esPersonal = pestanaTareas === "personal";
-            // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
-            const datosNuevaTarea = {
-                user_id: usuario?.id,
-                room_id: (t.room_id) ? t.room_id : (esPersonal ? null : roomId),
-                header: t.header,
-                type: t.type,
-                status: t.status,
-                priority: t.priority,
-                favorite: t.favorite,
-                order_index: t.order_index,
-            };
-
-            if (t.id && t.id < 1000000) {
-                tareasExistentesActualizar.push({ id: t.id, ...datosNuevaTarea });
-            } else {
-                tareasNuevasInsertar.push(datosNuevaTarea);
-            }
-        });
-
         try {
-            await tareasService.eliminarTareas(idsEliminados);
-            await tareasService.upsertTareas(tareasExistentesActualizar);
-            await tareasService.insertarTareas(tareasNuevasInsertar);
+            await guardarCambios(nuevoEstadoTareas, pestanaTareas);
         } catch (error) {
             console.error("Error al sincronizar las tareas en Supabase:", error);
         }
-    }, [pestanaTareas, tareas, roomId, usuario?.id]);
+    }, [guardarCambios, pestanaTareas]);
 
     // Mueve una tarea entre el ámbito personal y el de la sala (alterna su room_id)
     const manejarMoverTarea = useCallback(async (tareaId: number) => {
-        const tarea = tareas.find(t => t.id === tareaId);
-        if (!tarea) return;
-
-        const nuevaSalaId = tarea.room_id ? null : (roomId ?? null);
         try {
-            await tareasService.moverTarea(tareaId, nuevaSalaId);
+            await moverTarea(tareaId);
         } catch (error) {
             console.error("Error al mover la tarea:", error);
         }
-    }, [tareas, roomId]);
+    }, [moverTarea]);
 
     // Arma el enlace de invitación a partir del código vigente
     const enlaceInvitacion = useMemo(() => {

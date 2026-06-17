@@ -8,10 +8,7 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 import SalaNueva from "../features/home/components/SalaNueva"
-import { useEffect, useState } from "react"
-import supabase from "@/lib/supabase"
-import * as tareasService from "@/features/tasks/services/tareasService"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useTareas } from "@/features/tasks/hooks/useTareas"
 
 
 /**
@@ -19,77 +16,13 @@ import { useAuth } from "@/features/auth/context/AuthContext"
  * tareas personales del usuario, sincronizada en tiempo real con Supabase.
  */
 const Home = () => {
-    const auth = useAuth();
-    const usuario = auth.user;
-    const [tareas, establecerTareas] = useState<any[]>([]);
-
-    useEffect(() => {
-        if (!usuario) return;
-
-        // Trae las tareas personales (sin sala asociada) del usuario actual
-        const cargarTareas = async () => {
-            try {
-                const data = await tareasService.obtenerTareasPersonales(usuario.id);
-                establecerTareas(data);
-            } catch (error) {
-                console.error("Error al cargar las tareas:", error);
-            }
-        };
-
-        cargarTareas();
-
-        // Suscripción en tiempo real a las Tareas Personales
-        const canalTareas = supabase
-            .channel("realtime-home-tasks")
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "tasks",
-                    filter: `user_id=eq.${usuario.id}`,
-                },
-                () => { cargarTareas(); }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(canalTareas);
-        };
-    }, [usuario]);
+    // Sin salaId: el hook trae y escucha solo las tareas personales del usuario
+    const { tareas, guardarCambios } = useTareas();
 
     // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
     const manejarCambioTareas = async (nuevoEstadoTareas: any[]) => {
-        const nuevosIds = new Set(nuevoEstadoTareas.map(t => t.id));
-
-        // Tareas eliminadas: las que estaban en el estado local y ya no figuran
-        const tareasEliminadas = tareas.filter(t => !nuevosIds.has(t.id));
-
         try {
-            await tareasService.eliminarTareas(tareasEliminadas.map(t => t.id));
-
-            // Tareas añadidas o actualizadas
-            for (const t of nuevoEstadoTareas) {
-                // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
-                const datosTarea: any = {
-                    user_id: usuario?.id,
-                    room_id: null,
-                    header: t.header,
-                    type: t.type,
-                    status: t.status,
-                    priority: t.priority,
-                    favorite: t.favorite,
-                    order_index: t.order_index,
-                };
-
-                if (t.id && t.id < 1000000) {
-                    // Actualizar una tarea existente
-                    await tareasService.actualizarTarea(t.id, datosTarea);
-                } else {
-                    // Insertar una tarea nueva
-                    await tareasService.insertarTareas([datosTarea]);
-                }
-            }
+            await guardarCambios(nuevoEstadoTareas, "personal");
         } catch (error: any) {
             console.error("Error al guardar las tareas en Supabase:", error);
             alert(`Error al guardar la tarea: ${error?.message ?? 'desconocido'}${error?.details ? ` (Detalles: ${error.details})` : ''}`);

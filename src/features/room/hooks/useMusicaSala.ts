@@ -1,0 +1,68 @@
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabase";
+import * as salasService from "@/features/room/services/salasService";
+
+// Estado de la música compartida de la sala. Las claves `url`/`isPlaying` se
+// mantienen en inglés porque viajan tal cual en la columna `music_state`.
+export type EstadoMusicaSala = { url: string; isPlaying: boolean; updatedAt?: string };
+
+/**
+ * Hook de la música compartida de una sala. Carga el estado inicial, escucha
+ * los cambios en tiempo real (`music_state`) y expone una función para
+ * actualizarlo (optimista en local + persistencia en Supabase).
+ *
+ * Antes vivía dentro de `MusicPlayer`; al extraerlo, el componente deja de
+ * hablar con Supabase y se queda solo con la UI.
+ */
+export function useMusicaSala(salaId?: string) {
+  const [estadoSala, establecerEstadoSala] = useState<EstadoMusicaSala>({ url: "", isPlaying: false });
+
+  // Carga inicial + suscripción en tiempo real
+  useEffect(() => {
+    if (!salaId) return;
+
+    let activo = true;
+
+    salasService.obtenerEstadoMusica(salaId)
+      .then((estado) => {
+        if (activo && estado) establecerEstadoSala(estado);
+      })
+      .catch((error) => {
+        console.error("Error al cargar la música de la sala:", error);
+      });
+
+    const canal = supabase
+      .channel(`room-music-${salaId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` },
+        (payload) => {
+          if (payload.new && payload.new.music_state) {
+            establecerEstadoSala(payload.new.music_state);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      activo = false;
+      supabase.removeChannel(canal);
+    };
+  }, [salaId]);
+
+  // Actualiza el estado en local (optimista) y lo persiste/sincroniza en Supabase
+  const actualizarEstadoSala = async (nuevoEstado: Partial<EstadoMusicaSala>) => {
+    if (!salaId) return;
+    const estadoFinal = { ...estadoSala, ...nuevoEstado, updatedAt: new Date().toISOString() };
+    establecerEstadoSala(estadoFinal);
+
+    try {
+      await salasService.guardarEstadoMusica(salaId, estadoFinal);
+    } catch (error) {
+      console.error("Error de Supabase sincronizando música:", error);
+      alert("⚠️ Error: No se pudo sincronizar la música con la sala.\n\nPor favor, asegúrate de haber creado la columna 'music_state' (tipo JSONB) en la tabla 'rooms' de tu Supabase.");
+    }
+  };
+
+  return { estadoSala, actualizarEstadoSala };
+}

@@ -128,22 +128,22 @@ Se replicó el patrón de `calendarService` para los dominios que hablaban con S
 
 *Resultado:* las operaciones de datos de **tareas** y **salas** quedaron centralizadas; ya no hay `supabase.from/rpc` de esos dominios dentro de componentes. Verificado con `tsc -b` y `vite build`.
 
-> **Pendiente para fases siguientes** (otros dominios que aún llaman a Supabase desde hooks/componentes): música de sala (`MusicPlayer` → `music_state`), estadísticas (`useDashboardStats`), racha (`daily-streak`) y sesiones de estudio (`useTimerActions` → `study_sessions`/`update_user_stats`). Las **suscripciones realtime** y la orquestación siguen en los componentes; se moverán a hooks de dominio en la Fase 2.
+> **Pendiente para fases siguientes** (otros dominios que aún llaman a Supabase desde hooks/componentes): estadísticas (`useDashboardStats`), racha (`daily-streak`) y sesiones de estudio (`useTimerActions` → `study_sessions`/`update_user_stats`).
 
-### Fase 2 — Hooks de dominio
-Sacar el estado + efectos (incluido **realtime**) de las páginas hacia hooks:
-- `useTareas(salaId?)`: encapsula carga, suscripción realtime y los handlers de cambio. Lo usan `Home` y `RoomPage` (hoy duplican casi la misma lógica).
-- `usePresenciaSala(salaId)`: el canal de presencia y la lista de `usuariosEnSala`.
-- `useSincronizacionReloj(salaId)`: **unifica** subida y bajada del reloj (resuelve el problema 2.4). `TimerDisplay` deja de saber de Supabase; `RoomPage` deja de manejar el canal del reloj a mano.
-- `useMusicaSala(salaId)` y `useAudioAmbiente()`: separan la lógica de `MusicPlayer`.
+### Fase 2 — Hooks de dominio ✅ **HECHA (2026-06-17)**
+Se sacó el estado + efectos (incluido **realtime**) de las páginas hacia hooks de dominio:
+- ✅ `src/features/tasks/hooks/useTareas.ts` (`useTareas(salaId?)`): encapsula la carga, la suscripción realtime y los handlers `guardarCambios`/`moverTarea`. Lo usan `Home` (modo personal) y `RoomPage` (modo sala), que antes duplicaban casi la misma lógica. Es agnóstico de la UI: expone el listado crudo + un flag `cargado`, y re-lanza los errores para que cada página elija cómo avisar.
+- ✅ `src/features/room/hooks/usePresenciaSala.ts` (`usePresenciaSala(salaId)`): el canal de presencia y la lista de `usuariosEnSala`. `RoomPage` ya no maneja ese canal a mano.
+- ✅ `src/features/timer/hooks/useSincronizacionReloj.ts` (`useSincronizacionReloj(salaId)`): **unifica** subida y bajada + realtime del reloj (resuelve el problema 2.4). `TimerDisplay` dejó de saber de Supabase (perdió su efecto de subida y el import de `salasService`); `RoomPage` dejó de manejar el canal del reloj y la carga inicial del estado. Se invoca una sola vez, desde `RoomPage`.
+- ✅ `src/features/room/hooks/useMusicaSala.ts` y `src/features/room/hooks/useAudioAmbiente.ts`: separan la lógica de `MusicPlayer` (música de sala sincronizada vía `music_state` + mezclador de sonidos ambientales local). Se agregaron `obtenerEstadoMusica`/`guardarEstadoMusica` a `salasService` para cerrar el último `supabase.from` que quedaba dentro de `MusicPlayer`.
 
-*Resultado:* las páginas se vuelven delgadas; la lógica se reusa entre `Home` y `RoomPage`.
+*Resultado:* las páginas quedaron delgadas y la lógica se reusa entre `Home` y `RoomPage`; ya no hay `supabase.channel/from/rpc` de estos dominios dentro de componentes. Verificado con `tsc -b` (en verde) y el build de Vite (9974 módulos, en verde).
 
 ### Fase 3 — Descomponer componentes grandes
 - **`RoomPage`** → contenedor delgado que orquesta hooks + subcomponentes: `CabeceraSala`, `AvataresUsuarios`, panel de tareas. La presencia, tareas y reloj vienen de los hooks de la Fase 2.
 - **`TimerDisplay`** → separar en presentacional + contenedor:
   - `RelojDigital` (los dígitos), `IndicadorModo`, `ControlesTimer` (botones).
-  - `TimerDisplay` pasa a ser UI pura que recibe estado y callbacks; un contenedor (o el hook `useSincronizacionReloj`) conecta el store y la sincronización.
+  - `TimerDisplay` pasa a ser UI pura que recibe estado y callbacks; un contenedor (o el hook `useSincronizacionReloj`, ya creado en la Fase 2) conecta el store y la sincronización.
 - **`MusicPlayer`** → `ReproductorAudioSinCortes` (ya está aislado), `MezcladorAmbiente`, `ReproductorLocal`, `ReproductorSala`, y un util `parsearUrlMedia` (las regex de YouTube/Spotify).
 
 *Resultado:* archivos chicos, con una responsabilidad cada uno.

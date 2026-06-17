@@ -56,3 +56,20 @@ export async function guardarEstadoReloj(salaId: string, estado: unknown): Promi
   const { error } = await supabase.from("rooms").update({ timer_state: estado }).eq("id", salaId);
   if (error) throw error;
 }
+
+// Trae el estado de la música compartida de una sala (columna `music_state`, o null si no hay)
+export async function obtenerEstadoMusica(salaId: string): Promise<any | null> {
+  const { data, error } = await supabase
+    .from("rooms")
+    .select("music_state")
+    .eq("id", salaId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.music_state ?? null;
+}
+
+// Guarda/actualiza el estado de la música compartida de una sala
+export async function guardarEstadoMusica(salaId: string, estado: unknown): Promise<void> {
+  const { error } = await supabase.from("rooms").update({ music_state: estado }).eq("id", salaId);
+  if (error) throw error;
+}
