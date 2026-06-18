@@ -154,15 +154,20 @@ Se sacó el estado + efectos (incluido **realtime**) de las páginas hacia hooks
 
 *Resultado:* archivos chicos con una responsabilidad cada uno; comportamiento preservado. Verificado con `tsc -b` (en verde) y el build de Vite (en verde).
 
-### Fase 4 — Tipado de dominio (quitar `any`)
-- Definir `Usuario`, `Tarea`, `UsuarioEnSala`, `EstadoReloj` en `src/types/`.
-- Tipar `AuthContext` (`user: Usuario | null`) y extraer a helpers la lógica de:
-  - manejo de errores de OAuth desde la URL,
-  - persistencia del `provider_refresh_token`,
-  - conexión de Google Calendar.
-- **Unificar el modelo de `Tarea`**: que `TaskSection` use el mismo tipo/flujo que la tabla `tasks` (o documentar explícitamente que es un scratchpad efímero y separado).
+### Fase 4 — Tipado de dominio (quitar `any`) ✅ **HECHA (2026-06-17)**
+- ✅ Se creó `src/types/dominio.ts` con los contratos compartidos: `Usuario`, `UsuarioMetadata`, `UsuarioEnSala`, `Tarea` (+ `TareaPayload` para altas/edición) y `EstadoReloj`. `Tarea` coincide estructuralmente con el `schema` (zod) del `DataTable`, así fluye en ambos sentidos UI ↔ servicio sin casts.
+- ✅ **`AuthContext` tipado** (`user: Usuario | null`) y adelgazado: la lógica se extrajo a `src/features/auth/authHelpers.ts` →
+  - `mostrarErrorOAuthDesdeUrl` (manejo de errores de OAuth desde la URL),
+  - `persistirRefreshToken` (persistencia del `provider_refresh_token`),
+  - `conectarGoogleCalendar` (conexión de Google Calendar),
+  - `mapearUsuario` (mapea la sesión de Supabase, en inglés, al contrato `Usuario`).
+  Los métodos del contexto pasaron de `() => any` a `() => Promise<void>` (ningún consumidor usaba el valor de retorno; son handlers).
+- ✅ Se aplicaron los tipos a la capa ya existente: `tareasService`/`useTareas`/`PanelTareas`/`Home` usan `Tarea`/`TareaPayload`; `usePresenciaSala`/`AvataresUsuarios`/`CabeceraSala` usan `UsuarioEnSala`; `salasService` y el `timerStore` usan `EstadoReloj`. También se quitaron `any` sueltos (`intervalo` en `useTimerActions`, props de `Perfil`).
+- ✅ **Modelo de `Tarea` unificado/documentado**: `TaskSection` es un scratchpad efímero (solo memoria, hoy no se monta en ninguna pantalla); se documentó explícitamente y se renombró su tipo local a `TareaScratchpad` para que no se confunda con el `Tarea` de dominio.
 
-*Resultado:* contratos explícitos; el compilador ayuda a mantener el desacoplamiento.
+*Resultado:* contratos explícitos en un solo lugar; el compilador ayuda a sostener el desacoplamiento. Verificado con `tsc -b --force` (en verde) y el build de Vite vía API (9987 módulos, en verde).
+
+> **Pendiente (fuera del alcance de esta fase):** los `any` de filas de RPC agregadas en `useDashboardStats` (cuyas claves son contrato con los gráficos), las cláusulas `catch (error: any)` idiomáticas y la forma de `music_state`/invitaciones en `salasService`.
 
 ---
 

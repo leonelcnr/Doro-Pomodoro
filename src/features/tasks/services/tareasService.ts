@@ -1,4 +1,5 @@
 import supabase from "@/lib/supabase";
+import type { Tarea, TareaPayload } from "@/types/dominio";
 
 /**
  * Capa de servicio para la tabla `tasks` de Supabase.
@@ -7,12 +8,12 @@ import supabase from "@/lib/supabase";
  * embebidas en los componentes (`Home` y `RoomPage`). Cada función lanza el
  * error de Supabase si algo falla, dejando que el llamador decida cómo reaccionar.
  *
- * Nota: las filas de tarea se tipan como `any` por ahora; el tipado fuerte del
- * modelo de dominio (`Tarea`) queda para una fase posterior del plan.
+ * Las filas se tipan con el modelo de dominio `Tarea`; las cargas útiles de
+ * alta/edición usan `TareaPayload` (subconjunto, sin `id` para las nuevas).
  */
 
 // Trae las tareas de una sala: las de la sala MÁS las personales del usuario (sin sala)
-export async function obtenerTareasDeSala(salaId: string, usuarioId: string): Promise<any[]> {
+export async function obtenerTareasDeSala(salaId: string, usuarioId: string): Promise<Tarea[]> {
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
@@ -20,11 +21,11 @@ export async function obtenerTareasDeSala(salaId: string, usuarioId: string): Pr
     .order("order_index", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as Tarea[];
 }
 
 // Trae solo las tareas personales (sin sala) del usuario
-export async function obtenerTareasPersonales(usuarioId: string): Promise<any[]> {
+export async function obtenerTareasPersonales(usuarioId: string): Promise<Tarea[]> {
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
@@ -33,7 +34,7 @@ export async function obtenerTareasPersonales(usuarioId: string): Promise<any[]>
     .order("order_index", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as Tarea[];
 }
 
 // Elimina varias tareas por sus ids (no hace nada si la lista está vacía)
@@ -44,20 +45,20 @@ export async function eliminarTareas(ids: (string | number)[]): Promise<void> {
 }
 
 // Actualiza una tarea existente por su id
-export async function actualizarTarea(id: string | number, datos: Record<string, any>): Promise<void> {
+export async function actualizarTarea(id: string | number, datos: TareaPayload): Promise<void> {
   const { error } = await supabase.from("tasks").update(datos).eq("id", id);
   if (error) throw error;
 }
 
 // Inserta nuevas tareas (no hace nada si la lista está vacía)
-export async function insertarTareas(datos: Record<string, any>[]): Promise<void> {
+export async function insertarTareas(datos: TareaPayload[]): Promise<void> {
   if (datos.length === 0) return;
   const { error } = await supabase.from("tasks").insert(datos);
   if (error) throw error;
 }
 
 // Inserta o actualiza tareas en lote (upsert; no hace nada si la lista está vacía)
-export async function upsertTareas(datos: Record<string, any>[]): Promise<void> {
+export async function upsertTareas(datos: TareaPayload[]): Promise<void> {
   if (datos.length === 0) return;
   const { error } = await supabase.from("tasks").upsert(datos);
   if (error) throw error;

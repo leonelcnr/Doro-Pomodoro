@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
 import * as tareasService from "@/features/tasks/services/tareasService";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import type { Tarea, TareaPayload } from "@/types/dominio";
 
 // Ámbito sobre el que opera un guardado de tareas: las personales (sin sala) o
 // las de la sala activa. Determina el filtro de borrado y el `room_id` asignado.
@@ -19,13 +20,10 @@ export type AmbitoTarea = "personal" | "sala";
  * El hook es agnóstico de la UI: no sabe de pestañas ni de "no vistas". Expone
  * el listado crudo y deja al llamador decidir qué muestra. Los handlers
  * re-lanzan los errores para que cada página elija cómo avisar al usuario.
- *
- * Nota: las tareas se tipan como `any` por ahora; el modelo de dominio fuerte
- * (`Tarea`) queda para la Fase 4 del plan.
  */
 export function useTareas(salaId?: string) {
   const { user: usuario } = useAuth();
-  const [tareas, establecerTareas] = useState<any[]>([]);
+  const [tareas, establecerTareas] = useState<Tarea[]>([]);
   // Indica si terminó la primera carga (útil para lógica de UI que no debe
   // dispararse antes de tener datos, p. ej. el contador de tareas "no vistas").
   const [cargado, establecerCargado] = useState(false);
@@ -77,7 +75,7 @@ export function useTareas(salaId?: string) {
 
   // Persiste en Supabase los cambios hechos sobre la tabla de tareas
   // (alta, baja, edición, reordenamiento por drag & drop) dentro de un ámbito.
-  const guardarCambios = useCallback(async (nuevoEstadoTareas: any[], ambito: AmbitoTarea) => {
+  const guardarCambios = useCallback(async (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => {
     const nuevosIds = new Set(nuevoEstadoTareas.map(t => t.id));
 
     // Solo borramos dentro del ámbito afectado (las tareas del otro ámbito no se tocan)
@@ -87,8 +85,8 @@ export function useTareas(salaId?: string) {
 
     const idsEliminados = tareasAmbito.filter(t => !nuevosIds.has(t.id)).map(t => t.id);
 
-    const tareasExistentesActualizar: any[] = [];
-    const tareasNuevasInsertar: any[] = [];
+    const tareasExistentesActualizar: TareaPayload[] = [];
+    const tareasNuevasInsertar: TareaPayload[] = [];
 
     nuevoEstadoTareas.forEach((t) => {
       // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`

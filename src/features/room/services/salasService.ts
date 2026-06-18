@@ -1,4 +1,5 @@
 import supabase from "@/lib/supabase";
+import type { EstadoReloj } from "@/types/dominio";
 
 /**
  * Capa de servicio para las salas (`rooms`) y sus operaciones relacionadas en
@@ -41,18 +42,18 @@ export async function obtenerInvitacion(salaId: string): Promise<any | null> {
 }
 
 // Trae el estado del reloj compartido de una sala (o null si no hay)
-export async function obtenerEstadoReloj(salaId: string): Promise<any | null> {
+export async function obtenerEstadoReloj(salaId: string): Promise<EstadoReloj | null> {
   const { data, error } = await supabase
     .from("rooms")
     .select("timer_state")
     .eq("id", salaId)
     .maybeSingle();
   if (error) throw error;
-  return data?.timer_state ?? null;
+  return (data?.timer_state as EstadoReloj | null) ?? null;
 }
 
 // Guarda/actualiza el estado del reloj compartido de una sala
-export async function guardarEstadoReloj(salaId: string, estado: unknown): Promise<void> {
+export async function guardarEstadoReloj(salaId: string, estado: EstadoReloj): Promise<void> {
   const { error } = await supabase.from("rooms").update({ timer_state: estado }).eq("id", salaId);
   if (error) throw error;
 }

@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import type { UsuarioEnSala } from "@/types/dominio";
 
 /**
  * Indicador presentacional de los usuarios conectados a la sala: muestra el
@@ -8,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
  * Recibe la lista por props (la calcula el hook `usePresenciaSala`); no sabe de
  * Supabase ni de presencia.
  */
-export function AvataresUsuarios({ usuarios }: { usuarios: any[] }) {
+export function AvataresUsuarios({ usuarios }: { usuarios: UsuarioEnSala[] }) {
     return (
         <div className="flex items-center gap-2 sm:gap-3">
             <div className="text-sm text-muted-foreground hidden sm:flex flex-col items-end">

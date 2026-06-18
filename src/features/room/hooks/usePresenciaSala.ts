@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import type { UsuarioEnSala } from "@/types/dominio";
 
 /**
  * Hook de presencia en tiempo real de una sala. Registra al usuario actual en
@@ -12,7 +13,7 @@ import { useAuth } from "@/features/auth/context/AuthContext";
 export function usePresenciaSala(salaId?: string) {
   const { user: usuario } = useAuth();
   // Usuarios actualmente conectados a la sala (presencia en tiempo real)
-  const [usuariosEnSala, establecerUsuariosEnSala] = useState<any[]>([]);
+  const [usuariosEnSala, establecerUsuariosEnSala] = useState<UsuarioEnSala[]>([]);
 
   useEffect(() => {
     if (!salaId || !usuario) return;
@@ -30,9 +31,11 @@ export function usePresenciaSala(salaId?: string) {
 
     canal
       .on("presence", { event: "sync" }, () => {
-        const estado = canal.presenceState();
-        // Extraemos los usuarios únicos
-        const usuarios = Object.values(estado).map((infoPresencia: any) => infoPresencia[0]);
+        const estado = canal.presenceState<UsuarioEnSala>();
+        // Extraemos un usuario por cada entrada de presencia (descartando huecos)
+        const usuarios = Object.values(estado)
+          .map((infoPresencia) => infoPresencia[0])
+          .filter((presencia): presencia is NonNullable<typeof presencia> => presencia !== undefined);
         establecerUsuariosEnSala(usuarios);
       })
       .subscribe(async (status) => {

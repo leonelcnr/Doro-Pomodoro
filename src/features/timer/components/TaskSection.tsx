@@ -7,15 +7,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, Plus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-// Una tarea de la lista (estado local, todavía no persiste en backend)
-interface Tarea {
+// IMPORTANTE: `TaskSection` es un scratchpad EFÍMERO y SEPARADO del modelo real
+// de tareas. Su estado vive solo en memoria (no persiste en Supabase) y por eso
+// NO usa el tipo de dominio `Tarea` (tabla `tasks`): tiene su propia forma mínima
+// (`TareaScratchpad`, con `texto`/`completada`). Hoy el componente no se monta en
+// ninguna pantalla; se conserva como borrador. Si algún día debe persistir,
+// migrar a `useTareas` + el tipo `Tarea` de `@/types/dominio` (ver plan 2.6).
+interface TareaScratchpad {
     id: string;
     texto: string;
     completada: boolean;
 }
 
 interface PropsListaTareas {
-    tareas: Tarea[];
+    tareas: TareaScratchpad[];
     tipo: "personal" | "sala";
     nuevaTareaTexto: string;
     establecerNuevaTareaTexto: (texto: string) => void;
@@ -34,7 +39,7 @@ const ItemTarea = ({
     alAlternar,
     alEliminar
 }: {
-    tarea: Tarea;
+    tarea: TareaScratchpad;
     tipo: "personal" | "sala";
     alAlternar: (id: string, tipo: "personal" | "sala") => void;
     alEliminar: (id: string, tipo: "personal" | "sala") => void;
@@ -182,13 +187,13 @@ const ListaTareas = ({
  * Por ahora ambos listados viven solo en memoria (estado local del componente).
  */
 export const TaskSection = () => {
-    const [tareasPersonales, establecerTareasPersonales] = useState<Tarea[]>([]);
-    const [tareasSala, establecerTareasSala] = useState<Tarea[]>([]);
+    const [tareasPersonales, establecerTareasPersonales] = useState<TareaScratchpad[]>([]);
+    const [tareasSala, establecerTareasSala] = useState<TareaScratchpad[]>([]);
     const [nuevaTareaTexto, establecerNuevaTareaTexto] = useState("");
 
     const agregarTarea = (tipo: "personal" | "sala") => {
         if (!nuevaTareaTexto.trim()) return;
-        const nuevaTarea: Tarea = {
+        const nuevaTarea: TareaScratchpad = {
             id: crypto.randomUUID(),
             texto: nuevaTareaTexto,
             completada: false,
@@ -202,7 +207,7 @@ export const TaskSection = () => {
     };
 
     const alternarTarea = (id: string, tipo: "personal" | "sala") => {
-        const actualizarTareas = (tareas: Tarea[]) =>
+        const actualizarTareas = (tareas: TareaScratchpad[]) =>
             tareas.map((t) => (t.id === id ? { ...t, completada: !t.completada } : t));
         if (tipo === "personal") {
             establecerTareasPersonales(previas => actualizarTareas(previas));

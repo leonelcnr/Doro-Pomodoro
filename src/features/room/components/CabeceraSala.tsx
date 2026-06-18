@@ -13,12 +13,13 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AvataresUsuarios } from "./AvataresUsuarios";
+import type { UsuarioEnSala } from "@/types/dominio";
 
 /**
  * Cabecera de la sala: botón "Salir" (con confirmación) a la izquierda y los
  * avatares de los usuarios conectados a la derecha.
  */
-export function CabeceraSala({ usuariosEnSala }: { usuariosEnSala: any[] }) {
+export function CabeceraSala({ usuariosEnSala }: { usuariosEnSala: UsuarioEnSala[] }) {
     const navigate = useNavigate();
 
     return (

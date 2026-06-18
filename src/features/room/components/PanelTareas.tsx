@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import type { AmbitoTarea } from "@/features/tasks/hooks/useTareas";
+import type { Tarea } from "@/types/dominio";
 
 type PanelTareasProps = {
-    tareas: any[];
+    tareas: Tarea[];
     // Indica si terminó la primera carga (evita disparar el contador antes de tener datos)
     cargado: boolean;
     salaId?: string;
     // Persiste los cambios de la tabla dentro del ámbito indicado (re-lanza errores)
-    onGuardarCambios: (nuevoEstadoTareas: any[], ambito: AmbitoTarea) => Promise<void>;
+    onGuardarCambios: (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => Promise<void>;
     // Mueve una tarea entre el ámbito personal y el de la sala
     onMoverTarea: (tareaId: number) => Promise<void>;
 };
@@ -59,7 +60,7 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
     }, [tareas, pestanaTareas, salaId]);
 
     // Persiste los cambios de la tabla en el ámbito de la pestaña activa
-    const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: any[]) => {
+    const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: Tarea[]) => {
         try {
             await onGuardarCambios(nuevoEstadoTareas, pestanaTareas);
         } catch (error) {

@@ -9,6 +9,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import SalaNueva from "../features/home/components/SalaNueva"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
+import type { Tarea } from "@/types/dominio"
 
 
 /**
@@ -20,7 +21,7 @@ const Home = () => {
     const { tareas, guardarCambios } = useTareas();
 
     // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
-    const manejarCambioTareas = async (nuevoEstadoTareas: any[]) => {
+    const manejarCambioTareas = async (nuevoEstadoTareas: Tarea[]) => {
         try {
             await guardarCambios(nuevoEstadoTareas, "personal");
         } catch (error: any) {

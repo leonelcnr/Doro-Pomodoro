@@ -31,7 +31,7 @@ export const useTimer = () => {
   } = useTimerStore();
 
   useEffect(() => {
-    let intervalo: number | any;
+    let intervalo: ReturnType<typeof setInterval> | undefined;
 
     if (estaActivo) {
       if (modo === 'stopwatch') {

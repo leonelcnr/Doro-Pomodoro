@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Modo, TimerSettings } from '@/types/timer';
+import type { EstadoReloj } from '@/types/dominio';
 
 /**
  * Store global del temporizador (Zustand) con persistencia en localStorage.
@@ -38,7 +39,7 @@ interface EstadoTemporizador {
   establecerTiempoInicioCronometro: (tiempo: number | null) => void;
 
   // Sincronización con la sala compartida (Supabase)
-  establecerEstadoTemporizador: (estado: { tiempoRestante: number; estaActivo: boolean; modo: Modo; actualizadoEn?: string }) => void;
+  establecerEstadoTemporizador: (estado: EstadoReloj) => void;
   // Marca temporal del último cambio originado en este cliente (para disparar la sincronización)
   ultimaActualizacionLocal: number;
 }
