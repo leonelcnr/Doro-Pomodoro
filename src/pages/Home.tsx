@@ -8,92 +8,29 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 import SalaNueva from "../features/home/components/SalaNueva"
-import { useEffect, useState } from "react"
-import supabase from "@/lib/supabase"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useTareas } from "@/features/tasks/hooks/useTareas"
+import type { Tarea } from "@/types/dominio"
 
 
+/**
+ * Página de inicio: muestra el panel para crear/unirse a salas y la lista de
+ * tareas personales del usuario, sincronizada en tiempo real con Supabase.
+ */
 const Home = () => {
-    const auth = useAuth();
-    const usuario = auth.user;
-    const [tareas, setTareas] = useState<any[]>([]);
+    // Sin salaId: el hook trae y escucha solo las tareas personales del usuario
+    const { tareas, guardarCambios } = useTareas();
 
-    useEffect(() => {
-        if (!usuario) return;
-
-        const cargarTareas = async () => {
-
-            const { data, error } = await supabase
-                .from("tasks")
-                .select("*")
-                .eq("user_id", usuario.id)
-                .is("room_id", null)
-                .order("order_index", { ascending: true, nullsFirst: false })
-                .order("created_at", { ascending: false });
-
-            if (!error && data) setTareas(data);
-        };
-
-        cargarTareas();
-
-        // Suscribirse a Tareas Personales
-
-        const channelTasks = supabase
-            .channel("realtime-home-tasks")
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "tasks",
-                    filter: `user_id=eq.${usuario.id}`,
-                },
-                () => { cargarTareas(); }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channelTasks);
-        };
-    }, [usuario]);
-
-    const handleTasksChange = async (newTasksState: any[]) => {
-        const newIds = new Set(newTasksState.map(t => t.id));
-
-        // Tareas eliminadas: comparar contra nuestro estado local
-        const deletedTasks = tareas.filter(t => !newIds.has(t.id));
-        for (const t of deletedTasks) {
-            await supabase.from("tasks").delete().eq("id", t.id);
-        }
-
-        // Tareas añadidas o actualizadas
-        for (const t of newTasksState) {
-            const taskData: any = {
-                user_id: usuario?.id,
-                room_id: null,
-                header: t.header,
-                type: t.type,
-                status: t.status,
-                priority: t.priority,
-                favorite: t.favorite,
-                order_index: t.order_index,
-            };
-
-            if (t.id && t.id < 1000000) {
-                // Actualizar
-                const { error } = await supabase.from("tasks").update(taskData).eq("id", t.id);
-                if (error) {
-                    console.error("Supabase update error:", error);
-                    alert(`Error al actualizar la tarea: ${error.message} (Detalles: ${error.details})`);
-                }
-            } else {
-                // Insertar nueva
-                const { error } = await supabase.from("tasks").insert([taskData]);
-                if (error) {
-                    console.error("Supabase insert error:", error);
-                    alert(`Error al crear la tarea: ${error.message} (Detalles: ${error.details})`);
-                }
-            }
+    // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
+    const manejarCambioTareas = async (nuevoEstadoTareas: Tarea[]) => {
+        try {
+            await guardarCambios(nuevoEstadoTareas, "personal");
+        } catch (error: unknown) {
+            console.error("Error al guardar las tareas en Supabase:", error);
+            // Los errores de Supabase (PostgrestError) traen `message` y `details`
+            const err = error as { message?: string; details?: string };
+            const mensaje = err?.message ?? 'desconocido';
+            const detalles = err?.details ? ` (Detalles: ${err.details})` : '';
+            alert(`Error al guardar la tarea: ${mensaje}${detalles}`);
         }
     };
 
@@ -129,7 +66,7 @@ const Home = () => {
                                             Aquí tienes una lista de tus tareas.
                                         </p>
                                     </div>
-                                    <DataTable data={tareas} onTasksChange={handleTasksChange} />
+                                    <DataTable data={tareas} onTasksChange={manejarCambioTareas} />
                                 </div>
                             </div>
                         </div>

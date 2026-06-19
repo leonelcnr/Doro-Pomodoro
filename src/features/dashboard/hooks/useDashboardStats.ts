@@ -2,8 +2,12 @@ import { useMemo, useEffect } from 'react';
 import supabase from '@/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+// Rangos de tiempo disponibles para las estadísticas del dashboard
 export type TimeRange = 'day' | 'week' | 'month' | 'year' | 'total';
 
+// Estadísticas calculadas para un rango concreto. Los nombres de campos (y las
+// claves internas name/minutes/value) son la forma de datos que consumen los
+// gráficos (recharts) en el Dashboard, por eso se mantienen en inglés.
 export interface RangeStats {
   chartData: { name: string; minutes: number }[];
   displayMinutes: number;
@@ -12,10 +16,44 @@ export interface RangeStats {
   pieChartData: { name: string; value: number }[];
 }
 
+// Agregados precalculados que devuelve la RPC `get_dashboard_aggregates`. Las
+// claves van en inglés porque son los nombres de columna que emite la función SQL.
+interface AgregadoPorHora {
+  stat_date: string;
+  stat_hour: number;
+  total_minutes: number;
+}
+
+interface AgregadoPorDia {
+  stat_date: string;
+  day_of_week: number;
+  total_minutes: number;
+  sessions_count: number;
+}
+
+interface AgregadoPorTarea {
+  stat_date: string;
+  task_type: string | null;
+  tasks_count: number;
+}
+
+interface AgregadosDashboard {
+  hourly: AgregadoPorHora[];
+  daily: AgregadoPorDia[];
+  tasks: AgregadoPorTarea[];
+}
+
+/**
+ * Hook que centraliza TODAS las estadísticas del dashboard. Trae los datos
+ * crudos de Supabase (estadísticas del usuario, agregados precalculados por la
+ * RPC y tareas recientes) con react-query + invalidación en tiempo real, y de
+ * ahí deriva los datos listos para los gráficos de cada rango temporal.
+ */
 export function useDashboardStats(userId: string | undefined) {
   const queryClient = useQueryClient();
 
-  const { data: userStatsData } = useQuery({
+  // Fila de estadísticas globales del usuario (racha, minutos totales, etc.)
+  const { data: datosEstadisticasUsuario } = useQuery({
     queryKey: ['userStats', userId],
     queryFn: async () => {
       if (!userId) return null;
@@ -26,19 +64,21 @@ export function useDashboardStats(userId: string | undefined) {
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: aggregates, isLoading: isLoadingAggregates } = useQuery({
+  // Agregados precalculados (por hora, por día y por tipo de tarea) vía RPC
+  const { data: agregados, isLoading: cargandoAgregados } = useQuery({
     queryKey: ['dashboardAggregates', userId],
     queryFn: async () => {
       if (!userId) return null;
       const { data, error } = await supabase.rpc('get_dashboard_aggregates', { p_user_id: userId });
       if (error) throw error;
-      return data as any;
+      return data as AgregadosDashboard;
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: recentTasks, isLoading: isLoadingTasks } = useQuery({
+  // Últimas tareas completadas (para el listado de "recientes")
+  const { data: tareasRecientes, isLoading: cargandoTareas } = useQuery({
     queryKey: ['recentTasks', userId],
     queryFn: async () => {
       if (!userId) return [];
@@ -55,10 +95,10 @@ export function useDashboardStats(userId: string | undefined) {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Suscripciones Realtime
+  // Suscripciones en tiempo real: invalidan las queries afectadas ante cambios
   useEffect(() => {
     if (!userId) return;
-    const channel = supabase.channel('dashboard_realtime')
+    const canal = supabase.channel('dashboard_realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'user_stats', filter: `user_id=eq.${userId}` }, () => {
         queryClient.invalidateQueries({ queryKey: ['userStats', userId] });
       })
@@ -71,178 +111,186 @@ export function useDashboardStats(userId: string | undefined) {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); }
+    return () => { supabase.removeChannel(canal); }
   }, [userId, queryClient]);
 
-  // Compute charts for all ranges at once
+  // Precalcula los datos de los gráficos para TODOS los rangos de una sola vez
   const statsByRange = useMemo(() => {
-    const ranges: TimeRange[] = ['day', 'week', 'month', 'year', 'total'];
-    const result = {} as Record<TimeRange, RangeStats>;
+    const rangos: TimeRange[] = ['day', 'week', 'month', 'year', 'total'];
+    const resultado = {} as Record<TimeRange, RangeStats>;
 
-    const defaultRange: RangeStats = { chartData: [], displayMinutes: 0, avgSessionMinutes: 0, displayCompletedTasks: 0, pieChartData: [] };
-    
-    if (!aggregates) {
-      ranges.forEach(r => { result[r] = { ...defaultRange }; });
-      return result;
+    const rangoPorDefecto: RangeStats = { chartData: [], displayMinutes: 0, avgSessionMinutes: 0, displayCompletedTasks: 0, pieChartData: [] };
+
+    if (!agregados) {
+      rangos.forEach(r => { resultado[r] = { ...rangoPorDefecto }; });
+      return resultado;
     }
 
-    const argTodayStr = new Date().toLocaleString("sv-SE", { timeZone: "America/Argentina/Buenos_Aires" }).substring(0, 10);
-    const todayObj = new Date(argTodayStr + 'T00:00:00');
-    const monthsStr = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const daysStr = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    // Usamos la zona horaria de Argentina para definir "hoy" de forma consistente
+    const hoyStrArg = new Date().toLocaleString("sv-SE", { timeZone: "America/Argentina/Buenos_Aires" }).substring(0, 10);
+    const hoyObj = new Date(hoyStrArg + 'T00:00:00');
+    const mesesStr = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const diasStr = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
-    ranges.forEach(range => {
-      let labels: string[] = [];
-      let startDate = new Date(todayObj);
+    rangos.forEach(rango => {
+      // Generamos las etiquetas del eje X según el rango y la fecha de inicio del período
+      const etiquetas: string[] = [];
+      const fechaInicio = new Date(hoyObj);
 
-      if (range === 'week') {
-        startDate.setDate(startDate.getDate() - 6);
+      if (rango === 'week') {
+        fechaInicio.setDate(fechaInicio.getDate() - 6);
         for (let i = 6; i >= 0; i--) {
-          const d = new Date(todayObj);
+          const d = new Date(hoyObj);
           d.setDate(d.getDate() - i);
-          labels.push(daysStr[d.getDay()]);
+          etiquetas.push(diasStr[d.getDay()]);
         }
-      } else if (range === 'month') {
-        startDate.setDate(startDate.getDate() - 29);
+      } else if (rango === 'month') {
+        fechaInicio.setDate(fechaInicio.getDate() - 29);
         for (let i = 29; i >= 0; i--) {
-          const d = new Date(todayObj);
+          const d = new Date(hoyObj);
           d.setDate(d.getDate() - i);
-          labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
+          etiquetas.push(`${d.getDate()}/${d.getMonth() + 1}`);
         }
-      } else if (range === 'year') {
-        startDate.setMonth(startDate.getMonth() - 11);
-        startDate.setDate(1);
+      } else if (rango === 'year') {
+        fechaInicio.setMonth(fechaInicio.getMonth() - 11);
+        fechaInicio.setDate(1);
         for (let i = 11; i >= 0; i--) {
-          const d = new Date(todayObj);
+          const d = new Date(hoyObj);
           d.setMonth(d.getMonth() - i);
-          labels.push(monthsStr[d.getMonth()]);
+          etiquetas.push(mesesStr[d.getMonth()]);
         }
-      } else if (range === 'day') {
+      } else if (rango === 'day') {
         for (let i = 0; i < 24; i++) {
-          labels.push(`${i.toString().padStart(2, '0')}:00`);
+          etiquetas.push(`${i.toString().padStart(2, '0')}:00`);
         }
-      } else if (range === 'total') {
-        startDate.setDate(startDate.getDate() - 89);
+      } else if (rango === 'total') {
+        fechaInicio.setDate(fechaInicio.getDate() - 89);
         for (let i = 89; i >= 0; i--) {
-          const d = new Date(todayObj);
+          const d = new Date(hoyObj);
           d.setDate(d.getDate() - i);
-          labels.push(`${d.getDate()} ${monthsStr[d.getMonth()]}`);
+          etiquetas.push(`${d.getDate()} ${mesesStr[d.getMonth()]}`);
         }
       }
 
-      const aggregatedMap = new Map<string, number>();
-      labels.forEach(l => aggregatedMap.set(l, 0));
-      
-      let totalMins = 0;
-      let totalSessions = 0;
+      // Mapa etiqueta -> minutos acumulados, inicializado en 0 para cada etiqueta
+      const mapaAgregado = new Map<string, number>();
+      etiquetas.forEach(l => mapaAgregado.set(l, 0));
 
-      if (range === 'day') {
-        aggregates.hourly.forEach((row: any) => {
-          if (row.stat_date === argTodayStr) {
-            const label = `${row.stat_hour.toString().padStart(2, '0')}:00`;
-            if (aggregatedMap.has(label)) {
-              aggregatedMap.set(label, (aggregatedMap.get(label) || 0) + row.total_minutes);
+      let totalMinutos = 0;
+      let totalSesiones = 0;
+
+      if (rango === 'day') {
+        // Para el día usamos el detalle por hora
+        agregados.hourly.forEach((fila) => {
+          if (fila.stat_date === hoyStrArg) {
+            const etiqueta = `${fila.stat_hour.toString().padStart(2, '0')}:00`;
+            if (mapaAgregado.has(etiqueta)) {
+              mapaAgregado.set(etiqueta, (mapaAgregado.get(etiqueta) || 0) + fila.total_minutes);
             }
-            totalMins += row.total_minutes;
+            totalMinutos += fila.total_minutes;
           }
         });
-        totalSessions = aggregates.daily.find((d: any) => d.stat_date === argTodayStr)?.sessions_count || 0;
+        totalSesiones = agregados.daily.find((d) => d.stat_date === hoyStrArg)?.sessions_count || 0;
       } else {
-        aggregates.daily.forEach((row: any) => {
-          const rowDate = new Date(row.stat_date + 'T00:00:00');
-          if (rowDate >= startDate || range === 'total') {
-            if (rowDate >= startDate) {
-               let label = '';
-               if (range === 'week') label = daysStr[row.day_of_week === 7 ? 0 : row.day_of_week]; 
-               else if (range === 'month') label = `${rowDate.getDate()}/${rowDate.getMonth() + 1}`;
-               else if (range === 'year') label = monthsStr[rowDate.getMonth()];
-               else if (range === 'total') label = `${rowDate.getDate()} ${monthsStr[rowDate.getMonth()]}`;
+        // Para el resto de rangos usamos el detalle por día
+        agregados.daily.forEach((fila) => {
+          const fechaFila = new Date(fila.stat_date + 'T00:00:00');
+          if (fechaFila >= fechaInicio || rango === 'total') {
+            if (fechaFila >= fechaInicio) {
+               let etiqueta = '';
+               if (rango === 'week') etiqueta = diasStr[fila.day_of_week === 7 ? 0 : fila.day_of_week];
+               else if (rango === 'month') etiqueta = `${fechaFila.getDate()}/${fechaFila.getMonth() + 1}`;
+               else if (rango === 'year') etiqueta = mesesStr[fechaFila.getMonth()];
+               else if (rango === 'total') etiqueta = `${fechaFila.getDate()} ${mesesStr[fechaFila.getMonth()]}`;
 
-               if (aggregatedMap.has(label)) {
-                 aggregatedMap.set(label, (aggregatedMap.get(label) || 0) + row.total_minutes);
+               if (mapaAgregado.has(etiqueta)) {
+                 mapaAgregado.set(etiqueta, (mapaAgregado.get(etiqueta) || 0) + fila.total_minutes);
                }
             }
-            totalMins += row.total_minutes;
-            totalSessions += row.sessions_count;
+            totalMinutos += fila.total_minutes;
+            totalSesiones += fila.sessions_count;
           }
         });
       }
 
-      const finalChartData = Array.from(aggregatedMap, ([name, minutes]) => ({ name, minutes }));
+      const datosGraficoFinal = Array.from(mapaAgregado, ([name, minutes]) => ({ name, minutes }));
 
-      const typeCount: Record<string, number> = {};
-      let displayTasksCount = 0;
-      aggregates.tasks.forEach((t: any) => {
-        const taskDate = new Date(t.stat_date + 'T00:00:00');
-        if (taskDate >= startDate || range === 'total') {
-           const typeStr = t.task_type ? t.task_type.trim() : 'Otro';
-           const type = typeStr.charAt(0).toUpperCase() + typeStr.slice(1);
-           typeCount[type] = (typeCount[type] || 0) + t.tasks_count;
-           displayTasksCount += t.tasks_count;
+      // Conteo de tareas completadas por tipo (para el gráfico de torta)
+      const conteoTipos: Record<string, number> = {};
+      let tareasMostradas = 0;
+      agregados.tasks.forEach((t) => {
+        const fechaTarea = new Date(t.stat_date + 'T00:00:00');
+        if (fechaTarea >= fechaInicio || rango === 'total') {
+           const tipoStr = t.task_type ? t.task_type.trim() : 'Otro';
+           const tipo = tipoStr.charAt(0).toUpperCase() + tipoStr.slice(1);
+           conteoTipos[tipo] = (conteoTipos[tipo] || 0) + t.tasks_count;
+           tareasMostradas += t.tasks_count;
         }
       });
 
-      const pieData = Object.entries(typeCount)
+      const datosTorta = Object.entries(conteoTipos)
         .map(([name, value]) => ({ name, value }))
         .sort((a, b) => b.value - a.value);
 
-      if (range === 'total' && userStatsData) {
-        totalMins = userStatsData.total_study_minutes || 0;
-        totalSessions = aggregates.daily.reduce((acc: number, val: any) => acc + val.sessions_count, 0);
+      // Para el total preferimos el acumulado oficial guardado en user_stats
+      if (rango === 'total' && datosEstadisticasUsuario) {
+        totalMinutos = datosEstadisticasUsuario.total_study_minutes || 0;
+        totalSesiones = agregados.daily.reduce((acc, val) => acc + val.sessions_count, 0);
       }
 
-      result[range] = {
-        chartData: finalChartData,
-        displayMinutes: totalMins,
-        avgSessionMinutes: totalSessions > 0 ? totalMins / totalSessions : 0,
-        displayCompletedTasks: displayTasksCount,
-        pieChartData: pieData
+      resultado[rango] = {
+        chartData: datosGraficoFinal,
+        displayMinutes: totalMinutos,
+        avgSessionMinutes: totalSesiones > 0 ? totalMinutos / totalSesiones : 0,
+        displayCompletedTasks: tareasMostradas,
+        pieChartData: datosTorta
       };
     });
 
-    return result;
-  }, [aggregates, userStatsData]);
+    return resultado;
+  }, [agregados, datosEstadisticasUsuario]);
 
+  // Datos para el mapa de calor (minutos por día) y el promedio por día de la semana
   const { heatmapData, bestDaysData } = useMemo(() => {
-    if (!aggregates) return { heatmapData: [], bestDaysData: [] };
+    if (!agregados) return { heatmapData: [], bestDaysData: [] };
 
-    const dailyMins = new Map<string, number>();
-    const weekDaysStats = Array.from({ length: 7 }, () => ({ totalMins: 0, uniqueDays: new Set<string>() }));
+    const minutosDiarios = new Map<string, number>();
+    const estadisticasDiasSemana = Array.from({ length: 7 }, () => ({ totalMins: 0, uniqueDays: new Set<string>() }));
 
-    aggregates.daily.forEach((row: any) => {
-      dailyMins.set(row.stat_date, row.total_minutes);
-      
-      const jsDayOfWeek = row.day_of_week === 7 ? 0 : row.day_of_week;
-      weekDaysStats[jsDayOfWeek].totalMins += row.total_minutes;
-      weekDaysStats[jsDayOfWeek].uniqueDays.add(row.stat_date);
+    agregados.daily.forEach((fila) => {
+      minutosDiarios.set(fila.stat_date, fila.total_minutes);
+
+      // Convertimos el día de la semana (1-7) al formato de JS (0=domingo)
+      const diaSemanaJs = fila.day_of_week === 7 ? 0 : fila.day_of_week;
+      estadisticasDiasSemana[diaSemanaJs].totalMins += fila.total_minutes;
+      estadisticasDiasSemana[diaSemanaJs].uniqueDays.add(fila.stat_date);
     });
-    
-    const calculatedHeatmapData = Array.from(dailyMins.entries()).map(([date, value]) => ({ date, value }));
 
-    const daysLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    const calculatedBestDaysData = daysLabels.map((name, i) => {
-      const stat = weekDaysStats[i];
-      const daysCount = stat.uniqueDays.size || 1; 
+    const datosMapaCalor = Array.from(minutosDiarios.entries()).map(([date, value]) => ({ date, value }));
+
+    const etiquetasDias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const datosMejoresDias = etiquetasDias.map((name, i) => {
+      const est = estadisticasDiasSemana[i];
+      const cantidadDias = est.uniqueDays.size || 1;
       return {
         name,
-        avgMinutes: Math.round(stat.totalMins / daysCount)
+        avgMinutes: Math.round(est.totalMins / cantidadDias)
       };
     });
 
-    return { heatmapData: calculatedHeatmapData, bestDaysData: calculatedBestDaysData };
-  }, [aggregates]);
+    return { heatmapData: datosMapaCalor, bestDaysData: datosMejoresDias };
+  }, [agregados]);
 
   return {
     stats: {
-      totalMinutes: userStatsData?.total_study_minutes || 0,
-      currentStreak: userStatsData?.current_streak || 0,
+      totalMinutes: datosEstadisticasUsuario?.total_study_minutes || 0,
+      currentStreak: datosEstadisticasUsuario?.current_streak || 0,
       completedTasks: 0
     },
-    recentTasks: recentTasks || [],
+    recentTasks: tareasRecientes || [],
     statsByRange,
     heatmapData,
     bestDaysData,
-    isLoading: isLoadingAggregates || isLoadingTasks
+    isLoading: cargandoAgregados || cargandoTareas
   };
 }
-

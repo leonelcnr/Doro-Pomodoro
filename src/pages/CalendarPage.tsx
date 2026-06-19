@@ -27,135 +27,145 @@ import { useCalendarEvents } from "@/features/calendar/useCalendarEvents";
 import type { CalendarEvent, EventType } from "@/features/calendar/calendarService";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 
-const EVENT_TYPE_COLOR: Record<EventType, string> = {
+// Color/estilo de la etiqueta según el tipo de evento (las claves son valores de EventType)
+const COLOR_TIPO_EVENTO: Record<EventType, string> = {
   Examen: "bg-red-500/15 text-red-400 border-red-500/30",
   Entrega: "bg-orange-500/15 text-orange-400 border-orange-500/30",
   Estudio: "bg-blue-500/15 text-blue-400 border-blue-500/30",
   Otro: "bg-muted text-muted-foreground border-border",
 };
 
+/**
+ * Página del Calendario: muestra un calendario mensual y la lista de próximos
+ * eventos, permite crear/editar/eliminar eventos y conectar Google Calendar.
+ * La lógica de datos vive en el hook useCalendarEvents.
+ */
 export default function CalendarPage() {
   const { user, connectGoogleCalendar, hasGoogleLinked } = useAuth();
-  const hasCalendarToken = !!user?.provider_token;
+  const tieneTokenCalendario = !!user?.provider_token;
 
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
-  const [isDayDetailOpen, setIsDayDetailOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined);
-  const [editingEvent, setEditingEvent] = useState<CalendarEvent | undefined>(undefined);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [fecha, establecerFecha] = useState<Date | undefined>(new Date());
+  const [abiertoAgregarEvento, establecerAbiertoAgregarEvento] = useState(false);
+  const [abiertoDetalleDia, establecerAbiertoDetalleDia] = useState(false);
+  const [diaSeleccionado, establecerDiaSeleccionado] = useState<Date | undefined>(undefined);
+  const [eventoEnEdicion, establecerEventoEnEdicion] = useState<CalendarEvent | undefined>(undefined);
+  const [abiertoEditar, establecerAbiertoEditar] = useState(false);
+  const [conectando, establecerConectando] = useState(false);
 
-  const { events, isLoading, createEvent, updateEvent, deleteEvent } = useCalendarEvents(
+  const { eventos, cargando, crearEvento, actualizarEvento, eliminarEvento } = useCalendarEvents(
     hasGoogleLinked
   );
 
-  const handleConnectGoogle = useCallback(async () => {
-    setIsConnecting(true);
+  // Lanza el flujo de conexión con Google Calendar (redirige fuera de la app)
+  const manejarConectarGoogle = useCallback(async () => {
+    establecerConectando(true);
     try {
       await connectGoogleCalendar();
-      // Flow redirects to /calendario — loading state auto-resolves
+      // El flujo redirige a /calendar — el estado de carga se resuelve solo
     } catch {
-      setIsConnecting(false);
+      establecerConectando(false);
     }
   }, [connectGoogleCalendar]);
 
-  // ── handlers ──────────────────────────────────────────────
+  // ── Manejadores ────────────────────────────────────────────
 
-  const handleSelectDate = useCallback((newDate: Date | undefined) => {
-    setDate((prev) => {
-      if (newDate && prev && newDate.toDateString() === prev.toDateString()) return prev;
-      return newDate;
+  const manejarSeleccionarFecha = useCallback((nuevaFecha: Date | undefined) => {
+    establecerFecha((previa) => {
+      if (nuevaFecha && previa && nuevaFecha.toDateString() === previa.toDateString()) return previa;
+      return nuevaFecha;
     });
   }, []);
 
-  const handleDayDoubleClick = useCallback((day: Date, e: React.MouseEvent) => {
+  const manejarDobleClickDia = useCallback((dia: Date, e: React.MouseEvent) => {
     e.preventDefault();
-    setSelectedDay(day);
-    setDate((prev) => {
-      if (prev && day.toDateString() === prev.toDateString()) return prev;
-      return day;
+    establecerDiaSeleccionado(dia);
+    establecerFecha((previa) => {
+      if (previa && dia.toDateString() === previa.toDateString()) return previa;
+      return dia;
     });
-    setIsDayDetailOpen(true);
+    establecerAbiertoDetalleDia(true);
   }, []);
 
-  const handleAddEventFromDetail = () => {
-    setIsDayDetailOpen(false);
-    setIsAddEventOpen(true);
+  const manejarAgregarEventoDesdeDetalle = () => {
+    establecerAbiertoDetalleDia(false);
+    establecerAbiertoAgregarEvento(true);
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
-    setEditingEvent(event);
-    setIsEditOpen(true);
-    setIsDayDetailOpen(false);
+  const manejarClickEvento = (evento: CalendarEvent) => {
+    establecerEventoEnEdicion(evento);
+    establecerAbiertoEditar(true);
+    establecerAbiertoDetalleDia(false);
   };
 
-  // ── form submit callbacks ──────────────────────────────────
+  // ── Callbacks de envío del formulario ──────────────────────
 
-  const handleSubmitCreate = useCallback(
-    async (values: { title: string; date: Date; type: EventType; description?: string }) => {
-      await createEvent({
-        title: values.title,
-        event_date: format(values.date, "yyyy-MM-dd"),
-        type: values.type,
-        description: values.description,
+  // Mapea los valores del formulario al formato de la base (event_date) y crea el evento
+  const manejarEnviarCrear = useCallback(
+    async (valores: { title: string; date: Date; type: EventType; description?: string }) => {
+      await crearEvento({
+        title: valores.title,
+        event_date: format(valores.date, "yyyy-MM-dd"),
+        type: valores.type,
+        description: valores.description,
       });
     },
-    [createEvent]
+    [crearEvento]
   );
 
-  const handleSubmitEdit = useCallback(
+  const manejarEnviarEditar = useCallback(
     async (
-      values: { title: string; date: Date; type: EventType; description?: string },
+      valores: { title: string; date: Date; type: EventType; description?: string },
       id?: string
     ) => {
       if (!id) return;
-      await updateEvent(id, {
-        title: values.title,
-        event_date: format(values.date, "yyyy-MM-dd"),
-        type: values.type,
-        description: values.description,
+      await actualizarEvento(id, {
+        title: valores.title,
+        event_date: format(valores.date, "yyyy-MM-dd"),
+        type: valores.type,
+        description: valores.description,
       });
     },
-    [updateEvent]
+    [actualizarEvento]
   );
 
-  const handleDelete = useCallback(
+  const manejarEliminar = useCallback(
     async (id: string) => {
-      await deleteEvent(id);
+      await eliminarEvento(id);
     },
-    [deleteEvent]
+    [eliminarEvento]
   );
 
-  // ── derived data ───────────────────────────────────────────
+  // ── Datos derivados ────────────────────────────────────────
 
-  const calendarWidget = useMemo(
+  const widgetCalendario = useMemo(
     () => (
       <Calendar
         mode="single"
-        selected={date}
-        onSelect={handleSelectDate}
-        onDayDoubleClick={handleDayDoubleClick}
+        selected={fecha}
+        onSelect={manejarSeleccionarFecha}
+        onDayDoubleClick={manejarDobleClickDia}
         className="rounded-md w-full h-full flex flex-col [&_.rdp-months]:w-full [&_.rdp-months]:flex-1 [&_.rdp-month]:w-full [&_.rdp-month]:flex-1 [&_table]:w-full [&_table]:flex-1 [&_tbody]:flex-1 [&_tbody]:flex [&_tbody]:flex-col [&_tr]:flex-1 [&_tr]:gap-2 [&_td]:flex-1 [&_.rdp-cell]:flex-1 [&_.rdp-button]:w-full [&_.rdp-button]:h-full [&_.rdp-button]:text-base"
       />
     ),
-    [date, handleSelectDate, handleDayDoubleClick]
+    [fecha, manejarSeleccionarFecha, manejarDobleClickDia]
   );
 
-  const selectedDayEvents = useMemo(() => {
-    if (!selectedDay) return [];
-    const dayStr = format(selectedDay, "yyyy-MM-dd");
-    return events.filter((e) => e.event_date === dayStr);
-  }, [selectedDay, events]);
+  // Eventos del día seleccionado (para el diálogo de detalle)
+  const eventosDiaSeleccionado = useMemo(() => {
+    if (!diaSeleccionado) return [];
+    const fechaStr = format(diaSeleccionado, "yyyy-MM-dd");
+    return eventos.filter((e) => e.event_date === fechaStr);
+  }, [diaSeleccionado, eventos]);
 
-  const upcomingEvents = useMemo(() => {
-    const todayStr = format(new Date(), "yyyy-MM-dd");
-    return events.filter((e) => e.event_date >= todayStr).slice(0, 10);
-  }, [events]);
+  // Próximos eventos (desde hoy en adelante, hasta 10)
+  const eventosProximos = useMemo(() => {
+    const hoyStr = format(new Date(), "yyyy-MM-dd");
+    return eventos.filter((e) => e.event_date >= hoyStr).slice(0, 10);
+  }, [eventos]);
 
-  // ── render ─────────────────────────────────────────────────
+  // ── Render ─────────────────────────────────────────────────
 
   return (
     <SidebarProvider
@@ -170,7 +180,7 @@ export default function CalendarPage() {
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-6xl mx-auto w-full min-w-0">
 
-          {/* Header */}
+          {/* Cabecera */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Calendario</h1>
@@ -188,7 +198,7 @@ export default function CalendarPage() {
                 <DropdownMenuContent align="end" className="w-64">
                   <DropdownMenuLabel>Ajustes de Calendario</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {hasCalendarToken ? (
+                  {tieneTokenCalendario ? (
                     <DropdownMenuItem disabled className="text-green-500 focus:text-green-500">
                       <Check className="mr-2 h-4 w-4" />
                       Google Calendar conectado
@@ -196,10 +206,10 @@ export default function CalendarPage() {
                   ) : (
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      onClick={handleConnectGoogle}
-                      disabled={isConnecting}
+                      onClick={manejarConectarGoogle}
+                      disabled={conectando}
                     >
-                      {isConnecting ? (
+                      {conectando ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -213,8 +223,8 @@ export default function CalendarPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Add Event */}
-              <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
+              {/* Añadir Evento */}
+              <Dialog open={abiertoAgregarEvento} onOpenChange={establecerAbiertoAgregarEvento}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
@@ -228,18 +238,18 @@ export default function CalendarPage() {
                       Rellena los detalles para añadir un evento o examen a tu calendario.
                     </DialogDescription>
                   </DialogHeader>
-                  {isAddEventOpen && (
+                  {abiertoAgregarEvento && (
                     <AddEventForm
-                      onSuccess={() => setIsAddEventOpen(false)}
-                      initialDate={date}
-                      onSubmitEvent={handleSubmitCreate}
+                      alExito={() => establecerAbiertoAgregarEvento(false)}
+                      fechaInicial={fecha}
+                      alEnviarEvento={manejarEnviarCrear}
                     />
                   )}
                 </DialogContent>
               </Dialog>
 
-              {/* Edit Event */}
-              <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+              {/* Editar Evento */}
+              <Dialog open={abiertoEditar} onOpenChange={establecerAbiertoEditar}>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Editar Evento</DialogTitle>
@@ -247,24 +257,24 @@ export default function CalendarPage() {
                       Modifica los detalles del evento o elimínalo.
                     </DialogDescription>
                   </DialogHeader>
-                  {isEditOpen && editingEvent && (
+                  {abiertoEditar && eventoEnEdicion && (
                     <AddEventForm
-                      onSuccess={() => { setIsEditOpen(false); setEditingEvent(undefined); }}
-                      event={editingEvent}
-                      onSubmitEvent={handleSubmitEdit}
-                      onDelete={handleDelete}
+                      alExito={() => { establecerAbiertoEditar(false); establecerEventoEnEdicion(undefined); }}
+                      evento={eventoEnEdicion}
+                      alEnviarEvento={manejarEnviarEditar}
+                      alEliminar={manejarEliminar}
                     />
                   )}
                 </DialogContent>
               </Dialog>
 
-              {/* Day Detail */}
-              <Dialog open={isDayDetailOpen} onOpenChange={setIsDayDetailOpen}>
+              {/* Detalle del Día */}
+              <Dialog open={abiertoDetalleDia} onOpenChange={establecerAbiertoDetalleDia}>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>
                       Eventos para el{" "}
-                      {selectedDay?.toLocaleDateString("es-ES", {
+                      {diaSeleccionado?.toLocaleDateString("es-ES", {
                         weekday: "long",
                         day: "numeric",
                         month: "long",
@@ -275,18 +285,18 @@ export default function CalendarPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-3 py-2">
-                    {selectedDayEvents.length > 0 ? (
-                      selectedDayEvents.map((event) => (
+                    {eventosDiaSeleccionado.length > 0 ? (
+                      eventosDiaSeleccionado.map((evento) => (
                         <button
-                          key={event.id}
-                          onClick={() => handleEventClick(event)}
+                          key={evento.id}
+                          onClick={() => manejarClickEvento(evento)}
                           className="w-full text-left flex flex-col gap-1 border-l-2 border-primary pl-3 py-1 rounded-r-sm hover:bg-accent/50 transition-colors cursor-pointer"
                         >
-                          <span className="text-sm font-medium">{event.title}</span>
+                          <span className="text-sm font-medium">{evento.title}</span>
                           <span
-                            className={`text-xs px-1.5 py-0.5 rounded border w-fit ${EVENT_TYPE_COLOR[event.type as EventType]}`}
+                            className={`text-xs px-1.5 py-0.5 rounded border w-fit ${COLOR_TIPO_EVENTO[evento.type as EventType]}`}
                           >
-                            {event.type}
+                            {evento.type}
                           </span>
                         </button>
                       ))
@@ -297,7 +307,7 @@ export default function CalendarPage() {
                     )}
                   </div>
                   <div className="flex justify-end pt-4 border-t border-border">
-                    <Button onClick={handleAddEventFromDetail}>
+                    <Button onClick={manejarAgregarEventoDesdeDetalle}>
                       <Plus className="mr-2 h-4 w-4" />
                       Añadir Nuevo Evento a este Día
                     </Button>
@@ -308,50 +318,50 @@ export default function CalendarPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-12 w-full min-w-0">
-            {/* Calendar Widget */}
+            {/* Widget del Calendario */}
             <Card className="bg-card shadow-none md:col-span-8 lg:col-span-8 overflow-hidden flex flex-col p-4 w-full">
-              {calendarWidget}
+              {widgetCalendario}
             </Card>
 
-            {/* Upcoming Events List */}
+            {/* Lista de Próximos Eventos */}
             <Card className="bg-card shadow-none md:col-span-4 lg:col-span-4 overflow-y-auto h-full">
               <CardHeader>
                 <CardTitle className="text-sm font-medium">Próximos Eventos</CardTitle>
               </CardHeader>
               <CardContent>
-                {isLoading ? (
+                {cargando ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {upcomingEvents.map((event) => (
+                    {eventosProximos.map((evento) => (
                       <button
-                        key={event.id}
-                        onClick={() => handleEventClick(event)}
+                        key={evento.id}
+                        onClick={() => manejarClickEvento(evento)}
                         className="w-full text-left flex flex-col gap-1 border-l-2 border-primary pl-3 py-1 rounded-r-sm hover:bg-accent/50 transition-colors cursor-pointer"
                       >
                         <span className="text-sm font-medium line-clamp-1 truncate">
-                          {event.title}
+                          {evento.title}
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-muted-foreground flex items-center gap-1">
                             <CalendarIcon className="h-3 w-3" />
-                            {new Date(event.event_date + "T00:00:00").toLocaleDateString("es-ES", {
+                            {new Date(evento.event_date + "T00:00:00").toLocaleDateString("es-ES", {
                               month: "short",
                               day: "numeric",
                             })}
                           </span>
                           <Badge
                             variant="outline"
-                            className={`text-[10px] py-0 px-1.5 h-4 ${EVENT_TYPE_COLOR[event.type as EventType]}`}
+                            className={`text-[10px] py-0 px-1.5 h-4 ${COLOR_TIPO_EVENTO[evento.type as EventType]}`}
                           >
-                            {event.type}
+                            {evento.type}
                           </Badge>
                         </div>
                       </button>
                     ))}
-                    {upcomingEvents.length === 0 && (
+                    {eventosProximos.length === 0 && (
                       <div className="text-sm text-center text-muted-foreground py-6">
                         No hay eventos próximos.
                       </div>

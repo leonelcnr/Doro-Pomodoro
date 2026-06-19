@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { IconInnerShadowTop } from "@tabler/icons-react";
 
+// Página estática con los Términos y Condiciones de la aplicación
 const Terms = () => {
     return (
         <div className="flex min-h-svh flex-col items-center justify-start gap-6 p-6 md:p-10 w-full max-w-4xl mx-auto">

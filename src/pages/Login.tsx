@@ -1,6 +1,7 @@
 import { LoginForm } from "@/components/login-form"
 import { IconInnerShadowTop } from "@tabler/icons-react"
 
+// Página de inicio de sesión: muestra el logo de la app y el formulario de login
 const Login = () => {
 	return (
 		<div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

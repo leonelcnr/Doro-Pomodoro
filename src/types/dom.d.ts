@@ -15,8 +15,8 @@ interface DocumentPictureInPictureEventMap {
 interface DocumentPictureInPicture extends EventTarget {
     requestWindow(options?: DocumentPictureInPictureOptions): Promise<Window>;
     window: Window | null;
-    addEventListener<K extends keyof DocumentPictureInPictureEventMap>(type: K, listener: (this: DocumentPictureInPicture, ev: DocumentPictureInPictureEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentPictureInPictureEventMap>(type: K, listener: (this: DocumentPictureInPicture, ev: DocumentPictureInPictureEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+    addEventListener<K extends keyof DocumentPictureInPictureEventMap>(type: K, listener: (this: DocumentPictureInPicture, ev: DocumentPictureInPictureEventMap[K]) => void, options?: boolean | AddEventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentPictureInPictureEventMap>(type: K, listener: (this: DocumentPictureInPicture, ev: DocumentPictureInPictureEventMap[K]) => void, options?: boolean | EventListenerOptions): void;
 }
 
 declare global {

@@ -11,112 +11,115 @@ import {
 } from "./calendarService";
 import { gcalCreate, gcalUpdate, gcalDelete } from "./googleCalendarService";
 
-/** Generates a temporary client-side ID for optimistic inserts */
-function tempId(): string {
+/** Genera un ID temporal del lado del cliente para los inserts optimistas */
+function idTemporal(): string {
   return `__optimistic_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
 /**
- * Hook to manage calendar events with optional Google Calendar sync via Edge Function.
+ * Hook que administra los eventos del calendario con una UI optimista (refleja el
+ * cambio al instante y luego confirma/revierte) y sincronización opcional con
+ * Google Calendar a través de la Edge Function.
  *
- * @param hasGoogleLinked - Whether the user has a Google account linked for calendar sync.
+ * @param hasGoogleLinked - Si el usuario tiene una cuenta de Google vinculada para sincronizar.
  */
 export function useCalendarEvents(
   hasGoogleLinked: boolean
 ) {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [eventos, establecerEventos] = useState<CalendarEvent[]>([]);
+  const [cargando, establecerCargando] = useState(true);
 
-  // ── Load on mount ──────────────────────────────────────────
+  // ── Carga inicial al montar ────────────────────────────────
   useEffect(() => {
-    let cancelled = false;
-    setIsLoading(true);
+    let cancelado = false;
+    establecerCargando(true);
     fetchEvents()
-      .then((data) => { if (!cancelled) setEvents(data); })
+      .then((data) => { if (!cancelado) establecerEventos(data); })
       .catch((err) => {
-        if (!cancelled) {
+        if (!cancelado) {
           console.error(err);
           toast.error("Error al cargar eventos");
         }
       })
-      .finally(() => { if (!cancelled) setIsLoading(false); });
-    return () => { cancelled = true; };
+      .finally(() => { if (!cancelado) establecerCargando(false); });
+    return () => { cancelado = true; };
   }, []);
 
-  // ── Create (optimistic) ────────────────────────────────────
-  const handleCreate = useCallback(
-    async (payload: CreateEventPayload): Promise<CalendarEvent | null> => {
-      const oid = tempId();
-      const optimisticEvent: CalendarEvent = {
-        id: oid,
+  // ── Crear (optimista) ──────────────────────────────────────
+  const manejarCrear = useCallback(
+    async (datos: CreateEventPayload): Promise<CalendarEvent | null> => {
+      const idOptimista = idTemporal();
+      const eventoOptimista: CalendarEvent = {
+        id: idOptimista,
         user_id: "",
-        title: payload.title,
-        event_date: payload.event_date,
-        type: payload.type,
-        description: payload.description,
+        title: datos.title,
+        event_date: datos.event_date,
+        type: datos.type,
+        description: datos.description,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
 
-      // 1. Optimistic insert
-      setEvents((prev) =>
-        [...prev, optimisticEvent].sort((a, b) =>
+      // 1. Inserción optimista (se muestra antes de confirmar en el servidor)
+      establecerEventos((previos) =>
+        [...previos, eventoOptimista].sort((a, b) =>
           a.event_date.localeCompare(b.event_date)
         )
       );
 
-      const toastId = toast.loading("Guardando evento…", {
-        description: payload.title,
+      const idToast = toast.loading("Guardando evento…", {
+        description: datos.title,
       });
 
-      // 3. Background: persist to Supabase + optional Google Calendar
-      const backgroundWork = async (): Promise<CalendarEvent> => {
-        const newEvent = await createEvent(payload);
+      // 2. En segundo plano: persistir en Supabase + opcionalmente en Google Calendar
+      const trabajoEnSegundoPlano = async (): Promise<CalendarEvent> => {
+        const nuevoEvento = await createEvent(datos);
 
         if (hasGoogleLinked) {
           try {
-            const googleId = await gcalCreate({
-              summary: newEvent.title,
-              description: newEvent.type,
-              date: newEvent.event_date,
+            const idGoogle = await gcalCreate({
+              summary: nuevoEvento.title,
+              description: nuevoEvento.type,
+              date: nuevoEvento.event_date,
             });
-            const withGoogleId = await updateEvent(newEvent.id, {
-              google_event_id: googleId,
+            const conIdGoogle = await updateEvent(nuevoEvento.id, {
+              google_event_id: idGoogle,
             });
-            
-            setEvents((prev) =>
-              prev
-                .map((e) => (e.id === oid ? withGoogleId : e))
+
+            establecerEventos((previos) =>
+              previos
+                .map((e) => (e.id === idOptimista ? conIdGoogle : e))
                 .sort((a, b) => a.event_date.localeCompare(b.event_date))
             );
-            return withGoogleId;
-          } catch (gcalErr) {
-            console.error("Google Calendar sync failed:", gcalErr);
+            return conIdGoogle;
+          } catch (errorGcal) {
+            console.error("Falló la sincronización con Google Calendar:", errorGcal);
             // Fallo silencioso si no tiene los permisos o no lo vinculó completamente.
           }
         }
 
-        // Replace optimistic entry with the real event
-        setEvents((prev) =>
-          prev
-            .map((e) => (e.id === oid ? newEvent : e))
+        // Reemplazamos la entrada optimista por el evento real
+        establecerEventos((previos) =>
+          previos
+            .map((e) => (e.id === idOptimista ? nuevoEvento : e))
             .sort((a, b) => a.event_date.localeCompare(b.event_date))
         );
-        return newEvent;
+        return nuevoEvento;
       };
 
       try {
-        const result = await backgroundWork();
-        const withGoogle = !!result.google_event_id;
+        const resultado = await trabajoEnSegundoPlano();
+        const conGoogle = !!resultado.google_event_id;
         toast.success(
-          withGoogle ? "Sincronizado con Google Calendar" : "Evento guardado",
-          { id: toastId, description: result.title }
+          conGoogle ? "Sincronizado con Google Calendar" : "Evento guardado",
+          { id: idToast, description: resultado.title }
         );
-        return result;
+        return resultado;
       } catch (err: unknown) {
-        setEvents((prev) => prev.filter((e) => e.id !== oid));
+        // Ante un error, revertimos la inserción optimista
+        establecerEventos((previos) => previos.filter((e) => e.id !== idOptimista));
         toast.error("No se pudo guardar el evento", {
-          id: toastId,
+          id: idToast,
           description: err instanceof Error ? err.message : undefined,
         });
         return null;
@@ -125,61 +128,62 @@ export function useCalendarEvents(
     [hasGoogleLinked]
   );
 
-  // ── Update (optimistic) ────────────────────────────────────
-  const handleUpdate = useCallback(
-    async (id: string, payload: UpdateEventPayload): Promise<CalendarEvent | null> => {
-      let snapshot: CalendarEvent | undefined;
+  // ── Actualizar (optimista) ─────────────────────────────────
+  const manejarActualizar = useCallback(
+    async (id: string, datos: UpdateEventPayload): Promise<CalendarEvent | null> => {
+      // Guardamos una instantánea del evento por si hay que revertir
+      let instantanea: CalendarEvent | undefined;
 
-      setEvents((prev) => {
-        snapshot = prev.find((e) => e.id === id);
-        return prev
+      establecerEventos((previos) => {
+        instantanea = previos.find((e) => e.id === id);
+        return previos
           .map((e) =>
             e.id === id
-              ? { ...e, ...payload, updated_at: new Date().toISOString() }
+              ? { ...e, ...datos, updated_at: new Date().toISOString() }
               : e
           )
           .sort((a, b) => a.event_date.localeCompare(b.event_date));
       });
 
-      const toastId = toast.loading("Actualizando evento…");
+      const idToast = toast.loading("Actualizando evento…");
 
-      const backgroundWork = async (): Promise<CalendarEvent> => {
-        const updated = await updateEvent(id, payload);
+      const trabajoEnSegundoPlano = async (): Promise<CalendarEvent> => {
+        const actualizado = await updateEvent(id, datos);
 
-        if (hasGoogleLinked && updated.google_event_id) {
+        if (hasGoogleLinked && actualizado.google_event_id) {
           try {
-            await gcalUpdate(updated.google_event_id, {
-              summary: updated.title,
-              description: updated.type,
-              date: updated.event_date,
+            await gcalUpdate(actualizado.google_event_id, {
+              summary: actualizado.title,
+              description: actualizado.type,
+              date: actualizado.event_date,
             });
-          } catch (gcalErr) {
-            console.error("Google Calendar update failed:", gcalErr);
+          } catch (errorGcal) {
+            console.error("Falló la actualización en Google Calendar:", errorGcal);
           }
         }
 
-        setEvents((prev) =>
-          prev
-            .map((e) => (e.id === id ? updated : e))
+        establecerEventos((previos) =>
+          previos
+            .map((e) => (e.id === id ? actualizado : e))
             .sort((a, b) => a.event_date.localeCompare(b.event_date))
         );
-        return updated;
+        return actualizado;
       };
 
       try {
-        const result = await backgroundWork();
-        toast.success("Evento actualizado", { id: toastId });
-        return result;
+        const resultado = await trabajoEnSegundoPlano();
+        toast.success("Evento actualizado", { id: idToast });
+        return resultado;
       } catch (err: unknown) {
-        if (snapshot) {
-          setEvents((prev) =>
-            prev
-              .map((e) => (e.id === id ? snapshot! : e))
+        if (instantanea) {
+          establecerEventos((previos) =>
+            previos
+              .map((e) => (e.id === id ? instantanea! : e))
               .sort((a, b) => a.event_date.localeCompare(b.event_date))
           );
         }
         toast.error("No se pudo actualizar el evento", {
-          id: toastId,
+          id: idToast,
           description: err instanceof Error ? err.message : undefined,
         });
         return null;
@@ -188,43 +192,43 @@ export function useCalendarEvents(
     [hasGoogleLinked]
   );
 
-  // ── Delete (optimistic) ────────────────────────────────────
-  const handleDelete = useCallback(
+  // ── Eliminar (optimista) ───────────────────────────────────
+  const manejarEliminar = useCallback(
     async (id: string): Promise<boolean> => {
-      let deletedEvent: CalendarEvent | undefined;
+      let eventoEliminado: CalendarEvent | undefined;
 
-      setEvents((prev) => {
-        deletedEvent = prev.find((e) => e.id === id);
-        return prev.filter((e) => e.id !== id);
+      establecerEventos((previos) => {
+        eventoEliminado = previos.find((e) => e.id === id);
+        return previos.filter((e) => e.id !== id);
       });
 
-      const toastId = toast.loading("Eliminando evento…");
+      const idToast = toast.loading("Eliminando evento…");
 
-      const backgroundWork = async (): Promise<void> => {
-        if (hasGoogleLinked && deletedEvent?.google_event_id) {
+      const trabajoEnSegundoPlano = async (): Promise<void> => {
+        if (hasGoogleLinked && eventoEliminado?.google_event_id) {
           try {
-            await gcalDelete(deletedEvent.google_event_id);
-          } catch (gcalErr) {
-            console.error("Google Calendar delete failed:", gcalErr);
+            await gcalDelete(eventoEliminado.google_event_id);
+          } catch (errorGcal) {
+            console.error("Falló la eliminación en Google Calendar:", errorGcal);
           }
         }
         await deleteEvent(id);
       };
 
       try {
-        await backgroundWork();
-        toast.success("Evento eliminado", { id: toastId });
+        await trabajoEnSegundoPlano();
+        toast.success("Evento eliminado", { id: idToast });
         return true;
       } catch (err: unknown) {
-        if (deletedEvent) {
-          setEvents((prev) =>
-            [...prev, deletedEvent!].sort((a, b) =>
+        if (eventoEliminado) {
+          establecerEventos((previos) =>
+            [...previos, eventoEliminado!].sort((a, b) =>
               a.event_date.localeCompare(b.event_date)
             )
           );
         }
         toast.error("No se pudo eliminar el evento", {
-          id: toastId,
+          id: idToast,
           description: err instanceof Error ? err.message : undefined,
         });
         return false;
@@ -234,10 +238,10 @@ export function useCalendarEvents(
   );
 
   return {
-    events,
-    isLoading,
-    createEvent: handleCreate,
-    updateEvent: handleUpdate,
-    deleteEvent: handleDelete,
+    eventos,
+    cargando,
+    crearEvento: manejarCrear,
+    actualizarEvento: manejarActualizar,
+    eliminarEvento: manejarEliminar,
   };
 }

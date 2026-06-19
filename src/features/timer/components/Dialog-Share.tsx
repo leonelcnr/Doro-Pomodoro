@@ -15,14 +15,19 @@ import { Share2, Copy, Check } from 'lucide-react'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * Diálogo para compartir la sala: muestra el enlace de invitación y el código,
+ * con botones que copian cada valor al portapapeles y un feedback animado.
+ */
+const DialogShare = ({ enlace, codigo }: { enlace: string, codigo: string }) => {
+    // Guarda cuál de los dos campos se acaba de copiar (para mostrar el tilde)
+    const [copiado, establecerCopiado] = useState<string | null>(null);
 
-const DialogShare = ({ link, codigo }: { link: string, codigo: string }) => {
-    const [copied, setCopied] = useState<string | null>(null);
-
-    const handleCopy = (text: string, type: string) => {
-        navigator.clipboard.writeText(text);
-        setCopied(type);
-        setTimeout(() => setCopied(null), 2000);
+    // Copia el texto al portapapeles y marca el campo como copiado durante 2 segundos
+    const manejarCopiar = (texto: string, tipo: string) => {
+        navigator.clipboard.writeText(texto);
+        establecerCopiado(tipo);
+        setTimeout(() => establecerCopiado(null), 2000);
     };
 
     return (
@@ -32,32 +37,32 @@ const DialogShare = ({ link, codigo }: { link: string, codigo: string }) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Share link</DialogTitle>
+                    <DialogTitle>Compartir enlace</DialogTitle>
                     <DialogDescription>
-                        Anyone who has this link will be able to view this.
+                        Cualquiera que tenga este enlace podrá unirse a la sala.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col items-center gap-2">
                     <div className="w-full grid flex-1 gap-2">
-                        <Label htmlFor="link" className="">
-                            Link
+                        <Label htmlFor="enlace" className="">
+                            Enlace
                         </Label>
                         <div className="flex items-center space-x-2">
                             <Input
-                                id="link"
-                                defaultValue={link}
+                                id="enlace"
+                                defaultValue={enlace}
                                 readOnly
                             />
-                            <Button 
-                                type="button" 
-                                size="icon" 
-                                variant="secondary" 
-                                className="px-3" 
-                                onClick={() => handleCopy(link, 'link')}
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="secondary"
+                                className="px-3"
+                                onClick={() => manejarCopiar(enlace, 'enlace')}
                             >
-                                <span className="sr-only">Copy link</span>
+                                <span className="sr-only">Copiar enlace</span>
                                 <AnimatePresence mode="wait" initial={false}>
-                                    {copied === 'link' ? (
+                                    {copiado === 'enlace' ? (
                                         <motion.div
                                             key="check"
                                             initial={{ opacity: 0, scale: 0.5 }}
@@ -84,7 +89,7 @@ const DialogShare = ({ link, codigo }: { link: string, codigo: string }) => {
                     </div>
                     <div className="w-full grid flex-1 gap-2">
                         <Label htmlFor="codigo" className="">
-                            Codigo
+                            Código
                         </Label>
                         <div className="flex items-center space-x-2">
                             <Input
@@ -92,16 +97,16 @@ const DialogShare = ({ link, codigo }: { link: string, codigo: string }) => {
                                 defaultValue={codigo}
                                 readOnly
                             />
-                            <Button 
-                                type="button" 
-                                size="icon" 
-                                variant="secondary" 
-                                className="px-3" 
-                                onClick={() => handleCopy(codigo, 'codigo')}
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="secondary"
+                                className="px-3"
+                                onClick={() => manejarCopiar(codigo, 'codigo')}
                             >
-                                <span className="sr-only">Copy codigo</span>
+                                <span className="sr-only">Copiar código</span>
                                 <AnimatePresence mode="wait" initial={false}>
-                                    {copied === 'codigo' ? (
+                                    {copiado === 'codigo' ? (
                                         <motion.div
                                             key="check"
                                             initial={{ opacity: 0, scale: 0.5 }}
@@ -129,7 +134,7 @@ const DialogShare = ({ link, codigo }: { link: string, codigo: string }) => {
                 </div>
                 <DialogFooter className="sm:justify-start">
                     <DialogClose asChild>
-                        <Button type="button">Close</Button>
+                        <Button type="button">Cerrar</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

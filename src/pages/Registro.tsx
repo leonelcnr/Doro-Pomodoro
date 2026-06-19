@@ -2,6 +2,7 @@ import { IconInnerShadowTop } from "@tabler/icons-react"
 
 import { LoginForm } from "@/components/login-form"
 
+// Página de registro: reutiliza el mismo formulario que el login (LoginForm)
 const Registro = () => {
     return (
         <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

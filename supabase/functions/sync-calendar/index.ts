@@ -8,7 +8,14 @@ const corsHeaders = {
 
 const CALENDAR_BASE = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
 
-function buildBody(payload: any) {
+// Datos que el cliente envía para crear/actualizar un evento de calendario
+interface CalendarPayload {
+  summary: string;
+  description?: string;
+  date: string;
+}
+
+function buildBody(payload: CalendarPayload) {
   return {
     summary: payload.summary,
     description: payload.description,

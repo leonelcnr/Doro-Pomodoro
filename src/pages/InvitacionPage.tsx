@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabase from "@/lib/supabase";
+import * as salasService from "@/features/room/services/salasService";
 import { Button } from "@/components/ui/button"
 import {
     Empty,
@@ -12,48 +13,54 @@ import {
 } from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
 
+/**
+ * Página intermedia al abrir un enlace de invitación (/invitacion/:code).
+ * Procesa automáticamente el código: valida la sesión (redirige a login si hace
+ * falta), se une a la sala vía la RPC `join_room` y navega a ella.
+ */
 const Invitacion = () => {
+    // `code` viene del parámetro de la ruta (contrato con el router)
     const { code } = useParams<{ code: string }>();
     const navigate = useNavigate();
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [mensajeError, establecerMensajeError] = useState<string | null>(null);
 
     useEffect(() => {
-        const run = async () => {
-            const inviteCode = (code ?? "").trim().toUpperCase();
-            if (!inviteCode) {
-                setErrorMsg("Código inválido.");
+        const procesarInvitacion = async () => {
+            const codigoInvitacion = (code ?? "").trim().toUpperCase();
+            if (!codigoInvitacion) {
+                establecerMensajeError("Código inválido.");
                 return;
             }
 
-            // 1) chequeo sesión (si no hay login, mandar a login y volver)
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                const redirect = encodeURIComponent(`/invitacion/${inviteCode}`);
-                navigate(`/login?redirect=${redirect}`, { replace: true, state: { from: location.pathname } });
+            // 1) Verificamos la sesión (si no hay login, vamos a login y luego volvemos acá)
+            const { data: { session: sesion } } = await supabase.auth.getSession();
+            if (!sesion) {
+                const redireccion = encodeURIComponent(`/invitacion/${codigoInvitacion}`);
+                navigate(`/login?redirect=${redireccion}`, { replace: true, state: { from: location.pathname } });
                 return;
             }
 
-            // 2) unirse por RPC
-            const { data: roomId, error } = await supabase.rpc("join_room", { p_code: inviteCode });
-            if (error) {
-                setErrorMsg(error.message || "No se pudo unir a la sala.");
-                return;
+            // 2) Nos unimos a la sala mediante el servicio de salas
+            try {
+                const salaId = await salasService.unirseASala(codigoInvitacion);
+                // 3) Entramos a la sala
+                navigate(`/room/${salaId}`, { replace: true });
+            } catch (error: unknown) {
+                const mensaje = error instanceof Error ? error.message : undefined;
+                establecerMensajeError(mensaje || "No se pudo unir a la sala.");
             }
-
-            // 3) entrar a la sala
-            navigate(`/room/${roomId}`, { replace: true });
         };
 
-        run();
+        procesarInvitacion();
     }, [code, navigate]);
 
-    if (errorMsg) {
+    if (mensajeError) {
         return (
             <Empty className="w-full h-screen flex flex-col items-center justify-center">
                 <EmptyHeader>
                     <EmptyTitle>Error</EmptyTitle>
                     <EmptyDescription>
-                        {errorMsg}
+                        {mensajeError}
                     </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>

@@ -3,50 +3,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import { useNavigate } from 'react-router-dom';
-import supabase from "@/lib/supabase"
+import * as salasService from "@/features/room/services/salasService"
 import { toast } from "sonner"
 
 
+// Tarjeta con dos acciones: crear una sala nueva o unirse a una existente por código
 export const SalaNueva = () => {
-    // CREAR SALA NUEVA
     const navigate = useNavigate();
-    const crearSala = async () => {
-        const { data, error } = await supabase.rpc("create_room", {
-            p_name: "Sala de estudio",
-            p_is_public: false,
-            p_max_uses: null,
-            p_expires_minutes: null,
-        });
-        if (error) return;
 
-        const { room_id } = data[0];
-        console.log(room_id);
-        navigate(`/room/${room_id}`);
+    // CREAR SALA NUEVA: crea la sala vía el servicio y navega a la recién creada
+    const crearSala = async () => {
+        try {
+            const salaId = await salasService.crearSala();
+            navigate(`/room/${salaId}`);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
 
     // UNIRSE A SALA
-    const [roomCode, setRoomCode] = useState('');
+    const [codigoSala, establecerCodigoSala] = useState('');
 
-    const join = async () => {
+    // Valida el código y entra a la sala mediante el servicio de salas
+    const unirse = async () => {
+        const codigo = parsearInvitacion(codigoSala);
 
-        const code = parsearInvitacion(roomCode);
-
-        const { data: roomId, error } = await supabase.rpc("join_room", { p_code: code });
-
-        if (error) {
-            console.log(error.message);
-            toast.error(error.message || "No se pudo unir.");
-            return;
+        try {
+            const salaId = await salasService.unirseASala(codigo);
+            navigate(`/room/${salaId}`);
+        } catch (error: unknown) {
+            const mensaje = error instanceof Error ? error.message : undefined;
+            console.log(mensaje);
+            toast.error(mensaje || "No se pudo unir.");
         }
-        navigate(`/room/${roomId}`);
     };
 
 
     return (
 
         // 'w-full' asegura que ocupe todo el espacio a los lados
-        // Usamos colores oscuros de la paleta zinc que coinciden con tu diseño original
+        // Usamos colores oscuros de la paleta zinc que coinciden con el diseño original
         <div className="w-full bg-transparent border-none overflow-hidden">
             <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border">
 
@@ -78,16 +75,16 @@ export const SalaNueva = () => {
                         <Input
                             type="text"
                             placeholder="Código de sala (Ej: 0852EF11)"
-                            value={roomCode}
-                            onChange={(e) => setRoomCode(e.target.value)}
+                            value={codigoSala}
+                            onChange={(e) => establecerCodigoSala(e.target.value)}
                             className="h-12 grow"
                         />
 
                         <Button
-                            disabled={!roomCode}
+                            disabled={!codigoSala}
                             variant="outline"
                             className="h-12 transition-colors disabled:opacity-50 sm:w-1/3"
-                            onClick={join}
+                            onClick={unirse}
                         >
                             Unirse
                         </Button>

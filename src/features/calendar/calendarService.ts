@@ -1,12 +1,15 @@
 import supabase from "@/lib/supabase";
 
+// Tipos de evento del calendario. Los valores se almacenan tal cual en la columna `type`.
 export type EventType = "Examen" | "Entrega" | "Estudio" | "Otro";
 
+// Estructura de un evento del calendario. Los nombres de campos coinciden con las
+// columnas de la tabla `calendar_events` en Supabase, por eso van en inglés.
 export interface CalendarEvent {
   id: string;
   user_id: string;
   title: string;
-  event_date: string; // ISO date string "YYYY-MM-DD"
+  event_date: string; // Fecha ISO "YYYY-MM-DD"
   type: EventType;
   description?: string;
   google_event_id?: string;
@@ -14,6 +17,7 @@ export interface CalendarEvent {
   updated_at: string;
 }
 
+// Datos necesarios para crear un evento (el resto los completa la base de datos)
 export interface CreateEventPayload {
   title: string;
   event_date: string;
@@ -21,6 +25,7 @@ export interface CreateEventPayload {
   description?: string;
 }
 
+// Datos opcionales para actualizar un evento existente
 export interface UpdateEventPayload {
   title?: string;
   event_date?: string;
@@ -29,6 +34,9 @@ export interface UpdateEventPayload {
   google_event_id?: string;
 }
 
+// --- Capa de servicio: acceso a la tabla `calendar_events` de Supabase ---
+
+// Trae todos los eventos del usuario, ordenados por fecha ascendente
 export async function fetchEvents(): Promise<CalendarEvent[]> {
   const { data, error } = await supabase
     .from("calendar_events")
@@ -39,8 +47,9 @@ export async function fetchEvents(): Promise<CalendarEvent[]> {
   return data ?? [];
 }
 
+// Crea un evento asociándolo al usuario autenticado actual
 export async function createEvent(
-  payload: CreateEventPayload
+  datos: CreateEventPayload
 ): Promise<CalendarEvent> {
   const {
     data: { user },
@@ -50,7 +59,7 @@ export async function createEvent(
 
   const { data, error } = await supabase
     .from("calendar_events")
-    .insert({ ...payload, user_id: user.id })
+    .insert({ ...datos, user_id: user.id })
     .select()
     .single();
 
@@ -58,13 +67,14 @@ export async function createEvent(
   return data;
 }
 
+// Actualiza un evento por su id y devuelve la fila actualizada
 export async function updateEvent(
   id: string,
-  payload: UpdateEventPayload
+  datos: UpdateEventPayload
 ): Promise<CalendarEvent> {
   const { data, error } = await supabase
     .from("calendar_events")
-    .update(payload)
+    .update(datos)
     .eq("id", id)
     .select()
     .single();
@@ -73,6 +83,7 @@ export async function updateEvent(
   return data;
 }
 
+// Elimina un evento por su id
 export async function deleteEvent(id: string): Promise<void> {
   const { error } = await supabase
     .from("calendar_events")
