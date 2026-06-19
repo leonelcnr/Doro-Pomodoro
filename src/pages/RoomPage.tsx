@@ -78,6 +78,22 @@ const RoomPage = () => {
     }, [invitacion?.code]);
 
 
+    if (error) {
+        return (
+            <Empty className="w-full h-screen flex flex-col items-center justify-center">
+                <EmptyHeader>
+                    <EmptyTitle>No se pudo acceder a la sala</EmptyTitle>
+                    <EmptyDescription>{error}</EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                    <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+                        Volver al inicio
+                    </Button>
+                </EmptyContent>
+            </Empty>
+        );
+    }
+
     return (
         <div className="w-full min-h-dvh py-6 lg:py-24 px-4 bg-background selection:bg-primary/20 overflow-x-hidden">
             <div className="max-w-6xl mx-auto space-y-12 lg:space-y-24 relative mt-16 lg:mt-0">
