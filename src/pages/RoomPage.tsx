@@ -58,6 +58,7 @@ const RoomPage = () => {
 
         const cargarSala = async () => {
             establecerCargandoInvitacion(true);
+            establecerError(null); // limpia un error previo al cambiar de sala
 
             // 1) Membresía: imprescindible para leer/sincronizar la sala con RLS
             try {
