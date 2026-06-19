@@ -32,9 +32,10 @@ export const SalaNueva = () => {
         try {
             const salaId = await salasService.unirseASala(codigo);
             navigate(`/room/${salaId}`);
-        } catch (error: any) {
-            console.log(error?.message);
-            toast.error(error?.message || "No se pudo unir.");
+        } catch (error: unknown) {
+            const mensaje = error instanceof Error ? error.message : undefined;
+            console.log(mensaje);
+            toast.error(mensaje || "No se pudo unir.");
         }
     };
 

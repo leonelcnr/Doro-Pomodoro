@@ -45,8 +45,9 @@ const Invitacion = () => {
                 const salaId = await salasService.unirseASala(codigoInvitacion);
                 // 3) Entramos a la sala
                 navigate(`/room/${salaId}`, { replace: true });
-            } catch (error: any) {
-                establecerMensajeError(error?.message || "No se pudo unir a la sala.");
+            } catch (error: unknown) {
+                const mensaje = error instanceof Error ? error.message : undefined;
+                establecerMensajeError(mensaje || "No se pudo unir a la sala.");
             }
         };
 

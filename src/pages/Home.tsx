@@ -24,9 +24,13 @@ const Home = () => {
     const manejarCambioTareas = async (nuevoEstadoTareas: Tarea[]) => {
         try {
             await guardarCambios(nuevoEstadoTareas, "personal");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error al guardar las tareas en Supabase:", error);
-            alert(`Error al guardar la tarea: ${error?.message ?? 'desconocido'}${error?.details ? ` (Detalles: ${error.details})` : ''}`);
+            // Los errores de Supabase (PostgrestError) traen `message` y `details`
+            const err = error as { message?: string; details?: string };
+            const mensaje = err?.message ?? 'desconocido';
+            const detalles = err?.details ? ` (Detalles: ${err.details})` : '';
+            alert(`Error al guardar la tarea: ${mensaje}${detalles}`);
         }
     };
 

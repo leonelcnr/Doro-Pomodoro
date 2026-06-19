@@ -27,7 +27,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { ThemeTogglerButton } from "@/components/ui/theme-toggler"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useAuth } from "@/features/auth/context/useAuth"
 import { DailyStreak } from "./daily-streak"
 
 

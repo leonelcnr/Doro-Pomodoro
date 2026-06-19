@@ -88,3 +88,25 @@ export interface EstadoReloj {
   modo: Modo;
   actualizadoEn?: string;
 }
+
+/**
+ * Invitación vigente de una sala (tabla `room_invites`). Las claves van en inglés
+ * porque son columnas reales de Supabase.
+ */
+export interface Invitacion {
+  code: string;
+  expires_at: string | null;
+  max_uses: number | null;
+  uses: number;
+  created_at: string;
+}
+
+/**
+ * Estado de la música compartida de una sala (columna `music_state`). Las claves
+ * `url`/`isPlaying` se mantienen en inglés porque viajan tal cual en la columna.
+ */
+export interface EstadoMusicaSala {
+  url: string;
+  isPlaying: boolean;
+  updatedAt?: string;
+}

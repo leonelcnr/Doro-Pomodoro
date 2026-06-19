@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
 import * as salasService from "@/features/room/services/salasService";
-
-// Estado de la música compartida de la sala. Las claves `url`/`isPlaying` se
-// mantienen en inglés porque viajan tal cual en la columna `music_state`.
-export type EstadoMusicaSala = { url: string; isPlaying: boolean; updatedAt?: string };
+import type { EstadoMusicaSala } from "@/types/dominio";
 
 /**
  * Hook de la música compartida de una sala. Carga el estado inicial, escucha

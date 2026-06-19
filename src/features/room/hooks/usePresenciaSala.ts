@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 import type { UsuarioEnSala } from "@/types/dominio";
 
 /**

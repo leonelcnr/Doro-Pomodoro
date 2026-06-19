@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useTimerStore } from '@/store/timerStore';
 import supabase from '@/lib/supabase';
-import { useAuth } from '@/features/auth/context/AuthContext';
+import { useAuth } from '@/features/auth/context/useAuth';
 
 // Importamos los audios para que Vite los procese y entregue la URL final
 import rutaSonidoTick from '@/assets/sounds/tick.mp3';

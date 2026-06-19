@@ -17,16 +17,8 @@ import {
 } from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/features/auth/context/AuthContext";
-
-// Los nombres de campos van en inglés porque así están definidos en Supabase
-type Invitacion = {
-    code: string;
-    expires_at: string | null;
-    max_uses: number | null;
-    uses: number;
-    created_at: string;
-};
+import { useAuth } from "@/features/auth/context/useAuth";
+import type { Invitacion } from "@/types/dominio";
 
 // Una invitación es válida si no expiró y todavía le quedan usos disponibles
 function InvitacionValida(inv: Invitacion) {
@@ -68,10 +60,10 @@ const RoomPage = () => {
                 const invitacionData = await salasService.obtenerInvitacion(roomId);
                 establecerCargandoInvitacion(false);
                 establecerInvitacion(invitacionData && InvitacionValida(invitacionData) ? invitacionData : null);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 establecerCargandoInvitacion(false);
                 console.error("Error al inicializar la sala:", error);
-                establecerError(error?.message ?? "No se pudo cargar la sala.");
+                establecerError(error instanceof Error ? error.message : "No se pudo cargar la sala.");
                 establecerInvitacion(null);
             }
         };

@@ -27,7 +27,7 @@ import { useCalendarEvents } from "@/features/calendar/useCalendarEvents";
 import type { CalendarEvent, EventType } from "@/features/calendar/calendarService";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 
 // Color/estilo de la etiqueta según el tipo de evento (las claves son valores de EventType)
 const COLOR_TIPO_EVENTO: Record<EventType, string> = {

@@ -14,7 +14,6 @@ import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import Dashboard from "./pages/Dashboard";
 import CalendarPage from "./pages/CalendarPage";
-import { TimerDisplay } from "./features/timer/components/TimerDisplay";
 import Invitacion from "./pages/InvitacionPage";
 import Room from "./pages/RoomPage";
 import Terms from "./pages/Terms";

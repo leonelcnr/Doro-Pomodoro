@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Flame, Clock, CheckCircle2, TrendingUp } from "lucide-react"
 import supabase from "@/lib/supabase"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useAuth } from "@/features/auth/context/useAuth"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 

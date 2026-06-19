@@ -16,6 +16,33 @@ export interface RangeStats {
   pieChartData: { name: string; value: number }[];
 }
 
+// Agregados precalculados que devuelve la RPC `get_dashboard_aggregates`. Las
+// claves van en inglés porque son los nombres de columna que emite la función SQL.
+interface AgregadoPorHora {
+  stat_date: string;
+  stat_hour: number;
+  total_minutes: number;
+}
+
+interface AgregadoPorDia {
+  stat_date: string;
+  day_of_week: number;
+  total_minutes: number;
+  sessions_count: number;
+}
+
+interface AgregadoPorTarea {
+  stat_date: string;
+  task_type: string | null;
+  tasks_count: number;
+}
+
+interface AgregadosDashboard {
+  hourly: AgregadoPorHora[];
+  daily: AgregadoPorDia[];
+  tasks: AgregadoPorTarea[];
+}
+
 /**
  * Hook que centraliza TODAS las estadísticas del dashboard. Trae los datos
  * crudos de Supabase (estadísticas del usuario, agregados precalculados por la
@@ -44,7 +71,7 @@ export function useDashboardStats(userId: string | undefined) {
       if (!userId) return null;
       const { data, error } = await supabase.rpc('get_dashboard_aggregates', { p_user_id: userId });
       if (error) throw error;
-      return data as any;
+      return data as AgregadosDashboard;
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
@@ -107,8 +134,8 @@ export function useDashboardStats(userId: string | undefined) {
 
     rangos.forEach(rango => {
       // Generamos las etiquetas del eje X según el rango y la fecha de inicio del período
-      let etiquetas: string[] = [];
-      let fechaInicio = new Date(hoyObj);
+      const etiquetas: string[] = [];
+      const fechaInicio = new Date(hoyObj);
 
       if (rango === 'week') {
         fechaInicio.setDate(fechaInicio.getDate() - 6);
@@ -154,7 +181,7 @@ export function useDashboardStats(userId: string | undefined) {
 
       if (rango === 'day') {
         // Para el día usamos el detalle por hora
-        agregados.hourly.forEach((fila: any) => {
+        agregados.hourly.forEach((fila) => {
           if (fila.stat_date === hoyStrArg) {
             const etiqueta = `${fila.stat_hour.toString().padStart(2, '0')}:00`;
             if (mapaAgregado.has(etiqueta)) {
@@ -163,10 +190,10 @@ export function useDashboardStats(userId: string | undefined) {
             totalMinutos += fila.total_minutes;
           }
         });
-        totalSesiones = agregados.daily.find((d: any) => d.stat_date === hoyStrArg)?.sessions_count || 0;
+        totalSesiones = agregados.daily.find((d) => d.stat_date === hoyStrArg)?.sessions_count || 0;
       } else {
         // Para el resto de rangos usamos el detalle por día
-        agregados.daily.forEach((fila: any) => {
+        agregados.daily.forEach((fila) => {
           const fechaFila = new Date(fila.stat_date + 'T00:00:00');
           if (fechaFila >= fechaInicio || rango === 'total') {
             if (fechaFila >= fechaInicio) {
@@ -191,7 +218,7 @@ export function useDashboardStats(userId: string | undefined) {
       // Conteo de tareas completadas por tipo (para el gráfico de torta)
       const conteoTipos: Record<string, number> = {};
       let tareasMostradas = 0;
-      agregados.tasks.forEach((t: any) => {
+      agregados.tasks.forEach((t) => {
         const fechaTarea = new Date(t.stat_date + 'T00:00:00');
         if (fechaTarea >= fechaInicio || rango === 'total') {
            const tipoStr = t.task_type ? t.task_type.trim() : 'Otro';
@@ -208,7 +235,7 @@ export function useDashboardStats(userId: string | undefined) {
       // Para el total preferimos el acumulado oficial guardado en user_stats
       if (rango === 'total' && datosEstadisticasUsuario) {
         totalMinutos = datosEstadisticasUsuario.total_study_minutes || 0;
-        totalSesiones = agregados.daily.reduce((acc: number, val: any) => acc + val.sessions_count, 0);
+        totalSesiones = agregados.daily.reduce((acc, val) => acc + val.sessions_count, 0);
       }
 
       resultado[rango] = {
@@ -230,7 +257,7 @@ export function useDashboardStats(userId: string | undefined) {
     const minutosDiarios = new Map<string, number>();
     const estadisticasDiasSemana = Array.from({ length: 7 }, () => ({ totalMins: 0, uniqueDays: new Set<string>() }));
 
-    agregados.daily.forEach((fila: any) => {
+    agregados.daily.forEach((fila) => {
       minutosDiarios.set(fila.stat_date, fila.total_minutes);
 
       // Convertimos el día de la semana (1-7) al formato de JS (0=domingo)

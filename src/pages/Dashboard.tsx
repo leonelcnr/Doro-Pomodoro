@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bar, BarChart, CartesianGrid, XAxis, PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, PieChart, Pie } from "recharts"
 import Heatmap from "@/components/ui/heatmap"
 import {
   ChartContainer,
@@ -37,9 +37,13 @@ const formatearMinutos = (m: number) => {
 // Formatea una fecha completa en español para los tooltips del mapa de calor
 const formatearFechaMapaCalor = (d: Date) => new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 
+// Paleta del gráfico de torta. Constante de módulo (estable entre renders) para
+// que los useMemo que la usan no la necesiten en su array de dependencias.
+const COLORES_TORTA = ['#8b5cf6', '#f97316', '#10b981', '#3b82f6', '#ec4899', '#f43f5e', '#eab308'];
+
 import { Clock, CheckCircle2, TrendingUp, Timer } from "lucide-react"
 import { useState, useMemo } from "react"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useAuth } from "@/features/auth/context/useAuth"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDashboardStats, type TimeRange } from "@/features/dashboard/hooks/useDashboardStats"
 
@@ -80,18 +84,16 @@ export default function Dashboard() {
     return { start: inicio, end: fin };
   }, []);
 
-  const COLORES_TORTA = ['#8b5cf6', '#f97316', '#10b981', '#3b82f6', '#ec4899', '#f43f5e', '#eab308'];
-
   // Configuración (etiquetas + colores) del gráfico de torta, derivada de los datos
   const configTorta = useMemo(() => {
-    const config: Record<string, any> = {};
+    const config: ChartConfig = {};
     pieChartData.forEach((entrada, indice) => {
       config[entrada.name] = {
         label: entrada.name,
         color: COLORES_TORTA[indice % COLORES_TORTA.length],
       };
     });
-    return config satisfies ChartConfig;
+    return config;
   }, [pieChartData]);
 
   // Datos de la torta con su color de relleno asignado
@@ -122,7 +124,7 @@ export default function Dashboard() {
               <h1 className="text-3xl font-bold tracking-tight">Tu Momentum</h1>
               <p className="text-muted-foreground mt-1 text-sm">Resumen de tus bloques de enfoque y tareas completadas.</p>
             </div>
-            <Tabs value={rangoTiempo} onValueChange={(v: any) => establecerRangoTiempo(v)} className="w-full sm:w-auto">
+            <Tabs value={rangoTiempo} onValueChange={(v) => establecerRangoTiempo(v as TimeRange)} className="w-full sm:w-auto">
               <TabsList className="grid grid-cols-5 w-full sm:w-[400px]">
                 <TabsTrigger value="day">Día</TabsTrigger>
                 <TabsTrigger value="week">Semana</TabsTrigger>

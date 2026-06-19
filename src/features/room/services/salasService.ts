@@ -1,5 +1,5 @@
 import supabase from "@/lib/supabase";
-import type { EstadoReloj } from "@/types/dominio";
+import type { EstadoReloj, Invitacion, EstadoMusicaSala } from "@/types/dominio";
 
 /**
  * Capa de servicio para las salas (`rooms`) y sus operaciones relacionadas en
@@ -30,7 +30,7 @@ export async function unirseASala(codigo: string | null): Promise<string> {
 }
 
 // Trae la invitación más reciente de una sala (o null si no hay)
-export async function obtenerInvitacion(salaId: string): Promise<any | null> {
+export async function obtenerInvitacion(salaId: string): Promise<Invitacion | null> {
   const { data, error } = await supabase
     .from("room_invites")
     .select("code, expires_at, max_uses, uses, created_at")
@@ -59,14 +59,14 @@ export async function guardarEstadoReloj(salaId: string, estado: EstadoReloj): P
 }
 
 // Trae el estado de la música compartida de una sala (columna `music_state`, o null si no hay)
-export async function obtenerEstadoMusica(salaId: string): Promise<any | null> {
+export async function obtenerEstadoMusica(salaId: string): Promise<EstadoMusicaSala | null> {
   const { data, error } = await supabase
     .from("rooms")
     .select("music_state")
     .eq("id", salaId)
     .maybeSingle();
   if (error) throw error;
-  return data?.music_state ?? null;
+  return (data?.music_state as EstadoMusicaSala | null) ?? null;
 }
 
 // Guarda/actualiza el estado de la música compartida de una sala

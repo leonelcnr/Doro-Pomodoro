@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Radio, X } from "lucide-react";
-import type { EstadoMusicaSala } from "@/features/room/hooks/useMusicaSala";
+import type { EstadoMusicaSala } from "@/types/dominio";
 
 type ReproductorSalaProps = {
     entrada: string;

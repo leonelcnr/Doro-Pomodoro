@@ -27,7 +27,7 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useAuth } from "@/features/auth/context/useAuth"
 
 export function NavUser({
   user,

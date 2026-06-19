@@ -39,7 +39,7 @@ export function useDocumentPiP() {
                     const estilo = document.createElement('style');
                     estilo.textContent = reglasCss;
                     ventana.document.head.appendChild(estilo);
-                } catch (e) {
+                } catch {
                     // Si la hoja es de otro origen no podemos leer sus reglas: la enlazamos por href
                     const enlace = document.createElement('link');
                     enlace.rel = 'stylesheet';

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Link } from "react-router-dom"
-import { useAuth } from "@/features/auth/context/AuthContext"
+import { useAuth } from "@/features/auth/context/useAuth"
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const { signInWithGoogle, signInWithGithub, signInWithDiscord, signInAnonymously } = useAuth();

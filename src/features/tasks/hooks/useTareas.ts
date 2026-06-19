@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
 import * as tareasService from "@/features/tasks/services/tareasService";
-import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuth } from "@/features/auth/context/useAuth";
 import type { Tarea, TareaPayload } from "@/types/dominio";
 
 // Ámbito sobre el que opera un guardado de tareas: las personales (sin sala) o
