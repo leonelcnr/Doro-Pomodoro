@@ -16,14 +16,14 @@ calendario integrado con Google Calendar. Todo el código y la UI están **en es
 ## Comandos
 
 ```bash
-npm install
-npm run dev        # Vite dev server (http://localhost:5173)
-npm run build      # tsc -b && vite build → dist/
-npm run lint       # ESLint
-npm run preview    # Sirve el build de dist/
+pnpm install
+pnpm dev           # Vite dev server (http://localhost:5173)
+pnpm build         # tsc -b && vite build → dist/
+pnpm lint          # ESLint
+pnpm preview       # Sirve el build de dist/
 ```
 
-- Agregar componentes shadcn: `npx shadcn@latest add <componente>` (genera en `src/components/ui/`).
+- Agregar componentes shadcn: `pnpm dlx shadcn@latest add <componente>` (genera en `src/components/ui/`).
 - Alias de imports: **`@/` → `src/`** (en `vite.config.ts` y los `tsconfig`). Usar siempre el alias, no rutas relativas profundas.
 
 > ⚠️ **Gotcha de build (Console Ninja):** si el proyecto se abre desde Antigravity IDE
@@ -74,7 +74,7 @@ Features: `auth`, `calendar`, `dashboard`, `home`, `room`, `tasks`, `timer`.
 
 - **Todo en español**: variables, funciones, estado, comentarios y textos de UI.
 - **Excepción — se mantienen en inglés** (son contratos que romperían la app): nombres de tablas/columnas/RPC de Supabase, campos de Google Calendar/OAuth (`provider_refresh_token`, etc.), props de librerías, los valores literales de `mode` y las claves de `configuracion` del store, y los nombres de archivos/componentes exportados. Aislar esos nombres en la capa de `services/`.
-- **Gestor de paquetes: npm** (hay `package-lock.json`).
+- **Gestor de paquetes: pnpm** (hay `pnpm-lock.yaml` y `pnpm-workspace.yaml`; Vercel despliega con `pnpm run build`).
 - **No tocar como código propio:** `src/components/ui/*` (shadcn), `src/components/animate-ui/*`, y los bloques de plantilla (`app-sidebar`, `data-table`, `nav-*`, `site-header`). Están ignorados en `eslint.config.js` a propósito.
 
 ## Convenciones de TypeScript

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import supabase from "@/lib/supabase";
 import * as salasService from "@/features/room/services/salasService";
 import type { EstadoMusicaSala } from "@/types/dominio";
@@ -57,7 +58,7 @@ export function useMusicaSala(salaId?: string) {
       await salasService.guardarEstadoMusica(salaId, estadoFinal);
     } catch (error) {
       console.error("Error de Supabase sincronizando música:", error);
-      alert("⚠️ Error: No se pudo sincronizar la música con la sala.\n\nPor favor, asegúrate de haber creado la columna 'music_state' (tipo JSONB) en la tabla 'rooms' de tu Supabase.");
+      toast.error("No se pudo sincronizar la música con la sala.");
     }
   };
 

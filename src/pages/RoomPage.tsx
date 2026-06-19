@@ -39,7 +39,7 @@ const RoomPage = () => {
     const { roomId } = useParams();
     const [invitacion, establecerInvitacion] = useState<Invitacion | null>();
     const [cargandoInvitacion, establecerCargandoInvitacion] = useState<boolean>(false);
-    const [, establecerError] = useState<string | null>(null);
+    const [error, establecerError] = useState<string | null>(null);
     const navigate = useNavigate();
     const auth = useAuth();
     const usuario = auth.user;
@@ -50,25 +50,38 @@ const RoomPage = () => {
     const { tareas, cargado, guardarCambios, moverTarea } = useTareas(roomId);
     useSincronizacionReloj(roomId);
 
-    // Carga la invitación vigente de la sala (lo demás lo resuelven los hooks)
+    // Al entrar: aseguramos la membresía en la sala (RLS) y luego cargamos la
+    // invitación. Si falla la membresía, bloqueamos con la vista de error; el
+    // error de la invitación es secundario y no debe bloquear la sala.
     useEffect(() => {
         if (!roomId || !usuario) return;
 
-        const cargarInvitacion = async () => {
+        const cargarSala = async () => {
             establecerCargandoInvitacion(true);
+
+            // 1) Membresía: imprescindible para leer/sincronizar la sala con RLS
+            try {
+                await salasService.unirseASalaPorId(roomId);
+            } catch (e: unknown) {
+                establecerCargandoInvitacion(false);
+                console.error("Error al unirse a la sala:", e);
+                establecerError(e instanceof Error ? e.message : "No se pudo acceder a la sala.");
+                return;
+            }
+
+            // 2) Invitación: secundaria. Su error no bloquea la sala.
             try {
                 const invitacionData = await salasService.obtenerInvitacion(roomId);
-                establecerCargandoInvitacion(false);
                 establecerInvitacion(invitacionData && InvitacionValida(invitacionData) ? invitacionData : null);
-            } catch (error: unknown) {
-                establecerCargandoInvitacion(false);
-                console.error("Error al inicializar la sala:", error);
-                establecerError(error instanceof Error ? error.message : "No se pudo cargar la sala.");
+            } catch (e: unknown) {
+                console.error("Error al cargar la invitación (no bloquea la sala):", e);
                 establecerInvitacion(null);
+            } finally {
+                establecerCargandoInvitacion(false);
             }
         };
 
-        cargarInvitacion();
+        cargarSala();
     }, [roomId, usuario]);
 
     // Arma el enlace de invitación a partir del código vigente
