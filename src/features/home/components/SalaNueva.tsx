@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Plus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import { useNavigate } from 'react-router-dom';
 import * as salasService from "@/features/room/services/salasService"
@@ -41,57 +43,57 @@ export const SalaNueva = () => {
 
 
     return (
+        // Dos destinos claros: crear una sala nueva o unirse a una existente.
+        <div className="grid w-full gap-4 md:grid-cols-2">
 
-        // 'w-full' asegura que ocupe todo el espacio a los lados
-        // Usamos colores oscuros de la paleta zinc que coinciden con el diseño original
-        <div className="w-full bg-transparent border-none overflow-hidden">
-            <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border">
+            {/* TARJETA IZQUIERDA: CREAR SALA */}
+            <Card className="gap-0 p-6">
+                <div className="mb-2 flex items-center gap-2.5">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500">
+                        <Plus className="size-5" />
+                    </span>
+                    <h2 className="text-lg font-bold tracking-tight">Nueva sala</h2>
+                </div>
+                <p className="mb-6 grow text-sm text-muted-foreground">
+                    Iniciá una sesión de Pomodoro y obtené un enlace para compartir con tus amigos.
+                </p>
+                <Button
+                    onClick={crearSala}
+                    className="w-full py-6 text-md transition-all duration-200 active:scale-[0.98]">
+                    Crear sala
+                </Button>
+            </Card>
 
-                {/* SECCIÓN IZQUIERDA: CREAR SALA */}
-                <div className="flex-1 py-6 md:py-8 md:pr-8 flex flex-col justify-start">
-                    <div className="mb-2 flex items-center gap-2">
-                        <h2 className="text-xl font-bold tracking-wide">Nueva Sala</h2>
-                    </div>
-                    <p className=" text-sm mb-6 grow text-muted-foreground">
-                        Crea una sala para iniciar una sesión de Pomodoro y obtén un enlace para compartir con tus amigos.
-                    </p>
+            {/* TARJETA DERECHA: UNIRSE A SALA */}
+            <Card className="gap-0 p-6">
+                <div className="mb-2 flex items-center gap-2.5">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500">
+                        <ArrowRight className="size-5" />
+                    </span>
+                    <h2 className="text-lg font-bold tracking-tight">Unirse a sala</h2>
+                </div>
+                <p className="mb-6 grow text-sm text-muted-foreground">
+                    ¿Ya tenés una invitación? Introducí el código de la sala para unirte a una sesión existente.
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                    <Input
+                        type="text"
+                        placeholder="Código de sala (Ej: 0852EF11)"
+                        value={codigoSala}
+                        onChange={(e) => establecerCodigoSala(e.target.value)}
+                        className="h-12 grow"
+                    />
                     <Button
-                        onClick={crearSala}
-                        className="w-full text-white py-6 text-md transition-all duration-200 active:scale-[0.98]">
-                        Crear
+                        disabled={!codigoSala}
+                        variant="outline"
+                        className="h-12 transition-colors disabled:opacity-50 sm:w-1/3"
+                        onClick={unirse}
+                    >
+                        Unirse
                     </Button>
                 </div>
+            </Card>
 
-                {/* SECCIÓN DERECHA: UNIRSE A SALA */}
-                <div className="flex-1 py-6 md:py-8 md:pl-8 flex flex-col justify-start">
-                    <div className="mb-2 flex items-center gap-2">
-                        <h2 className="text-xl font-bold  tracking-wide">Unirse a sala</h2>
-                    </div>
-                    <p className=" text-sm mb-6 grow">
-                        ¿Ya tienes una invitación? Introduce el código de la sala para unirte a una sesión existente.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-3">
-                        <Input
-                            type="text"
-                            placeholder="Código de sala (Ej: 0852EF11)"
-                            value={codigoSala}
-                            onChange={(e) => establecerCodigoSala(e.target.value)}
-                            className="h-12 grow"
-                        />
-
-                        <Button
-                            disabled={!codigoSala}
-                            variant="outline"
-                            className="h-12 transition-colors disabled:opacity-50 sm:w-1/3"
-                            onClick={unirse}
-                        >
-                            Unirse
-                        </Button>
-                    </div>
-                </div>
-
-            </div>
         </div>
     );
 };
