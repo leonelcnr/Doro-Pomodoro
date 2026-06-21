@@ -1,11 +1,14 @@
 import React from 'react';
 import { Play, Pause, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import type { Modo } from '@/types/timer';
+import { ETIQUETA_MODO, PUNTO_MODO } from '../modoVisual';
 
 // Props del reloj flotante (se renderiza dentro de la ventana Picture-in-Picture)
 interface PropsTemporizadorFlotante {
     tiempoRestante: number;     // Segundos restantes a mostrar
     estaActivo: boolean;        // Para alternar el ícono play/pausa
+    modo: Modo;                 // Fase actual, para mostrar el indicador de modo
     alAlternar: () => void;     // Callback al tocar play/pausa
     alCerrar: () => void;       // Callback al cerrar la ventana flotante
 }
@@ -26,7 +29,7 @@ function DosDigitos({ value }: { value: number }) {
  * Versión compacta del reloj pensada para la ventana flotante (PiP).
  * Es "tonta": no tiene lógica de tiempo propia, solo muestra lo que recibe por props.
  */
-export const FloatingTimer = ({ tiempoRestante, estaActivo, alAlternar, alCerrar }: PropsTemporizadorFlotante) => {
+export const FloatingTimer = ({ tiempoRestante, estaActivo, modo, alAlternar, alCerrar }: PropsTemporizadorFlotante) => {
     return (
         <div className="flex flex-col items-center justify-center w-full h-screen bg-background text-foreground font-mono select-none overflow-hidden"
             style={{ margin: 0, padding: 0 }}>
@@ -38,6 +41,14 @@ export const FloatingTimer = ({ tiempoRestante, estaActivo, alAlternar, alCerrar
                     className="h-8 w-8 text-muted-foreground hover:text-foreground">
                     <X className="w-4 h-4" />
                 </Button>
+            </div>
+
+            {/* Indicador de modo (solo informativo): punto luminoso + etiqueta de la fase actual */}
+            <div className="mb-4 flex items-center gap-2">
+                <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO[modo]}`} />
+                <span className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
+                    {ETIQUETA_MODO[modo]}
+                </span>
             </div>
 
             <div className="flex items-baseline gap-1 text-6xl tracking-tighter cursor-pointer" onClick={alAlternar}>

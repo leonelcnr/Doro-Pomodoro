@@ -64,6 +64,7 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
                 <FloatingTimer
                     tiempoRestante={tiempoRestante}
                     estaActivo={estaActivo}
+                    modo={modo}
                     alAlternar={alternarTemporizador}
                     alCerrar={cerrarPiP}
                 />,
