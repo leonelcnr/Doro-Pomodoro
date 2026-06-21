@@ -112,6 +112,9 @@ import { ChipPrioridad, ChipEstado } from "@/features/tasks/components/ChipAtrib
 import type { Tarea } from "@/types/dominio"
 
 
+// Clave de localStorage donde se recuerda el filtro de estado de la tabla
+const LS_FILTRO_ESTADO = "doro:tareas:filtro-estado"
+
 // Esquema de validación para cada tarea usando Zod
 export const schema = z.object({
   id: z.number(),        // ID único de la tarea
@@ -304,20 +307,19 @@ const getColumns = (
         return valA - valB;
       },
       // Tocar la prioridad la cicla a la siguiente (Alta → Media → Baja → …).
-      // Se muestra como píldora de color (estilo boceto).
+      // Ícono (color del nivel) + palabra, con hover tipo botón (borde + fondo).
       cell: ({ row }) => {
         const prioridad = normalizarPrioridad(row.original.priority)
-        const { badge } = INFO_PRIORIDAD[prioridad]
+        const { icono: Icono, clase } = INFO_PRIORIDAD[prioridad]
         return (
           <button
             type="button"
             title="Cambiar prioridad"
             onClick={() => onCycleUpdate(row.original.id, { priority: siguientePrioridad(row.original.priority) })}
-            className="focus-visible:outline-none"
+            className="inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
           >
-            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold cursor-pointer transition hover:opacity-80 ${badge}`}>
-              {prioridad}
-            </span>
+            <Icono className={`h-4 w-4 ${clase}`} />
+            <span>{prioridad}</span>
           </button>
         )
       },
@@ -435,9 +437,31 @@ export function DataTable({
   const [rowSelection, setRowSelection] = React.useState({}) // Filas seleccionadas
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({}) // Visibilidad de columnas
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([
-    { id: "status", value: ["En Progreso", "Sin Empezar"] } // Por defecto no mostramos las completadas
-  ]) // Filtros aplicados
+  // Filtro de estado: por defecto se muestran TODAS (incluidas las completadas);
+  // la preferencia del usuario se recuerda en localStorage.
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(() => {
+    try {
+      const guardado = localStorage.getItem(LS_FILTRO_ESTADO)
+      if (guardado) {
+        const valores = JSON.parse(guardado)
+        if (Array.isArray(valores) && valores.length) return [{ id: "status", value: valores }]
+      }
+    } catch { /* localStorage no disponible: usamos el default */ }
+    return [] // por defecto: sin filtro (se ven todas, incluidas las completadas)
+  })
+
+  // Persiste el filtro de estado (o lo borra si no hay selección) ante cada cambio
+  React.useEffect(() => {
+    try {
+      const filtroEstado = columnFilters.find((f) => f.id === "status")
+      const valores = filtroEstado?.value
+      if (Array.isArray(valores) && valores.length) {
+        localStorage.setItem(LS_FILTRO_ESTADO, JSON.stringify(valores))
+      } else {
+        localStorage.removeItem(LS_FILTRO_ESTADO)
+      }
+    } catch { /* localStorage no disponible: ignoramos */ }
+  }, [columnFilters])
   const [sorting, setSorting] = React.useState<SortingState>([]) // Ordenamiento de columnas
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -792,14 +816,12 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* El alta abre el modal global (Ctrl/⌘+K); este botón despacha el mismo evento */}
-          <Button
-            size="sm"
-            className="h-8 bg-purple-500 hover:bg-purple-600 text-white dark:bg-purple-600 dark:hover:bg-purple-700"
-            onClick={() => window.dispatchEvent(new CustomEvent("abrir-nueva-tarea"))}
-          >
-            Agregar Tarea
-          </Button>
+          {/* Referencia al atajo para abrir el modal global de nueva tarea
+              (reemplaza al botón "Agregar Tarea": el alta se hace con T, ⌘K o la fila inline) */}
+          <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">T</kbd>
+            nueva tarea
+          </span>
           {/* Este Dialog queda solo para EDITAR una tarea desde el menú de acciones */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="sm:max-w-[425px]">

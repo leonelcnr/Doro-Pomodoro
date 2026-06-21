@@ -12,8 +12,11 @@ import { RelojSaludo } from "@/features/home/components/RelojSaludo"
 import { obtenerSaludo } from "@/features/home/saludo"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
 import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea"
+import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias"
+import { derivarCategorias, CATEGORIA_POR_DEFECTO } from "@/features/tasks/atributos"
 import { useAuth } from "@/features/auth/context/useAuth"
 import { useDashboardStats } from "@/features/dashboard/hooks/useDashboardStats"
+import { useMemo, useState } from "react"
 import type { Tarea } from "@/types/dominio"
 
 // Meta diaria de minutos de enfoque que llena el anillo del hero.
@@ -27,6 +30,16 @@ const META_DIARIA_MINUTOS = 120;
 const Home = () => {
     // Sin salaId: el hook trae y escucha solo las tareas personales del usuario
     const { tareas, guardarCambios, crearTarea, actualizarTareaCampos } = useTareas();
+
+    // Filtro por categoría (opción B): chips derivados de las tareas
+    const [categoriaActiva, establecerCategoriaActiva] = useState("Todas");
+    const categorias = useMemo(() => derivarCategorias(tareas), [tareas]);
+    const tareasFiltradas = useMemo(
+        () => categoriaActiva === "Todas"
+            ? tareas
+            : tareas.filter((t) => (t.type?.trim() || CATEGORIA_POR_DEFECTO) === categoriaActiva),
+        [tareas, categoriaActiva]
+    );
 
     // Datos vivos del hero: reutiliza el hook del dashboard (racha + hoy), que ya
     // trae todo con react-query e invalidación en tiempo real.
@@ -102,8 +115,14 @@ const Home = () => {
                                             Aquí tienes una lista de tus tareas.
                                         </p>
                                     </div>
+                                    <FiltroCategorias
+                                        categorias={categorias}
+                                        activa={categoriaActiva}
+                                        total={tareas.length}
+                                        onSeleccionar={establecerCategoriaActiva}
+                                    />
                                     <DataTable
-                                        data={tareas}
+                                        data={tareasFiltradas}
                                         onTasksChange={manejarCambioTareas}
                                         onActualizarTarea={manejarActualizarTarea}
                                         slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}

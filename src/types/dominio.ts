@@ -70,6 +70,7 @@ export interface Tarea {
   user_id?: string | undefined;               // dueño de la tarea
   order_index?: number | null | undefined;    // índice para el ordenamiento manual
   description?: string | undefined;
+  created_at?: string | undefined;            // timestamp de alta (desempate de orden)
 }
 
 /**

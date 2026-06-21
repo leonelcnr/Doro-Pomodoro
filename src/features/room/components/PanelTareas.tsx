@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea";
+import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias";
+import { derivarCategorias, CATEGORIA_POR_DEFECTO } from "@/features/tasks/atributos";
 import type { AmbitoTarea } from "@/features/tasks/hooks/useTareas";
 import type { Tarea, TareaPayload } from "@/types/dominio";
 
@@ -29,7 +31,14 @@ type PanelTareasProps = {
 export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrearTarea, onActualizarTarea, onMoverTarea }: PanelTareasProps) {
     const [pestanaTareas, establecerPestanaTareas] = useState<AmbitoTarea>("personal");
     const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
+    const [categoriaActiva, establecerCategoriaActiva] = useState("Todas");
     const conteoSalaPrevio = useRef<number | null>(null);
+
+    // Cambia de pestaña y resetea el filtro de categoría (las categorías difieren por ámbito)
+    const cambiarPestana = useCallback((ambito: AmbitoTarea) => {
+        establecerPestanaTareas(ambito);
+        establecerCategoriaActiva("Todas");
+    }, []);
 
     // Lleva la cuenta de tareas de sala "no vistas" mientras se está en la pestaña personal
     useEffect(() => {
@@ -63,6 +72,15 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
             return tareas.filter(t => t.room_id === salaId);
         }
     }, [tareas, pestanaTareas, salaId]);
+
+    // Categorías y filtro (opción B) sobre las tareas de la pestaña activa
+    const categorias = useMemo(() => derivarCategorias(tareasMostradas), [tareasMostradas]);
+    const tareasFiltradas = useMemo(
+        () => categoriaActiva === "Todas"
+            ? tareasMostradas
+            : tareasMostradas.filter((t) => (t.type?.trim() || CATEGORIA_POR_DEFECTO) === categoriaActiva),
+        [tareasMostradas, categoriaActiva]
+    );
 
     // Persiste los cambios de la tabla en el ámbito de la pestaña activa
     const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: Tarea[]) => {
@@ -111,13 +129,13 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
                 <div className="flex border-b border-border/50 mb-4">
                     <button
                         className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${pestanaTareas === 'personal' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => establecerPestanaTareas("personal")}
+                        onClick={() => cambiarPestana("personal")}
                     >
                         Mis Tareas
                     </button>
                     <button
                         className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${pestanaTareas === 'sala' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => establecerPestanaTareas("sala")}
+                        onClick={() => cambiarPestana("sala")}
                     >
                         Tareas de la Sala
                         {cantidadNoVistas > 0 && (
@@ -127,8 +145,14 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
                         )}
                     </button>
                 </div>
+                <FiltroCategorias
+                    categorias={categorias}
+                    activa={categoriaActiva}
+                    total={tareasMostradas.length}
+                    onSeleccionar={establecerCategoriaActiva}
+                />
                 <DataTable
-                    data={tareasMostradas}
+                    data={tareasFiltradas}
                     onTasksChange={manejarCambioTareas}
                     onActualizarTarea={manejarActualizarTarea}
                     onMoveTask={manejarMoverTarea}

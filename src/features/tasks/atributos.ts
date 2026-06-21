@@ -10,9 +10,7 @@
 // El normalizador mantiene compatibilidad con filas viejas guardadas en inglés.
 
 import {
-  SignalHigh,
-  SignalMedium,
-  SignalLow,
+  Flag,
   CircleDashed,
   Hourglass,
   CircleCheck,
@@ -84,17 +82,17 @@ type InfoAtributo = { icono: LucideIcon; clase: string; badge: string };
 
 export const INFO_PRIORIDAD: Record<Prioridad, InfoAtributo> = {
   Alta: {
-    icono: SignalHigh,
+    icono: Flag,
     clase: "text-red-500 dark:text-red-400",
     badge: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
   },
   Media: {
-    icono: SignalMedium,
+    icono: Flag,
     clase: "text-amber-500 dark:text-amber-400",
     badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   Baja: {
-    icono: SignalLow,
+    icono: Flag,
     clase: "text-sky-500 dark:text-sky-400",
     badge: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
   },
@@ -121,4 +119,19 @@ export const INFO_ESTADO: Record<EstadoTarea, InfoAtributo> = {
 // Capitaliza la primera letra de cada palabra (para mostrar categorías "lindas").
 export function capitalizar(texto: string): string {
   return texto.replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+}
+
+// Deriva las categorías presentes en un conjunto de tareas (campo `type`) con su
+// conteo, ordenadas alfabéticamente. Alimenta el filtro por categoría.
+export function derivarCategorias(
+  tareas: { type?: string | null }[]
+): { nombre: string; cantidad: number }[] {
+  const conteo = new Map<string, number>();
+  for (const t of tareas) {
+    const nombre = t.type?.trim() || CATEGORIA_POR_DEFECTO;
+    conteo.set(nombre, (conteo.get(nombre) ?? 0) + 1);
+  }
+  return [...conteo.entries()]
+    .map(([nombre, cantidad]) => ({ nombre, cantidad }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
 }
