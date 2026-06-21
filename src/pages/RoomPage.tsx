@@ -47,7 +47,7 @@ const RoomPage = () => {
     // Hooks de dominio: presencia, tareas y sincronización del reloj compartido.
     // La página ya no maneja canales de Supabase ni el estado de tareas a mano.
     const usuariosEnSala = usePresenciaSala(roomId);
-    const { tareas, cargado, guardarCambios, moverTarea } = useTareas(roomId);
+    const { tareas, cargado, guardarCambios, crearTarea, actualizarTareaCampos, moverTarea } = useTareas(roomId);
     useSincronizacionReloj(roomId);
 
     // Al entrar: aseguramos la membresía en la sala (RLS) y luego cargamos la
@@ -142,6 +142,8 @@ const RoomPage = () => {
                             cargado={cargado}
                             salaId={roomId}
                             onGuardarCambios={guardarCambios}
+                            onCrearTarea={crearTarea}
+                            onActualizarTarea={actualizarTareaCampos}
                             onMoverTarea={moverTarea}
                         />
                     </>

@@ -37,6 +37,33 @@ export async function obtenerTareasPersonales(usuarioId: string): Promise<Tarea[
   return (data ?? []) as Tarea[];
 }
 
+// Crea UNA tarea y devuelve la fila real ya persistida (con su `id` de la DB).
+// Es la ruta rápida del alta de un solo registro: evita reconstruir el array
+// completo y permite reconciliar el id temporal del optimista con el real.
+export async function crearTarea(datos: TareaPayload): Promise<Tarea> {
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert(datos)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as Tarea;
+}
+
+// Devuelve las categorías (campo `type`) ya usadas por el usuario, sin duplicados
+// ni vacíos. Alimenta el selector de categoría del alta (existentes + crear nueva).
+export async function obtenerCategorias(usuarioId: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("type")
+    .eq("user_id", usuarioId);
+  if (error) throw error;
+  const categorias = (data ?? [])
+    .map((fila) => (fila as { type: string | null }).type)
+    .filter((tipo): tipo is string => !!tipo && tipo.trim().length > 0);
+  return Array.from(new Set(categorias)).sort((a, b) => a.localeCompare(b));
+}
+
 // Elimina varias tareas por sus ids (no hace nada si la lista está vacía)
 export async function eliminarTareas(ids: (string | number)[]): Promise<void> {
   if (ids.length === 0) return;

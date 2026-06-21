@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "@/components/data-table";
+import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea";
 import type { AmbitoTarea } from "@/features/tasks/hooks/useTareas";
-import type { Tarea } from "@/types/dominio";
+import type { Tarea, TareaPayload } from "@/types/dominio";
 
 type PanelTareasProps = {
     tareas: Tarea[];
@@ -10,6 +11,10 @@ type PanelTareasProps = {
     salaId?: string;
     // Persiste los cambios de la tabla dentro del ámbito indicado (re-lanza errores)
     onGuardarCambios: (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => Promise<void>;
+    // Alta rápida en el ámbito indicado (fila inline)
+    onCrearTarea: (parcial: TareaPayload, ambito: AmbitoTarea) => Promise<void>;
+    // Edición rápida de un atributo de una tarea (tocar para ciclar / categoría)
+    onActualizarTarea: (id: number, datos: TareaPayload) => Promise<void>;
     // Mueve una tarea entre el ámbito personal y el de la sala
     onMoverTarea: (tareaId: number) => Promise<void>;
 };
@@ -21,7 +26,7 @@ type PanelTareasProps = {
  * Es dueño solo de su estado de UI (pestaña activa, no vistas); los datos y la
  * persistencia llegan por props desde el contenedor (`RoomPage` vía `useTareas`).
  */
-export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMoverTarea }: PanelTareasProps) {
+export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrearTarea, onActualizarTarea, onMoverTarea }: PanelTareasProps) {
     const [pestanaTareas, establecerPestanaTareas] = useState<AmbitoTarea>("personal");
     const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
     const conteoSalaPrevio = useRef<number | null>(null);
@@ -76,6 +81,24 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
         }
     }, [onMoverTarea]);
 
+    // Alta rápida en el ámbito de la pestaña activa (personal o sala)
+    const manejarAltaRapida = useCallback(async (parcial: TareaPayload) => {
+        try {
+            await onCrearTarea(parcial, pestanaTareas);
+        } catch (error) {
+            console.error("Error al crear la tarea:", error);
+        }
+    }, [onCrearTarea, pestanaTareas]);
+
+    // Edición rápida de un atributo (tocar para ciclar / elegir categoría)
+    const manejarActualizarTarea = useCallback(async (id: number, datos: TareaPayload) => {
+        try {
+            await onActualizarTarea(id, datos);
+        } catch (error) {
+            console.error("Error al actualizar la tarea:", error);
+        }
+    }, [onActualizarTarea]);
+
     return (
         <div className="space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-0 lg:px-2">
             <div className="flex flex-col gap-4">
@@ -107,7 +130,9 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
                 <DataTable
                     data={tareasMostradas}
                     onTasksChange={manejarCambioTareas}
+                    onActualizarTarea={manejarActualizarTarea}
                     onMoveTask={manejarMoverTarea}
+                    slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
                     key={pestanaTareas} // Forza un re-render del DataTable al cambiar de pestaña
                 />
             </div>

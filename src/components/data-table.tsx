@@ -98,6 +98,19 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+// Helpers de tareas: ciclado/normalización de atributos + iconos compartidos
+import {
+  siguienteEstado,
+  siguientePrioridad,
+  normalizarEstado,
+  normalizarPrioridad,
+  INFO_PRIORIDAD,
+  INFO_ESTADO,
+} from "@/features/tasks/atributos"
+import { SelectorCategoria } from "@/features/tasks/components/SelectorCategoria"
+import { ChipPrioridad, ChipEstado } from "@/features/tasks/components/ChipAtributo"
+import type { Tarea } from "@/types/dominio"
+
 
 // Esquema de validación para cada tarea usando Zod
 export const schema = z.object({
@@ -177,6 +190,9 @@ const getColumns = (
   onToggleFavorite: (id: number) => void,
   onEditTask: (task: z.infer<typeof schema>) => void,
   onDirectUpdateTask: (task: z.infer<typeof schema>) => void,
+  // Ruta rápida para "tocar y cambiar" un solo atributo (estado/prioridad/categoría)
+  onCycleUpdate: (id: number, datos: Partial<Tarea>) => void,
+  categorias: string[],
   onMoveTask?: (id: number) => void // Nueva acción opcional
 ): ColumnDef<z.infer<typeof schema>>[] => [
     {
@@ -222,9 +238,18 @@ const getColumns = (
         return (
           <div className="flex items-center space-x-2">
             {row.original.favorite && <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />}
-            <Badge variant="outline" className={`px-2 py-0.5 whitespace-nowrap font-medium text-[11px] text-foreground capitalize border-border bg-transparent transition-opacity duration-500 ${isCompleted ? 'opacity-50' : ''}`}>
-              {row.original.type}
-            </Badge>
+            {/* Categoría clicable: abre el selector para cambiarla o crear una nueva */}
+            <SelectorCategoria
+              value={row.original.type}
+              categorias={categorias}
+              onSeleccionar={(categoria) => onCycleUpdate(row.original.id, { type: categoria })}
+            >
+              <button type="button" title="Cambiar categoría" className="focus-visible:outline-none">
+                <Badge variant="outline" className={`px-2 py-0.5 whitespace-nowrap font-medium text-[11px] text-foreground capitalize border-border bg-transparent cursor-pointer hover:bg-accent transition-opacity duration-500 ${isCompleted ? 'opacity-50' : ''}`}>
+                  {row.original.type}
+                </Badge>
+              </button>
+            </SelectorCategoria>
             <span 
               className={`max-w-[500px] truncate font-medium ${isCompleted ? 'text-muted-foreground opacity-70' : ''}`}
               style={{
@@ -234,7 +259,7 @@ const getColumns = (
                   transition: "background-size 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease-out, opacity 0.5s ease-out",
               }}
             >
-              <TableCellViewer item={row.original} onUpdate={onDirectUpdateTask} />
+              <TableCellViewer item={row.original} onUpdate={onDirectUpdateTask} categorias={categorias} />
             </span>
           </div>
         )
@@ -245,18 +270,24 @@ const getColumns = (
     {
       accessorKey: "status",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Estado" />,
-      cell: ({ row }) => (
-        <Badge variant="outline" className="text-muted-foreground px-1.5 flex items-center gap-1.5">
-          {row.original.status === "Completada" ? (
-            <CheckCircle2 className="h-3.5 w-3.5 text-green-500 dark:text-green-400" />
-          ) : row.original.status === "En Progreso" ? (
-            <Timer className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />
-          ) : (
-            <CircleDashed className="h-3.5 w-3.5 text-muted-foreground" />
-          )}
-          <span>{row.original.status}</span>
-        </Badge>
-      ),
+      // Tocar el estado lo cicla al siguiente (Sin Empezar → En Progreso → Completada → …)
+      cell: ({ row }) => {
+        const estado = normalizarEstado(row.original.status)
+        const { icono: Icono, clase } = INFO_ESTADO[estado]
+        return (
+          <button
+            type="button"
+            title="Cambiar estado"
+            onClick={() => onCycleUpdate(row.original.id, { status: siguienteEstado(row.original.status) })}
+            className="focus-visible:outline-none"
+          >
+            <Badge variant="outline" className="text-muted-foreground px-1.5 flex items-center gap-1.5 cursor-pointer hover:bg-accent">
+              <Icono className={`h-3.5 w-3.5 ${clase}`} />
+              <span>{estado}</span>
+            </Badge>
+          </button>
+        )
+      },
       filterFn: (row, id, value) => {
         if (!value || value.length === 0) return true
         return value.includes(row.getValue(id))
@@ -272,18 +303,22 @@ const getColumns = (
         const valB = priorityValues[rowB.getValue(columnId) as string] || 2;
         return valA - valB;
       },
+      // Tocar la prioridad la cicla a la siguiente (Alta → Media → Baja → …).
+      // Se muestra como píldora de color (estilo boceto).
       cell: ({ row }) => {
-        const priorityStr = row.original.priority || "Medium"
-        const isHigh = priorityStr === "High" || priorityStr === "Alta"
-        const isMedium = priorityStr === "Medium" || priorityStr === "Media"
-        const label = isHigh ? "Alta" : isMedium ? "Media" : "Baja"
+        const prioridad = normalizarPrioridad(row.original.priority)
+        const { badge } = INFO_PRIORIDAD[prioridad]
         return (
-          <div className="flex w-[100px] items-center">
-            <span className="text-muted-foreground mr-2">
-              {isHigh ? <ArrowUp className="h-4 w-4" /> : isMedium ? <ArrowRight className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+          <button
+            type="button"
+            title="Cambiar prioridad"
+            onClick={() => onCycleUpdate(row.original.id, { priority: siguientePrioridad(row.original.priority) })}
+            className="focus-visible:outline-none"
+          >
+            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold cursor-pointer transition hover:opacity-80 ${badge}`}>
+              {prioridad}
             </span>
-            <span>{label}</span>
-          </div>
+          </button>
         )
       },
       filterFn: (row, id, value) => {
@@ -378,11 +413,17 @@ const SortableRow = ({ row, isSelected }: { row: Row<z.infer<typeof schema>>; is
 export function DataTable({
   data: initialData,
   onTasksChange,
+  onActualizarTarea,
   onMoveTask,
+  slotAltaRapida,
 }: {
   data: z.infer<typeof schema>[];
   onTasksChange?: (newData: z.infer<typeof schema>[]) => void;
+  // Ruta rápida de edición de un atributo (un solo registro), sin reconstruir el array
+  onActualizarTarea?: (id: number, datos: Partial<Tarea>) => void;
   onMoveTask?: (id: number) => void;
+  // Contenido opcional (p. ej. la fila de alta rápida) entre la barra de filtros y la tabla
+  slotAltaRapida?: React.ReactNode;
 }) {
   // Estados para manejar los datos y el comportamiento de la tabla
   const [data, setData] = React.useState(() => initialData) // Datos de las tareas
@@ -512,8 +553,26 @@ export function DataTable({
     onTasksChange?.(newData);
   };
 
+  // Edición rápida de un atributo (tocar para ciclar / elegir categoría): refleja el
+  // cambio localmente al instante y lo persiste por la ruta de un solo registro.
+  // Sin `onActualizarTarea` cae al guardado por array completo, para no perder el cambio.
+  const handleQuickUpdate = React.useCallback((id: number, datos: Partial<Tarea>) => {
+    setData((prev) => {
+      const next = prev.map((t) => (t.id === id ? { ...t, ...datos } : t));
+      if (!onActualizarTarea) onTasksChange?.(next);
+      return next;
+    });
+    onActualizarTarea?.(id, datos);
+  }, [onActualizarTarea, onTasksChange]);
+
+  // Categorías presentes en las tareas actuales (alimentan el selector de las filas)
+  const categorias = React.useMemo(
+    () => Array.from(new Set(data.map((t) => t.type).filter((t): t is string => !!t && t.trim().length > 0))),
+    [data]
+  );
+
   // Derive columns here to pass the delete function
-  const columns = React.useMemo(() => getColumns(handleDeleteTask, handleToggleFavorite, handleEditTask, handleDirectUpdateTask, onMoveTask), [data, onMoveTask])
+  const columns = React.useMemo(() => getColumns(handleDeleteTask, handleToggleFavorite, handleEditTask, handleDirectUpdateTask, handleQuickUpdate, categorias, onMoveTask), [data, onMoveTask, handleQuickUpdate, categorias])
 
 
   // Configuración de la tabla usando React Table
@@ -733,17 +792,21 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* El alta abre el modal global (Ctrl/⌘+K); este botón despacha el mismo evento */}
+          <Button
+            size="sm"
+            className="h-8 bg-purple-500 hover:bg-purple-600 text-white dark:bg-purple-600 dark:hover:bg-purple-700"
+            onClick={() => window.dispatchEvent(new CustomEvent("abrir-nueva-tarea"))}
+          >
+            Agregar Tarea
+          </Button>
+          {/* Este Dialog queda solo para EDITAR una tarea desde el menú de acciones */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="h-8 bg-purple-500 hover:bg-purple-600 text-white dark:bg-purple-600 dark:hover:bg-purple-700">
-                Agregar Tarea
-              </Button>
-            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Nueva Tarea</DialogTitle>
+                <DialogTitle>Editar Tarea</DialogTitle>
                 <DialogDescription>
-                  Completa los campos para agregar una nueva tarea a la tabla. Haz clic en guardar cuando termines.
+                  Modifica los campos de la tarea. Haz clic en guardar cuando termines.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleAddTask}>
@@ -824,6 +887,8 @@ export function DataTable({
           </Dialog>
         </div>
       </div>
+      {/* Alta rápida: va debajo de la barra de filtros y pegada a la tabla */}
+      {slotAltaRapida}
       <div className="overflow-hidden rounded-lg border">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={table.getRowModel().rows.map(r => r.original.id.toString())} strategy={verticalListSortingStrategy}>
@@ -952,7 +1017,7 @@ export function DataTable({
  * Muestra un drawer (cajón lateral) con información detallada de la tarea
  * @param item - Datos de la tarea a mostrar
  */
-function TableCellViewer({ item, onUpdate }: { item: z.infer<typeof schema>, onUpdate: (updated: z.infer<typeof schema>) => void }) {
+function TableCellViewer({ item, onUpdate, categorias }: { item: z.infer<typeof schema>, onUpdate: (updated: z.infer<typeof schema>) => void, categorias: string[] }) {
   const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false)
   const [formData, setFormData] = React.useState(item)
@@ -999,59 +1064,23 @@ function TableCellViewer({ item, onUpdate }: { item: z.infer<typeof schema>, onU
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`type-${item.id}`}>Tipo</Label>
-                <Select value={formData.type} onValueChange={(val) => setFormData({...formData, type: val})}>
-                  <SelectTrigger id={`type-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Tabla de Contenidos">Tabla de Contenidos</SelectItem>
-                    <SelectItem value="Resumen Ejecutivo">Resumen Ejecutivo</SelectItem>
-                    <SelectItem value="Enfoque Técnico">Enfoque Técnico</SelectItem>
-                    <SelectItem value="Diseño">Diseño</SelectItem>
-                    <SelectItem value="Capacidades">Capacidades</SelectItem>
-                    <SelectItem value="Documentos de Enfoque">Documentos de Enfoque</SelectItem>
-                    <SelectItem value="Narrativa">Narrativa</SelectItem>
-                    <SelectItem value="Portada">Portada</SelectItem>
-                    <SelectItem value="Desarrollo">Desarrollo</SelectItem>
-                    <SelectItem value="Anotación">Anotación</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`status-${item.id}`}>Estado</Label>
-                <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
-                  <SelectTrigger id={`status-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar estado" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Completada">Completada</SelectItem>
-                    <SelectItem value="En Progreso">En Progreso</SelectItem>
-                    <SelectItem value="Sin Empezar">Sin Empezar</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`priority-${item.id}`}>Prioridad</Label>
-                <Select value={formData.priority || "Medium"} onValueChange={(val) => setFormData({...formData, priority: val})}>
-                  <SelectTrigger id={`priority-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="High">Alta</SelectItem>
-                    <SelectItem value="Medium">Media</SelectItem>
-                    <SelectItem value="Low">Baja</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`limit-${item.id}`}>Límite</Label>
-                <Input id={`limit-${item.id}`} placeholder="Ej: Mañana a las 10am" value={formData.limit || ""} onChange={(e) => setFormData({...formData, limit: e.target.value})} />
+            {/* Atributos editables con los mismos controles del alta (chips + selector) */}
+            <div className="flex flex-col gap-3">
+              <Label>Atributos</Label>
+              <div className="flex flex-wrap items-center gap-2">
+                <ChipPrioridad
+                  valor={formData.priority}
+                  onClick={() => setFormData({ ...formData, priority: siguientePrioridad(formData.priority) })}
+                />
+                <ChipEstado
+                  valor={formData.status}
+                  onClick={() => setFormData({ ...formData, status: siguienteEstado(formData.status) })}
+                />
+                <SelectorCategoria
+                  value={formData.type}
+                  categorias={categorias}
+                  onSeleccionar={(cat) => setFormData({ ...formData, type: cat })}
+                />
               </div>
             </div>
           </form>

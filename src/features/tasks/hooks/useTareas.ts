@@ -3,6 +3,11 @@ import supabase from "@/lib/supabase";
 import * as tareasService from "@/features/tasks/services/tareasService";
 import { useAuth } from "@/features/auth/context/useAuth";
 import type { Tarea, TareaPayload } from "@/types/dominio";
+import {
+  CATEGORIA_POR_DEFECTO,
+  ESTADO_POR_DEFECTO,
+  PRIORIDAD_POR_DEFECTO,
+} from "@/features/tasks/atributos";
 
 // Ámbito sobre el que opera un guardado de tareas: las personales (sin sala) o
 // las de la sala activa. Determina el filtro de borrado y el `room_id` asignado.
@@ -98,6 +103,7 @@ export function useTareas(salaId?: string) {
         status: t.status,
         priority: t.priority,
         favorite: t.favorite,
+        description: t.description,
         order_index: t.order_index,
       };
 
@@ -115,6 +121,54 @@ export function useTareas(salaId?: string) {
     await tareasService.insertarTareas(tareasNuevasInsertar);
   }, [tareas, salaId, usuario?.id]);
 
+  // Ruta rápida de alta: crea UNA tarea con un solo insert (sin reconstruir el
+  // array). Hace prepend optimista con un id temporal y reconcilia con la fila
+  // real que devuelve la DB. El realtime recargará igual, así no quedan duplicados.
+  const crearTarea = useCallback(async (parcial: TareaPayload, ambito: AmbitoTarea) => {
+    if (!usuario) return;
+
+    const idTemporal = Date.now() + Math.floor(Math.random() * 1000);
+    const roomId = ambito === "sala" ? (salaId ?? null) : null;
+
+    // Claves en inglés: son columnas de `tasks`. Defaults centralizados en atributos.ts.
+    const payload: TareaPayload = {
+      user_id: usuario.id,
+      room_id: roomId,
+      header: parcial.header?.trim() || "Nueva Tarea",
+      type: parcial.type?.trim() || CATEGORIA_POR_DEFECTO,
+      status: parcial.status || ESTADO_POR_DEFECTO,
+      priority: parcial.priority || PRIORIDAD_POR_DEFECTO,
+      favorite: parcial.favorite ?? false,
+      description: parcial.description,
+    };
+
+    const tareaOptimista = { id: idTemporal, ...payload } as Tarea;
+    establecerTareas((prev) => [tareaOptimista, ...prev]);
+
+    try {
+      const real = await tareasService.crearTarea(payload);
+      // Reemplaza la fila temporal por la real (con el id definitivo de la DB)
+      establecerTareas((prev) => prev.map((t) => (t.id === idTemporal ? real : t)));
+    } catch (error) {
+      // Revierte el optimista si el insert falló
+      establecerTareas((prev) => prev.filter((t) => t.id !== idTemporal));
+      throw error;
+    }
+  }, [usuario, salaId]);
+
+  // Ruta rápida de edición de un atributo (prioridad/estado/categoría/descripción):
+  // patch optimista local + update de un solo registro. Para "tocar y cambiar".
+  const actualizarTareaCampos = useCallback(async (id: number, datos: TareaPayload) => {
+    const previas = tareas;
+    establecerTareas((prev) => prev.map((t) => (t.id === id ? { ...t, ...datos } : t)));
+    try {
+      await tareasService.actualizarTarea(id, datos);
+    } catch (error) {
+      establecerTareas(previas); // Rollback si falla la persistencia
+      throw error;
+    }
+  }, [tareas]);
+
   // Mueve una tarea entre el ámbito personal y el de la sala (alterna su room_id)
   const moverTarea = useCallback(async (tareaId: number) => {
     const tarea = tareas.find(t => t.id === tareaId);
@@ -124,5 +178,5 @@ export function useTareas(salaId?: string) {
     await tareasService.moverTarea(tareaId, nuevaSalaId);
   }, [tareas, salaId]);
 
-  return { tareas, cargado, recargar, guardarCambios, moverTarea };
+  return { tareas, cargado, recargar, guardarCambios, crearTarea, actualizarTareaCampos, moverTarea };
 }

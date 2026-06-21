@@ -11,6 +11,7 @@ import { HeroEnfoque } from "@/features/home/components/HeroEnfoque"
 import { RelojSaludo } from "@/features/home/components/RelojSaludo"
 import { obtenerSaludo } from "@/features/home/saludo"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
+import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea"
 import { useAuth } from "@/features/auth/context/useAuth"
 import { useDashboardStats } from "@/features/dashboard/hooks/useDashboardStats"
 import type { Tarea } from "@/types/dominio"
@@ -25,13 +26,31 @@ const META_DIARIA_MINUTOS = 120;
  */
 const Home = () => {
     // Sin salaId: el hook trae y escucha solo las tareas personales del usuario
-    const { tareas, guardarCambios } = useTareas();
+    const { tareas, guardarCambios, crearTarea, actualizarTareaCampos } = useTareas();
 
     // Datos vivos del hero: reutiliza el hook del dashboard (racha + hoy), que ya
     // trae todo con react-query e invalidación en tiempo real.
     const { user } = useAuth();
     const { stats, statsByRange } = useDashboardStats(user?.id);
     const primerNombre = !user || user.isAnonymous ? "" : (user.name?.split(" ")[0] ?? "");
+
+    // Alta rápida personal (fila inline). Re-lanza el error para verlo en consola.
+    const manejarAltaRapida = async (parcial: Partial<Tarea>) => {
+        try {
+            await crearTarea(parcial, "personal");
+        } catch (error) {
+            console.error("Error al crear la tarea:", error);
+        }
+    };
+
+    // Edición rápida de un atributo (tocar para ciclar / elegir categoría)
+    const manejarActualizarTarea = async (id: number, datos: Partial<Tarea>) => {
+        try {
+            await actualizarTareaCampos(id, datos);
+        } catch (error) {
+            console.error("Error al actualizar la tarea:", error);
+        }
+    };
 
     // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
     const manejarCambioTareas = async (nuevoEstadoTareas: Tarea[]) => {
@@ -83,7 +102,12 @@ const Home = () => {
                                             Aquí tienes una lista de tus tareas.
                                         </p>
                                     </div>
-                                    <DataTable data={tareas} onTasksChange={manejarCambioTareas} />
+                                    <DataTable
+                                        data={tareas}
+                                        onTasksChange={manejarCambioTareas}
+                                        onActualizarTarea={manejarActualizarTarea}
+                                        slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                                    />
                                 </div>
                             </div>
                         </div>
