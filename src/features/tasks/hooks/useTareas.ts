@@ -189,6 +189,7 @@ export function useTareas(salaId?: string) {
           priority: t.priority,
           favorite: t.favorite,
           description: t.description,
+          checklist: t.checklist,
           order_index: t.order_index,
         };
 

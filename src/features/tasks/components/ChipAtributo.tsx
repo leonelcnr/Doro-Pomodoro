@@ -74,13 +74,13 @@ export function BadgePrioridad({ valor }: { valor?: string | null }) {
   );
 }
 
-/** Píldora de color del estado (no interactiva). */
+/** Badge de estado (no interactivo): ícono del color del estado + palabra. */
 export function BadgeEstado({ valor }: { valor?: string | null }) {
   const estado = normalizarEstado(valor);
-  const { icono: Icono, badge } = INFO_ESTADO[estado];
+  const { icono: Icono, clase } = INFO_ESTADO[estado];
   return (
-    <span className={cn(baseBadge, badge)}>
-      <Icono className="h-3 w-3" />
+    <span className={cn(baseBadge, "border-border bg-transparent text-foreground")}>
+      <Icono className={cn("h-3 w-3", clase)} />
       {estado}
     </span>
   );

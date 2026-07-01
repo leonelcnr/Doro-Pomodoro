@@ -135,9 +135,10 @@ export default function Dashboard() {
             </Tabs>
           </div>
 
-          {/* Tarjetas resumen */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
-            <Card className="bg-card shadow-none overflow-hidden">
+          {/* Tarjetas resumen. key={rangoTiempo} re-monta la grilla en cada cambio
+              de tab para re-disparar la entrada en cascada de las 4 cards. */}
+          <div key={rangoTiempo} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
+            <Card className="bg-card shadow-none overflow-hidden animate-in fade-in-0 slide-in-from-bottom-3 duration-300 [animation-fill-mode:both]" style={{ animationDelay: '0ms' }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground line-clamp-1 break-all sm:break-normal">Tiempo de Concentración</CardTitle>
                 <Clock className="h-4 w-4 text-violet-500 shrink-0" />
@@ -154,7 +155,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-none overflow-hidden">
+            <Card className="bg-card shadow-none overflow-hidden animate-in fade-in-0 slide-in-from-bottom-3 duration-300 [animation-fill-mode:both]" style={{ animationDelay: '70ms' }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground line-clamp-1 break-all sm:break-normal">Tareas Terminadas</CardTitle>
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
@@ -171,7 +172,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-none overflow-hidden">
+            <Card className="bg-card shadow-none overflow-hidden animate-in fade-in-0 slide-in-from-bottom-3 duration-300 [animation-fill-mode:both]" style={{ animationDelay: '140ms' }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground line-clamp-1 break-all sm:break-normal">Racha Actual</CardTitle>
                 <TrendingUp className="h-4 w-4 text-orange-500 shrink-0" />
@@ -182,7 +183,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-none overflow-hidden">
+            <Card className="bg-card shadow-none overflow-hidden animate-in fade-in-0 slide-in-from-bottom-3 duration-300 [animation-fill-mode:both]" style={{ animationDelay: '210ms' }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground line-clamp-1 break-all sm:break-normal">Enfoque Promedio</CardTitle>
                 <Timer className="h-4 w-4 text-blue-500 shrink-0" />
@@ -214,8 +215,9 @@ export default function Dashboard() {
                   <Skeleton className="h-[250px] w-full" />
                 ) : (
                   <ChartContainer
+                    key={rangoTiempo}
                     config={chartConfig}
-                    className="aspect-auto h-[250px] w-full"
+                    className="aspect-auto h-[250px] w-full animate-in fade-in-0 duration-200"
                   >
                   <BarChart
                     accessibilityLayer
@@ -241,7 +243,7 @@ export default function Dashboard() {
                         />
                       }
                     />
-                    <Bar dataKey="minutes" fill="var(--color-minutes)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="minutes" fill="var(--color-minutes)" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={500} animationEasing="ease-out" />
                   </BarChart>
                 </ChartContainer>
                 )}
@@ -259,8 +261,9 @@ export default function Dashboard() {
                   <Skeleton className="h-[250px] w-[250px] rounded-full mx-auto" />
                 ) : datosTortaConColor.length > 0 ? (
                   <ChartContainer
+                    key={rangoTiempo}
                     config={configTorta}
-                    className="mx-auto aspect-square max-h-[250px] w-full pb-0"
+                    className="mx-auto aspect-square max-h-[250px] w-full pb-0 animate-in fade-in-0 zoom-in-95 duration-300"
                   >
                     <PieChart>
                       <ChartTooltip
@@ -278,6 +281,7 @@ export default function Dashboard() {
                         nameKey="name"
                         stroke="var(--background)"
                         strokeWidth={2}
+                        isAnimationActive={false}
                       />
                       <ChartLegend
                         content={<ChartLegendContent nameKey="name" />}
@@ -328,7 +332,7 @@ export default function Dashboard() {
             <Card className="bg-card shadow-none col-span-1 md:col-span-2 border">
               <CardHeader>
                 <CardTitle className="text-sm font-medium">Días más Productivos</CardTitle>
-                <CardDescription className="text-xs">Promedio histórico de enfoque por día (minutos)</CardDescription>
+                <CardDescription className="text-xs">Promedio de enfoque por día de la semana, último año (minutos)</CardDescription>
               </CardHeader>
               <CardContent className="px-2 sm:p-6">
                 <ChartContainer

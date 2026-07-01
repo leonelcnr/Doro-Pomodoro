@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { DataTable } from "@/components/data-table";
 import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea";
 import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias";
@@ -151,14 +152,24 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
                     total={tareasMostradas.length}
                     onSeleccionar={establecerCategoriaActiva}
                 />
-                <DataTable
-                    data={tareasFiltradas}
-                    onTasksChange={manejarCambioTareas}
-                    onActualizarTarea={manejarActualizarTarea}
-                    onMoveTask={manejarMoverTarea}
-                    slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
-                    key={pestanaTareas} // Forza un re-render del DataTable al cambiar de pestaña
-                />
+                <AnimatePresence mode="wait">
+                    {/* Fade al cambiar de pestaña o de categoría; el key además fuerza el re-render del DataTable */}
+                    <motion.div
+                        key={`${pestanaTareas}-${categoriaActiva}`}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                    >
+                        <DataTable
+                            data={tareasFiltradas}
+                            onTasksChange={manejarCambioTareas}
+                            onActualizarTarea={manejarActualizarTarea}
+                            onMoveTask={manejarMoverTarea}
+                            slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                        />
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );

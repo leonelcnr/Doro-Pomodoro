@@ -28,7 +28,8 @@ export const SalaNueva = () => {
     const [codigoSala, establecerCodigoSala] = useState('');
 
     // Valida el código y entra a la sala mediante el servicio de salas
-    const unirse = async () => {
+    const unirse = async (e: React.FormEvent) => {
+        e.preventDefault();
         const codigo = parsearInvitacion(codigoSala);
 
         try {
@@ -75,7 +76,7 @@ export const SalaNueva = () => {
                 <p className="mb-6 grow text-sm text-muted-foreground">
                     ¿Ya tenés una invitación? Introducí el código de la sala para unirte a una sesión existente.
                 </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
+                <form onSubmit={unirse} className="flex flex-col gap-3 sm:flex-row">
                     <Input
                         type="text"
                         placeholder="Código de sala (Ej: 0852EF11)"
@@ -84,14 +85,14 @@ export const SalaNueva = () => {
                         className="h-12 grow"
                     />
                     <Button
+                        type="submit"
                         disabled={!codigoSala}
                         variant="outline"
                         className="h-12 transition-colors disabled:opacity-50 sm:w-1/3"
-                        onClick={unirse}
                     >
                         Unirse
                     </Button>
-                </div>
+                </form>
             </Card>
 
         </div>

@@ -70,7 +70,18 @@ export interface Tarea {
   user_id?: string | undefined;               // dueño de la tarea
   order_index?: number | null | undefined;    // índice para el ordenamiento manual
   description?: string | undefined;
+  checklist?: ItemChecklist[] | undefined;     // subtareas / ítems de la tarea
   created_at?: string | undefined;            // timestamp de alta (desempate de orden)
+}
+
+/**
+ * Ítem de la checklist (subtarea) de una tarea. Se persiste como un arreglo en la
+ * columna `checklist` (jsonb) de la tabla `tasks`. El `id` se genera en el cliente.
+ */
+export interface ItemChecklist {
+  id: string;
+  texto: string;
+  hecho: boolean;
 }
 
 /**

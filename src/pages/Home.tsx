@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
@@ -121,12 +122,22 @@ const Home = () => {
                                         total={tareas.length}
                                         onSeleccionar={establecerCategoriaActiva}
                                     />
-                                    <DataTable
-                                        data={tareasFiltradas}
-                                        onTasksChange={manejarCambioTareas}
-                                        onActualizarTarea={manejarActualizarTarea}
-                                        slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
-                                    />
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={categoriaActiva}
+                                            initial={{ opacity: 0, y: 6 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -6 }}
+                                            transition={{ duration: 0.18, ease: "easeOut" }}
+                                        >
+                                            <DataTable
+                                                data={tareasFiltradas}
+                                                onTasksChange={manejarCambioTareas}
+                                                onActualizarTarea={manejarActualizarTarea}
+                                                slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                                            />
+                                        </motion.div>
+                                    </AnimatePresence>
                                 </div>
                             </div>
                         </div>

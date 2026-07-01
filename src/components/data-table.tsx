@@ -26,7 +26,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 import { z } from "zod"
-import { Trash2, Edit2, Star, X, ArrowUp, ArrowRight, ArrowDown, CheckCircle2, Timer, CircleDashed, ChevronsUpDown, EyeOff, GripVertical } from "lucide-react"
+import { Trash2, Edit2, Star, X, ArrowUp, ArrowRight, ArrowDown, CheckCircle2, Timer, CircleDashed, ChevronsUpDown, EyeOff, GripVertical, ListChecks, Plus } from "lucide-react"
 
 import {
   DndContext,
@@ -127,7 +127,9 @@ export const schema = z.object({
   room_id: z.string().nullable().optional(), // Null si es personal, con ID si es de sala
   user_id: z.string().optional(), // ID del dueño
   order_index: z.number().nullable().optional(), // Índice para ordenamiento
-  description: z.string().optional() // Descripción ampliada
+  description: z.string().optional(), // Descripción ampliada
+  // Subtareas / checklist (se persiste como jsonb en la columna `checklist`)
+  checklist: z.array(z.object({ id: z.string(), texto: z.string(), hecho: z.boolean() })).optional()
 })
 
 
@@ -253,7 +255,23 @@ const getColumns = (
                 </Badge>
               </button>
             </SelectorCategoria>
-            <span 
+            {/* Progreso de la checklist: solo si la tarea tiene subtareas */}
+            {(() => {
+              const items = row.original.checklist ?? []
+              if (items.length === 0) return null
+              const hechos = items.filter((i) => i.hecho).length
+              const completa = hechos === items.length
+              return (
+                <span
+                  title={`Subtareas: ${hechos} de ${items.length}`}
+                  className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-medium tabular-nums ${completa ? 'border-green-600/30 bg-green-600/10 text-green-600 dark:text-green-400' : 'border-border bg-muted text-muted-foreground'}`}
+                >
+                  <ListChecks className="h-3 w-3" />
+                  {hechos}/{items.length}
+                </span>
+              )
+            })()}
+            <span
               className={`max-w-[500px] truncate font-medium ${isCompleted ? 'text-muted-foreground opacity-70' : ''}`}
               style={{
                   backgroundImage: "linear-gradient(transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1px))",
@@ -273,7 +291,8 @@ const getColumns = (
     {
       accessorKey: "status",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Estado" />,
-      // Tocar el estado lo cicla al siguiente (Sin Empezar → En Progreso → Completada → …)
+      // Tocar el estado lo cicla al siguiente (Sin Empezar → En Progreso → Completada → …).
+      // Mismo formato que la prioridad: ícono (color del estado) + palabra y hover tipo botón.
       cell: ({ row }) => {
         const estado = normalizarEstado(row.original.status)
         const { icono: Icono, clase } = INFO_ESTADO[estado]
@@ -282,12 +301,10 @@ const getColumns = (
             type="button"
             title="Cambiar estado"
             onClick={() => onCycleUpdate(row.original.id, { status: siguienteEstado(row.original.status) })}
-            className="focus-visible:outline-none"
+            className="-ml-2 inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
           >
-            <Badge variant="outline" className="text-muted-foreground px-1.5 flex items-center gap-1.5 cursor-pointer hover:bg-accent">
-              <Icono className={`h-3.5 w-3.5 ${clase}`} />
-              <span>{estado}</span>
-            </Badge>
+            <Icono className={`h-4 w-4 ${clase}`} />
+            <span>{estado}</span>
           </button>
         )
       },
@@ -316,7 +333,7 @@ const getColumns = (
             type="button"
             title="Cambiar prioridad"
             onClick={() => onCycleUpdate(row.original.id, { priority: siguientePrioridad(row.original.priority) })}
-            className="inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
+            className="-ml-2 inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
           >
             <Icono className={`h-4 w-4 ${clase}`} />
             <span>{prioridad}</span>
@@ -430,8 +447,13 @@ export function DataTable({
   // Estados para manejar los datos y el comportamiento de la tabla
   const [data, setData] = React.useState(() => initialData) // Datos de las tareas
 
-  // Actualizar el estado interno si las props cambian (útil para realtime de Supabase)
+  // Actualizar el estado interno si las props cambian (útil para realtime de Supabase).
+  // Pero NO mientras hay un guardado de orden diferido en vuelo (drag reciente): un eco
+  // de realtime podría traer el orden viejo y haría "volver y saltar" la fila arrastrada.
+  // Al hacer flush del guardado, el siguiente `initialData` ya refleja el orden persistido
+  // y la sincronización se reanuda.
   React.useEffect(() => {
+    if (guardadoOrdenRef.current) return;
     setData(initialData);
   }, [initialData]);
   const [rowSelection, setRowSelection] = React.useState({}) // Filas seleccionadas
@@ -484,6 +506,50 @@ export function DataTable({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
+  // Debounce del guardado de orden (rec. 11): los arrastres consecutivos se
+  // agrupan y se persiste una sola vez al soltar. El optimismo local (setData)
+  // sigue siendo instantáneo; solo se difiere la escritura a Supabase.
+  const guardadoOrdenRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const ordenPendienteRef = React.useRef<z.infer<typeof schema>[] | null>(null)
+  const onTasksChangeRef = React.useRef(onTasksChange)
+  React.useEffect(() => { onTasksChangeRef.current = onTasksChange }, [onTasksChange])
+
+  // Persiste el nuevo estado. Inmediato por defecto (alta/baja/edición); en modo
+  // `debounced` (drag) agrupa los movimientos rápidos en una sola escritura. Las
+  // escrituras inmediatas cancelan cualquier guardado de orden pendiente (su
+  // `nuevoData` ya refleja el orden vigente, así no se pierde nada).
+  const persistirCambios = React.useCallback(
+    (nuevoData: z.infer<typeof schema>[], debounced = false) => {
+      if (guardadoOrdenRef.current) {
+        clearTimeout(guardadoOrdenRef.current)
+        guardadoOrdenRef.current = null
+      }
+      if (!debounced) {
+        ordenPendienteRef.current = null
+        onTasksChange?.(nuevoData)
+        return
+      }
+      ordenPendienteRef.current = nuevoData
+      guardadoOrdenRef.current = setTimeout(() => {
+        guardadoOrdenRef.current = null
+        ordenPendienteRef.current = null
+        onTasksChange?.(nuevoData)
+      }, 600)
+    },
+    [onTasksChange]
+  )
+
+  // Si el componente se desmonta con un guardado de orden pendiente, lo flusheamos
+  // para no perder el último orden arrastrado (p. ej. al cambiar de pestaña).
+  React.useEffect(() => {
+    return () => {
+      if (guardadoOrdenRef.current) {
+        clearTimeout(guardadoOrdenRef.current)
+        if (ordenPendienteRef.current) onTasksChangeRef.current?.(ordenPendienteRef.current)
+      }
+    }
+  }, [])
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (over && active.id !== over.id) {
@@ -506,8 +572,8 @@ export function DataTable({
       const updated = reordered.map((item, idx) => ({ ...item, order_index: idx }))
       setData(updated)
 
-      // We shouldn't block the UI while Supabase updates, so use a timeout
-      setTimeout(() => onTasksChange?.(updated), 0)
+      // Guardado diferido: agrupa arrastres rápidos en una sola escritura
+      persistirCambios(updated, true)
     }
   }
 
@@ -515,7 +581,7 @@ export function DataTable({
   const handleDeleteTask = (id: number) => {
     const newData = data.filter((task) => task.id !== id);
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   }
 
   const handleToggleFavorite = (id: number) => {
@@ -523,7 +589,7 @@ export function DataTable({
       task.id === id ? { ...task, favorite: !task.favorite } : task
     );
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   }
 
   const handleEditTask = (task: z.infer<typeof schema>) => {
@@ -557,7 +623,7 @@ export function DataTable({
       newData = [...data, newTaskEntry];
     }
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
 
     setIsDialogOpen(false) // Close dialog
     // Reset form
@@ -574,7 +640,7 @@ export function DataTable({
       task.id === updatedTask.id ? updatedTask : task
     );
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   };
 
   // Edición rápida de un atributo (tocar para ciclar / elegir categoría): refleja el
@@ -632,7 +698,7 @@ export function DataTable({
     const selectedIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id)
     const newData = data.filter((task) => !selectedIds.includes(task.id))
     setData(newData)
-    onTasksChange?.(newData)
+    persistirCambios(newData)
     table.resetRowSelection()
   }
 
@@ -648,7 +714,7 @@ export function DataTable({
           selectedIds.includes(task.id) ? { ...task, status: "Completada" } : task
         )
         setData(newData)
-        onTasksChange?.(newData)
+        persistirCambios(newData)
         table.resetRowSelection()
         setCompletingIds(new Set())
     }, 500)
@@ -1050,8 +1116,38 @@ function TableCellViewer({ item, onUpdate, categorias }: { item: z.infer<typeof 
   }, [item]);
 
   const handleSave = () => {
-    onUpdate(formData)
+    // Cerramos primero para que el drawer anime su salida igual que "Cerrar"; recién
+    // después propagamos el cambio (que re-renderiza la fila y, si se hace antes,
+    // desmontaría el drawer de golpe sin animación).
     setOpen(false)
+    setTimeout(() => onUpdate(formData), 250)
+  }
+
+  // ---- Checklist / subtareas ----
+  const [nuevoItem, setNuevoItem] = React.useState("")
+  const checklist = formData.checklist ?? []
+
+  // Solo "sube" a Completada cuando se marcan todos los ítems; nunca revierte sola
+  // al desmarcar (evita sorpresas). Si no hay ítems, conserva el estado actual.
+  const estadoTrasMarcar = (items: typeof checklist) =>
+    items.length > 0 && items.every((i) => i.hecho) ? "Completada" : formData.status
+
+  const agregarItem = () => {
+    const texto = nuevoItem.trim()
+    if (!texto) return
+    const items = [...checklist, { id: crypto.randomUUID(), texto, hecho: false }]
+    setFormData({ ...formData, checklist: items })
+    setNuevoItem("")
+  }
+  const alternarItem = (id: string) => {
+    const items = checklist.map((i) => (i.id === id ? { ...i, hecho: !i.hecho } : i))
+    setFormData({ ...formData, checklist: items, status: estadoTrasMarcar(items) })
+  }
+  const editarItem = (id: string, texto: string) => {
+    setFormData({ ...formData, checklist: checklist.map((i) => (i.id === id ? { ...i, texto } : i)) })
+  }
+  const borrarItem = (id: string) => {
+    setFormData({ ...formData, checklist: checklist.filter((i) => i.id !== id) })
   }
 
   return (
@@ -1084,6 +1180,62 @@ function TableCellViewer({ item, onUpdate, categorias }: { item: z.infer<typeof 
                  value={formData.description || ""}
                  onChange={(e) => setFormData({...formData, description: e.target.value})}
               />
+            </div>
+
+            {/* Subtareas / checklist: desglosa la tarea en ítems marcables */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <Label>Subtareas</Label>
+                {checklist.length > 0 && (
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {checklist.filter((i) => i.hecho).length}/{checklist.length}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                {checklist.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sin subtareas todavía. Agregá ítems para desglosar la tarea.
+                  </p>
+                )}
+                {checklist.map((it) => (
+                  <div key={it.id} className="group flex items-center gap-2">
+                    <Checkbox
+                      checked={it.hecho}
+                      onCheckedChange={() => alternarItem(it.id)}
+                      aria-label="Marcar subtarea"
+                    />
+                    <Input
+                      value={it.texto}
+                      onChange={(e) => editarItem(it.id, e.target.value)}
+                      className={`h-8 flex-1 ${it.hecho ? "text-muted-foreground line-through" : ""}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => borrarItem(it.id)}
+                      className="text-muted-foreground/60 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                      aria-label="Borrar subtarea"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <Input
+                    value={nuevoItem}
+                    onChange={(e) => setNuevoItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault()
+                        agregarItem()
+                      }
+                    }}
+                    placeholder="Agregar subtarea y Enter…"
+                    className="h-8 flex-1"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Atributos editables con los mismos controles del alta (chips + selector) */}

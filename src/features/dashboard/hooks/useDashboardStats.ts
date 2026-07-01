@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import supabase from '@/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -41,6 +41,10 @@ interface AgregadosDashboard {
   hourly: AgregadoPorHora[];
   daily: AgregadoPorDia[];
   tasks: AgregadoPorTarea[];
+  // Conteo histórico de sesiones (todo el tiempo). Lo usa el rango "Total"
+  // para promediar contra total_study_minutes, ya que `daily` viene acotado
+  // al último año y no representa el historial completo de sesiones.
+  all_time_sessions: number;
 }
 
 /**
@@ -95,23 +99,55 @@ export function useDashboardStats(userId: string | undefined) {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Suscripciones en tiempo real: invalidan las queries afectadas ante cambios
+  // Suscripciones en tiempo real con invalidación DEBOUNCED y SELECTIVA.
+  //
+  // Antes, cada evento (incluido reordenar tareas o cambios de prioridad)
+  // disparaba un refetch inmediato de la RPC, que re-agrega el historial.
+  // Ahora coalescemos las ráfagas: marcamos qué queries quedaron sucias y
+  // las invalidamos una sola vez tras un período de calma.
+  const refTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const refSucias = useRef<{ agregados: boolean; userStats: boolean; tareas: boolean }>({
+    agregados: false, userStats: false, tareas: false,
+  });
+
   useEffect(() => {
     if (!userId) return;
+
+    const sucias = refSucias.current;
+    const RETARDO_MS = 800;
+
+    const programarInvalidacion = () => {
+      if (refTimeout.current) clearTimeout(refTimeout.current);
+      refTimeout.current = setTimeout(() => {
+        if (sucias.agregados) queryClient.invalidateQueries({ queryKey: ['dashboardAggregates', userId] });
+        if (sucias.userStats) queryClient.invalidateQueries({ queryKey: ['userStats', userId] });
+        if (sucias.tareas) queryClient.invalidateQueries({ queryKey: ['recentTasks', userId] });
+        sucias.agregados = false;
+        sucias.userStats = false;
+        sucias.tareas = false;
+      }, RETARDO_MS);
+    };
+
     const canal = supabase.channel('dashboard_realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'user_stats', filter: `user_id=eq.${userId}` }, () => {
-        queryClient.invalidateQueries({ queryKey: ['userStats', userId] });
+        sucias.userStats = true;
+        programarInvalidacion();
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks', filter: `user_id=eq.${userId}` }, () => {
-        queryClient.invalidateQueries({ queryKey: ['dashboardAggregates', userId] });
-        queryClient.invalidateQueries({ queryKey: ['recentTasks', userId] });
+        sucias.agregados = true;
+        sucias.tareas = true;
+        programarInvalidacion();
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'study_sessions', filter: `user_id=eq.${userId}` }, () => {
-        queryClient.invalidateQueries({ queryKey: ['dashboardAggregates', userId] });
+        sucias.agregados = true;
+        programarInvalidacion();
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(canal); }
+    return () => {
+      if (refTimeout.current) clearTimeout(refTimeout.current);
+      supabase.removeChannel(canal);
+    }
   }, [userId, queryClient]);
 
   // Precalcula los datos de los gráficos para TODOS los rangos de una sola vez
@@ -232,10 +268,12 @@ export function useDashboardStats(userId: string | undefined) {
         .map(([name, value]) => ({ name, value }))
         .sort((a, b) => b.value - a.value);
 
-      // Para el total preferimos el acumulado oficial guardado en user_stats
+      // Para el total preferimos el acumulado oficial guardado en user_stats.
+      // El conteo de sesiones sale de all_time_sessions (histórico real), ya
+      // que `daily` está acotado al último año y subestimaría el divisor.
       if (rango === 'total' && datosEstadisticasUsuario) {
         totalMinutos = datosEstadisticasUsuario.total_study_minutes || 0;
-        totalSesiones = agregados.daily.reduce((acc, val) => acc + val.sessions_count, 0);
+        totalSesiones = agregados.all_time_sessions ?? agregados.daily.reduce((acc, val) => acc + val.sessions_count, 0);
       }
 
       resultado[rango] = {
