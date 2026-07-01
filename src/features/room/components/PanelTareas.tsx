@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { DataTable } from "@/components/data-table";
+import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea";
+import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias";
+import { derivarCategorias, CATEGORIA_POR_DEFECTO } from "@/features/tasks/atributos";
 import type { AmbitoTarea } from "@/features/tasks/hooks/useTareas";
-import type { Tarea } from "@/types/dominio";
+import type { Tarea, TareaPayload } from "@/types/dominio";
 
 type PanelTareasProps = {
     tareas: Tarea[];
@@ -10,6 +14,10 @@ type PanelTareasProps = {
     salaId?: string;
     // Persiste los cambios de la tabla dentro del ámbito indicado (re-lanza errores)
     onGuardarCambios: (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => Promise<void>;
+    // Alta rápida en el ámbito indicado (fila inline)
+    onCrearTarea: (parcial: TareaPayload, ambito: AmbitoTarea) => Promise<void>;
+    // Edición rápida de un atributo de una tarea (tocar para ciclar / categoría)
+    onActualizarTarea: (id: number, datos: TareaPayload) => Promise<void>;
     // Mueve una tarea entre el ámbito personal y el de la sala
     onMoverTarea: (tareaId: number) => Promise<void>;
 };
@@ -21,10 +29,17 @@ type PanelTareasProps = {
  * Es dueño solo de su estado de UI (pestaña activa, no vistas); los datos y la
  * persistencia llegan por props desde el contenedor (`RoomPage` vía `useTareas`).
  */
-export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMoverTarea }: PanelTareasProps) {
+export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrearTarea, onActualizarTarea, onMoverTarea }: PanelTareasProps) {
     const [pestanaTareas, establecerPestanaTareas] = useState<AmbitoTarea>("personal");
     const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
+    const [categoriaActiva, establecerCategoriaActiva] = useState("Todas");
     const conteoSalaPrevio = useRef<number | null>(null);
+
+    // Cambia de pestaña y resetea el filtro de categoría (las categorías difieren por ámbito)
+    const cambiarPestana = useCallback((ambito: AmbitoTarea) => {
+        establecerPestanaTareas(ambito);
+        establecerCategoriaActiva("Todas");
+    }, []);
 
     // Lleva la cuenta de tareas de sala "no vistas" mientras se está en la pestaña personal
     useEffect(() => {
@@ -59,6 +74,15 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
         }
     }, [tareas, pestanaTareas, salaId]);
 
+    // Categorías y filtro (opción B) sobre las tareas de la pestaña activa
+    const categorias = useMemo(() => derivarCategorias(tareasMostradas), [tareasMostradas]);
+    const tareasFiltradas = useMemo(
+        () => categoriaActiva === "Todas"
+            ? tareasMostradas
+            : tareasMostradas.filter((t) => (t.type?.trim() || CATEGORIA_POR_DEFECTO) === categoriaActiva),
+        [tareasMostradas, categoriaActiva]
+    );
+
     // Persiste los cambios de la tabla en el ámbito de la pestaña activa
     const manejarCambioTareas = useCallback(async (nuevoEstadoTareas: Tarea[]) => {
         try {
@@ -76,6 +100,24 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
         }
     }, [onMoverTarea]);
 
+    // Alta rápida en el ámbito de la pestaña activa (personal o sala)
+    const manejarAltaRapida = useCallback(async (parcial: TareaPayload) => {
+        try {
+            await onCrearTarea(parcial, pestanaTareas);
+        } catch (error) {
+            console.error("Error al crear la tarea:", error);
+        }
+    }, [onCrearTarea, pestanaTareas]);
+
+    // Edición rápida de un atributo (tocar para ciclar / elegir categoría)
+    const manejarActualizarTarea = useCallback(async (id: number, datos: TareaPayload) => {
+        try {
+            await onActualizarTarea(id, datos);
+        } catch (error) {
+            console.error("Error al actualizar la tarea:", error);
+        }
+    }, [onActualizarTarea]);
+
     return (
         <div className="space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-0 lg:px-2">
             <div className="flex flex-col gap-4">
@@ -88,13 +130,13 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
                 <div className="flex border-b border-border/50 mb-4">
                     <button
                         className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${pestanaTareas === 'personal' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => establecerPestanaTareas("personal")}
+                        onClick={() => cambiarPestana("personal")}
                     >
                         Mis Tareas
                     </button>
                     <button
                         className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${pestanaTareas === 'sala' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                        onClick={() => establecerPestanaTareas("sala")}
+                        onClick={() => cambiarPestana("sala")}
                     >
                         Tareas de la Sala
                         {cantidadNoVistas > 0 && (
@@ -104,12 +146,30 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onMover
                         )}
                     </button>
                 </div>
-                <DataTable
-                    data={tareasMostradas}
-                    onTasksChange={manejarCambioTareas}
-                    onMoveTask={manejarMoverTarea}
-                    key={pestanaTareas} // Forza un re-render del DataTable al cambiar de pestaña
+                <FiltroCategorias
+                    categorias={categorias}
+                    activa={categoriaActiva}
+                    total={tareasMostradas.length}
+                    onSeleccionar={establecerCategoriaActiva}
                 />
+                <AnimatePresence mode="wait">
+                    {/* Fade al cambiar de pestaña o de categoría; el key además fuerza el re-render del DataTable */}
+                    <motion.div
+                        key={`${pestanaTareas}-${categoriaActiva}`}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                    >
+                        <DataTable
+                            data={tareasFiltradas}
+                            onTasksChange={manejarCambioTareas}
+                            onActualizarTarea={manejarActualizarTarea}
+                            onMoveTask={manejarMoverTarea}
+                            slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                        />
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );

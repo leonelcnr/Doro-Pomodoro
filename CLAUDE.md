@@ -76,6 +76,7 @@ Features: `auth`, `calendar`, `dashboard`, `home`, `room`, `tasks`, `timer`.
 - **Excepción — se mantienen en inglés** (son contratos que romperían la app): nombres de tablas/columnas/RPC de Supabase, campos de Google Calendar/OAuth (`provider_refresh_token`, etc.), props de librerías, los valores literales de `mode` y las claves de `configuracion` del store, y los nombres de archivos/componentes exportados. Aislar esos nombres en la capa de `services/`.
 - **Gestor de paquetes: pnpm** (hay `pnpm-lock.yaml` y `pnpm-workspace.yaml`; Vercel despliega con `pnpm run build`).
 - **No tocar como código propio:** `src/components/ui/*` (shadcn), `src/components/animate-ui/*`, y los bloques de plantilla (`app-sidebar`, `data-table`, `nav-*`, `site-header`). Están ignorados en `eslint.config.js` a propósito.
+- **Bocetos visuales, no ASCII:** al proponer o comparar diseños de UI, generar un boceto HTML renderizable (que se pueda abrir en el navegador) en vez de previsualizaciones en ASCII. Es la forma más práctica de ver el resultado final.
 
 ## Convenciones de TypeScript
 

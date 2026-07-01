@@ -26,7 +26,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 import { z } from "zod"
-import { Trash2, Edit2, Star, X, ArrowUp, ArrowRight, ArrowDown, CheckCircle2, Timer, CircleDashed, ChevronsUpDown, EyeOff, GripVertical } from "lucide-react"
+import { Trash2, Edit2, Star, X, ArrowUp, ArrowRight, ArrowDown, CheckCircle2, Timer, CircleDashed, ChevronsUpDown, EyeOff, GripVertical, ListChecks, Plus } from "lucide-react"
 
 import {
   DndContext,
@@ -98,6 +98,22 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+// Helpers de tareas: ciclado/normalización de atributos + iconos compartidos
+import {
+  siguienteEstado,
+  siguientePrioridad,
+  normalizarEstado,
+  normalizarPrioridad,
+  INFO_PRIORIDAD,
+  INFO_ESTADO,
+} from "@/features/tasks/atributos"
+import { SelectorCategoria } from "@/features/tasks/components/SelectorCategoria"
+import { ChipPrioridad, ChipEstado } from "@/features/tasks/components/ChipAtributo"
+import type { Tarea } from "@/types/dominio"
+
+
+// Clave de localStorage donde se recuerda el filtro de estado de la tabla
+const LS_FILTRO_ESTADO = "doro:tareas:filtro-estado"
 
 // Esquema de validación para cada tarea usando Zod
 export const schema = z.object({
@@ -111,7 +127,9 @@ export const schema = z.object({
   room_id: z.string().nullable().optional(), // Null si es personal, con ID si es de sala
   user_id: z.string().optional(), // ID del dueño
   order_index: z.number().nullable().optional(), // Índice para ordenamiento
-  description: z.string().optional() // Descripción ampliada
+  description: z.string().optional(), // Descripción ampliada
+  // Subtareas / checklist (se persiste como jsonb en la columna `checklist`)
+  checklist: z.array(z.object({ id: z.string(), texto: z.string(), hecho: z.boolean() })).optional()
 })
 
 
@@ -177,6 +195,9 @@ const getColumns = (
   onToggleFavorite: (id: number) => void,
   onEditTask: (task: z.infer<typeof schema>) => void,
   onDirectUpdateTask: (task: z.infer<typeof schema>) => void,
+  // Ruta rápida para "tocar y cambiar" un solo atributo (estado/prioridad/categoría)
+  onCycleUpdate: (id: number, datos: Partial<Tarea>) => void,
+  categorias: string[],
   onMoveTask?: (id: number) => void // Nueva acción opcional
 ): ColumnDef<z.infer<typeof schema>>[] => [
     {
@@ -222,10 +243,35 @@ const getColumns = (
         return (
           <div className="flex items-center space-x-2">
             {row.original.favorite && <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />}
-            <Badge variant="outline" className={`px-2 py-0.5 whitespace-nowrap font-medium text-[11px] text-foreground capitalize border-border bg-transparent transition-opacity duration-500 ${isCompleted ? 'opacity-50' : ''}`}>
-              {row.original.type}
-            </Badge>
-            <span 
+            {/* Categoría clicable: abre el selector para cambiarla o crear una nueva */}
+            <SelectorCategoria
+              value={row.original.type}
+              categorias={categorias}
+              onSeleccionar={(categoria) => onCycleUpdate(row.original.id, { type: categoria })}
+            >
+              <button type="button" title="Cambiar categoría" className="focus-visible:outline-none">
+                <Badge variant="outline" className={`px-2 py-0.5 whitespace-nowrap font-medium text-[11px] text-foreground capitalize border-border bg-transparent cursor-pointer hover:bg-accent transition-opacity duration-500 ${isCompleted ? 'opacity-50' : ''}`}>
+                  {row.original.type}
+                </Badge>
+              </button>
+            </SelectorCategoria>
+            {/* Progreso de la checklist: solo si la tarea tiene subtareas */}
+            {(() => {
+              const items = row.original.checklist ?? []
+              if (items.length === 0) return null
+              const hechos = items.filter((i) => i.hecho).length
+              const completa = hechos === items.length
+              return (
+                <span
+                  title={`Subtareas: ${hechos} de ${items.length}`}
+                  className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-medium tabular-nums ${completa ? 'border-green-600/30 bg-green-600/10 text-green-600 dark:text-green-400' : 'border-border bg-muted text-muted-foreground'}`}
+                >
+                  <ListChecks className="h-3 w-3" />
+                  {hechos}/{items.length}
+                </span>
+              )
+            })()}
+            <span
               className={`max-w-[500px] truncate font-medium ${isCompleted ? 'text-muted-foreground opacity-70' : ''}`}
               style={{
                   backgroundImage: "linear-gradient(transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1px))",
@@ -234,7 +280,7 @@ const getColumns = (
                   transition: "background-size 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease-out, opacity 0.5s ease-out",
               }}
             >
-              <TableCellViewer item={row.original} onUpdate={onDirectUpdateTask} />
+              <TableCellViewer item={row.original} onUpdate={onDirectUpdateTask} categorias={categorias} />
             </span>
           </div>
         )
@@ -245,18 +291,23 @@ const getColumns = (
     {
       accessorKey: "status",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Estado" />,
-      cell: ({ row }) => (
-        <Badge variant="outline" className="text-muted-foreground px-1.5 flex items-center gap-1.5">
-          {row.original.status === "Completada" ? (
-            <CheckCircle2 className="h-3.5 w-3.5 text-green-500 dark:text-green-400" />
-          ) : row.original.status === "En Progreso" ? (
-            <Timer className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />
-          ) : (
-            <CircleDashed className="h-3.5 w-3.5 text-muted-foreground" />
-          )}
-          <span>{row.original.status}</span>
-        </Badge>
-      ),
+      // Tocar el estado lo cicla al siguiente (Sin Empezar → En Progreso → Completada → …).
+      // Mismo formato que la prioridad: ícono (color del estado) + palabra y hover tipo botón.
+      cell: ({ row }) => {
+        const estado = normalizarEstado(row.original.status)
+        const { icono: Icono, clase } = INFO_ESTADO[estado]
+        return (
+          <button
+            type="button"
+            title="Cambiar estado"
+            onClick={() => onCycleUpdate(row.original.id, { status: siguienteEstado(row.original.status) })}
+            className="-ml-2 inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
+          >
+            <Icono className={`h-4 w-4 ${clase}`} />
+            <span>{estado}</span>
+          </button>
+        )
+      },
       filterFn: (row, id, value) => {
         if (!value || value.length === 0) return true
         return value.includes(row.getValue(id))
@@ -272,18 +323,21 @@ const getColumns = (
         const valB = priorityValues[rowB.getValue(columnId) as string] || 2;
         return valA - valB;
       },
+      // Tocar la prioridad la cicla a la siguiente (Alta → Media → Baja → …).
+      // Ícono (color del nivel) + palabra, con hover tipo botón (borde + fondo).
       cell: ({ row }) => {
-        const priorityStr = row.original.priority || "Medium"
-        const isHigh = priorityStr === "High" || priorityStr === "Alta"
-        const isMedium = priorityStr === "Medium" || priorityStr === "Media"
-        const label = isHigh ? "Alta" : isMedium ? "Media" : "Baja"
+        const prioridad = normalizarPrioridad(row.original.priority)
+        const { icono: Icono, clase } = INFO_PRIORIDAD[prioridad]
         return (
-          <div className="flex w-[100px] items-center">
-            <span className="text-muted-foreground mr-2">
-              {isHigh ? <ArrowUp className="h-4 w-4" /> : isMedium ? <ArrowRight className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-            </span>
-            <span>{label}</span>
-          </div>
+          <button
+            type="button"
+            title="Cambiar prioridad"
+            onClick={() => onCycleUpdate(row.original.id, { priority: siguientePrioridad(row.original.priority) })}
+            className="-ml-2 inline-flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm transition-colors hover:border-border hover:bg-accent focus-visible:outline-none"
+          >
+            <Icono className={`h-4 w-4 ${clase}`} />
+            <span>{prioridad}</span>
+          </button>
         )
       },
       filterFn: (row, id, value) => {
@@ -378,25 +432,58 @@ const SortableRow = ({ row, isSelected }: { row: Row<z.infer<typeof schema>>; is
 export function DataTable({
   data: initialData,
   onTasksChange,
+  onActualizarTarea,
   onMoveTask,
+  slotAltaRapida,
 }: {
   data: z.infer<typeof schema>[];
   onTasksChange?: (newData: z.infer<typeof schema>[]) => void;
+  // Ruta rápida de edición de un atributo (un solo registro), sin reconstruir el array
+  onActualizarTarea?: (id: number, datos: Partial<Tarea>) => void;
   onMoveTask?: (id: number) => void;
+  // Contenido opcional (p. ej. la fila de alta rápida) entre la barra de filtros y la tabla
+  slotAltaRapida?: React.ReactNode;
 }) {
   // Estados para manejar los datos y el comportamiento de la tabla
   const [data, setData] = React.useState(() => initialData) // Datos de las tareas
 
-  // Actualizar el estado interno si las props cambian (útil para realtime de Supabase)
+  // Actualizar el estado interno si las props cambian (útil para realtime de Supabase).
+  // Pero NO mientras hay un guardado de orden diferido en vuelo (drag reciente): un eco
+  // de realtime podría traer el orden viejo y haría "volver y saltar" la fila arrastrada.
+  // Al hacer flush del guardado, el siguiente `initialData` ya refleja el orden persistido
+  // y la sincronización se reanuda.
   React.useEffect(() => {
+    if (guardadoOrdenRef.current) return;
     setData(initialData);
   }, [initialData]);
   const [rowSelection, setRowSelection] = React.useState({}) // Filas seleccionadas
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({}) // Visibilidad de columnas
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([
-    { id: "status", value: ["En Progreso", "Sin Empezar"] } // Por defecto no mostramos las completadas
-  ]) // Filtros aplicados
+  // Filtro de estado: por defecto se muestran TODAS (incluidas las completadas);
+  // la preferencia del usuario se recuerda en localStorage.
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(() => {
+    try {
+      const guardado = localStorage.getItem(LS_FILTRO_ESTADO)
+      if (guardado) {
+        const valores = JSON.parse(guardado)
+        if (Array.isArray(valores) && valores.length) return [{ id: "status", value: valores }]
+      }
+    } catch { /* localStorage no disponible: usamos el default */ }
+    return [] // por defecto: sin filtro (se ven todas, incluidas las completadas)
+  })
+
+  // Persiste el filtro de estado (o lo borra si no hay selección) ante cada cambio
+  React.useEffect(() => {
+    try {
+      const filtroEstado = columnFilters.find((f) => f.id === "status")
+      const valores = filtroEstado?.value
+      if (Array.isArray(valores) && valores.length) {
+        localStorage.setItem(LS_FILTRO_ESTADO, JSON.stringify(valores))
+      } else {
+        localStorage.removeItem(LS_FILTRO_ESTADO)
+      }
+    } catch { /* localStorage no disponible: ignoramos */ }
+  }, [columnFilters])
   const [sorting, setSorting] = React.useState<SortingState>([]) // Ordenamiento de columnas
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -418,6 +505,50 @@ export function DataTable({
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
+
+  // Debounce del guardado de orden (rec. 11): los arrastres consecutivos se
+  // agrupan y se persiste una sola vez al soltar. El optimismo local (setData)
+  // sigue siendo instantáneo; solo se difiere la escritura a Supabase.
+  const guardadoOrdenRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const ordenPendienteRef = React.useRef<z.infer<typeof schema>[] | null>(null)
+  const onTasksChangeRef = React.useRef(onTasksChange)
+  React.useEffect(() => { onTasksChangeRef.current = onTasksChange }, [onTasksChange])
+
+  // Persiste el nuevo estado. Inmediato por defecto (alta/baja/edición); en modo
+  // `debounced` (drag) agrupa los movimientos rápidos en una sola escritura. Las
+  // escrituras inmediatas cancelan cualquier guardado de orden pendiente (su
+  // `nuevoData` ya refleja el orden vigente, así no se pierde nada).
+  const persistirCambios = React.useCallback(
+    (nuevoData: z.infer<typeof schema>[], debounced = false) => {
+      if (guardadoOrdenRef.current) {
+        clearTimeout(guardadoOrdenRef.current)
+        guardadoOrdenRef.current = null
+      }
+      if (!debounced) {
+        ordenPendienteRef.current = null
+        onTasksChange?.(nuevoData)
+        return
+      }
+      ordenPendienteRef.current = nuevoData
+      guardadoOrdenRef.current = setTimeout(() => {
+        guardadoOrdenRef.current = null
+        ordenPendienteRef.current = null
+        onTasksChange?.(nuevoData)
+      }, 600)
+    },
+    [onTasksChange]
+  )
+
+  // Si el componente se desmonta con un guardado de orden pendiente, lo flusheamos
+  // para no perder el último orden arrastrado (p. ej. al cambiar de pestaña).
+  React.useEffect(() => {
+    return () => {
+      if (guardadoOrdenRef.current) {
+        clearTimeout(guardadoOrdenRef.current)
+        if (ordenPendienteRef.current) onTasksChangeRef.current?.(ordenPendienteRef.current)
+      }
+    }
+  }, [])
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -441,8 +572,8 @@ export function DataTable({
       const updated = reordered.map((item, idx) => ({ ...item, order_index: idx }))
       setData(updated)
 
-      // We shouldn't block the UI while Supabase updates, so use a timeout
-      setTimeout(() => onTasksChange?.(updated), 0)
+      // Guardado diferido: agrupa arrastres rápidos en una sola escritura
+      persistirCambios(updated, true)
     }
   }
 
@@ -450,7 +581,7 @@ export function DataTable({
   const handleDeleteTask = (id: number) => {
     const newData = data.filter((task) => task.id !== id);
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   }
 
   const handleToggleFavorite = (id: number) => {
@@ -458,7 +589,7 @@ export function DataTable({
       task.id === id ? { ...task, favorite: !task.favorite } : task
     );
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   }
 
   const handleEditTask = (task: z.infer<typeof schema>) => {
@@ -492,7 +623,7 @@ export function DataTable({
       newData = [...data, newTaskEntry];
     }
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
 
     setIsDialogOpen(false) // Close dialog
     // Reset form
@@ -509,11 +640,29 @@ export function DataTable({
       task.id === updatedTask.id ? updatedTask : task
     );
     setData(newData);
-    onTasksChange?.(newData);
+    persistirCambios(newData);
   };
 
+  // Edición rápida de un atributo (tocar para ciclar / elegir categoría): refleja el
+  // cambio localmente al instante y lo persiste por la ruta de un solo registro.
+  // Sin `onActualizarTarea` cae al guardado por array completo, para no perder el cambio.
+  const handleQuickUpdate = React.useCallback((id: number, datos: Partial<Tarea>) => {
+    setData((prev) => {
+      const next = prev.map((t) => (t.id === id ? { ...t, ...datos } : t));
+      if (!onActualizarTarea) onTasksChange?.(next);
+      return next;
+    });
+    onActualizarTarea?.(id, datos);
+  }, [onActualizarTarea, onTasksChange]);
+
+  // Categorías presentes en las tareas actuales (alimentan el selector de las filas)
+  const categorias = React.useMemo(
+    () => Array.from(new Set(data.map((t) => t.type).filter((t): t is string => !!t && t.trim().length > 0))),
+    [data]
+  );
+
   // Derive columns here to pass the delete function
-  const columns = React.useMemo(() => getColumns(handleDeleteTask, handleToggleFavorite, handleEditTask, handleDirectUpdateTask, onMoveTask), [data, onMoveTask])
+  const columns = React.useMemo(() => getColumns(handleDeleteTask, handleToggleFavorite, handleEditTask, handleDirectUpdateTask, handleQuickUpdate, categorias, onMoveTask), [data, onMoveTask, handleQuickUpdate, categorias])
 
 
   // Configuración de la tabla usando React Table
@@ -549,7 +698,7 @@ export function DataTable({
     const selectedIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id)
     const newData = data.filter((task) => !selectedIds.includes(task.id))
     setData(newData)
-    onTasksChange?.(newData)
+    persistirCambios(newData)
     table.resetRowSelection()
   }
 
@@ -565,7 +714,7 @@ export function DataTable({
           selectedIds.includes(task.id) ? { ...task, status: "Completada" } : task
         )
         setData(newData)
-        onTasksChange?.(newData)
+        persistirCambios(newData)
         table.resetRowSelection()
         setCompletingIds(new Set())
     }, 500)
@@ -733,17 +882,19 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* Referencia al atajo para abrir el modal global de nueva tarea
+              (reemplaza al botón "Agregar Tarea": el alta se hace con T, ⌘K o la fila inline) */}
+          <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">T</kbd>
+            nueva tarea
+          </span>
+          {/* Este Dialog queda solo para EDITAR una tarea desde el menú de acciones */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="h-8 bg-purple-500 hover:bg-purple-600 text-white dark:bg-purple-600 dark:hover:bg-purple-700">
-                Agregar Tarea
-              </Button>
-            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Nueva Tarea</DialogTitle>
+                <DialogTitle>Editar Tarea</DialogTitle>
                 <DialogDescription>
-                  Completa los campos para agregar una nueva tarea a la tabla. Haz clic en guardar cuando termines.
+                  Modifica los campos de la tarea. Haz clic en guardar cuando termines.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleAddTask}>
@@ -824,6 +975,8 @@ export function DataTable({
           </Dialog>
         </div>
       </div>
+      {/* Alta rápida: va debajo de la barra de filtros y pegada a la tabla */}
+      {slotAltaRapida}
       <div className="overflow-hidden rounded-lg border">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={table.getRowModel().rows.map(r => r.original.id.toString())} strategy={verticalListSortingStrategy}>
@@ -952,7 +1105,7 @@ export function DataTable({
  * Muestra un drawer (cajón lateral) con información detallada de la tarea
  * @param item - Datos de la tarea a mostrar
  */
-function TableCellViewer({ item, onUpdate }: { item: z.infer<typeof schema>, onUpdate: (updated: z.infer<typeof schema>) => void }) {
+function TableCellViewer({ item, onUpdate, categorias }: { item: z.infer<typeof schema>, onUpdate: (updated: z.infer<typeof schema>) => void, categorias: string[] }) {
   const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false)
   const [formData, setFormData] = React.useState(item)
@@ -963,8 +1116,38 @@ function TableCellViewer({ item, onUpdate }: { item: z.infer<typeof schema>, onU
   }, [item]);
 
   const handleSave = () => {
-    onUpdate(formData)
+    // Cerramos primero para que el drawer anime su salida igual que "Cerrar"; recién
+    // después propagamos el cambio (que re-renderiza la fila y, si se hace antes,
+    // desmontaría el drawer de golpe sin animación).
     setOpen(false)
+    setTimeout(() => onUpdate(formData), 250)
+  }
+
+  // ---- Checklist / subtareas ----
+  const [nuevoItem, setNuevoItem] = React.useState("")
+  const checklist = formData.checklist ?? []
+
+  // Solo "sube" a Completada cuando se marcan todos los ítems; nunca revierte sola
+  // al desmarcar (evita sorpresas). Si no hay ítems, conserva el estado actual.
+  const estadoTrasMarcar = (items: typeof checklist) =>
+    items.length > 0 && items.every((i) => i.hecho) ? "Completada" : formData.status
+
+  const agregarItem = () => {
+    const texto = nuevoItem.trim()
+    if (!texto) return
+    const items = [...checklist, { id: crypto.randomUUID(), texto, hecho: false }]
+    setFormData({ ...formData, checklist: items })
+    setNuevoItem("")
+  }
+  const alternarItem = (id: string) => {
+    const items = checklist.map((i) => (i.id === id ? { ...i, hecho: !i.hecho } : i))
+    setFormData({ ...formData, checklist: items, status: estadoTrasMarcar(items) })
+  }
+  const editarItem = (id: string, texto: string) => {
+    setFormData({ ...formData, checklist: checklist.map((i) => (i.id === id ? { ...i, texto } : i)) })
+  }
+  const borrarItem = (id: string) => {
+    setFormData({ ...formData, checklist: checklist.filter((i) => i.id !== id) })
   }
 
   return (
@@ -999,59 +1182,79 @@ function TableCellViewer({ item, onUpdate }: { item: z.infer<typeof schema>, onU
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`type-${item.id}`}>Tipo</Label>
-                <Select value={formData.type} onValueChange={(val) => setFormData({...formData, type: val})}>
-                  <SelectTrigger id={`type-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Tabla de Contenidos">Tabla de Contenidos</SelectItem>
-                    <SelectItem value="Resumen Ejecutivo">Resumen Ejecutivo</SelectItem>
-                    <SelectItem value="Enfoque Técnico">Enfoque Técnico</SelectItem>
-                    <SelectItem value="Diseño">Diseño</SelectItem>
-                    <SelectItem value="Capacidades">Capacidades</SelectItem>
-                    <SelectItem value="Documentos de Enfoque">Documentos de Enfoque</SelectItem>
-                    <SelectItem value="Narrativa">Narrativa</SelectItem>
-                    <SelectItem value="Portada">Portada</SelectItem>
-                    <SelectItem value="Desarrollo">Desarrollo</SelectItem>
-                    <SelectItem value="Anotación">Anotación</SelectItem>
-                  </SelectContent>
-                </Select>
+            {/* Subtareas / checklist: desglosa la tarea en ítems marcables */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <Label>Subtareas</Label>
+                {checklist.length > 0 && (
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {checklist.filter((i) => i.hecho).length}/{checklist.length}
+                  </span>
+                )}
               </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`status-${item.id}`}>Estado</Label>
-                <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
-                  <SelectTrigger id={`status-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar estado" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Completada">Completada</SelectItem>
-                    <SelectItem value="En Progreso">En Progreso</SelectItem>
-                    <SelectItem value="Sin Empezar">Sin Empezar</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex flex-col gap-2">
+                {checklist.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sin subtareas todavía. Agregá ítems para desglosar la tarea.
+                  </p>
+                )}
+                {checklist.map((it) => (
+                  <div key={it.id} className="group flex items-center gap-2">
+                    <Checkbox
+                      checked={it.hecho}
+                      onCheckedChange={() => alternarItem(it.id)}
+                      aria-label="Marcar subtarea"
+                    />
+                    <Input
+                      value={it.texto}
+                      onChange={(e) => editarItem(it.id, e.target.value)}
+                      className={`h-8 flex-1 ${it.hecho ? "text-muted-foreground line-through" : ""}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => borrarItem(it.id)}
+                      className="text-muted-foreground/60 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                      aria-label="Borrar subtarea"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <Input
+                    value={nuevoItem}
+                    onChange={(e) => setNuevoItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault()
+                        agregarItem()
+                      }
+                    }}
+                    placeholder="Agregar subtarea y Enter…"
+                    className="h-8 flex-1"
+                  />
+                </div>
               </div>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`priority-${item.id}`}>Prioridad</Label>
-                <Select value={formData.priority || "Medium"} onValueChange={(val) => setFormData({...formData, priority: val})}>
-                  <SelectTrigger id={`priority-${item.id}`} className="w-full">
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="High">Alta</SelectItem>
-                    <SelectItem value="Medium">Media</SelectItem>
-                    <SelectItem value="Low">Baja</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor={`limit-${item.id}`}>Límite</Label>
-                <Input id={`limit-${item.id}`} placeholder="Ej: Mañana a las 10am" value={formData.limit || ""} onChange={(e) => setFormData({...formData, limit: e.target.value})} />
+
+            {/* Atributos editables con los mismos controles del alta (chips + selector) */}
+            <div className="flex flex-col gap-3">
+              <Label>Atributos</Label>
+              <div className="flex flex-wrap items-center gap-2">
+                <ChipPrioridad
+                  valor={formData.priority}
+                  onClick={() => setFormData({ ...formData, priority: siguientePrioridad(formData.priority) })}
+                />
+                <ChipEstado
+                  valor={formData.status}
+                  onClick={() => setFormData({ ...formData, status: siguienteEstado(formData.status) })}
+                />
+                <SelectorCategoria
+                  value={formData.type}
+                  categorias={categorias}
+                  onSeleccionar={(cat) => setFormData({ ...formData, type: cat })}
+                />
               </div>
             </div>
           </form>

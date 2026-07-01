@@ -13,7 +13,6 @@ export default function App({ children }: { children: React.ReactNode }) {
 			disableTransitionOnChange={false}
 		>
 			<div className='min-h-dvh w-full overflow-x-hidden'>{children}</div>
-
 		</ThemeProvider>
 	);
 }

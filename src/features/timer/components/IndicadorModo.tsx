@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import type { Modo } from '@/types/timer';
+import { ETIQUETA_MODO, PUNTO_MODO } from '../modoVisual';
 
 type IndicadorModoProps = {
     modo: Modo;
@@ -36,9 +37,9 @@ export function IndicadorModo({ modo, onClickModo, onPomodoro, onCronometro }: I
                         </Button>
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors select-none">
-                        <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.5)] transition-colors duration-300" />
+                        <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO.stopwatch}`} />
                         <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
-                            Cronómetro
+                            {ETIQUETA_MODO.stopwatch}
                         </span>
                     </div>
                 </div>
@@ -48,12 +49,9 @@ export function IndicadorModo({ modo, onClickModo, onPomodoro, onCronometro }: I
                         onClick={onClickModo}
                         className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 md:px-3 px-2 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                        <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${modo === 'pomodoro' ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]' :
-                            modo === 'shortBreak' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                                'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]'
-                            }`} />
+                        <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO[modo]}`} />
                         <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase select-none whitespace-nowrap">
-                            {modo === 'pomodoro' ? 'Pomodoro' : modo === 'shortBreak' ? 'Descanso Corto' : 'Descanso Largo'}
+                            {ETIQUETA_MODO[modo]}
                         </span>
                     </button>
 
