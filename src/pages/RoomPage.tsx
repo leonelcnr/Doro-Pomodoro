@@ -18,6 +18,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/context/useAuth";
+import { esUuid } from "@/lib/uuid";
 import type { Invitacion } from "@/types/dominio";
 
 // Una invitación es válida si no expiró y todavía le quedan usos disponibles
@@ -35,8 +36,11 @@ function InvitacionValida(inv: Invitacion) {
  * la carga de la invitación, que es propia de la página.
  */
 const RoomPage = () => {
-    // `roomId` proviene del parámetro de la ruta (contrato con el router)
+    // `roomId` proviene del parámetro de la ruta (contrato con el router). Como es
+    // entrada no confiable (URL), solo lo tratamos como id de sala si es un UUID
+    // válido; si no, `salaIdValida` queda undefined y bloqueamos con la vista de error.
     const { roomId } = useParams();
+    const salaIdValida = roomId && esUuid(roomId) ? roomId : undefined;
     const [invitacion, establecerInvitacion] = useState<Invitacion | null>();
     const [cargandoInvitacion, establecerCargandoInvitacion] = useState<boolean>(false);
     const [error, establecerError] = useState<string | null>(null);
@@ -46,9 +50,9 @@ const RoomPage = () => {
 
     // Hooks de dominio: presencia, tareas y sincronización del reloj compartido.
     // La página ya no maneja canales de Supabase ni el estado de tareas a mano.
-    const usuariosEnSala = usePresenciaSala(roomId);
-    const { tareas, cargado, guardarCambios, crearTarea, actualizarTareaCampos, moverTarea } = useTareas(roomId);
-    useSincronizacionReloj(roomId);
+    const usuariosEnSala = usePresenciaSala(salaIdValida);
+    const { tareas, cargado, guardarCambios, crearTarea, actualizarTareaCampos, moverTarea } = useTareas(salaIdValida);
+    useSincronizacionReloj(salaIdValida);
 
     // Al entrar: aseguramos la membresía en la sala (RLS) y luego cargamos la
     // invitación. Si falla la membresía, bloqueamos con la vista de error; el
@@ -56,13 +60,20 @@ const RoomPage = () => {
     useEffect(() => {
         if (!roomId || !usuario) return;
 
+        // Id presente pero malformado: no tocamos Supabase, mostramos error.
+        if (!salaIdValida) {
+            establecerCargandoInvitacion(false);
+            establecerError("El identificador de la sala no es válido.");
+            return;
+        }
+
         const cargarSala = async () => {
             establecerCargandoInvitacion(true);
             establecerError(null); // limpia un error previo al cambiar de sala
 
             // 1) Membresía: imprescindible para leer/sincronizar la sala con RLS
             try {
-                await salasService.unirseASalaPorId(roomId);
+                await salasService.unirseASalaPorId(salaIdValida);
             } catch (e: unknown) {
                 establecerCargandoInvitacion(false);
                 console.error("Error al unirse a la sala:", e);
@@ -72,7 +83,7 @@ const RoomPage = () => {
 
             // 2) Invitación: secundaria. Su error no bloquea la sala.
             try {
-                const invitacionData = await salasService.obtenerInvitacion(roomId);
+                const invitacionData = await salasService.obtenerInvitacion(salaIdValida);
                 establecerInvitacion(invitacionData && InvitacionValida(invitacionData) ? invitacionData : null);
             } catch (e: unknown) {
                 console.error("Error al cargar la invitación (no bloquea la sala):", e);
@@ -83,7 +94,7 @@ const RoomPage = () => {
         };
 
         cargarSala();
-    }, [roomId, usuario]);
+    }, [roomId, salaIdValida, usuario]);
 
     // Arma el enlace de invitación a partir del código vigente
     const enlaceInvitacion = useMemo(() => {
@@ -134,13 +145,13 @@ const RoomPage = () => {
                 ) : (
                     <>
                         <div className="flex items-center justify-center border border-dashed rounded-3xl bg-card/10 w-full min-h-80 lg:h-96 py-8 lg:py-0">
-                            <TimerDisplay enlace={enlaceInvitacion || ""} codigo={invitacion?.code || ""} salaId={roomId} />
+                            <TimerDisplay enlace={enlaceInvitacion || ""} codigo={invitacion?.code || ""} salaId={salaIdValida} />
                         </div>
 
                         <PanelTareas
                             tareas={tareas}
                             cargado={cargado}
-                            salaId={roomId}
+                            salaId={salaIdValida}
                             onGuardarCambios={guardarCambios}
                             onCrearTarea={crearTarea}
                             onActualizarTarea={actualizarTareaCampos}
