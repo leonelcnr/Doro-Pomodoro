@@ -3,6 +3,10 @@ import { persist } from 'zustand/middleware';
 import type { Modo, TimerSettings } from '@/types/timer';
 import type { EstadoReloj } from '@/types/dominio';
 
+// Tope de cordura para el tiempo del reloj (24 h en segundos). Por encima asumimos
+// un estado corrupto persistido y lo saneamos al rehidratar.
+const MAX_SEGUNDOS_VALIDOS = 24 * 60 * 60;
+
 /**
  * Store global del temporizador (Zustand) con persistencia en localStorage.
  *
@@ -101,34 +105,80 @@ export const useTimerStore = create<EstadoTemporizador>()(
   },
   reiniciarTemporizador: () => set({ tiempoRestante: get().tiempoInicial, estaActivo: false, tiempoFinObjetivo: null, tiempoInicioCronometro: null, ultimaActualizacionLocal: Date.now() }),
   establecerEstadoTemporizador: (datos) => set((estado) => {
-    // Si llega la fecha de actualización y el reloj está activo, compensamos la
-    // latencia de red restando los segundos transcurridos desde ese instante.
-    let nuevoTiempoRestante = datos.tiempoRestante;
-    if (datos.estaActivo && datos.actualizadoEn) {
-      const milisegundosTranscurridos = Date.now() - new Date(datos.actualizadoEn).getTime();
-      const segundosTranscurridos = Math.floor(milisegundosTranscurridos / 1000);
-      nuevoTiempoRestante = Math.max(0, datos.tiempoRestante - segundosTranscurridos);
-    }
+    // Instante en que el emisor guardó este estado. Lo usamos como ancla ABSOLUTA
+    // del reloj: todos los clientes calculan el mismo objetivo de fin/inicio a
+    // partir de él, en vez de "ahora + tiempoRestante" (que difiere según la
+    // latencia de cada quien y hace divergir los relojes).
+    const referencia = datos.actualizadoEn ? new Date(datos.actualizadoEn).getTime() : Date.now();
+
+    // Config compartida por la sala. Fallback a la local si la fila es vieja y no
+    // trae `configuracion` (retrocompatibilidad). Es la fuente para el tiempoInicial.
+    const configuracion = datos.configuracion ?? estado.configuracion;
 
     // Si el modo cambió por red, recalculamos también el tiempo inicial
     let tiempoInicial = estado.tiempoInicial;
     if (estado.modo !== datos.modo) {
-       if (datos.modo === 'stopwatch') {
-           tiempoInicial = 0;
-       } else {
-           tiempoInicial = estado.configuracion[datos.modo] * 60;
-       }
+       tiempoInicial = datos.modo === 'stopwatch' ? 0 : configuracion[datos.modo] * 60;
     }
 
-    return {
-      tiempoRestante: nuevoTiempoRestante,
-      estaActivo: datos.estaActivo,
-      modo: datos.modo,
-      tiempoInicial
-    };
+    // IMPORTANTE: además de `tiempoRestante` hay que fijar las ANCLAS del intervalo
+    // (`tiempoFinObjetivo` / `tiempoInicioCronometro`). `useTimer` recalcula el
+    // tiempo restante desde esas anclas cada 200ms; si no las actualizamos, el
+    // intervalo local pisa el valor sincronizado con su objetivo viejo y el reloj
+    // nunca converge (ni siquiera al pausar/reanudar, porque el ancla sobrevive).
+
+    // --- Cronómetro (cuenta progresiva) ---
+    if (datos.modo === 'stopwatch') {
+      if (datos.estaActivo) {
+        const tiempoInicioCronometro = referencia - datos.tiempoRestante * 1000;
+        const tiempoRestante = Math.max(0, Math.floor((Date.now() - tiempoInicioCronometro) / 1000));
+        return { tiempoRestante, estaActivo: true, modo: datos.modo, tiempoInicial, configuracion, tiempoInicioCronometro, tiempoFinObjetivo: null };
+      }
+      return { tiempoRestante: Math.max(0, datos.tiempoRestante), estaActivo: false, modo: datos.modo, tiempoInicial, configuracion, tiempoInicioCronometro: null, tiempoFinObjetivo: null };
+    }
+
+    // --- Temporizador (cuenta regresiva) ---
+    if (datos.estaActivo) {
+      // Objetivo de fin absoluto, idéntico en todos los clientes (salvo desfase de
+      // reloj de sistema). `useTimer` seguirá contando desde acá, no desde un ancla vieja.
+      const tiempoFinObjetivo = referencia + datos.tiempoRestante * 1000;
+      const tiempoRestante = Math.max(0, Math.ceil((tiempoFinObjetivo - Date.now()) / 1000));
+      return { tiempoRestante, estaActivo: true, modo: datos.modo, tiempoInicial, configuracion, tiempoFinObjetivo, tiempoInicioCronometro: null };
+    }
+    // Pausado: aplicamos el tiempo tal cual y limpiamos las anclas para que, al
+    // reanudar, `useTimer` recree el objetivo desde ESTE tiempo (y no uno viejo).
+    return { tiempoRestante: Math.max(0, datos.tiempoRestante), estaActivo: false, modo: datos.modo, tiempoInicial, configuracion, tiempoFinObjetivo: null, tiempoInicioCronometro: null };
   }),
 }),
 {
   name: 'pomodoro-timer-storage', // nombre de la clave en localStorage
+  // Al rehidratar desde localStorage NO reanudamos un reloj que había quedado
+  // "corriendo" en una sesión anterior: arrancamos en pausa y descartamos los
+  // instantes objetivo. Si no, un cronómetro dejado activo recalcula al reabrir
+  // `(ahora - inicio)` de días → un `tiempoRestante` gigante que rompe el reloj.
+  onRehydrateStorage: () => (estado) => {
+    if (!estado) return;
+
+    estado.estaActivo = false;
+    estado.tiempoFinObjetivo = null;
+    estado.tiempoInicioCronometro = null;
+
+    // Saneamos un `tiempoRestante` corrupto (valores gigantes ya persistidos por el
+    // bug, NaN o negativos), volviendo a un valor coherente con el modo actual.
+    const esValido = Number.isFinite(estado.tiempoRestante)
+      && estado.tiempoRestante >= 0
+      && estado.tiempoRestante <= MAX_SEGUNDOS_VALIDOS;
+
+    if (!esValido) {
+      if (estado.modo === 'stopwatch') {
+        estado.tiempoRestante = 0;
+        estado.tiempoInicial = 0;
+      } else {
+        const segundos = (estado.configuracion?.[estado.modo] ?? 25) * 60;
+        estado.tiempoRestante = segundos;
+        estado.tiempoInicial = segundos;
+      }
+    }
+  },
 }
 ));

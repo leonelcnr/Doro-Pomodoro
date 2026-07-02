@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import supabase from "@/lib/supabase";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { Usuario } from "@/types/dominio";
@@ -162,8 +162,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
 
+    // Memoizamos el value para no recrear el objeto (ni forzar re-render de los
+    // consumidores) en cada render del provider. Las funciones son estables porque
+    // solo usan `supabase`/`navigate`; el value cambia al cambiar `user`/`hasGoogleLinked`.
+    const valor = useMemo(
+        () => ({ user, signInWithGoogle, signInWithGithub, signInWithDiscord, signInAnonymously, linkAccount, connectGoogleCalendar, hasGoogleLinked, signOut }),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [user, hasGoogleLinked]
+    );
+
     return (
-        <AuthContext.Provider value={{ user, signInWithGoogle, signInWithGithub, signInWithDiscord, signInAnonymously, linkAccount, connectGoogleCalendar, hasGoogleLinked, signOut }}>
+        <AuthContext.Provider value={valor}>
             {children}
         </AuthContext.Provider>
     );

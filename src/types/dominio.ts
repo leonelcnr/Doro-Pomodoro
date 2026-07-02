@@ -8,7 +8,7 @@
 // son columnas reales de Supabase y se mantienen tal cual; la traducción al
 // español vive en los nombres de variables/funciones, no en estos contratos.
 
-import type { Modo } from "@/types/timer";
+import type { Modo, TimerSettings } from "@/types/timer";
 
 /**
  * Metadatos crudos del usuario que entrega Supabase (`user_metadata`). Dependen
@@ -99,6 +99,10 @@ export interface EstadoReloj {
   estaActivo: boolean;
   modo: Modo;
   actualizadoEn?: string;
+  // Duraciones/config compartidas: así las fases futuras (p.ej. el próximo
+  // pomodoro tras un descanso) duran lo mismo en todos los clientes. Opcional
+  // por retrocompatibilidad con filas viejas de `timer_state` sin este campo.
+  configuracion?: TimerSettings;
 }
 
 /**

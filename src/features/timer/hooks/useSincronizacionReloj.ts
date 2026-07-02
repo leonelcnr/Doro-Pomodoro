@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import supabase from "@/lib/supabase";
+import { useEffect, useRef } from "react";
 import { useTimerStore } from "@/store/timerStore";
 import * as salasService from "@/features/room/services/salasService";
 
@@ -19,12 +18,20 @@ export function useSincronizacionReloj(salaId?: string) {
   const establecerEstadoTemporizador = useTimerStore((estado) => estado.establecerEstadoTemporizador);
   const ultimaActualizacionLocal = useTimerStore((estado) => estado.ultimaActualizacionLocal);
 
+  // Evita que la PRIMERA corrida del efecto de subida (con el `ultimaActualizacionLocal`
+  // que viene persistido de localStorage) pise el estado real de la sala con el reloj
+  // local viejo. Solo subimos ante cambios locales genuinos posteriores al montaje.
+  const montajeInicial = useRef(true);
+
   // BAJADA: carga inicial del estado guardado + suscripción en tiempo real a los
   // cambios de `timer_state` de la sala.
   useEffect(() => {
     if (!salaId) return;
 
     let activo = true;
+    // Al (re)entrar a una sala, la próxima corrida de la subida es "inicial": no debe
+    // pisar el estado compartido con el reloj local hasta que la bajada lo cargue.
+    montajeInicial.current = true;
 
     salasService.obtenerEstadoReloj(salaId)
       .then((estadoReloj) => {
@@ -34,22 +41,13 @@ export function useSincronizacionReloj(salaId?: string) {
         console.error("Error al cargar el estado del reloj:", error);
       });
 
-    const canal = supabase
-      .channel(`realtime-room-${salaId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` },
-        (payload) => {
-          if (payload.new && payload.new.timer_state) {
-            establecerEstadoTemporizador(payload.new.timer_state);
-          }
-        }
-      )
-      .subscribe();
+    const desuscribir = salasService.suscribirCambiosSala(salaId, (fila) => {
+      if (fila.timer_state) establecerEstadoTemporizador(fila.timer_state);
+    });
 
     return () => {
       activo = false;
-      supabase.removeChannel(canal);
+      desuscribir();
     };
   }, [salaId, establecerEstadoTemporizador]);
 
@@ -58,12 +56,20 @@ export function useSincronizacionReloj(salaId?: string) {
   useEffect(() => {
     if (!salaId || !ultimaActualizacionLocal) return;
 
+    // Saltear la primera corrida tras montar/cambiar de sala: ese valor viene de
+    // localStorage, no de un cambio local recién hecho por el usuario en esta sala.
+    if (montajeInicial.current) {
+      montajeInicial.current = false;
+      return;
+    }
+
     const estado = useTimerStore.getState();
     // Objeto que se guarda en `timer_state` y se comparte entre clientes
     const nuevoEstado = {
       tiempoRestante: estado.tiempoRestante,
       estaActivo: estado.estaActivo,
       modo: estado.modo,
+      configuracion: estado.configuracion,
       actualizadoEn: new Date().toISOString(),
     };
 

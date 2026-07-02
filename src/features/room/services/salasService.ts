@@ -1,3 +1,4 @@
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import supabase from "@/lib/supabase";
 import type { EstadoReloj, Invitacion, EstadoMusicaSala } from "@/types/dominio";
 
@@ -84,4 +85,62 @@ export async function obtenerEstadoMusica(salaId: string): Promise<EstadoMusicaS
 export async function guardarEstadoMusica(salaId: string, estado: unknown): Promise<void> {
   const { error } = await supabase.rpc("update_room_sync", { p_room_id: salaId, p_music_state: estado });
   if (error) throw error;
+}
+
+// --- Canal realtime compartido por sala -----------------------------------
+
+// Fila de `rooms` que llega en el payload de un UPDATE en tiempo real
+export interface FilaSala {
+  timer_state?: EstadoReloj | null;
+  music_state?: EstadoMusicaSala | null;
+  [clave: string]: unknown;
+}
+
+type CambioSalaCallback = (fila: FilaSala) => void;
+
+interface CanalCompartido {
+  canal: RealtimeChannel;
+  suscriptores: Set<CambioSalaCallback>;
+}
+
+// Un único canal `postgres_changes` por sala, con conteo de referencias: reloj y
+// música comparten la misma suscripción a los UPDATE de `rooms` en vez de abrir dos
+// canales separados sobre la misma fila.
+const canalesPorSala = new Map<string, CanalCompartido>();
+
+// Suscribe un callback a los cambios en tiempo real de la fila de una sala. Devuelve
+// la función para desuscribirse (que cierra el canal cuando ya no queda nadie).
+export function suscribirCambiosSala(salaId: string, callback: CambioSalaCallback): () => void {
+  let compartido = canalesPorSala.get(salaId);
+
+  if (!compartido) {
+    const suscriptores = new Set<CambioSalaCallback>();
+    const canal = supabase
+      .channel(`realtime-room-${salaId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` },
+        (payload) => {
+          if (payload.new) {
+            // Copia defensiva de los suscriptores por si alguno se da de baja durante el reparto
+            [...suscriptores].forEach((cb) => cb(payload.new as FilaSala));
+          }
+        }
+      )
+      .subscribe();
+    compartido = { canal, suscriptores };
+    canalesPorSala.set(salaId, compartido);
+  }
+
+  compartido.suscriptores.add(callback);
+
+  return () => {
+    const actual = canalesPorSala.get(salaId);
+    if (!actual) return;
+    actual.suscriptores.delete(callback);
+    if (actual.suscriptores.size === 0) {
+      supabase.removeChannel(actual.canal);
+      canalesPorSala.delete(salaId);
+    }
+  };
 }

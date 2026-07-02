@@ -1,10 +1,31 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Orígenes permitidos: se configuran en la env `ALLOWED_ORIGINS` (lista separada por
+// comas). Si no está seteada, se cae a "*" para no romper despliegues existentes.
+const allowedOrigins = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+function corsFor(origin: string | null) {
+  // Reflejamos el origin solo si está en la allowlist; sin allowlist configurada, "*".
+  const allowOrigin = allowedOrigins.length === 0
+    ? "*"
+    : (origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]);
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
+
+// Valida el payload de un evento antes de mandarlo a Google Calendar
+function esPayloadValido(p: unknown): p is CalendarPayload {
+  return !!p && typeof p === "object"
+    && typeof (p as CalendarPayload).summary === "string"
+    && typeof (p as CalendarPayload).date === "string";
+}
 
 const CALENDAR_BASE = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
 
@@ -52,6 +73,8 @@ async function getGoogleAccessToken(refreshToken: string) {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsFor(req.headers.get("Origin"));
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -117,6 +140,10 @@ Deno.serve(async (req) => {
 
     let res: Response;
     
+    if ((action === "CREATE" || action === "UPDATE") && !esPayloadValido(payload)) {
+      throw new Error("Invalid payload: 'summary' and 'date' are required");
+    }
+
     switch (action) {
       case "CREATE":
         res = await fetch(CALENDAR_BASE, {

@@ -38,7 +38,7 @@ export const useTimer = () => {
         // --- Lógica del Cronómetro (cuenta progresiva) ---
         if (!tiempoInicioCronometro) {
           // Sin instante de inicio guardado: lo fijamos para poder recuperar la sesión
-          establecerTiempoInicioCronometro(Date.now() - tiempoRestante * 1000);
+          establecerTiempoInicioCronometro(Date.now() - useTimerStore.getState().tiempoRestante * 1000);
           return; // Esperamos al siguiente render ya con el inicio establecido
         }
 
@@ -47,17 +47,19 @@ export const useTimer = () => {
           const diferencia = ahora - tiempoInicioCronometro;
           const segundosTranscurridos = Math.floor(diferencia / 1000);
 
-          if (segundosTranscurridos !== tiempoRestante) {
+          // Leemos el valor fresco del store para no depender de él en las dependencias
+          // del efecto (así el intervalo no se recrea en cada tick).
+          if (segundosTranscurridos !== useTimerStore.getState().tiempoRestante) {
             establecerTiempoRestante(segundosTranscurridos);
           }
         }, 200);
 
-      } else if (tiempoRestante > 0) {
+      } else if (useTimerStore.getState().tiempoRestante > 0) {
         // --- Lógica del Temporizador (cuenta regresiva) ---
         // 1. Si recién arrancamos (o reanudamos), usamos el instante objetivo
         //    guardado o lo creamos a partir del tiempo restante.
       if (!tiempoFinObjetivo) {
-        establecerTiempoFinObjetivo(Date.now() + tiempoRestante * 1000);
+        establecerTiempoFinObjetivo(Date.now() + useTimerStore.getState().tiempoRestante * 1000);
         return; // Esperamos al siguiente render con el objetivo establecido
       }
 
@@ -114,13 +116,17 @@ export const useTimer = () => {
             }
           }
         } else {
+          // Valor fresco del store como "segundo anterior" (evita tener `tiempoRestante`
+          // en las dependencias del efecto y recrear el intervalo en cada tick).
+          const tiempoRestanteActual = useTimerStore.getState().tiempoRestante;
+
           // Reproducimos los "ticks" detectando saltos (el intervalo se ralentiza
           // en pestañas en segundo plano), comprobando si cruzamos cada umbral.
-          const cruzo10 = tiempoRestante > 10 && segundosRestantes <= 10;
-          const cruzo5 = tiempoRestante > 5 && segundosRestantes <= 5;
-          const cruzo3 = tiempoRestante > 3 && segundosRestantes <= 3;
-          const cruzo2 = tiempoRestante > 2 && segundosRestantes <= 2;
-          const cruzo1 = tiempoRestante > 1 && segundosRestantes <= 1;
+          const cruzo10 = tiempoRestanteActual > 10 && segundosRestantes <= 10;
+          const cruzo5 = tiempoRestanteActual > 5 && segundosRestantes <= 5;
+          const cruzo3 = tiempoRestanteActual > 3 && segundosRestantes <= 3;
+          const cruzo2 = tiempoRestanteActual > 2 && segundosRestantes <= 2;
+          const cruzo1 = tiempoRestanteActual > 1 && segundosRestantes <= 1;
 
           // Verificamos si justo tocamos o saltamos los 10 o 5 segundos
           if (cruzo10 || cruzo5 || cruzo3 || cruzo2 || cruzo1) {
@@ -132,7 +138,7 @@ export const useTimer = () => {
           }
 
           // Actualizamos el estado solo si cambió el segundo
-          if (segundosRestantes !== tiempoRestante) {
+          if (segundosRestantes !== tiempoRestanteActual) {
              establecerTiempoRestante(segundosRestantes);
           }
         }
@@ -146,7 +152,9 @@ export const useTimer = () => {
 
     // Limpieza: al desmontar el componente, cancelamos el intervalo
     return () => clearInterval(intervalo);
-  }, [estaActivo, establecerTiempoRestante, establecerEstaActivo, tiempoRestante, modo, configuracion.pomodoro, user, establecerModo, configuracion.autoBreak, tiempoFinObjetivo, tiempoInicioCronometro, establecerTiempoFinObjetivo, establecerTiempoInicioCronometro]); // Dependencias
+    // `tiempoRestante` se lee fresco vía `useTimerStore.getState()` dentro del intervalo,
+    // por eso NO va en las dependencias: así el intervalo no se recrea en cada tick.
+  }, [estaActivo, establecerTiempoRestante, establecerEstaActivo, modo, configuracion.pomodoro, user, establecerModo, configuracion.autoBreak, tiempoFinObjetivo, tiempoInicioCronometro, establecerTiempoFinObjetivo, establecerTiempoInicioCronometro]); // Dependencias
 
   // --- Funciones que disparan los botones de la interfaz ---
   const alternarTemporizador = () => {

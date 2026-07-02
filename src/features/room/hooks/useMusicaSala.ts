@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import supabase from "@/lib/supabase";
 import * as salasService from "@/features/room/services/salasService";
 import type { EstadoMusicaSala } from "@/types/dominio";
 
@@ -29,22 +28,13 @@ export function useMusicaSala(salaId?: string) {
         console.error("Error al cargar la música de la sala:", error);
       });
 
-    const canal = supabase
-      .channel(`room-music-${salaId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` },
-        (payload) => {
-          if (payload.new && payload.new.music_state) {
-            establecerEstadoSala(payload.new.music_state);
-          }
-        }
-      )
-      .subscribe();
+    const desuscribir = salasService.suscribirCambiosSala(salaId, (fila) => {
+      if (fila.music_state) establecerEstadoSala(fila.music_state);
+    });
 
     return () => {
       activo = false;
-      supabase.removeChannel(canal);
+      desuscribir();
     };
   }, [salaId]);
 
