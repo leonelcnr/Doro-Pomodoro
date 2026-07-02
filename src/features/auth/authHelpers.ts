@@ -40,18 +40,26 @@ export function mostrarErrorOAuthDesdeUrl(): void {
 }
 
 /**
- * Persiste el `provider_refresh_token` de la sesión en `user_metadata`, porque
- * Supabase Auth a veces no actualiza `identity_data` al reconectar una cuenta ya
- * existente. Luego lo usa nuestra Edge Function de Google Calendar.
+ * Persiste el `provider_refresh_token` de la sesión en una tabla protegida vía la
+ * Edge Function `save-google-token` (RLS deny-all, solo `service_role`). Antes se
+ * guardaba en `user_metadata`, que era legible desde el cliente por el JWT; el
+ * refresh token de Google es de larga vida, así que no debe quedar accesible al
+ * navegador. Lo mandamos nosotros porque Supabase a veces no actualiza
+ * `identity_data` al reconectar una cuenta ya existente. Luego lo usa la Edge
+ * Function de Google Calendar (`sync-calendar`).
+ *
+ * Fire-and-forget desde el `AuthProvider`: si falla, el calendario simplemente
+ * pedirá reconectar en el próximo `sync-calendar`; no bloqueamos el login.
  */
-export function persistirRefreshToken(sesion: Session): void {
-  if (
-    sesion.provider_refresh_token &&
-    sesion.provider_refresh_token !== sesion.user.user_metadata?.provider_refresh_token
-  ) {
-    supabase.auth.updateUser({
-      data: { provider_refresh_token: sesion.provider_refresh_token },
-    });
+export async function persistirRefreshToken(sesion: Session): Promise<void> {
+  if (!sesion.provider_refresh_token) return;
+
+  const { error } = await supabase.functions.invoke("save-google-token", {
+    body: { refresh_token: sesion.provider_refresh_token },
+  });
+
+  if (error) {
+    console.error("No se pudo guardar el refresh token de Google:", error);
   }
 }
 

@@ -138,8 +138,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const identidades = sesion.user.identities ?? [];
                 setHasGoogleLinked(identidades.some((i) => i.provider === 'google'));
 
-                // Guardamos el refresh token (ver authHelpers.persistirRefreshToken)
-                persistirRefreshToken(sesion);
+                // Guardamos el refresh token (ver authHelpers.persistirRefreshToken).
+                // Fire-and-forget: no bloqueamos el flujo de sesión por esto.
+                void persistirRefreshToken(sesion);
 
                 setUser((previo) => {
                     // Evitamos recrear el objeto si no cambió (mismo id y mismo estado anónimo)

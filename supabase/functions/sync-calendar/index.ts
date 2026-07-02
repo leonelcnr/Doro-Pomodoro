@@ -124,8 +124,18 @@ Deno.serve(async (req) => {
       });
     }
 
-    const providerRefreshToken = googleIdentity.identity_data?.provider_refresh_token || adminUser.user.user_metadata?.provider_refresh_token;
-    
+    // El refresh token vive ahora en la tabla protegida `google_credentials`
+    // (RLS deny-all, solo service_role). Fallback a `identity_data` durante la
+    // transición para cuentas que aún no re-guardaron vía `save-google-token`.
+    // Ya NO se lee de `user_metadata` (era legible desde el cliente).
+    const { data: cred } = await supabaseAdmin
+      .from("google_credentials")
+      .select("refresh_token")
+      .eq("user_id", user.id)
+      .single();
+
+    const providerRefreshToken = cred?.refresh_token || googleIdentity.identity_data?.provider_refresh_token;
+
     if (!providerRefreshToken) {
       return new Response(JSON.stringify({ error: "Google provider_refresh_token missing. User must reconnect." }), {
         status: 400,

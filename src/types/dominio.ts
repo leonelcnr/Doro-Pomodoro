@@ -18,7 +18,8 @@ import type { Modo, TimerSettings } from "@/types/timer";
 export interface UsuarioMetadata {
   name?: string;
   avatar_url?: string;
-  provider_refresh_token?: string;
+  // El `provider_refresh_token` ya NO vive en `user_metadata`: se guarda en la
+  // tabla protegida `google_credentials` vía la edge function `save-google-token`.
   [clave: string]: unknown;
 }
 

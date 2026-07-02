@@ -412,3 +412,9 @@ entrypoint = "./functions/sync-calendar/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/sync-calendar/*.html" ]
+
+[functions.save-google-token]
+enabled = true
+verify_jwt = true
+import_map = "./functions/save-google-token/deno.json"
+entrypoint = "./functions/save-google-token/index.ts"
