@@ -18,6 +18,7 @@ import { derivarCategorias, CATEGORIA_POR_DEFECTO } from "@/features/tasks/atrib
 import { useAuth } from "@/features/auth/context/useAuth"
 import { useDashboardStats } from "@/features/dashboard/hooks/useDashboardStats"
 import { useMemo, useState } from "react"
+import { toast } from "sonner"
 import type { Tarea } from "@/types/dominio"
 
 // Meta diaria de minutos de enfoque que llena el anillo del hero.
@@ -76,7 +77,9 @@ const Home = () => {
             const err = error as { message?: string; details?: string };
             const mensaje = err?.message ?? 'desconocido';
             const detalles = err?.details ? ` (Detalles: ${err.details})` : '';
-            alert(`Error al guardar la tarea: ${mensaje}${detalles}`);
+            toast.error("No se pudo guardar la tarea", {
+                description: `${mensaje}${detalles}`,
+            });
         }
     };
 
