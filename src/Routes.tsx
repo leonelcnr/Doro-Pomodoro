@@ -20,6 +20,9 @@ import AuthProviderLayout from "./layouts/AuthProviderLayout";
 import HomeLayout from "./layouts/HomeLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import { Spinner } from "@/components/ui/spinner";
+// Eager a propósito: es el errorElement global y tiene que poder renderizarse
+// incluso cuando lo que falló es justamente la carga de un chunk lazy.
+import ErrorPage from "./pages/ErrorPage";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -48,6 +51,9 @@ function conSuspense(nodo: ReactNode): ReactNode {
 export const router = createBrowserRouter([
     {
         element: <AuthProviderLayout />,
+        // Captura errores de render y fallos de carga de chunks de TODAS las rutas
+        // hijas (react-router no los propaga a boundaries fuera del router).
+        errorElement: <ErrorPage />,
         children: [
             {
                 element: <HomeLayout />,
