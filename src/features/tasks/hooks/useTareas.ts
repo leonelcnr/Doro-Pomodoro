@@ -23,7 +23,7 @@ const MARGEN_ECO_MS = 500;
  * ascendente (los `null` al final) y, a igualdad, por `created_at` descendente.
  * Se usa para reconciliar el array tras un merge incremental del realtime.
  */
-function ordenarTareas(arr: Tarea[]): Tarea[] {
+export function ordenarTareas(arr: Tarea[]): Tarea[] {
   return [...arr].sort((a, b) => {
     const oa = a.order_index;
     const ob = b.order_index;
