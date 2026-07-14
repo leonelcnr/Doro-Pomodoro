@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ordenarTareas } from "./useTareas";
 import type { Tarea } from "@/types/dominio";
+
+// `useTareas.ts` importa el cliente real de Supabase, que al cargarse exige las
+// variables de entorno (VITE_SUPABASE_URL/ANON_KEY) que el CI no tiene. Este
+// test no toca Supabase: lo reemplazamos por un stub vacío.
+vi.mock("@/lib/supabase", () => ({ default: {} }));
 
 // Fábrica mínima: solo los campos que afectan el orden + los obligatorios del tipo
 function tarea(parcial: Partial<Tarea> & { id: number }): Tarea {
