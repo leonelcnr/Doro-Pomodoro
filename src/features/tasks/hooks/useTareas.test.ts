@@ -7,6 +7,7 @@ import {
   reiniciarCanalesFalsos,
   ultimoCanal,
 } from "@/test/canalFalso";
+import { diferido } from "@/test/diferido";
 import type { Tarea } from "@/types/dominio";
 
 vi.mock("@/lib/supabase", async () => ({
@@ -159,5 +160,108 @@ describe("useTareas · merge incremental realtime", () => {
     });
 
     expect(result.current.tareas).toEqual([]);
+  });
+});
+
+describe("useTareas · supresión de ecos propios", () => {
+  it("ignora el eco realtime dentro del margen de 500 ms y vuelve a aplicar después", async () => {
+    vi.mocked(tareasService.obtenerTareasPersonales).mockResolvedValue([
+      tarea({ id: 1, header: "Original" }),
+    ]);
+    vi.mocked(tareasService.actualizarTarea).mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => useTareas());
+    await waitFor(() => expect(result.current.cargado).toBe(true));
+
+    // Fake timers recién acá: la carga inicial ya resolvió con timers reales
+    vi.useFakeTimers();
+    try {
+      await act(async () => {
+        await result.current.actualizarTareaCampos(1, { header: "Optimista" });
+      });
+
+      // Eco viejo dentro del margen: el optimismo es la verdad, se ignora
+      act(() => {
+        ultimoCanal().emitir(payloadUpdate(tarea({ id: 1, header: "Original" })));
+      });
+      expect(result.current.tareas[0].header).toBe("Optimista");
+
+      // Pasado el margen (500 ms = MARGEN_ECO_MS), los eventos del id vuelven a aplicarse
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      act(() => {
+        ultimoCanal().emitir(payloadUpdate(tarea({ id: 1, header: "Desde otro cliente" })));
+      });
+      expect(result.current.tareas[0].header).toBe("Desde otro cliente");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("useTareas · optimismo y rollback", () => {
+  it("crearTarea: si el insert falla, la temporal desaparece y el error se propaga", async () => {
+    const { result } = renderHook(() => useTareas());
+    await waitFor(() => expect(result.current.cargado).toBe(true));
+
+    vi.mocked(tareasService.crearTarea).mockRejectedValue(new Error("insert falló"));
+
+    await expect(
+      act(async () => {
+        await result.current.crearTarea({ header: "Nueva" }, "personal");
+      })
+    ).rejects.toThrow("insert falló");
+
+    expect(result.current.tareas).toEqual([]);
+  });
+
+  it("crearTarea: reemplaza la temporal por la fila real sin duplicar si el eco llegó antes", async () => {
+    const { result } = renderHook(() => useTareas());
+    await waitFor(() => expect(result.current.cargado).toBe(true));
+
+    const filaReal = tarea({ id: 42, header: "Nueva" });
+    const insert = diferido<Tarea>();
+    vi.mocked(tareasService.crearTarea).mockReturnValue(insert.promesa);
+
+    let promesaCrear!: Promise<void>;
+    act(() => {
+      promesaCrear = result.current.crearTarea({ header: "Nueva" }, "personal") as Promise<void>;
+    });
+
+    // Prepend optimista con id temporal (>= 1.000.000)
+    expect(result.current.tareas).toHaveLength(1);
+    expect(result.current.tareas[0].id).toBeGreaterThanOrEqual(1000000);
+
+    // El eco del realtime llega ANTES que la respuesta HTTP del insert
+    act(() => {
+      ultimoCanal().emitir(payloadInsert(filaReal));
+    });
+
+    await act(async () => {
+      insert.resolver(filaReal);
+      await promesaCrear;
+    });
+
+    // Una sola fila: la real, sin la temporal ni duplicados
+    expect(result.current.tareas.map((t) => t.id)).toEqual([42]);
+  });
+
+  it("actualizarTareaCampos: ante rechazo del service, el array vuelve al estado previo", async () => {
+    vi.mocked(tareasService.obtenerTareasPersonales).mockResolvedValue([
+      tarea({ id: 1, header: "Original" }),
+    ]);
+    const { result } = renderHook(() => useTareas());
+    await waitFor(() => expect(result.current.cargado).toBe(true));
+
+    vi.mocked(tareasService.actualizarTarea).mockRejectedValue(new Error("update falló"));
+
+    await expect(
+      act(async () => {
+        await result.current.actualizarTareaCampos(1, { header: "Editada" });
+      })
+    ).rejects.toThrow("update falló");
+
+    expect(result.current.tareas[0].header).toBe("Original");
   });
 });
