@@ -33,6 +33,7 @@ export function ControlesTimer({
                 onClick={onAlternar}
                 size="icon"
                 variant={estaActivo ? "outline" : "default"}
+                aria-label={estaActivo ? "Pausar temporizador" : "Iniciar temporizador"}
                 className={`h-10 w-10 shadow-sm transition-all duration-200 ${!estaActivo && 'bg-primary hover:bg-primary/90'}`}>
                 {estaActivo ? <Pause className="fill-current w-5 h-5" /> : <Play className="fill-current w-5 h-5 ml-1" />}
             </Button>
