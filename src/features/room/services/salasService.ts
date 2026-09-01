@@ -1,6 +1,7 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import supabase from "@/lib/supabase";
 import type { EstadoReloj, Invitacion, EstadoMusicaSala } from "@/types/dominio";
+import type { Modo } from "@/types/timer";
 
 /**
  * Capa de servicio para las salas (`rooms`) y sus operaciones relacionadas en
@@ -11,8 +12,44 @@ import type { EstadoReloj, Invitacion, EstadoMusicaSala } from "@/types/dominio"
  * lanza el error de Supabase si algo falla.
  */
 
-// Crea una sala nueva (RPC create_room) y devuelve su id
-export async function crearSala(): Promise<string> {
+// Modos válidos del reloj. Los valores van en inglés porque son contrato: indexan
+// la configuración (`configuracion[modo]`) y viajan tal cual en `timer_state`.
+const MODOS_VALIDOS: readonly Modo[] = ["pomodoro", "shortBreak", "longBreak", "stopwatch"];
+
+// Tope de cordura para el tiempo del reloj (24 h en segundos).
+const MAX_SEGUNDOS_VALIDOS = 24 * 60 * 60;
+
+/**
+ * ¿El JSON crudo de `timer_state` cumple el contrato `EstadoReloj`?
+ *
+ * La columna es `jsonb` sin esquema, así que puede traer cualquier cosa: el
+ * default histórico de la columna y las filas anteriores a la traducción al
+ * español usan claves en inglés (`{mode, isActive, timeLeft}`). Si una de esas
+ * filas llega al store, `configuracion[undefined] * 60` y `Math.max(0, undefined)`
+ * dan NaN y la sala se queda clavada en 00:00.
+ *
+ * Ante una forma inválida preferimos ignorar el estado remoto y quedarnos con el
+ * reloj local, que siempre es coherente.
+ */
+export function esEstadoRelojValido(valor: unknown): valor is EstadoReloj {
+  if (typeof valor !== "object" || valor === null) return false;
+  const posible = valor as Record<string, unknown>;
+  return (
+    typeof posible.tiempoRestante === "number"
+    && Number.isFinite(posible.tiempoRestante)
+    && posible.tiempoRestante >= 0
+    && posible.tiempoRestante <= MAX_SEGUNDOS_VALIDOS
+    && typeof posible.estaActivo === "boolean"
+    && MODOS_VALIDOS.includes(posible.modo as Modo)
+  );
+}
+
+// Crea una sala nueva (RPC create_room) y devuelve su id.
+//
+// `estadoInicial` siembra el reloj compartido con la configuración de quien crea
+// la sala: sin esto la fila se queda con el default de la columna, que no cumple
+// el contrato `EstadoReloj`, y la sala nueva arranca en 00:00.
+export async function crearSala(estadoInicial?: EstadoReloj): Promise<string> {
   const { data, error } = await supabase.rpc("create_room", {
     p_name: "Sala de estudio",
     p_is_public: false,
@@ -20,7 +57,19 @@ export async function crearSala(): Promise<string> {
     p_expires_minutes: null,
   });
   if (error) throw error;
-  return data[0].room_id;
+  const salaId = data[0].room_id as string;
+
+  // La sala ya existe: si la siembra falla no abortamos la creación. El guard de
+  // forma hace que la sala caiga al reloj local, que es un estado usable.
+  if (estadoInicial) {
+    try {
+      await guardarEstadoReloj(salaId, estadoInicial);
+    } catch (error: unknown) {
+      console.error("No se pudo sembrar el estado inicial del reloj:", error);
+    }
+  }
+
+  return salaId;
 }
 
 // Se une a una sala por su código (RPC join_room) y devuelve el id de la sala
@@ -58,7 +107,8 @@ export async function obtenerEstadoReloj(salaId: string): Promise<EstadoReloj | 
     .eq("id", salaId)
     .maybeSingle();
   if (error) throw error;
-  return (data?.timer_state as EstadoReloj | null) ?? null;
+  const crudo = data?.timer_state as unknown;
+  return esEstadoRelojValido(crudo) ? crudo : null;
 }
 
 // Guarda/actualiza el estado del reloj compartido de una sala. Va por la RPC
@@ -122,8 +172,16 @@ export function suscribirCambiosSala(salaId: string, callback: CambioSalaCallbac
         { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${salaId}` },
         (payload) => {
           if (payload.new) {
+            // Normalizamos `timer_state`: si la fila trae una forma que no cumple
+            // el contrato, la entregamos como null en vez de dejar que llegue
+            // cruda al store (ver `esEstadoRelojValido`).
+            const fila = payload.new as FilaSala;
+            const normalizada: FilaSala = {
+              ...fila,
+              timer_state: esEstadoRelojValido(fila.timer_state) ? fila.timer_state : null,
+            };
             // Copia defensiva de los suscriptores por si alguno se da de baja durante el reparto
-            [...suscriptores].forEach((cb) => cb(payload.new as FilaSala));
+            [...suscriptores].forEach((cb) => cb(normalizada));
           }
         }
       )

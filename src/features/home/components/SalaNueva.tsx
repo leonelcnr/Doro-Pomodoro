@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import { useNavigate } from 'react-router-dom';
 import * as salasService from "@/features/room/services/salasService"
+import { useTimerStore } from "@/store/timerStore"
+import type { EstadoReloj } from "@/types/dominio"
 import { toast } from "sonner"
 
 
@@ -13,13 +15,29 @@ import { toast } from "sonner"
 export const SalaNueva = () => {
     const navigate = useNavigate();
 
+    // Configuración local de quien crea la sala: la sala nueva nace con SUS
+    // duraciones en vez de un valor fijo.
+    const configuracion = useTimerStore((estado) => estado.configuracion);
+
     // CREAR SALA NUEVA: crea la sala vía el servicio y navega a la recién creada
     const crearSala = async () => {
+        // Estado inicial del reloj compartido. Sin sembrarlo, la fila queda con el
+        // default de la columna (que no cumple el contrato `EstadoReloj`) y la sala
+        // arranca en 00:00.
+        const estadoInicial: EstadoReloj = {
+            modo: "pomodoro",
+            tiempoRestante: configuracion.pomodoro * 60,
+            estaActivo: false,
+            configuracion,
+            actualizadoEn: new Date().toISOString(),
+        };
+
         try {
-            const salaId = await salasService.crearSala();
+            const salaId = await salasService.crearSala(estadoInicial);
             navigate(`/room/${salaId}`);
         } catch (error) {
             console.error(error);
+            toast.error("No se pudo crear la sala.");
         }
     };
 
