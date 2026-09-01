@@ -15,6 +15,9 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // Solo los tests unitarios de src/: los specs de e2e/ son de Playwright y
+    // Vitest no debe levantarlos (el patrón por defecto los incluiría).
+    include: ["src/**/*.test.{ts,tsx}"],
   },
   build: {
     rollupOptions: {

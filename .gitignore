@@ -12,6 +12,10 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Artefactos de Playwright (E2E)
+test-results/
+playwright-report/
 /docs
 docs/
 
