@@ -76,7 +76,29 @@ Features: `auth`, `calendar`, `dashboard`, `home`, `room`, `tasks`, `timer`.
 - **Excepción — se mantienen en inglés** (son contratos que romperían la app): nombres de tablas/columnas/RPC de Supabase, campos de Google Calendar/OAuth (`provider_refresh_token`, etc.), props de librerías, los valores literales de `mode` y las claves de `configuracion` del store, y los nombres de archivos/componentes exportados. Aislar esos nombres en la capa de `services/`.
 - **Gestor de paquetes: pnpm** (hay `pnpm-lock.yaml` y `pnpm-workspace.yaml`; Vercel despliega con `pnpm run build`).
 - **No tocar como código propio:** `src/components/ui/*` (shadcn), `src/components/animate-ui/*`, y los bloques de plantilla (`app-sidebar`, `data-table`, `nav-*`, `site-header`). Están ignorados en `eslint.config.js` a propósito.
-- **Bocetos visuales, no ASCII:** al proponer o comparar diseños de UI, generar un boceto HTML renderizable (que se pueda abrir en el navegador) en vez de previsualizaciones en ASCII. Es la forma más práctica de ver el resultado final.
+- **Bocetos visuales, no ASCII:** al proponer o comparar diseños de UI, generar un boceto HTML renderizable en vez de previsualizaciones en ASCII. Es la forma más práctica de ver el resultado final.
+
+### Cómo hacer los bocetos (formato acordado)
+
+Siempre **publicarlos como Artifact** (herramienta `Artifact`) y pasar el link, no dejarlos
+como archivo suelto. El HTML va al scratchpad de la sesión; el Artifact es el entregable.
+Un boceto útil tiene:
+
+- **Todas las opciones en una sola página**, en tarjetas comparables lado a lado, cada una
+  con nombre corto, una línea de resumen y sus notas ("qué gana / qué pierde").
+- **Maquetas interactivas, no capturas estáticas:** si la propuesta depende del tamaño
+  (ventanas, breakpoints, responsive), la maqueta tiene que ser **redimensionable a mano**
+  (`resize: both`) y traer *presets* de tamaño, con la medida en píxeles visible en vivo.
+  Si depende del tiempo o de un estado, que corra de verdad (reloj andando, play/pausa).
+- **Fidelidad al look real de la app:** mismos colores, tipografías y cromo (barra de
+  título, botones) que la pantalla que se está rediseñando, y toggle claro/oscuro.
+- **Cierre con recomendación:** una tabla comparativa, cuál elegiría y por qué, y el
+  snippet de cómo se implementaría.
+- **Que el boceto use la misma técnica que va a usar el código** (p. ej. container queries
+  reales, no un simulacro con JS): si el boceto tiene un bug de CSS, es un bug que se
+  detecta antes de escribir el componente, y no al revés.
+
+Al actualizar un boceto ya publicado, republicar **el mismo archivo** para conservar la URL.
 
 ## Convenciones de TypeScript
 

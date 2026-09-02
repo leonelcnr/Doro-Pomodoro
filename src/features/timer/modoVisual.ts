@@ -21,3 +21,11 @@ export const PUNTO_MODO: Record<Modo, string> = {
     longBreak: 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]',
     stopwatch: 'bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.5)]',
 };
+
+/** Clases de relleno de la barra de progreso compacta, en el color de cada fase. */
+export const BARRA_MODO: Record<Modo, string> = {
+    pomodoro: 'bg-red-500',
+    shortBreak: 'bg-emerald-500',
+    longBreak: 'bg-blue-500',
+    stopwatch: 'bg-violet-500',
+};
