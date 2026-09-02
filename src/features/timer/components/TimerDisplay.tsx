@@ -24,7 +24,13 @@ import type { TimerSettings } from '@/types/timer';
  */
 export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codigo: string, salaId?: string }) => {
     const { tiempoRestante, estaActivo, modo, alternarTemporizador, manejarReinicio, ponerPomodoro, ponerDescansoLargo, ponerDescansoCorto, ponerCronometro } = useTimer();
-    const { configuracion, establecerConfiguracion } = useTimerStore();
+    const { configuracion, establecerConfiguracion, tiempoInicial } = useTimerStore();
+
+    // Fracción de la fase que todavía queda, para el hilo de progreso del reloj flotante.
+    // El cronómetro no tiene tope, así que no lleva barra.
+    const progresoFase = modo === 'stopwatch' || tiempoInicial <= 0
+        ? null
+        : Math.max(0, Math.min(1, tiempoRestante / tiempoInicial));
 
     // Avanza cíclicamente entre las fases al tocar el indicador de modo
     const manejarClickModo = () => {
@@ -65,6 +71,7 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
                     tiempoRestante={tiempoRestante}
                     estaActivo={estaActivo}
                     modo={modo}
+                    progreso={progresoFase}
                     alAlternar={alternarTemporizador}
                     alCerrar={cerrarPiP}
                 />,

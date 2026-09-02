@@ -1,0 +1,77 @@
+/**
+ * Reglas de colapso del reloj flotante (ventana Document PiP).
+ *
+ * Van en CSS y no en clases de Tailwind porque son *container queries*: miden la
+ * ventana flotante en sí (ancho Y alto), no el viewport de la pestaña principal.
+ * Al ir sin `@layer`, ganan siempre por encima de las utilidades de Tailwind.
+ *
+ * OJO con la estructura: el contenedor (`.reloj-flotante`) y la caja que se
+ * reacomoda (`.reloj-flotante__contenido`) TIENEN que ser elementos distintos.
+ * Un elemento no responde a su propia container query, así que si el
+ * `container-type` y el `flex-direction` viven en el mismo div, el colapso no
+ * ocurre nunca.
+ */
+
+.reloj-flotante {
+    container-type: size;
+    container-name: pip;
+    margin: 0;
+    padding: 0;
+}
+
+/* El reloj escala con la ventana en vez de tener un tamaño fijo, así nunca se recorta. */
+.reloj-flotante__hora {
+    font-size: clamp(1.75rem, 32cqmin, 4.5rem);
+}
+
+/* La barra de progreso solo existe en el modo compacto. */
+.reloj-flotante__progreso {
+    display: none;
+}
+
+/* --- Modo compacto: la ventana se vuelve una píldora horizontal --- */
+@container pip ((max-width: 255px) or (max-height: 158px)) {
+    .reloj-flotante__contenido {
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0 0.75rem;
+    }
+
+    /* Queda el punto de color (la fase se sigue leyendo), se va el texto. */
+    .reloj-flotante__etiqueta,
+    .reloj-flotante__cerrar {
+        display: none;
+    }
+
+    .reloj-flotante__fase {
+        margin: 0;
+    }
+
+    .reloj-flotante__hora {
+        font-size: min(21cqw, 52cqh);
+    }
+
+    .reloj-flotante__accion {
+        margin: 0;
+        height: 1.625rem;
+        width: 1.625rem;
+        background: transparent;
+        box-shadow: none;
+        color: var(--muted-foreground);
+    }
+
+    .reloj-flotante__accion:hover {
+        background: transparent;
+        color: var(--foreground);
+        transform: none;
+    }
+
+    .reloj-flotante__accion svg {
+        height: 0.75rem;
+        width: 0.75rem;
+    }
+
+    .reloj-flotante__progreso {
+        display: block;
+    }
+}

@@ -13,6 +13,11 @@ dist
 dist-ssr
 *.local
 
+# Variables de entorno (claves de Supabase). Se versiona solo el ejemplo.
+.env
+.env.*
+!.env.example
+
 # Artefactos de Playwright (E2E)
 test-results/
 playwright-report/
