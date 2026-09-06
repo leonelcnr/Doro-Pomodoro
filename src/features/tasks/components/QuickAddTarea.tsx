@@ -61,7 +61,7 @@ export function QuickAddTarea({ onCrear }: QuickAddTareaProps) {
   return (
     <div
       ref={contenedorRef}
-      className="flex scroll-mt-24 flex-col gap-2 rounded-lg border border-dashed bg-muted/30 p-2 transition-colors focus-within:border-solid focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10 sm:flex-row sm:items-center"
+      className="flex scroll-mt-24 flex-col gap-2 rounded-lg border border-dashed bg-muted/30 p-2 transition-colors focus-within:border-solid focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/10 sm:flex-row sm:items-center"
     >
       <div className="relative flex flex-1 items-center">
         <Plus className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground" />
@@ -104,7 +104,7 @@ export function QuickAddTarea({ onCrear }: QuickAddTareaProps) {
         size="sm"
         onClick={crear}
         disabled={!parsed.header.trim()}
-        className="h-8 bg-purple-500 hover:bg-purple-600 text-white dark:bg-purple-600 dark:hover:bg-purple-700"
+        className="h-8 bg-brand-strong text-brand-foreground hover:bg-brand-strong/90"
       >
         Agregar
       </Button>

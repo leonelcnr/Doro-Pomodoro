@@ -141,7 +141,7 @@ export default function Dashboard() {
             <Card className="bg-card shadow-none overflow-hidden animate-in fade-in-0 slide-in-from-bottom-3 duration-300 [animation-fill-mode:both]" style={{ animationDelay: '0ms' }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 gap-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground line-clamp-1 break-all sm:break-normal">Tiempo de Concentración</CardTitle>
-                <Clock className="h-4 w-4 text-violet-500 shrink-0" />
+                <Clock className="h-4 w-4 text-brand shrink-0" />
               </CardHeader>
               <CardContent>
                 {isLoading ? (

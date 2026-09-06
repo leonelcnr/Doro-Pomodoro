@@ -140,7 +140,7 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
                     >
                         Tareas de la Sala
                         {cantidadNoVistas > 0 && (
-                            <span className="flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-violet-500 text-[10px] font-bold text-white shadow-sm transition-all dark:bg-violet-600">
+                            <span className="flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-brand-strong text-[10px] font-bold text-brand-foreground shadow-sm transition-all">
                                 {cantidadNoVistas}
                             </span>
                         )}

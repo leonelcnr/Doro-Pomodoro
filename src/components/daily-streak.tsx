@@ -133,7 +133,7 @@ export function DailyStreak() {
 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2 text-muted-foreground">
-                                        <Clock className="size-4 text-violet-500" />
+                                        <Clock className="size-4 text-brand" />
                                         <span className="text-sm">Enfoque Total</span>
                                     </div>
                                     <span className="text-sm font-bold text-foreground">{formatearMinutos(estadisticas.minutosTotales)}</span>

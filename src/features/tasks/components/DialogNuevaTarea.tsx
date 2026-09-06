@@ -124,7 +124,7 @@ export function DialogNuevaTarea({
 
         {/* Campo principal estilo paleta: "+" violeta + input grande */}
         <div className="mx-5 mt-3 flex items-center gap-3 rounded-lg border bg-muted/30 py-2.5 pl-3 pr-3">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-violet-500/15 text-violet-600 dark:text-violet-400">
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
             <Plus className="size-4" />
           </span>
           <Input
