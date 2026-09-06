@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { DataTable } from "@/components/data-table";
 import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea";
 import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias";
@@ -34,6 +34,10 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
     const [cantidadNoVistas, establecerCantidadNoVistas] = useState(0);
     const [categoriaActiva, establecerCategoriaActiva] = useState("Todas");
     const conteoSalaPrevio = useRef<number | null>(null);
+
+    // Respeta `prefers-reduced-motion`: el fade corre en JS y no lo alcanza la
+    // regla CSS global de index.css.
+    const sinMovimiento = useReducedMotion();
 
     // Cambia de pestaña y resetea el filtro de categoría (las categorías difieren por ámbito)
     const cambiarPestana = useCallback((ambito: AmbitoTarea) => {
@@ -156,10 +160,10 @@ export function PanelTareas({ tareas, cargado, salaId, onGuardarCambios, onCrear
                     {/* Fade al cambiar de pestaña o de categoría; el key además fuerza el re-render del DataTable */}
                     <motion.div
                         key={`${pestanaTareas}-${categoriaActiva}`}
-                        initial={{ opacity: 0, y: 6 }}
+                        initial={sinMovimiento ? false : { opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        exit={sinMovimiento ? { opacity: 1 } : { opacity: 0, y: -6 }}
+                        transition={{ duration: sinMovimiento ? 0 : 0.18, ease: "easeOut" }}
                     >
                         <DataTable
                             data={tareasFiltradas}

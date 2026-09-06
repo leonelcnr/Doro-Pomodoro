@@ -1,4 +1,3 @@
-import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { capitalizar } from "@/features/tasks/atributos";
 
@@ -20,16 +19,23 @@ interface FiltroCategoriasProps {
 const TODAS = "Todas";
 
 /**
- * Barra de filtro por categoría (opción B): chips clicables, más prominentes, que
- * filtran la lista de tareas. "Todas" muestra todo; cada chip filtra por su
- * categoría. Al activarse, el chip se rellena con el color de izquierda a derecha.
- * Presentacional: el filtrado real lo hace la página.
+ * Barra de filtro por categoría: solo la opción activa lleva cápsula, y en gris.
+ * Las demás son texto que se ilumina al pasar por encima.
+ *
+ * Antes cada opción era una píldora con borde, la activa se rellenaba de violeta
+ * con una animación de barrido, y el conteo era otra cápsula anidada dentro de la
+ * primera. Eso dejaba N cápsulas en pantalla compitiendo entre sí, y usaba el
+ * violeta de marca para algo que no es la marca.
+ *
+ * No se usan pestañas subrayadas a propósito: `PanelTareas` ya las usa para
+ * elegir ámbito (Mis Tareas / Tareas de la Sala) justo encima de este filtro. El
+ * ámbito es el eje principal y la categoría un refinamiento dentro de él, así que
+ * tienen que verse distinto y pesar distinto.
+ *
+ * Ojo: la animación de aparición al cambiar de categoría no vive acá, sino en el
+ * `AnimatePresence` que envuelve la tabla en `Home` y en `PanelTareas`.
  */
 export function FiltroCategorias({ categorias, activa, total, onSeleccionar }: FiltroCategoriasProps) {
-  // El barrido del relleno corre en JS, así que se apaga a mano cuando el sistema
-  // pide menos movimiento.
-  const sinMovimiento = useReducedMotion();
-
   // Sin categorías reales más allá de la lista no tiene sentido mostrar la barra
   if (categorias.length === 0) return null;
 
@@ -38,39 +44,23 @@ export function FiltroCategorias({ categorias, activa, total, onSeleccionar }: F
     return (
       <button
         type="button"
+        aria-pressed={activo}
         onClick={() => onSeleccionar(nombre)}
         className={cn(
-          "relative inline-flex items-center gap-2 overflow-hidden rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50",
+          "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           activo
-            ? "border-brand-strong text-brand-foreground"
-            : "border-border bg-muted text-foreground hover:border-brand/40 hover:bg-accent"
+            ? "bg-muted font-semibold text-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
         )}
       >
-        {/* Relleno de marca: al activarse barre de izquierda a derecha (sin glow ni deslizamiento) */}
-        {activo && (
-          <motion.span
-            aria-hidden
-            className="absolute inset-0 -z-0 origin-left bg-brand-strong"
-            initial={sinMovimiento ? false : { scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: sinMovimiento ? 0 : 0.25, ease: "easeOut" }}
-          />
-        )}
-        <span className="relative z-10">{etiqueta ?? capitalizar(nombre)}</span>
-        <span
-          className={cn(
-            "relative z-10 rounded-full px-1.5 py-px text-[10.5px] font-semibold tabular-nums",
-            activo ? "bg-white/20 text-brand-foreground" : "bg-background text-muted-foreground"
-          )}
-        >
-          {cantidad}
-        </span>
+        <span>{etiqueta ?? capitalizar(nombre)}</span>
+        <span className="text-xs tabular-nums opacity-70">{cantidad}</span>
       </button>
     );
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1">
       <Chip nombre={TODAS} cantidad={total} etiqueta="Todas" />
       {categorias.map((c) => (
         <Chip key={c.nombre} nombre={c.nombre} cantidad={c.cantidad} />

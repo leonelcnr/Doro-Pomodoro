@@ -78,9 +78,17 @@ export const SalaNueva = () => {
             {/* CREAR SALA: la acción primaria */}
             <Card className="gap-0 p-6">
                 <h2 className="mb-2 text-lg font-bold tracking-tight">Nueva sala</h2>
-                <p className="mb-6 grow text-sm text-muted-foreground">
+                <p className="mb-4 text-sm text-muted-foreground">
                     Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.
                 </p>
+                {/* La tarjeta quedaba con un hueco de aire porque tiene menos contenido
+                    que la de al lado. En vez de achicarla, se llena con lo que pasa al
+                    entrar: son las tres cosas que la sala realmente comparte. */}
+                <ul className="mb-6 grow list-disc space-y-1 pl-4 text-sm text-muted-foreground marker:text-muted-foreground/40">
+                    <li>El reloj corre igual para todos</li>
+                    <li>Música compartida</li>
+                    <li>Tareas de la sala, aparte de las tuyas</li>
+                </ul>
                 <Button
                     onClick={crearSala}
                     disabled={creando}
