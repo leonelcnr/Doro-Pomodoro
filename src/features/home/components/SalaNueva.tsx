@@ -19,8 +19,14 @@ export const SalaNueva = () => {
     // duraciones en vez de un valor fijo.
     const configuracion = useTimerStore((estado) => estado.configuracion);
 
+    // Evita que un doble click cree dos salas: la petición tarda y el botón
+    // quedaba habilitado mientras tanto.
+    const [creando, establecerCreando] = useState(false);
+
     // CREAR SALA NUEVA: crea la sala vía el servicio y navega a la recién creada
     const crearSala = async () => {
+        if (creando) return;
+        establecerCreando(true);
         // Estado inicial del reloj compartido. Sin sembrarlo, la fila queda con el
         // default de la columna (que no cumple el contrato `EstadoReloj`) y la sala
         // arranca en 00:00.
@@ -38,6 +44,8 @@ export const SalaNueva = () => {
         } catch (error) {
             console.error(error);
             toast.error("No se pudo crear la sala.");
+            // Solo se rehabilita si falló: en el camino feliz ya se navegó fuera.
+            establecerCreando(false);
         }
     };
 
@@ -68,7 +76,7 @@ export const SalaNueva = () => {
             {/* TARJETA IZQUIERDA: CREAR SALA */}
             <Card className="gap-0 p-6">
                 <div className="mb-2 flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-brand/10 text-brand">
                         <Plus className="size-5" />
                     </span>
                     <h2 className="text-lg font-bold tracking-tight">Nueva sala</h2>
@@ -78,15 +86,16 @@ export const SalaNueva = () => {
                 </p>
                 <Button
                     onClick={crearSala}
+                    disabled={creando}
                     className="w-full py-6 text-md transition-all duration-200 active:scale-[0.98]">
-                    Crear sala
+                    {creando ? "Creando sala…" : "Crear sala"}
                 </Button>
             </Card>
 
             {/* TARJETA DERECHA: UNIRSE A SALA */}
             <Card className="gap-0 p-6">
                 <div className="mb-2 flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-brand/10 text-brand">
                         <ArrowRight className="size-5" />
                     </span>
                     <h2 className="text-lg font-bold tracking-tight">Unirse a sala</h2>
