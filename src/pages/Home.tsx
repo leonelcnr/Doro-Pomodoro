@@ -111,56 +111,58 @@ const Home = () => {
                     <RelojSaludo />
                 </SiteHeader>
                 <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-0 ">
-                        <div className="max-w-full h-full flex flex-col gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-                            <HeroEnfoque
-                                saludo={obtenerSaludo()}
-                                nombre={primerNombre}
-                                minutosHoy={statsByRange.day.displayMinutes}
-                                metaMinutos={META_DIARIA_MINUTOS}
-                                racha={stats.currentStreak}
-                                tareasHoy={statsByRange.day.displayCompletedTasks}
-                                cargando={cargandoStats}
-                            />
+                    {/* El ancho se limita como en Dashboard y RoomPage (`max-w-6xl`): el
+                        home era la única página que se estiraba a pantalla completa.
+                        El `@container/main` vive en este mismo div y no en uno exterior,
+                        porque si no las container queries medirían el ancho sin limitar. */}
+                    <div className="@container/main mx-auto flex h-full w-full max-w-6xl flex-col gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8">
+                        <HeroEnfoque
+                            saludo={obtenerSaludo()}
+                            nombre={primerNombre}
+                            minutosHoy={statsByRange.day.displayMinutes}
+                            metaMinutos={META_DIARIA_MINUTOS}
+                            racha={stats.currentStreak}
+                            tareasHoy={statsByRange.day.displayCompletedTasks}
+                            cargando={cargandoStats}
+                        />
 
-                            <SalaNueva />
+                        <SalaNueva />
 
-                            <div className="flex flex-col gap-4">
-                                <h2 className="text-xl font-bold tracking-tight">Tus tareas</h2>
+                        <div className="flex flex-col gap-4">
+                            <h2 className="text-xl font-bold tracking-tight">Tus tareas</h2>
 
-                                {tareas.length === 0 ? (
-                                    // Sin tareas no hay nada que filtrar ni que ordenar: la tabla
-                                    // vacía deja de aportar y estorba.
-                                    <TareasVacias
-                                        slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                            {tareas.length === 0 ? (
+                                // Sin tareas no hay nada que filtrar ni que ordenar: la tabla
+                                // vacía deja de aportar y estorba.
+                                <TareasVacias
+                                    slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                                />
+                            ) : (
+                                <>
+                                    <FiltroCategorias
+                                        categorias={categorias}
+                                        activa={categoriaActiva}
+                                        total={tareas.length}
+                                        onSeleccionar={establecerCategoriaActiva}
                                     />
-                                ) : (
-                                    <>
-                                        <FiltroCategorias
-                                            categorias={categorias}
-                                            activa={categoriaActiva}
-                                            total={tareas.length}
-                                            onSeleccionar={establecerCategoriaActiva}
-                                        />
-                                        <AnimatePresence mode="wait">
-                                            <motion.div
-                                                key={categoriaActiva}
-                                                initial={sinMovimiento ? false : { opacity: 0, y: 6 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={sinMovimiento ? { opacity: 1 } : { opacity: 0, y: -6 }}
-                                                transition={{ duration: sinMovimiento ? 0 : 0.18, ease: "easeOut" }}
-                                            >
-                                                <DataTable
-                                                    data={tareasFiltradas}
-                                                    onTasksChange={manejarCambioTareas}
-                                                    onActualizarTarea={manejarActualizarTarea}
-                                                    slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
-                                                />
-                                            </motion.div>
-                                        </AnimatePresence>
-                                    </>
-                                )}
-                            </div>
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={categoriaActiva}
+                                            initial={sinMovimiento ? false : { opacity: 0, y: 6 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={sinMovimiento ? { opacity: 1 } : { opacity: 0, y: -6 }}
+                                            transition={{ duration: sinMovimiento ? 0 : 0.18, ease: "easeOut" }}
+                                        >
+                                            <DataTable
+                                                data={tareasFiltradas}
+                                                onTasksChange={manejarCambioTareas}
+                                                onActualizarTarea={manejarActualizarTarea}
+                                                slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
+                                            />
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

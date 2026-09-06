@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Plus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -70,19 +69,17 @@ export const SalaNueva = () => {
 
 
     return (
-        // Dos destinos claros: crear una sala nueva o unirse a una existente.
-        <div className="grid w-full gap-4 md:grid-cols-2">
+        // Dos destinos, con pesos distintos: crear una sala es el camino principal y
+        // ocupa el doble; unirse solo aplica si alguien ya te pasó un código, y la
+        // mayoría llega por link de invitación (ver `InvitacionPage`) sin tipear nada.
+        // El reflujo va por container query porque la sidebar cambia el ancho útil.
+        <div className="grid w-full gap-4 @xl/main:grid-cols-[2fr_1fr]">
 
-            {/* TARJETA IZQUIERDA: CREAR SALA */}
+            {/* CREAR SALA: la acción primaria */}
             <Card className="gap-0 p-6">
-                <div className="mb-2 flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                        <Plus className="size-5" />
-                    </span>
-                    <h2 className="text-lg font-bold tracking-tight">Nueva sala</h2>
-                </div>
+                <h2 className="mb-2 text-lg font-bold tracking-tight">Nueva sala</h2>
                 <p className="mb-6 grow text-sm text-muted-foreground">
-                    Iniciá una sesión de Pomodoro y obtené un enlace para compartir con tus amigos.
+                    Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.
                 </p>
                 <Button
                     onClick={crearSala}
@@ -92,30 +89,26 @@ export const SalaNueva = () => {
                 </Button>
             </Card>
 
-            {/* TARJETA DERECHA: UNIRSE A SALA */}
+            {/* UNIRSE: la acción condicional, en un tercio del ancho */}
             <Card className="gap-0 p-6">
-                <div className="mb-2 flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                        <ArrowRight className="size-5" />
-                    </span>
-                    <h2 className="text-lg font-bold tracking-tight">Unirse a sala</h2>
-                </div>
+                <h2 className="mb-2 text-lg font-bold tracking-tight">Unirse</h2>
                 <p className="mb-6 grow text-sm text-muted-foreground">
-                    ¿Ya tenés una invitación? Introducí el código de la sala para unirte a una sesión existente.
+                    Con el código que te pasaron.
                 </p>
-                <form onSubmit={unirse} className="flex flex-col gap-3 sm:flex-row">
+                <form onSubmit={unirse} className="flex flex-col gap-3">
                     <Input
                         type="text"
-                        placeholder="Código de sala (Ej: 0852EF11)"
+                        placeholder="0852EF11"
                         value={codigoSala}
                         onChange={(e) => establecerCodigoSala(e.target.value)}
-                        className="h-12 grow"
+                        aria-label="Código de sala"
+                        className="h-12"
                     />
                     <Button
                         type="submit"
                         disabled={!codigoSala}
                         variant="outline"
-                        className="h-12 transition-colors disabled:opacity-50 sm:w-1/3"
+                        className="h-12 transition-colors disabled:opacity-50"
                     >
                         Unirse
                     </Button>

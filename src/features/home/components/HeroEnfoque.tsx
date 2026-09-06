@@ -1,4 +1,3 @@
-import { Flame, CheckCircle2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatearMinutosCompacto } from "@/features/home/saludo";
 
@@ -20,6 +19,14 @@ interface HeroEnfoqueProps {
  * Supabase. La firma visual es el "anillo de enfoque", un arco circular que
  * evoca el temporizador Pomodoro y se llena según el progreso hacia la meta
  * diaria de minutos.
+ *
+ * El anillo es lo único con color: racha y tareas viven en una línea de texto.
+ * Antes eran dos píldoras con ícono naranja y esmeralda que competían con el
+ * anillo y sumaban acentos sobre una paleta que es neutra a propósito.
+ *
+ * El reflujo usa container queries (`@xl/main:`) y no breakpoints de viewport:
+ * este componente vive dentro del `@container/main` que declara `Home.tsx`, y
+ * con `sm:` no se enteraba de que la sidebar le comía 288px de ancho.
  */
 export function HeroEnfoque({ saludo, nombre, minutosHoy, metaMinutos, racha, tareasHoy, cargando = false }: HeroEnfoqueProps) {
     const radio = 46;
@@ -33,7 +40,7 @@ export function HeroEnfoque({ saludo, nombre, minutosHoy, metaMinutos, racha, ta
     if (cargando) return <HeroEnfoqueEsqueleto saludo={saludo} nombre={nombre} />;
 
     return (
-        <section className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
+        <section className="flex flex-col items-center gap-6 @xl/main:flex-row @xl/main:items-center">
             {/* Anillo de enfoque: muestra los minutos de hoy y su avance hacia la meta */}
             <div
                 className="relative size-28 shrink-0"
@@ -62,32 +69,19 @@ export function HeroEnfoque({ saludo, nombre, minutosHoy, metaMinutos, racha, ta
                 </div>
             </div>
 
-            {/* Saludo + franja de stats del día */}
-            <div className="flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {/* Saludo + resumen del día en texto plano */}
+            <div className="flex flex-col items-center gap-2 text-center @xl/main:items-start @xl/main:text-left">
+                <h1 className="text-2xl font-bold tracking-tight @xl/main:text-3xl">
                     {saludo}
-                    {nombre && (
-                        <>
-                            ,{" "}
-                            <span className="bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent">
-                                {nombre}
-                            </span>
-                        </>
-                    )}
+                    {nombre && `, ${nombre}`}
                 </h1>
-
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm text-muted-foreground">
-                        <Flame className="size-4 text-orange-500" />
-                        <b className="font-semibold text-foreground">{racha}</b>
-                        {racha === 1 ? "día" : "días"} de racha
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm text-muted-foreground">
-                        <CheckCircle2 className="size-4 text-emerald-500" />
-                        <b className="font-semibold text-foreground">{tareasHoy}</b>
-                        {tareasHoy === 1 ? "tarea" : "tareas"} hoy
-                    </span>
-                </div>
+                <p className="text-sm text-muted-foreground tabular-nums">
+                    <b className="font-semibold text-foreground">{racha}</b>{" "}
+                    {racha === 1 ? "día seguido" : "días seguidos"}
+                    {" · "}
+                    <b className="font-semibold text-foreground">{tareasHoy}</b>{" "}
+                    {tareasHoy === 1 ? "tarea completada" : "tareas completadas"}
+                </p>
             </div>
         </section>
     );
@@ -95,26 +89,23 @@ export function HeroEnfoque({ saludo, nombre, minutosHoy, metaMinutos, racha, ta
 
 /**
  * Esqueleto del hero mientras cargan las estadísticas. Copia las medidas del
- * layout real (anillo de 112px, título, dos chips) para que no haya salto cuando
- * llegan los datos. El saludo sí se muestra: no depende de la red.
+ * layout real (anillo de 112px, título, línea de resumen) para que no haya salto
+ * cuando llegan los datos. El saludo sí se muestra: no depende de la red.
  */
 function HeroEnfoqueEsqueleto({ saludo, nombre }: { saludo: string; nombre: string }) {
     return (
         <section
-            className="flex flex-col items-center gap-6 sm:flex-row sm:items-center"
+            className="flex flex-col items-center gap-6 @xl/main:flex-row @xl/main:items-center"
             aria-busy="true"
             aria-label="Cargando tu resumen de enfoque"
         >
             <Skeleton className="size-28 shrink-0 rounded-full" />
-            <div className="flex flex-col items-center gap-3 sm:items-start">
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <div className="flex flex-col items-center gap-2 @xl/main:items-start">
+                <h1 className="text-2xl font-bold tracking-tight @xl/main:text-3xl">
                     {saludo}
                     {nombre && `, ${nombre}`}
                 </h1>
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                    <Skeleton className="h-[34px] w-36 rounded-full" />
-                    <Skeleton className="h-[34px] w-28 rounded-full" />
-                </div>
+                <Skeleton className="h-5 w-64 max-w-full" />
             </div>
         </section>
     );
