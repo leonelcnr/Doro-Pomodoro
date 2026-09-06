@@ -35,3 +35,21 @@ docs/
 *.njsproj
 *.sln
 *.sw?
+# Skills de diseño instaladas desde Leonxlnx/taste-skill. Son reglas de terceros,
+# no código del producto: quedan locales y se reinstalan con
+# `pnpm dlx skills add Leonxlnx/taste-skill` (el lock las registra).
+# Nota: el RESTO de .agents/skills/ sí está versionado (convención previa del repo).
+.claude/skills/
+.agents/skills/brandkit/
+.agents/skills/design-taste-frontend/
+.agents/skills/design-taste-frontend-v1/
+.agents/skills/full-output-enforcement/
+.agents/skills/gpt-taste/
+.agents/skills/high-end-visual-design/
+.agents/skills/image-to-code/
+.agents/skills/imagegen-frontend-mobile/
+.agents/skills/imagegen-frontend-web/
+.agents/skills/industrial-brutalist-ui/
+.agents/skills/minimalist-ui/
+.agents/skills/redesign-existing-projects/
+.agents/skills/stitch-design-taste/
