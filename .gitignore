@@ -21,8 +21,6 @@ dist-ssr
 # Artefactos de Playwright (E2E)
 test-results/
 playwright-report/
-/docs
-docs/
 
 # Editor directories and files
 .superpowers/
