@@ -1,9 +1,9 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Home de Doro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
+/* Página de comparación: ajustes arriba, maquetas redimensionables en grupos (favoritos, variantes, primera ronda), cierre con tabla. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -15,6 +15,8 @@
   --acento: oklch(0.56 0.24 293);
   --acento-fg: oklch(0.99 0 0);
   --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 10%;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -26,6 +28,7 @@
     --linea: oklch(0.275 0.006 285);
     --campo: oklch(0.225 0.005 285);
     --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --trama-c: oklch(0.965 0.002 285);
     color-scheme: dark;
   }
 }
@@ -37,7 +40,15 @@
   --linea: oklch(0.275 0.006 285);
   --campo: oklch(0.225 0.005 285);
   --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --trama-c: oklch(0.965 0.002 285);
   color-scheme: dark;
+}
+/* "Negro": el oscuro de las referencias, casi sin gris */
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285);
+  --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285);
+  --linea: oklch(0.255 0.005 285);
 }
 
 * { box-sizing: border-box; }
@@ -61,11 +72,19 @@ button { cursor: pointer; }
 .pagina { max-width: 1240px; margin: 0 auto; padding: 40px 16px 96px; }
 @media (min-width: 720px) { .pagina { padding: 56px 32px 120px; } }
 
-.cabecera { display: flex; flex-wrap: wrap; gap: 24px 40px; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; }
-.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; }
-.cabecera p { margin: 0; color: var(--tenue); max-width: 60ch; }
-.controles { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
-.grupo-control { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); }
+.cabecera { margin-bottom: 28px; }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0; color: var(--tenue); max-width: 68ch; }
+
+/* Ajustes globales */
+.ajustes {
+  display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center;
+  padding: 14px 0; margin-bottom: 28px;
+  border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea);
+  background: var(--bg);
+}
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
 .muestras { display: flex; gap: 6px; }
 .muestra {
   width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0;
@@ -74,20 +93,46 @@ button { cursor: pointer; }
 }
 .muestra:hover { transform: scale(1.08); }
 .muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
-.segmentado { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
 .segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
 .segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.fondos { display: flex; flex-wrap: wrap; gap: 6px; }
+.fondo-op {
+  display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 10px 0 4px;
+  border: 1px solid var(--linea); border-radius: 9px; background: var(--superficie); font-size: 12.5px; color: var(--tenue);
+}
+.fondo-op[aria-pressed="true"] { border-color: var(--acento); color: var(--fg); box-shadow: 0 0 0 1px var(--acento); }
+.fondo-muestra { --trama-a: 34%; width: 30px; height: 22px; border-radius: 6px; border: 1px solid var(--linea); background: var(--patron), var(--bg); }
+input[type="range"] { accent-color: var(--acento); width: 120px; }
+.valor { font-variant-numeric: tabular-nums; color: var(--fg); min-width: 3.5ch; }
 
-.indice { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--linea); }
-.indice a { text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--linea); color: var(--tenue); transition: color .2s, border-color .2s; }
+.indice { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 56px; }
+.indice a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--linea); color: var(--tenue); transition: color .2s, border-color .2s; }
 .indice a:hover { color: var(--fg); border-color: var(--tenue); }
+.indice a.es-fav { color: var(--fg); border-color: color-mix(in oklch, var(--acento) 45%, var(--linea)); }
+.indice a svg { width: 12px; height: 12px; color: var(--acento); }
+.indice-sep { width: 1px; height: 20px; background: var(--linea); margin: 0 4px; }
+
+.grupo {
+  display: flex; align-items: center; gap: 14px; margin: 0 0 36px;
+  font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--tenue);
+}
+.grupo::after { content: ""; flex: 1; height: 1px; background: var(--linea); }
+.grupo span { font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 13px; }
 
 .opcion { margin-bottom: 88px; scroll-margin-top: 24px; }
 .opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
 @media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
-.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; }
-.opcion-cabeza h2 .letra { color: var(--acento); margin-right: 6px; }
-.opcion-cabeza .resumen { margin: 0; color: var(--tenue); max-width: 52ch; }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.opcion-cabeza .resumen { margin: 0; color: var(--tenue); max-width: 54ch; }
+.fav, .origen {
+  display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px;
+  border-radius: 999px; font-size: 12px; font-weight: 500; letter-spacing: 0;
+}
+.fav { color: var(--acento); border: 1px solid color-mix(in oklch, var(--acento) 40%, transparent); background: var(--acento-suave); }
+.fav svg { width: 12px; height: 12px; }
+.origen { color: var(--tenue); border: 1px solid var(--linea); }
 .notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
 @media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
 .notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
@@ -98,9 +143,12 @@ button { cursor: pointer; }
 .presets { display: inline-flex; gap: 4px; }
 .presets button { border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
 .presets button:hover { color: var(--fg); }
+.sel-fondo { display: inline-flex; align-items: center; gap: 6px; }
+.sel-fondo select { border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 3px 6px; font-size: 12.5px; color: var(--fg); }
 .medida { font-variant-numeric: tabular-nums; color: var(--fg); }
 .pista { margin-left: auto; font-size: 12px; }
 @media (max-width: 600px) { .pista { display: none; } }
+.estados { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
 
 .marco {
   resize: both; overflow: auto;
@@ -117,12 +165,35 @@ button { cursor: pointer; }
   position: relative; min-height: 100%;
   background: var(--bg); color: var(--fg);
   display: flex; flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; isolation: isolate;
 }
+
+/* Fondos: la trama vive en un ::before detrás del contenido, para poder enmascararla */
+.app, .fondo-muestra {
+  --trama: color-mix(in oklch, var(--trama-c) var(--trama-a), transparent);
+  --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent);
+  --patron: none;
+}
+[data-fondo="rayas-h"] { --patron: repeating-linear-gradient(to bottom, var(--trama) 0 1px, transparent 1px 7px); }
+[data-fondo="rayas-v"] { --patron: repeating-linear-gradient(to right, var(--trama) 0 1px, transparent 1px 8px); }
+[data-fondo="puntos"] { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+[data-fondo="cuadricula"] { --patron: linear-gradient(var(--trama) 1px, transparent 1px) -1px -1px / 40px 40px, linear-gradient(90deg, var(--trama) 1px, transparent 1px) -1px -1px / 40px 40px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%);
+}
+:root[data-vineta="bordes"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+}
+
+/* Barra superior */
 .tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
 @container app (min-width: 720px) { .tb { padding: 0 32px; } }
 .marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; }
 .marca svg { width: 22px; height: 22px; color: var(--acento); }
+.marca .desv { display: inline-block; }
 .tb-nav { display: none; gap: 4px; }
 .tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 8px; }
 .tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
@@ -133,6 +204,24 @@ button { cursor: pointer; }
 .menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 8px; color: var(--tenue); }
 .menu svg { width: 18px; height: 18px; }
 @container app (min-width: 600px) { .menu { display: none; } }
+.btn-tareas { display: inline-flex; align-items: center; border: 1px solid var(--linea); background: var(--superficie); border-radius: 999px; height: 32px; padding: 0 12px; font-size: 13px; transition: background-color .3s, border-color .3s; }
+.btn-tareas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.btn-tareas .tb-etq { display: inline-block; overflow: hidden; white-space: nowrap; max-width: 5em; margin-right: 6px; }
+.btn-tareas.opcional { display: none; }
+:root[data-barra="desvanece-tareas"] .btn-tareas.opcional { display: inline-flex; }
+
+/* Barra que se desvanece: queda el logo, la inicial y (opcional) el número de tareas.
+   Solo con puntero que hace hover; en táctil la barra queda completa. Sin JS. */
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+.tb .tb-etq { transition: max-width .35s ease .5s, opacity .3s ease .5s, margin .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra^="desvanece"] .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra^="desvanece"] .tb .tb-etq { max-width: 0; opacity: 0; margin-right: 0; }
+  :root[data-barra^="desvanece"] .tb .btn-tareas { border-color: transparent; background: var(--campo); }
+  :root[data-barra^="desvanece"] .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+  :root[data-barra^="desvanece"] .tb:is(:hover, :focus-within) .tb-etq { max-width: 5em; opacity: 1; margin-right: 6px; transition-delay: 0s; }
+  :root[data-barra^="desvanece"] .tb:is(:hover, :focus-within) .btn-tareas { border-color: var(--linea); background: var(--superficie); }
+}
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; border: 1px solid transparent; padding: 0 16px; height: 40px; font-size: 14px; font-weight: 500; white-space: nowrap; transition: background-color .2s, border-color .2s, transform .15s; }
 .btn:active { transform: translateY(1px); }
@@ -211,6 +300,52 @@ button { cursor: pointer; }
 .b-siguiente { margin: 12px 0 0; padding-top: 24px; border-top: 1px solid var(--linea); color: var(--tenue); font-size: 14.5px; max-width: 520px; }
 .b-siguiente b { color: var(--fg); font-weight: 500; }
 
+/* ───────── B2 · Acciones en la frase ───────── */
+.b2-main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 48px 20px; display: flex; flex-direction: column; justify-content: center; gap: 36px; }
+@container app (min-width: 720px) { .b2-main { padding: 64px 48px; } }
+.b2-frase { margin: 0; font-size: clamp(28px, 5.4cqi, 54px); line-height: 1.2; letter-spacing: -0.035em; font-weight: 400; color: var(--tenue); text-wrap: pretty; }
+.b2-saludo { display: block; color: var(--fg); font-weight: 600; }
+.b2-cifra {
+  color: var(--fg); font-weight: 600; padding-bottom: .05em; font-variant-numeric: tabular-nums;
+  background:
+    linear-gradient(var(--acento), var(--acento)) 0 100% / var(--p) .08em no-repeat,
+    linear-gradient(var(--linea), var(--linea)) 0 100% / 100% .08em no-repeat;
+}
+.b2-accion {
+  font: inherit; letter-spacing: inherit; border: 0; background: none; padding: 0 .08em; margin: 0 -.08em; border-radius: .14em;
+  color: var(--fg); font-weight: 600; text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .14em;
+  text-decoration-color: color-mix(in oklch, var(--tenue) 50%, transparent); transition: background-color .2s, text-decoration-color .2s;
+}
+.b2-accion:hover { background: var(--acento-suave); text-decoration-color: currentColor; }
+.b2-crear { color: var(--acento); text-decoration-color: currentColor; }
+.b2-junto { white-space: nowrap; }
+.b2-form { display: inline-flex; align-items: center; gap: .25em; vertical-align: baseline; }
+.b2-input { font: inherit; letter-spacing: inherit; color: var(--fg); font-weight: 600; border: 0; border-bottom: .06em solid var(--acento); background: transparent; width: 6.5em; padding: 0; outline: none; border-radius: 0; }
+.b2-input::placeholder { color: color-mix(in oklch, var(--tenue) 55%, transparent); font-weight: 400; }
+.b2-ir { letter-spacing: 0; vertical-align: middle; }
+.b2-despues { margin: 0; padding-top: 22px; border-top: 1px solid var(--linea); max-width: 560px; font-size: 15px; color: var(--tenue); display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.b2-select { border: 0; border-bottom: 1px solid var(--linea); background: transparent; color: var(--fg); font-weight: 500; padding: 2px; max-width: 100%; }
+
+/* ───────── B3 · Frase y el día ───────── */
+.b3-fecha { margin: 0; font-size: 12.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); }
+.b3-nota { margin: -12px 0 0; font-size: 14px; color: var(--tenue); }
+.b3-nota[hidden] { display: none; }
+.b3-dia { margin: 8px 0 0; width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 6px; }
+.b3-regla { position: relative; height: 44px; }
+.b3-eje { position: absolute; left: 0; right: 0; top: 14px; height: 1px; background: var(--linea); }
+.b3-marca { position: absolute; top: 11px; width: 1px; height: 7px; background: var(--linea); }
+.b3-marca.mayor { top: 8px; height: 13px; background: color-mix(in oklch, var(--tenue) 45%, var(--linea)); }
+.b3-etq { position: absolute; top: 25px; white-space: nowrap; font-size: 11.5px; color: var(--tenue); font-variant-numeric: tabular-nums; transform: translateX(-50%); }
+.b3-etq.primera { transform: none; }
+.b3-etq.ultima { transform: translateX(-100%); }
+.b3-bloque { position: absolute; top: 8px; height: 13px; border-radius: 3px; background: var(--acento); }
+.b3-bloque.descanso { background: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--acento) 55%, transparent); }
+.b3-ahora { position: absolute; top: 2px; height: 24px; width: 2px; margin-left: -1px; border-radius: 2px; background: var(--fg); }
+.b3-leyenda { margin: 0; font-size: 13px; color: var(--tenue); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; font-variant-numeric: tabular-nums; }
+.b3-leyenda i { display: inline-block; width: 14px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 1px; background: var(--acento); }
+.b3-leyenda i.descanso { background: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--acento) 55%, transparent); }
+.b3-leyenda i.ahora { width: 2px; height: 12px; background: var(--fg); vertical-align: -1px; }
+
 /* ───────── C · Dos columnas ───────── */
 .c-main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 24px 20px 48px; display: grid; gap: 40px; align-content: start; }
 @container app (min-width: 820px) { .c-main { grid-template-columns: 300px minmax(0, 1fr); gap: 64px; padding: 48px 32px; } }
@@ -227,22 +362,22 @@ button { cursor: pointer; }
 .c-filtro button { border: 0; background: none; padding: 0 0 10px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; font-variant-numeric: tabular-nums; }
 .c-filtro button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
 .c-filtro span { opacity: .6; margin-left: 4px; }
-.alta { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); }
+.alta { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); flex-shrink: 0; }
 .alta svg { width: 16px; height: 16px; flex-shrink: 0; }
 .alta input { border: 0; background: none; flex: 1; min-width: 0; font-size: 14px; outline: none; }
 .alta input::placeholder { color: var(--tenue); }
 
-/* ───────── D · Un anillo ───────── */
+/* ───────── D · Un anillo (y sus variantes) ───────── */
 .d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 32px 20px 56px; text-align: center; }
 .d-anillo {
   position: relative; border: 0; background: none; padding: 0;
-  width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; border-radius: 50%;
-  display: grid; place-items: center;
+  width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; max-width: 100%; border-radius: 50%;
+  display: grid; place-items: center; flex-shrink: 0;
 }
 .d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
 .d-anillo .pista-anillo { stroke: var(--linea); }
 .d-anillo .arco { stroke: var(--acento); transition: stroke-dashoffset .9s cubic-bezier(.16,1,.3,1); }
-.d-anillo:hover .arco, .d-anillo:focus-visible .arco { stroke-dashoffset: 0 !important; }
+.app:not(.en-sala) .d-anillo:is(:hover, :focus-visible) .arco { stroke-dashoffset: 0 !important; }
 .d-anillo .relleno { fill: var(--superficie); transition: fill .3s; }
 .d-anillo:hover .relleno { fill: var(--acento-suave); }
 .d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; }
@@ -253,8 +388,6 @@ button { cursor: pointer; }
 .d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 40px; font-size: 15px; transition: border-color .2s; }
 .d-linea:focus { outline: none; border-color: var(--acento); }
 .d-linea::placeholder { color: var(--tenue); opacity: .7; }
-.btn-tareas { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 999px; height: 32px; padding: 0 12px; font-size: 13px; }
-.btn-tareas b { font-weight: 600; font-variant-numeric: tabular-nums; }
 .d-cajon {
   position: absolute; top: 0; right: 0; bottom: 0; width: min(100%, 380px);
   background: var(--superficie); border-left: 1px solid var(--linea); box-shadow: var(--sombra);
@@ -267,6 +400,59 @@ button { cursor: pointer; }
 .cerrar { border: 0; background: none; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: var(--tenue); }
 .cerrar:hover { background: var(--campo); color: var(--fg); }
 .cerrar svg { width: 16px; height: 16px; }
+
+/* D2 · tramos */
+.d2-pista { stroke: var(--linea); }
+.d2-lleno { stroke: var(--acento); }
+.d-anillo:is(:hover, :focus-visible) .d2-siguiente { stroke: color-mix(in oklch, var(--acento) 50%, var(--linea)); animation: latido 1.4s ease-in-out infinite; }
+@keyframes latido { 50% { opacity: .4; } }
+.d2-leyenda { margin: -20px 0 0; font-size: 13px; color: var(--tenue); }
+
+/* D3 · el anillo se muda a la sala */
+.d3-anillo { transition: width .8s cubic-bezier(.16,1,.3,1); }
+.en-sala .d3-anillo { width: clamp(240px, 46cqi, 380px); }
+.d3-capas, .d3-pie { display: grid; place-items: center; }
+.d3-capas { position: relative; }
+.d3-capas > *, .d3-pie > * { grid-area: 1 / 1; transition: opacity .45s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+.d3-pie { width: min(100%, 360px); }
+.d3-sala, .d3-capa-sala { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.en-sala .d3-inicio, .en-sala .d3-capa-inicio { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.en-sala .d3-sala, .en-sala .d3-capa-sala { opacity: 1; transform: none; pointer-events: auto; }
+.d3-capa-sala { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; justify-content: center; }
+.d-texto strong.d3-reloj { font-size: clamp(40px, 9cqi, 76px); font-weight: 300; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* D4 · bandeja de tareas */
+.d4-main { padding-bottom: 104px; }
+.d4-bandeja {
+  position: absolute; left: 50%; bottom: 0; z-index: 10;
+  width: min(calc(100% - 24px), 560px); max-height: 78%;
+  display: flex; flex-direction: column;
+  background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
+  transform: translate(-50%, calc(100% - 60px)); transition: transform .5s cubic-bezier(.16,1,.3,1);
+}
+.d4-bandeja.abierta { transform: translate(-50%, 0); }
+.d4-asa { position: relative; flex-shrink: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px 20px 0; border: 0; background: none; text-align: left; font-size: 14px; border-radius: 16px 16px 0 0; }
+.d4-asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 32px; height: 4px; border-radius: 4px; background: var(--linea); transform: translateX(-50%); }
+.d4-sig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d4-sig b { font-weight: 500; }
+.d4-cuenta { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--tenue); font-size: 13px; font-variant-numeric: tabular-nums; }
+.d4-cuenta svg { width: 16px; height: 16px; transition: transform .4s; }
+.abierta .d4-cuenta svg { transform: rotate(180deg); }
+.d4-cuerpo { padding: 4px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+
+/* BD · frase y anillo */
+.bd-main { flex: 1; width: 100%; max-width: 1000px; margin: 0 auto; padding: 40px 20px 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; text-align: center; }
+.bd-anillo { width: clamp(180px, 30cqi, 240px); }
+.bd-texto { display: flex; flex-direction: column; align-items: center; gap: 18px; min-width: 0; width: 100%; max-width: 560px; }
+.bd-frase { margin: 0; font-size: clamp(28px, 4.8cqi, 46px); line-height: 1.1; letter-spacing: -0.035em; font-weight: 600; text-wrap: balance; }
+.bd-frase .tenue { font-weight: 400; }
+.bd-texto .b-unirse { width: 100%; }
+.bd-texto .b-siguiente { margin: 6px 0 0; width: 100%; }
+@container app (min-width: 760px) {
+  .bd-main { flex-direction: row; text-align: left; gap: 64px; padding: 64px 48px; }
+  .bd-anillo { width: clamp(200px, 26cqi, 280px); }
+  .bd-texto { align-items: flex-start; }
+}
 
 /* ───────── E · Reloj en espera ───────── */
 .e-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 32px 20px 56px; text-align: center; }
@@ -312,7 +498,7 @@ button { cursor: pointer; }
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
 .tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
-table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
 th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
 th { font-size: 12.5px; font-weight: 600; color: var(--tenue); }
 td:first-child { font-weight: 600; white-space: nowrap; }
@@ -320,13 +506,16 @@ tr.elegida td { background: var(--acento-suave); }
 tr.elegida td:first-child { padding-left: 10px; }
 .recomendacion { display: grid; gap: 32px; }
 @media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.recomendacion > * { min-width: 0; }
 .recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
 .recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 62ch; }
 .recomendacion p b { color: var(--fg); font-weight: 600; }
 pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 .c-com { color: var(--tenue); }
 .c-pal { color: var(--acento); }
-
+details.ronda1 { margin-top: 56px; border-top: 1px solid var(--linea); padding-top: 20px; }
+details.ronda1 summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+details.ronda1 p { color: var(--tenue); max-width: 70ch; }
 
 /* ───────── Pantalla completa ───────── */
 .btn-completa { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--fg); }
@@ -345,16 +534,17 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   font-size: 12.5px; color: var(--tenue); max-width: calc(100% - 32px); flex-wrap: wrap;
 }
 .mando[hidden] { display: none; }
-.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
 .mando button:hover { background: var(--campo); color: var(--fg); }
 .mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando button.es-fav:not([aria-current="true"]) { color: var(--acento); }
 .mando svg { width: 15px; height: 15px; }
 .mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
 .mando .medida { padding: 0 6px; }
 @media (max-width: 520px) { .mando .medida { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -365,46 +555,397 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-  <symbol id="i-buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
-  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
   <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1.03 6L12 17.02 6.62 19.85l1.03-6L3.3 9.6l6-.9z"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M4 15h16M10 4v16M15 4v16" stroke-width="1.2"/></symbol>
+  <symbol id="i-arriba" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></symbol>
 </svg>
 
 <div class="pagina">
   <header class="cabecera">
-    <div>
-      <h1>Home de Doro, seis bocetos</h1>
-      <p>Mismo contenido, seis formas de ordenarlo. En todas, entrar a una sala es lo primero. Cada maqueta se redimensiona desde la esquina inferior derecha, responde con container queries reales y se puede abrir en pantalla completa; ahí, las flechas ← → pasan de un boceto al otro y Esc sale.</p>
-    </div>
-    <div class="controles">
-      <div class="grupo-control">
-        <span>Acento</span>
-        <div class="muestras" id="muestras"></div>
-      </div>
+    <h1>Home de Doro, segunda ronda</h1>
+    <p>B y D quedaron como favoritos. Esta ronda prueba seis variantes que salen de ellos. Los ajustes de abajo cambian todas las maquetas a la vez: el fondo, la intensidad de la trama y la barra que se desvanece. Cada maqueta se redimensiona desde la esquina y se abre en pantalla completa; ahí, ← → cambian de boceto, F cambia el fondo y Esc sale.</p>
+  </header>
+
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste">
+      <span class="ajuste-nombre">Tema</span>
       <div class="segmentado" id="tema" role="group" aria-label="Tema">
         <button data-tema="light">Claro</button>
         <button data-tema="dark">Oscuro</button>
+        <button data-tema="negro">Negro</button>
       </div>
     </div>
-  </header>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Acento</span>
+      <div class="muestras" id="muestras"></div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Fondo</span>
+      <div class="fondos" id="fondos" role="group" aria-label="Fondo"></div>
+    </div>
+    <div class="ajuste">
+      <label class="ajuste-nombre" for="trama">Trama</label>
+      <input type="range" id="trama" min="4" max="30" step="1" value="10">
+      <output class="valor" id="trama-valor" for="trama">10 %</output>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Desvanecer trama</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer la trama">
+        <button data-v="parejo">Pareja</button>
+        <button data-v="centro">Centro limpio</button>
+        <button data-v="bordes">Bordes suaves</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra de navegación">
+        <button data-b="completa">Completa</button>
+        <button data-b="desvanece">Se desvanece</button>
+        <button data-b="desvanece-tareas">Se desvanece + tareas</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Mostrar</span>
+      <div class="segmentado" id="mostrar" role="group" aria-label="Qué bocetos mostrar">
+        <button data-m="todo">Todo</button>
+        <button data-m="favs">Favoritos y variantes</button>
+      </div>
+    </div>
+  </div>
 
   <nav class="indice" aria-label="Bocetos">
-    <a href="#a">A · Dos puertas</a>
-    <a href="#b">B · Una frase</a>
-    <a href="#c">C · Dos columnas</a>
-    <a href="#d">D · Un anillo</a>
-    <a href="#e">E · Reloj en espera</a>
-    <a href="#f">F · Tus salas</a>
+    <a href="#b" class="es-fav"><svg><use href="#i-estrella"/></svg>B · Una frase</a>
+    <a href="#d" class="es-fav"><svg><use href="#i-estrella"/></svg>D · Un anillo</a>
+    <span class="indice-sep"></span>
+    <a href="#b2">B2 · Acciones en la frase</a>
+    <a href="#b3">B3 · Frase y el día</a>
+    <a href="#d2">D2 · Anillo de pomodoros</a>
+    <a href="#d3">D3 · Anillo que se muda</a>
+    <a href="#d4">D4 · Anillo y bandeja</a>
+    <a href="#bd">BD · Frase y anillo</a>
+    <span class="indice-sep" data-resto></span>
+    <a href="#a" data-resto>A</a>
+    <a href="#c" data-resto>C</a>
+    <a href="#e" data-resto>E</a>
+    <a href="#f" data-resto>F</a>
+    <span class="indice-sep"></span>
     <a href="#cierre">Recomendación</a>
   </nav>
 
-  <!-- ═════════ A ═════════ -->
-  <section class="opcion" id="a">
+  <h2 class="grupo" id="favoritos">Favoritos <span>2</span></h2>
+
+  <!-- ═════════ B ═════════ -->
+  <section class="opcion" id="b">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">A</span>Dos puertas</h2>
+        <h2><span class="letra">B</span><span class="nombre">Una frase</span><span class="fav"><svg><use href="#i-estrella"/></svg>Favorito</span></h2>
+        <p class="resumen">El home se lee como una oración: saludo, cuánto llevás hoy y qué hacer ahora. Una línea fina reemplaza al anillo de progreso.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más calmo de la primera ronda: se lee, no se escanea.</li><li>El progreso del día sigue presente, sin números sueltos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En sesiones anónimas no hay nombre: la frase tiene que tener una versión sin él (B3 la prueba).</li><li>Solo muestra una tarea; el resto está a un clic.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="b-main">
+          <h1 class="b-frase">Buenas tardes, Leo.<br><span class="tenue">Llevás <b>45 min</b> de 2 h hoy.</span></h1>
+          <div class="b-progreso" role="img" aria-label="45 de 120 minutos"><span style="width:37.5%"></span></div>
+          <div class="b-acciones">
+            <button class="btn btn-acento btn-xl" data-crear>Crear sala</button>
+            <button class="btn-texto" data-mostrar="b-unirse">o unirme con un link</button>
+          </div>
+          <form class="b-unirse" id="b-unirse" data-unirse hidden>
+            <input class="entrada" id="b-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+            <button class="btn btn-borde">Entrar</button>
+          </form>
+          <p class="b-siguiente">Siguiente tarea: <b>Terminar TP Redes</b> · <button class="btn-texto" data-abrir-cajon>ver las 5</button></p>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ D ═════════ -->
+  <section class="opcion" id="d">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span><span class="nombre">Un anillo</span><span class="fav"><svg><use href="#i-estrella"/></svg>Favorito</span></h2>
+        <p class="resumen">El anillo del logo de Doro <em>es</em> el botón. Su arco muestra el progreso de hoy y al pasar el mouse se completa. Las tareas viven en un panel lateral.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Máximo minimalismo: un objeto en pantalla.</li><li>La identidad (el anillo) y la acción son la misma cosa.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las tareas quedan a un clic, fuera de vista (D4 lo resuelve).</li><li>Un botón circular es menos obvio que uno rectangular: necesita el texto adentro.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar data-boton-tareas></div>
+        <main class="d-main">
+          <button class="d-anillo" data-crear data-anillo="0.375" aria-label="Crear sala. 45 de 120 minutos hoy">
+            <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
+          </button>
+          <form class="d-unirse" data-unirse>
+            <label for="d-link">¿Te pasaron un link?</label>
+            <input id="d-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
+          </form>
+        </main>
+        <aside class="d-cajon" aria-label="Tareas">
+          <header><h3>Tus tareas</h3><button class="cerrar" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></header>
+          <label class="alta"><svg><use href="#i-mas"/></svg><input id="d-alta" placeholder="Nueva tarea…" data-alta></label>
+          <ul class="lista" data-tareas="all"></ul>
+        </aside>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="grupo" id="variantes">Variantes de B y D <span>6</span></h2>
+
+  <!-- ═════════ B2 ═════════ -->
+  <section class="opcion" id="b2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B2</span><span class="nombre">Acciones en la frase</span><span class="origen">Sale de B</span></h2>
+        <p class="resumen">La oración tiene los botones adentro. Crear una sala es una palabra, unirse abre un campo ahí mismo, en medio del texto, y la próxima tarea se elige sin salir de la frase. El progreso del día es el subrayado de la cifra.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Todo el home es una sola lectura, de izquierda a derecha.</li><li>La cifra lleva su propio progreso: sobra la barra aparte.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Una palabra-botón se descubre menos que un botón: necesita color y subrayado fuertes.</li><li>En móvil la frase ocupa cinco o seis líneas y las acciones quedan en el medio.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="b2-main">
+          <h1 class="b2-frase">
+            <span class="b2-saludo">Buenas tardes, Leo.</span>
+            Llevás <span class="b2-cifra" style="--p:37.5%">45 min</span> de 2 h.
+            <span class="b2-junto">¿<button class="b2-accion b2-crear" data-crear>Armamos una sala</button></span> o <span class="b2-junto"><span data-b2-slot><button class="b2-accion" data-b2-unirse>te sumás a una</button></span>?</span>
+          </h1>
+          <p class="b2-despues">Después, seguí con <select class="b2-select" id="b2-tarea" data-select-tareas aria-label="Tarea siguiente"></select></p>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ B3 ═════════ -->
+  <section class="opcion" id="b3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B3</span><span class="nombre">Frase y el día</span><span class="origen">Sale de B</span></h2>
+        <p class="resumen">La línea de progreso de B pasa a ser una regla del día, de 8 a 24 h, con tus pomodoros donde los hiciste y una marca en la hora actual. La frase cambia según la hora y según quién entra: probá los cuatro estados.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Resuelve el riesgo de B: hay frase para invitados, para el primer día y para la meta cumplida.</li><li>La regla dice cuándo estudiaste, no solo cuánto, sin ser un gráfico.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Necesita las sesiones de hoy con su hora de inicio, no solo el total.</li><li>Los saludos por franja horaria hay que mantenerlos en el copy.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="estados">
+      <span>Estado de la frase</span>
+      <div class="segmentado" id="b3-estados" role="group" aria-label="Estado de la frase">
+        <button data-estado="cuenta" aria-pressed="true">Con cuenta</button>
+        <button data-estado="invitado" aria-pressed="false">Invitado</button>
+        <button data-estado="meta" aria-pressed="false">Meta cumplida</button>
+        <button data-estado="primero" aria-pressed="false">Primer día</button>
+      </div>
+    </div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="b-main">
+          <p class="b3-fecha" data-b3-fecha></p>
+          <h1 class="b-frase" data-b3-frase></h1>
+          <div class="b-acciones">
+            <button class="btn btn-acento btn-xl" data-crear>Crear sala</button>
+            <button class="btn-texto" data-mostrar="b3-unirse">o unirme con un link</button>
+          </div>
+          <p class="b3-nota" data-b3-nota hidden>Estos minutos no se guardan. <button class="btn-texto" data-b3-login>Iniciá sesión</button> para que cuenten.</p>
+          <form class="b-unirse" id="b3-unirse" data-unirse hidden>
+            <input class="entrada" id="b3-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+            <button class="btn btn-borde">Entrar</button>
+          </form>
+          <figure class="b3-dia">
+            <div class="b3-regla" data-b3-regla role="img"></div>
+            <figcaption class="b3-leyenda" data-b3-leyenda></figcaption>
+          </figure>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ D2 ═════════ -->
+  <section class="opcion" id="d2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D2</span><span class="nombre">Anillo de pomodoros</span><span class="origen">Sale de D</span></h2>
+        <p class="resumen">El anillo se parte en tramos, uno por pomodoro de la meta del día. Los hechos se llenan; al pasar el mouse late el que sigue. El arco deja de ser un porcentaje y pasa a contar pomodoros.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El anillo dice algo que se cuenta con los dedos: dos de cinco.</li><li>Habla el idioma del método, no el del reloj.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La meta tiene que estar en pomodoros, no en horas (hoy son horas).</li><li>Con metas de más de 8 pomodoros los tramos quedan muy cortos.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar data-boton-tareas></div>
+        <main class="d-main">
+          <button class="d-anillo" data-crear data-tramos="5" data-hechos="1.8" aria-label="Crear sala. 45 minutos hoy, meta de 5 pomodoros">
+            <span class="d-texto"><strong>Crear sala</strong><span>45 min · meta 5 pomodoros</span></span>
+          </button>
+          <p class="d2-leyenda">Cada tramo es un pomodoro de 25 min.</p>
+          <form class="d-unirse" data-unirse>
+            <label for="d2-link">¿Te pasaron un link?</label>
+            <input id="d2-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
+          </form>
+        </main>
+        <aside class="d-cajon" aria-label="Tareas">
+          <header><h3>Tus tareas</h3><button class="cerrar" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></header>
+          <label class="alta"><svg><use href="#i-mas"/></svg><input id="d2-alta" placeholder="Nueva tarea…" data-alta></label>
+          <ul class="lista" data-tareas="all"></ul>
+        </aside>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ D3 ═════════ -->
+  <section class="opcion" id="d3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D3</span><span class="nombre">Anillo que se muda</span><span class="origen">Sale de D</span></h2>
+        <p class="resumen">Tocar el anillo no te saca de la pantalla: el arco se completa, el anillo crece y se convierte en el reloj de la sala nueva, que empieza a descontar. Abajo aparecen el link para compartir y la vuelta al inicio. Tocalo para verlo.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Responde "¿dónde corre el reloj?" sin una línea de texto: lo ves mudarse.</li><li>El anillo cumple las tres funciones: progreso, botón y reloj.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Es una animación entre dos rutas (home → sala): más trabajo que un layout.</li><li>La sala se tiene que crear antes de que termine la animación, o el reloj arranca sin sala.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app data-d3>
+        <div data-topbar data-boton-tareas></div>
+        <main class="d-main">
+          <button class="d-anillo d3-anillo" data-d3-anillo data-anillo="0.375" aria-label="Crear sala y empezar un pomodoro">
+            <span class="d3-capas">
+              <span class="d-texto d3-inicio"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
+              <span class="d-texto d3-sala"><strong class="d3-reloj" data-d3-reloj>25:00</strong><span data-d3-estado>En foco</span></span>
+            </span>
+          </button>
+          <div class="d3-pie">
+            <form class="d-unirse d3-capa-inicio" data-unirse>
+              <label for="d3-link">¿Te pasaron un link?</label>
+              <input id="d3-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
+            </form>
+            <div class="d3-capa-sala">
+              <button class="btn btn-borde" data-d3-copiar><svg><use href="#i-link"/></svg>Copiar link</button>
+              <button class="btn-texto" data-d3-volver>Volver al inicio</button>
+            </div>
+          </div>
+        </main>
+        <aside class="d-cajon" aria-label="Tareas">
+          <header><h3>Tus tareas</h3><button class="cerrar" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></header>
+          <label class="alta"><svg><use href="#i-mas"/></svg><input id="d3-alta" placeholder="Nueva tarea…" data-alta></label>
+          <ul class="lista" data-tareas="all"></ul>
+        </aside>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ D4 ═════════ -->
+  <section class="opcion" id="d4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D4</span><span class="nombre">Anillo y bandeja</span><span class="origen">Sale de D</span></h2>
+        <p class="resumen">El anillo de D, y abajo una bandeja que asoma con la tarea siguiente y cuántas hay. Tocarla la sube con la lista completa y el alta rápida; el anillo sigue visible arriba.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Resuelve el riesgo de D: la siguiente tarea siempre está a la vista.</li><li>En móvil se comporta como una hoja inferior, un gesto que la gente ya conoce.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma un segundo objeto a la pantalla de un solo objeto.</li><li>En pantallas bajas la bandeja abierta tapa el anillo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="d-main d4-main">
+          <button class="d-anillo" data-crear data-anillo="0.375" aria-label="Crear sala. 45 de 120 minutos hoy">
+            <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
+          </button>
+          <form class="d-unirse" data-unirse>
+            <label for="d4-link">¿Te pasaron un link?</label>
+            <input id="d4-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
+          </form>
+        </main>
+        <aside class="d4-bandeja" data-bandeja aria-label="Tareas">
+          <button class="d4-asa" data-asa aria-expanded="false">
+            <span class="d4-sig"><span class="tenue">Siguiente:</span> <b>Terminar TP Redes</b></span>
+            <span class="d4-cuenta">5 tareas<svg><use href="#i-arriba"/></svg></span>
+          </button>
+          <div class="d4-cuerpo" data-cuerpo>
+            <label class="alta"><svg><use href="#i-mas"/></svg><input id="d4-alta" placeholder="Nueva tarea…" data-alta></label>
+            <ul class="lista" data-tareas="all"></ul>
+          </div>
+        </aside>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ BD ═════════ -->
+  <section class="opcion" id="bd">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">BD</span><span class="nombre">Frase y anillo</span><span class="origen">B + D</span></h2>
+        <p class="resumen">El anillo como botón y, al lado, la frase. Como el anillo ya muestra la cifra, la frase no la repite y habla como una persona. En pantallas angostas se apilan.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Junta lo que hizo favoritos a B y a D, sin duplicar información.</li><li>Lo más cálido de la ronda sin perder el objeto central.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En móvil queda más alto que B o D por separado.</li><li>Dos protagonistas: hay que cuidar que la frase no le gane al anillo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="bd-main">
+          <button class="d-anillo bd-anillo" data-crear data-anillo="0.375" aria-label="Crear sala. 45 de 120 minutos hoy">
+            <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h</span></span>
+          </button>
+          <div class="bd-texto">
+            <h1 class="bd-frase">Buenas tardes, Leo.<br><span class="tenue">Casi dos pomodoros hoy. ¿Vamos por el tercero?</span></h1>
+            <button class="btn-texto" data-mostrar="bd-unirse">o unirme con un link</button>
+            <form class="b-unirse" id="bd-unirse" data-unirse hidden>
+              <input class="entrada" id="bd-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+              <button class="btn btn-borde">Entrar</button>
+            </form>
+            <p class="b-siguiente">Siguiente tarea: <b>Terminar TP Redes</b> · <button class="btn-texto" data-abrir-cajon>ver las 5</button></p>
+          </div>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="grupo" id="primera" data-resto>Primera ronda <span>los otros cuatro</span></h2>
+
+  <!-- ═════════ A ═════════ -->
+  <section class="opcion" id="a" data-resto>
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span><span class="nombre">Dos puertas</span></h2>
         <p class="resumen">Crear o unirse, partido en dos mitades grandes y separadas por una línea. Las tareas quedan abajo como una lista corta.</p>
       </div>
       <div class="notas">
@@ -429,14 +970,14 @@ html.en-completa, html.en-completa body { overflow: hidden; }
                 <h2>Unirme</h2>
                 <p>¿Te pasaron un link o un código?</p>
                 <form class="campo-fila" data-unirse>
-                  <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+                  <input class="entrada" id="a-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
                   <button class="btn btn-borde">Entrar</button>
                 </form>
               </section>
             </div>
           </div>
           <section class="a-tareas">
-            <div class="fila-titulo"><h3>Tareas</h3><a href="#a">Ver todas</a></div>
+            <div class="fila-titulo"><h3>Tareas</h3><a href="#">Ver todas</a></div>
             <ul class="lista" data-tareas="3"></ul>
           </section>
         </main>
@@ -445,50 +986,16 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     </div>
   </section>
 
-  <!-- ═════════ B ═════════ -->
-  <section class="opcion" id="b">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">B</span>Una frase</h2>
-        <p class="resumen">El home se lee como una oración: saludo, cuánto llevás hoy y qué hacer ahora. Una línea fina reemplaza al anillo de progreso.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo más calmo de los seis: se lee, no se escanea.</li><li>El progreso del día sigue presente, sin números sueltos.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>En sesiones anónimas no hay nombre: la frase tiene que tener una versión sin él.</li><li>Solo muestra una tarea; el resto está a un clic.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco">
-      <div class="app" data-app>
-        <div data-topbar></div>
-        <main class="b-main">
-          <h1 class="b-frase">Buenas tardes, Leo.<br><span class="tenue">Llevás <b>45 min</b> de 2 h hoy.</span></h1>
-          <div class="b-progreso" role="img" aria-label="45 de 120 minutos"><span style="width:37.5%"></span></div>
-          <div class="b-acciones">
-            <button class="btn btn-acento btn-xl" data-crear>Crear sala</button>
-            <button class="btn-texto" data-mostrar="b-unirse">o unirme con un link</button>
-          </div>
-          <form class="b-unirse" id="b-unirse" data-unirse hidden>
-            <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
-            <button class="btn btn-borde">Entrar</button>
-          </form>
-          <p class="b-siguiente">Siguiente tarea: <b>Terminar TP Redes</b> · <a href="#b">ver las 5</a></p>
-        </main>
-        <div class="aviso" role="status"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ═════════ C ═════════ -->
-  <section class="opcion" id="c">
+  <section class="opcion" id="c" data-resto>
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">C</span>Dos columnas</h2>
+        <h2><span class="letra">C</span><span class="nombre">Dos columnas</span></h2>
         <p class="resumen">A la izquierda, una columna angosta y fija para la sala. A la derecha, las tareas con alta rápida y filtro por categoría. Un escritorio de trabajo, ordenado.</p>
       </div>
       <div class="notas">
         <div><h3>Qué gana</h3><ul><li>Todo a mano sin cambiar de pantalla.</li><li>Es el que menos cambia el flujo actual: migración más corta.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El más denso de los seis.</li><li>En móvil la sala se apila arriba y las tareas quedan más abajo del pliegue.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El más denso de todos.</li><li>En móvil la sala se apila arriba y las tareas quedan más abajo del pliegue.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -501,14 +1008,14 @@ html.en-completa, html.en-completa body { overflow: hidden; }
             <button class="btn btn-acento" data-crear>Crear sala</button>
             <div class="separador">o</div>
             <form class="campo-fila" data-unirse>
-              <input class="entrada" placeholder="Link o código" aria-label="Link o código de sala">
+              <input class="entrada" id="c-link" placeholder="Link o código" aria-label="Link o código de sala">
               <button class="btn btn-borde">Entrar</button>
             </form>
             <p class="c-hoy">Hoy <b>45 min</b> · <b>4</b> días seguidos</p>
           </aside>
           <section class="c-tareas">
             <h2>Tus tareas</h2>
-            <label class="alta"><svg><use href="#i-mas"/></svg><input placeholder="Escribí una tarea… !alta #estudio" data-alta></label>
+            <label class="alta"><svg><use href="#i-mas"/></svg><input id="c-alta" placeholder="Escribí una tarea… !alta #estudio" data-alta></label>
             <div class="c-filtro" data-filtro></div>
             <ul class="lista" data-tareas="all" data-filtrable></ul>
           </section>
@@ -518,51 +1025,11 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     </div>
   </section>
 
-  <!-- ═════════ D ═════════ -->
-  <section class="opcion" id="d">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">D</span>Un anillo</h2>
-        <p class="resumen">El anillo del logo de Doro <em>es</em> el botón. Su arco muestra el progreso de hoy y al pasar el mouse se completa. Las tareas viven en un panel lateral.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Máximo minimalismo: un objeto en pantalla.</li><li>La identidad (el anillo) y la acción son la misma cosa.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Las tareas quedan a un clic, fuera de vista.</li><li>Un botón circular es menos obvio que uno rectangular: necesita el texto adentro.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco">
-      <div class="app" data-app>
-        <div data-topbar data-boton-tareas></div>
-        <main class="d-main">
-          <button class="d-anillo" data-crear aria-label="Crear sala. 45 de 120 minutos hoy">
-            <svg viewBox="0 0 200 200" aria-hidden="true">
-              <circle class="relleno" cx="100" cy="100" r="92"/>
-              <circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3"/>
-              <circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578.05" stroke-dashoffset="361.28"/>
-            </svg>
-            <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
-          </button>
-          <form class="d-unirse" data-unirse>
-            <label for="d-link">¿Te pasaron un link?</label>
-            <input id="d-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
-          </form>
-        </main>
-        <aside class="d-cajon" aria-label="Tareas">
-          <header><h3>Tus tareas</h3><button class="cerrar" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></header>
-          <label class="alta"><svg><use href="#i-mas"/></svg><input placeholder="Nueva tarea…" data-alta></label>
-          <ul class="lista" data-tareas="all"></ul>
-        </aside>
-        <div class="aviso" role="status"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ═════════ E ═════════ -->
-  <section class="opcion" id="e">
+  <section class="opcion" id="e" data-resto>
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">E</span>Reloj en espera</h2>
+        <h2><span class="letra">E</span><span class="nombre">Reloj en espera</span></h2>
         <p class="resumen">Lo primero que ves es tu pomodoro listo, con tus tiempos. Darle play crea la sala y arranca el reloj ahí. Unirse queda como un link secundario.</p>
       </div>
       <div class="notas">
@@ -586,12 +1053,12 @@ html.en-completa, html.en-completa body { overflow: hidden; }
             <p class="e-nota" data-nota></p>
             <p class="e-unirse">¿Te invitaron? <button class="btn-texto" data-mostrar="e-unirse">Unirme con un link</button></p>
             <form class="e-unirse-form" id="e-unirse" data-unirse hidden>
-              <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+              <input class="entrada" id="e-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
               <button class="btn btn-borde">Entrar</button>
             </form>
           </div>
           <label class="e-tarea">Enfocado en
-            <select data-select-tareas></select>
+            <select id="e-tarea" data-select-tareas></select>
           </label>
         </main>
         <div class="aviso" role="status"></div>
@@ -600,10 +1067,10 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   </section>
 
   <!-- ═════════ F ═════════ -->
-  <section class="opcion" id="f">
+  <section class="opcion" id="f" data-resto>
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">F</span>Tus salas</h2>
+        <h2><span class="letra">F</span><span class="nombre">Tus salas</span></h2>
         <p class="resumen">El home muestra las salas donde estudiaste hace poco, con quién está adentro y en qué parte del ciclo van, en vivo. Volver con tu grupo es un clic; crear una nueva queda arriba a la derecha.</p>
       </div>
       <div class="notas">
@@ -627,7 +1094,7 @@ html.en-completa, html.en-completa body { overflow: hidden; }
           <div>
             <p class="f-unirse">¿Te pasaron un link de otra sala? <button class="btn-texto" data-mostrar="f-unirse">Pegalo acá</button></p>
             <form class="f-unirse-form" id="f-unirse" data-unirse hidden style="margin-top:10px">
-              <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+              <input class="entrada" id="f-link" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
               <button class="btn btn-borde">Entrar</button>
             </form>
           </div>
@@ -639,59 +1106,92 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 
   <!-- ═════════ Cierre ═════════ -->
   <section class="cierre" id="cierre">
-    <h2>Comparación</h2>
+    <h2>Comparación de los favoritos y sus variantes</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Boceto</th><th>Entrar a una sala</th><th>Tareas</th><th>Progreso del día</th><th>Móvil</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>Entrar a una sala</th><th>Tareas</th><th>Progreso del día</th><th>Qué resuelve</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>A · Dos puertas</td><td>1 clic, muy visible</td><td>3 en lista</td><td>No</td><td>Bien, apila las puertas</td><td>Unirse pesa de más</td></tr>
-          <tr><td>B · Una frase</td><td>1 clic</td><td>Solo la siguiente</td><td>Línea fina</td><td>Muy bien</td><td>Frase sin nombre en anónimos</td></tr>
-          <tr><td>C · Dos columnas</td><td>1 clic</td><td>Completa + alta + filtro</td><td>Texto</td><td>Regular, scroll largo</td><td>Densidad</td></tr>
-          <tr><td>D · Un anillo</td><td>1 clic, objeto único</td><td>En panel lateral</td><td>El arco del anillo</td><td>Muy bien</td><td>Tareas fuera de vista</td></tr>
-          <tr class="elegida"><td>E · Reloj en espera</td><td>1 clic y el reloj ya corre</td><td>Elegís en qué enfocarte</td><td>No (va al Dashboard)</td><td>Muy bien</td><td>¿Dónde corre el reloj?</td></tr>
-          <tr><td>F · Tus salas</td><td>1 clic, a una sala conocida</td><td>No</td><td>No</td><td>Muy bien</td><td>Vacío en usuarios nuevos; pide datos nuevos</td></tr>
+          <tr><td>B · Una frase</td><td>Botón grande</td><td>Solo la siguiente</td><td>Línea fina</td><td>(punto de partida)</td><td>Frase sin nombre en anónimos</td></tr>
+          <tr><td>D · Un anillo</td><td>El anillo</td><td>Panel lateral</td><td>Arco del anillo</td><td>(punto de partida)</td><td>Tareas fuera de vista</td></tr>
+          <tr><td>B2 · Acciones en la frase</td><td>Una palabra de la frase</td><td>Elegís la siguiente en la frase</td><td>Subrayado de la cifra</td><td>Leer y actuar en la misma línea</td><td>La palabra-botón se descubre poco</td></tr>
+          <tr><td>B3 · Frase y el día</td><td>Botón grande</td><td>No</td><td>Regla del día con tus pomodoros</td><td>Frase para invitado, meta y primer día</td><td>Pide sesiones con hora de inicio</td></tr>
+          <tr><td>D2 · Anillo de pomodoros</td><td>El anillo</td><td>Panel lateral</td><td>Tramos = pomodoros</td><td>El arco cuenta algo concreto</td><td>Meta en pomodoros, no en horas</td></tr>
+          <tr><td>D3 · Anillo que se muda</td><td>El anillo, que se vuelve el reloj</td><td>Panel lateral</td><td>Arco, y después el reloj</td><td>"¿Dónde corre el reloj?" de E</td><td>Animación entre rutas</td></tr>
+          <tr><td>D4 · Anillo y bandeja</td><td>El anillo</td><td>Bandeja: siguiente siempre visible</td><td>Arco del anillo</td><td>Las tareas fuera de vista de D</td><td>Tapa el anillo en pantallas bajas</td></tr>
+          <tr class="elegida"><td>BD · Frase y anillo</td><td>El anillo</td><td>La siguiente, y las 5 a un clic</td><td>Arco + la frase en palabras</td><td>Junta B y D sin repetir la cifra</td><td>Más alto en móvil</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría E, Reloj en espera</h3>
-        <p><b>Es el único donde la acción principal y la identidad son lo mismo.</b> El home de un Pomodoro muestra un pomodoro listo; tocar play te deja en una sala con el reloj corriendo y el link para compartir. Entrar a estudiar acompañado cuesta exactamente un clic.</p>
-        <p><b>Lo liviano viene de lo que saca:</b> la tabla de tareas pasa a ser un selector de "en qué te enfocás" (la tabla completa ya vive en la sala y puede tener su propia página) y las estadísticas quedan en el Dashboard.</p>
-        <p><b>Para resolver su riesgo</b> le tomaría prestado algo a D: el texto del botón dice "en una sala nueva", y al tocarlo la transición lleva el reloj hasta la sala, para que se entienda que el reloj "se mudó" ahí. Si eso no convence, A es la alternativa segura.</p>
-        <p><b>F se le puede sumar más adelante:</b> las salas recientes como dos o tres líneas debajo del botón de play, para quien estudia siempre con el mismo grupo. Conviene dejarlo para después porque necesita el historial de salas, que hoy no existe.</p>
-        <p><b>Sobre el acento por usuario:</b> todos los bocetos ya funcionan así. Pintan con una sola variable, y elegir un color arriba la cambia en vivo. En la app sería <code>--brand</code>, guardada en el perfil.</p>
+        <h3>Elegiría BD, con la bandeja de D4 y las frases de B3</h3>
+        <p><b>BD junta lo que hizo favoritos a B y a D.</b> El anillo es el botón y además muestra cuánto llevás, así que la frase no tiene que repetir la cifra y puede hablar como una persona: "casi dos pomodoros hoy".</p>
+        <p><b>A D le faltaba tener las tareas a la vista.</b> La bandeja de D4 deja la siguiente siempre visible abajo y el resto a un toque, sin un panel que tape la pantalla. En BD reemplazaría el "ver las 5".</p>
+        <p><b>A B le faltaba la versión sin nombre.</b> Los cuatro estados de B3 (con cuenta, invitado, meta cumplida y primer día) se aplican igual a la frase de BD.</p>
+        <p><b>D3 queda como segundo paso.</b> Que el anillo se convierta en el reloj de la sala resuelve "¿dónde corre el reloj?" sin texto, pero es una transición entre rutas y conviene hacerla con el layout ya firme. Plan B: D4 solo, si la frase termina sobrando.</p>
+        <p><b>Fondos.</b> Con la trama entre 6 y 10 %, puntos y cuadrícula acompañan sin competir con el texto. Las rayas horizontales se pelean con los renglones de las frases grandes (B, B2, BD). Con "Centro limpio", las cuatro funcionan detrás del anillo.</p>
+        <p><b>Barra que se desvanece.</b> Usa <code>:hover</code> y <code>:focus-within</code>, sin JS: al tabular también aparece, y en pantallas táctiles (sin hover) queda completa. Se va con medio segundo de demora para que no parpadee al pasar el mouse de largo. Ojo: <code>site-header</code> es bloque de plantilla, así que iría en un header propio.</p>
       </div>
-      <pre><span class="c-com">// src/pages/Home.tsx (esqueleto de E)</span>
-&lt;div className="@container/main flex min-h-[calc(100dvh-3.5rem)]
-                flex-col items-center justify-center gap-6 px-4"&gt;
-  &lt;SelectorModo modo={modo} onCambiar={establecerModo} /&gt;
+      <pre><span class="c-com">/* src/index.css · barra que se desvanece */</span>
+@media (hover: hover) {
+  .barra-desvanece .desvanecible {
+    opacity: 0; filter: blur(4px);
+    transition: opacity .35s .5s, filter .35s .5s; <span class="c-com">/* tarda en irse */</span>
+  }
+  .barra-desvanece:is(:hover, :focus-within) .desvanecible {
+    opacity: 1; filter: none;
+    transition-delay: 0s;                         <span class="c-com">/* aparece ya */</span>
+  }
+}
 
-  <span class="c-com">{/* cqi: escala con el ancho real del contenedor */}</span>
-  &lt;span className="text-[clamp(84px,21cqi,184px)] font-light
-                   tracking-[-0.05em] tabular-nums"&gt;
-    {formatearReloj(configuracion[modo] * 60)}
-  &lt;/span&gt;
+<span class="c-com">// src/layouts/EncabezadoApp.tsx</span>
+&lt;header className="barra-desvanece flex h-14 items-center gap-6 px-5"&gt;
+  &lt;Logo /&gt;                                <span class="c-com">{/* queda */}</span>
+  &lt;span className="desvanecible"&gt;Doro&lt;/span&gt;
+  &lt;nav className="desvanecible"&gt;…&lt;/nav&gt;
+  &lt;BotonTareas pendientes={pendientes} /&gt;  <span class="c-com">{/* el número queda */}</span>
+  &lt;AvatarInicial usuario={usuario} /&gt;     <span class="c-com">{/* queda */}</span>
+&lt;/header&gt;
 
-  &lt;Button size="lg" onClick={crearSalaYArrancar} disabled={creando}&gt;
-    &lt;IconPlayerPlay /&gt; Empezar en una sala nueva
-  &lt;/Button&gt;
-  &lt;UnirseConLink /&gt;   <span class="c-com">{/* colapsado por defecto */}</span>
-  &lt;SelectorTarea tareas={tareas} /&gt;
-&lt;/div&gt;
-
-<span class="c-com">// Acento por usuario: una sola variable</span>
-<span class="c-pal">document.documentElement.style.setProperty</span>(
-  "--brand", perfil.acento ?? "oklch(54.1% .281 293)"
-)</pre>
+<span class="c-com">/* Trama de fondo: un token y un gradiente */</span>
+.fondo-puntos::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(circle,
+      <span class="c-pal">color-mix(in oklch, var(--foreground) 10%, transparent)</span> 0 1.2px,
+      transparent 1.8px) 0 0 / 14px 14px;
+  mask-image: radial-gradient(ellipse 55% 50%, transparent 25%, #000); <span class="c-com">/* centro limpio */</span>
+}</pre>
     </div>
+
+    <details class="ronda1" data-resto>
+      <summary>Comparación de la primera ronda</summary>
+      <p>En la primera ronda la recomendación era E (Reloj en espera), con A como plan B. B y D quedaron como favoritos después de verlos.</p>
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr><th>Boceto</th><th>Entrar a una sala</th><th>Tareas</th><th>Progreso del día</th><th>Móvil</th><th>Riesgo principal</th></tr></thead>
+          <tbody>
+            <tr><td>A · Dos puertas</td><td>1 clic, muy visible</td><td>3 en lista</td><td>No</td><td>Bien, apila las puertas</td><td>Unirse pesa de más</td></tr>
+            <tr><td>B · Una frase</td><td>1 clic</td><td>Solo la siguiente</td><td>Línea fina</td><td>Muy bien</td><td>Frase sin nombre en anónimos</td></tr>
+            <tr><td>C · Dos columnas</td><td>1 clic</td><td>Completa + alta + filtro</td><td>Texto</td><td>Regular, scroll largo</td><td>Densidad</td></tr>
+            <tr><td>D · Un anillo</td><td>1 clic, objeto único</td><td>En panel lateral</td><td>El arco del anillo</td><td>Muy bien</td><td>Tareas fuera de vista</td></tr>
+            <tr><td>E · Reloj en espera</td><td>1 clic y el reloj ya corre</td><td>Elegís en qué enfocarte</td><td>No (va al Dashboard)</td><td>Muy bien</td><td>¿Dónde corre el reloj?</td></tr>
+            <tr><td>F · Tus salas</td><td>1 clic, a una sala conocida</td><td>No</td><td>No</td><td>Muy bien</td><td>Vacío en usuarios nuevos; pide datos nuevos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
   </section>
 </div>
 
 <script>
 (() => {
   const raiz = document.documentElement;
+  const leer = (k, def) => { try { return localStorage.getItem(k) ?? def; } catch (e) { return def; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const icono = id => `<svg><use href="#${id}"/></svg>`;
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  const pulsar = (grupo, atributo, valor) => grupo.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset[atributo] === valor));
 
   /* ── Acentos: cada uno con su versión clara y oscura ── */
   const ACENTOS = [
@@ -702,8 +1202,7 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",   oscuro: "oklch(0.72 0.16 6)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
     { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
   ];
-  let acentoActual = "violeta";
-  try { acentoActual = localStorage.getItem("doro-acento") || "violeta"; } catch (e) {}
+  let acentoActual = leer("doro-acento", "violeta");
 
   const esOscuro = () => {
     const t = raiz.dataset.theme;
@@ -725,25 +1224,55 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   ACENTOS.forEach(a => {
     const b = document.createElement("button");
     b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre);
-    b.addEventListener("click", () => { acentoActual = a.id; try { localStorage.setItem("doro-acento", a.id); } catch (e) {} aplicarAcento(); });
+    b.addEventListener("click", () => { acentoActual = a.id; guardar("doro-acento", a.id); aplicarAcento(); });
     contMuestras.appendChild(b);
   });
 
-  /* ── Tema ── */
-  const botonesTema = document.querySelectorAll("#tema button");
-  const pintarTema = () => {
-    const o = esOscuro();
-    botonesTema.forEach(b => b.setAttribute("aria-pressed", (b.dataset.tema === "dark") === o));
-    aplicarAcento();
+  /* ── Tema: claro, oscuro o negro (oscuro casi sin gris, como las referencias) ── */
+  const grupoTema = document.getElementById("tema");
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : (esOscuro() ? "dark" : "light");
+  const ponerTema = t => {
+    if (t === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; }
+    else { raiz.dataset.theme = t; delete raiz.dataset.negro; }
+    guardar("doro-tema", t); pintarTema();
   };
-  botonesTema.forEach(b => b.addEventListener("click", () => {
-    raiz.dataset.theme = b.dataset.tema;
-    try { localStorage.setItem("doro-tema", b.dataset.tema); } catch (e) {}
-    pintarTema();
-  }));
-  try { const t = localStorage.getItem("doro-tema"); if (t) raiz.dataset.theme = t; } catch (e) {}
+  const pintarTema = () => { pulsar(grupoTema, "tema", temaActual()); aplicarAcento(); };
+  grupoTema.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerTema(b.dataset.tema)));
+  const temaGuardado = leer("doro-tema", null);
+  if (temaGuardado) { if (temaGuardado === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else raiz.dataset.theme = temaGuardado; }
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", pintarTema);
   pintarTema();
+
+  /* ── Fondos ── */
+  const FONDOS = [["liso", "Liso"], ["rayas-h", "Rayas horizontales"], ["rayas-v", "Rayas verticales"], ["puntos", "Puntos"], ["cuadricula", "Cuadrícula"]];
+  const apps = [...document.querySelectorAll("[data-app]")];
+  let fondoGlobal = leer("doro-fondo", "puntos");
+  const contFondos = document.getElementById("fondos");
+  contFondos.innerHTML = FONDOS.map(([id, n]) => `<button class="fondo-op" data-f="${id}"><span class="fondo-muestra" data-fondo="${id}"></span>${n}</button>`).join("");
+  const ponerFondoGlobal = f => {
+    fondoGlobal = f; guardar("doro-fondo", f);
+    pulsar(contFondos, "f", f);
+    apps.forEach(app => app.dataset.fondo = f);
+    document.querySelectorAll("[data-fondo-local]").forEach(s => s.value = "global");
+  };
+  contFondos.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerFondoGlobal(b.dataset.f)));
+
+  const trama = document.getElementById("trama");
+  const tramaValor = document.getElementById("trama-valor");
+  const ponerTrama = v => { raiz.style.setProperty("--trama-a", v + "%"); tramaValor.textContent = v + " %"; trama.value = v; guardar("doro-trama", v); };
+  trama.addEventListener("input", () => ponerTrama(trama.value));
+  ponerTrama(leer("doro-trama", "10"));
+
+  const grupoVineta = document.getElementById("vineta");
+  const ponerVineta = v => { raiz.dataset.vineta = v; pulsar(grupoVineta, "v", v); guardar("doro-vineta", v); };
+  grupoVineta.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerVineta(b.dataset.v)));
+  ponerVineta(leer("doro-vineta", "parejo"));
+
+  /* ── Barra ── */
+  const grupoBarra = document.getElementById("barra");
+  const ponerBarra = v => { raiz.dataset.barra = v; pulsar(grupoBarra, "b", v); guardar("doro-barra", v); };
+  grupoBarra.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerBarra(b.dataset.b)));
+  ponerBarra(leer("doro-barra", "desvanece"));
 
   /* ── Datos de ejemplo (tareas reales de la captura del home) ── */
   const TAREAS = [
@@ -753,8 +1282,6 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     { titulo: "Poder agrupar tareas por etiqueta", cat: "Doro", alta: false, hecha: false },
     { titulo: "Conectar Google Calendar", cat: "Doro", alta: false, hecha: true },
   ];
-
-  const icono = id => `<svg><use href="#${id}"/></svg>`;
   const htmlTarea = t => `
     <li class="tarea${t.hecha ? " hecha" : ""}">
       <button class="check" aria-label="Marcar como hecha">${icono("i-check")}</button>
@@ -762,7 +1289,6 @@ html.en-completa, html.en-completa body { overflow: hidden; }
       <span class="prio" ${t.alta ? 'title="Prioridad alta"' : "hidden"}></span>
       <span class="cat">${t.cat}</span>
     </li>`;
-
   const renderLista = (ul, filtro = "Todas", texto = "") => {
     const n = ul.dataset.tareas === "all" ? Infinity : +ul.dataset.tareas;
     const lista = ul._tareas || (ul._tareas = TAREAS.map(t => ({ ...t })));
@@ -777,25 +1303,55 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     }));
   };
   document.querySelectorAll("[data-tareas]").forEach(ul => renderLista(ul));
+  document.querySelectorAll("[data-select-tareas]").forEach(sel => {
+    sel.innerHTML = (sel.id === "e-tarea" ? `<option>Sin tarea</option>` : "") +
+      TAREAS.filter(t => !t.hecha).map((t, i) => `<option ${i === 0 ? "selected" : ""}>${t.titulo}</option>`).join("");
+  });
 
-  /* ── Barra superior compartida ── */
+  /* ── Anillos: arco continuo (data-anillo) o en tramos (data-tramos) ── */
+  const R = 92, CIRC = 2 * Math.PI * R;
+  const circulo = (clase, extra = "") => `<circle class="${clase}" cx="100" cy="100" r="${R}" ${extra}/>`;
+  document.querySelectorAll("[data-anillo]").forEach(b => {
+    const f = +b.dataset.anillo;
+    b.insertAdjacentHTML("afterbegin", `<svg viewBox="0 0 200 200" aria-hidden="true">
+      ${circulo("relleno")}
+      ${circulo("pista-anillo", 'fill="none" stroke-width="3"')}
+      ${circulo("arco", `fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${CIRC.toFixed(2)}" stroke-dashoffset="${(CIRC * (1 - f)).toFixed(2)}"`)}
+    </svg>`);
+  });
+  document.querySelectorAll("[data-tramos]").forEach(b => {
+    const total = +b.dataset.tramos, hechos = +b.dataset.hechos;
+    const paso = CIRC / total, hueco = 16, seg = paso - hueco;
+    let partes = circulo("relleno");
+    for (let i = 0; i < total; i++) {
+      const off = -(i * paso + hueco / 2);
+      const siguiente = i === Math.floor(hechos) ? " d2-siguiente" : "";
+      partes += circulo("d2-pista" + siguiente, `fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${seg.toFixed(2)} ${(CIRC - seg).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"`);
+      const lleno = Math.max(0, Math.min(1, hechos - i)) * seg;
+      if (lleno > 0) partes += circulo("d2-lleno", `fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${lleno.toFixed(2)} ${(CIRC - lleno).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"`);
+    }
+    b.insertAdjacentHTML("afterbegin", `<svg viewBox="0 0 200 200" aria-hidden="true">${partes}</svg>`);
+  });
+
+  /* ── Barra superior compartida: lo que tiene .desv se desvanece ── */
   const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
   document.querySelectorAll("[data-topbar]").forEach(tb => {
-    const conTareas = tb.hasAttribute("data-boton-tareas");
+    const fija = tb.hasAttribute("data-boton-tareas");
     tb.outerHTML = `
       <header class="tb">
-        <a class="marca" href="#"><svg><use href="#i-logo"/></svg>Doro</a>
-        <nav class="tb-nav"><a aria-current="page" href="#">Inicio</a><a href="#">Dashboard</a><a href="#">Calendario</a></nav>
+        <a class="marca" href="#" aria-label="Doro, inicio"><svg><use href="#i-logo"/></svg><span class="desv">Doro</span></a>
+        <nav class="tb-nav desv" aria-label="Secciones"><a aria-current="page" href="#">Inicio</a><a href="#">Dashboard</a><a href="#">Calendario</a></nav>
         <div class="tb-der">
-          ${conTareas ? `<button class="btn-tareas" data-abrir-cajon>Tareas <b>5</b></button>` : `<span class="hora" data-hora>${ahora()}</span>`}
+          <span class="hora desv" data-hora>${ahora()}</span>
+          <button class="btn-tareas${fija ? "" : " opcional"}" data-abrir-cajon aria-label="Tareas, 5"><span class="tb-etq">Tareas</span><b>5</b></button>
           <span class="avatar" aria-label="Tu cuenta">L</span>
-          <button class="menu" aria-label="Menú">${icono("i-menu")}</button>
+          <button class="menu desv" aria-label="Menú">${icono("i-menu")}</button>
         </div>
       </header>`;
   });
   setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
 
-  /* ── Avisos dentro de cada maqueta ── */
+  /* ── Comportamiento común de cada maqueta ── */
   const avisar = (app, texto) => {
     const a = app.querySelector(".aviso");
     a.textContent = texto; a.classList.add("ver");
@@ -805,15 +1361,18 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     const m = v.trim().match(/([0-9a-f]{6,})\/?$/i);
     return m ? m[1].toUpperCase() : null;
   };
-  const salaFalsa = () => Math.random().toString(16).slice(2, 10).toUpperCase();
+  const salaFalsa = () => Math.random().toString(16).slice(2, 8).toUpperCase().padEnd(6, "0");
+  const entrar = (app, valor) => {
+    const c = codigoDe(valor);
+    avisar(app, c ? `Entrando a la sala ${c}… (demo)` : "Ese link o código no parece válido");
+  };
 
-  document.querySelectorAll("[data-app]").forEach(app => {
+  apps.forEach(app => {
+    app.dataset.fondo = fondoGlobal;
+    app.addEventListener("click", e => { if (e.target.closest('a[href="#"]')) e.preventDefault(); });
     app.querySelectorAll("[data-crear]").forEach(b => b.addEventListener("click", () => avisar(app, `Sala ${salaFalsa()} creada → /room/… (demo)`)));
     app.querySelectorAll("form[data-unirse]").forEach(f => f.addEventListener("submit", e => {
-      e.preventDefault();
-      const v = f.querySelector("input").value;
-      const c = codigoDe(v);
-      avisar(app, c ? `Entrando a la sala ${c}… (demo)` : "Ese link o código no parece válido");
+      e.preventDefault(); entrar(app, f.querySelector("input").value);
     }));
     app.querySelectorAll("[data-mostrar]").forEach(b => b.addEventListener("click", () => {
       const f = app.querySelector("#" + b.dataset.mostrar);
@@ -830,6 +1389,20 @@ html.en-completa, html.en-completa body { overflow: hidden; }
       renderLista(ul, app._filtro || "Todas");
       if (app._pintarFiltro) app._pintarFiltro();
     }));
+
+    /* Tareas: panel lateral, bandeja o (sin ninguno) aviso */
+    const cajon = app.querySelector(".d-cajon");
+    const bandeja = app.querySelector("[data-bandeja]");
+    app.querySelectorAll("[data-abrir-cajon]").forEach(b => b.addEventListener("click", () => {
+      if (cajon) cajon.classList.add("abierto");
+      else if (bandeja) abrirBandeja(bandeja, true);
+      else avisar(app, "Tareas → /tareas (demo)");
+    }));
+    if (cajon) {
+      cajon.inert = true;
+      new MutationObserver(() => cajon.inert = !cajon.classList.contains("abierto")).observe(cajon, { attributes: true, attributeFilter: ["class"] });
+      cajon.querySelector("[data-cerrar]").addEventListener("click", () => cajon.classList.remove("abierto"));
+    }
   });
 
   /* ── C: filtro por categoría ── */
@@ -849,32 +1422,161 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   };
   appC._pintarFiltro();
 
-  /* ── D: panel de tareas ── */
-  const appD = document.querySelector("#d [data-app]");
-  const cajon = appD.querySelector(".d-cajon");
-  appD.querySelector("[data-abrir-cajon]").addEventListener("click", () => cajon.classList.add("abierto"));
-  appD.querySelector("[data-cerrar]").addEventListener("click", () => cajon.classList.remove("abierto"));
-  appD.querySelector(".d-unirse").addEventListener("submit", () => {});
+  /* ── B2: unirse se abre como un campo dentro de la frase ── */
+  const appB2 = document.querySelector("#b2 [data-app]");
+  const slotB2 = appB2.querySelector("[data-b2-slot]");
+  const botonB2 = slotB2.innerHTML;
+  const cerrarB2 = () => { slotB2.innerHTML = botonB2; slotB2.querySelector("button").focus(); };
+  slotB2.addEventListener("click", e => {
+    if (!e.target.closest("[data-b2-unirse]")) return;
+    slotB2.innerHTML = `<form class="b2-form"><input class="b2-input" id="b2-link" placeholder="pegá el link" aria-label="Link o código de sala"><button class="btn btn-acento b2-ir">Entrar</button></form>`;
+    const f = slotB2.querySelector("form"), inp = f.querySelector("input");
+    inp.focus();
+    f.addEventListener("submit", ev => { ev.preventDefault(); entrar(appB2, inp.value); });
+    inp.addEventListener("keydown", ev => { if (ev.key === "Escape") { ev.stopPropagation(); cerrarB2(); } });
+    inp.addEventListener("blur", () => setTimeout(() => { if (!slotB2.contains(document.activeElement) && !inp.value) cerrarB2(); }, 150));
+  });
+
+  /* ── B3: frase por estado y por hora, regla del día ── */
+  const appB3 = document.querySelector("#b3 [data-app]");
+  const fechaB3 = appB3.querySelector("[data-b3-fecha]");
+  const fraseB3 = appB3.querySelector("[data-b3-frase]");
+  const notaB3 = appB3.querySelector("[data-b3-nota]");
+  const reglaB3 = appB3.querySelector("[data-b3-regla]");
+  const leyendaB3 = appB3.querySelector("[data-b3-leyenda]");
+  const DESDE = 8 * 60, HASTA = 24 * 60;
+  const hoy = new Date();
+  let minutoAhora = hoy.getHours() * 60 + hoy.getMinutes();
+  const horaDeEjemplo = minutoAhora < 11 * 60 + 30;
+  if (horaDeEjemplo) minutoAhora = 15 * 60 + 10;
+  const saludo = m => m < 6 * 60 ? "Buenas noches" : m < 13 * 60 ? "Buen día" : m < 20 * 60 ? "Buenas tardes" : "Buenas noches";
+  const hhmm = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  fechaB3.textContent = hoy.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" });
+  const SESIONES = {
+    corta: [[-80, 25, "foco"], [-55, 5, "descanso"], [-50, 20, "foco"]],
+    larga: [[-200, 25, "foco"], [-175, 5, "descanso"], [-170, 25, "foco"], [-145, 5, "descanso"], [-140, 25, "foco"], [-115, 15, "descanso"], [-100, 25, "foco"], [-75, 5, "descanso"], [-70, 25, "foco"]],
+    ninguna: [],
+  };
+  const ESTADOS = {
+    cuenta:   { sesiones: "corta",   frase: s => `${s}, Leo.<br><span class="tenue">Llevás <b>45 min</b> de 2 h hoy.</span>` },
+    invitado: { sesiones: "corta",   frase: s => `${s}.<br><span class="tenue">Van <b>45 min</b> en esta sesión.</span>`, nota: true },
+    meta:     { sesiones: "larga",   frase: () => `Listo por hoy, Leo.<br><span class="tenue">Hiciste <b>2 h 5 min</b>. Lo que sigue suma.</span>` },
+    primero:  { sesiones: "ninguna", frase: s => `${s}, Leo.<br><span class="tenue">Armá una sala y pasale el link a quien quieras.</span>` },
+  };
+  const pct = m => Math.max(0, Math.min(100, (m - DESDE) / (HASTA - DESDE) * 100));
+  const pintarB3 = estado => {
+    const e = ESTADOS[estado];
+    fraseB3.innerHTML = e.frase(saludo(minutoAhora));
+    notaB3.hidden = !e.nota;
+    const ses = SESIONES[e.sesiones];
+    let html = `<span class="b3-eje"></span>`;
+    for (let h = 8; h <= 24; h++) {
+      const x = pct(h * 60), mayor = h % 4 === 0;
+      html += `<span class="b3-marca${mayor ? " mayor" : ""}" style="left:${x}%"></span>`;
+      if (mayor) html += `<span class="b3-etq${h === 8 ? " primera" : h === 24 ? " ultima" : ""}" style="left:${x}%">${h} h</span>`;
+    }
+    ses.forEach(([ini, dur, tipo]) => {
+      const a = pct(minutoAhora + ini), b = pct(minutoAhora + ini + dur);
+      if (b > a) html += `<span class="b3-bloque${tipo === "descanso" ? " descanso" : ""}" style="left:${a}%;width:${b - a}%" title="${tipo === "foco" ? "Foco" : "Descanso"} ${hhmm(minutoAhora + ini)}–${hhmm(minutoAhora + ini + dur)}"></span>`;
+    });
+    html += `<span class="b3-ahora" style="left:${pct(minutoAhora)}%"></span>`;
+    reglaB3.innerHTML = html;
+    const foco = ses.filter(s => s[2] === "foco").reduce((t, s) => t + s[1], 0);
+    const desc = ses.filter(s => s[2] === "descanso").reduce((t, s) => t + s[1], 0);
+    reglaB3.setAttribute("aria-label", ses.length ? `Hoy: ${foco} minutos de foco y ${desc} de descanso` : "Todavía no hay pomodoros hoy");
+    const ahoraTxt = `<span><i class="ahora"></i>Ahora ${hhmm(minutoAhora)}${horaDeEjemplo ? " (hora de ejemplo)" : ""}</span>`;
+    leyendaB3.innerHTML = ses.length
+      ? `<span><i></i>Foco ${foco} min</span><span><i class="descanso"></i>Descanso ${desc} min</span>${ahoraTxt}`
+      : `<span>Todavía no hay pomodoros hoy. Van a aparecer en esta regla.</span>${ahoraTxt}`;
+  };
+  const grupoEstados = document.getElementById("b3-estados");
+  grupoEstados.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { pulsar(grupoEstados, "estado", b.dataset.estado); pintarB3(b.dataset.estado); }));
+  appB3.querySelector("[data-b3-login]").addEventListener("click", () => avisar(appB3, "Iniciar sesión → Google, GitHub o Discord (demo)"));
+  pintarB3("cuenta");
+
+  /* ── D3: el anillo se vuelve el reloj de la sala ── */
+  const appD3 = document.querySelector("[data-d3]");
+  const anilloD3 = appD3.querySelector("[data-d3-anillo]");
+  const arcoD3 = anilloD3.querySelector(".arco");
+  const relojD3 = appD3.querySelector("[data-d3-reloj]");
+  const estadoD3 = appD3.querySelector("[data-d3-estado]");
+  const capasSala = appD3.querySelectorAll(".d3-sala, .d3-capa-sala");
+  const capasInicio = appD3.querySelectorAll(".d3-inicio, .d3-capa-inicio");
+  const OFF_INICIO = arcoD3.getAttribute("stroke-dashoffset");
+  const DUR = 25 * 60;
+  let restanteD3 = DUR, relojD3Int = null, codigoD3 = "";
+  const ponerCapas = enSala => {
+    appD3.classList.toggle("en-sala", enSala);
+    capasSala.forEach(el => el.inert = !enSala);
+    capasInicio.forEach(el => el.inert = enSala);
+  };
+  ponerCapas(false);
+  const correrD3 = () => {
+    relojD3Int = setInterval(() => {
+      restanteD3 = Math.max(0, restanteD3 - 1);
+      relojD3.textContent = fmt(restanteD3);
+      arcoD3.style.strokeDashoffset = (CIRC * (1 - restanteD3 / DUR)).toFixed(2);
+      if (!restanteD3) { clearInterval(relojD3Int); relojD3Int = null; estadoD3.textContent = `Descanso · sala ${codigoD3}`; }
+    }, 1000);
+    estadoD3.textContent = `En foco · sala ${codigoD3}`;
+  };
+  anilloD3.addEventListener("click", () => {
+    if (!appD3.classList.contains("en-sala")) {
+      codigoD3 = salaFalsa(); restanteD3 = DUR; relojD3.textContent = fmt(DUR);
+      ponerCapas(true);
+      arcoD3.style.strokeDashoffset = "0";
+      anilloD3.setAttribute("aria-label", "Pausar el pomodoro");
+      correrD3();
+    } else if (relojD3Int) {
+      clearInterval(relojD3Int); relojD3Int = null;
+      estadoD3.textContent = `En pausa · sala ${codigoD3}`;
+      anilloD3.setAttribute("aria-label", "Seguir el pomodoro");
+    } else if (restanteD3) {
+      anilloD3.setAttribute("aria-label", "Pausar el pomodoro");
+      correrD3();
+    }
+  });
+  appD3.querySelector("[data-d3-volver]").addEventListener("click", () => {
+    clearInterval(relojD3Int); relojD3Int = null;
+    ponerCapas(false);
+    arcoD3.style.strokeDashoffset = OFF_INICIO;
+    anilloD3.setAttribute("aria-label", "Crear sala y empezar un pomodoro");
+    anilloD3.focus();
+  });
+  appD3.querySelector("[data-d3-copiar]").addEventListener("click", () => {
+    const link = `/room/${codigoD3}`;
+    const ok = () => avisar(appD3, `Link copiado: …${link} (demo)`);
+    try { navigator.clipboard.writeText(link).then(ok, () => avisar(appD3, `Link: …${link} (demo)`)); }
+    catch (e) { avisar(appD3, `Link: …${link} (demo)`); }
+  });
+
+  /* ── D4: bandeja ── */
+  function abrirBandeja(bandeja, abrir) {
+    bandeja.classList.toggle("abierta", abrir);
+    bandeja.querySelector("[data-asa]").setAttribute("aria-expanded", abrir);
+    bandeja.querySelector("[data-cuerpo]").inert = !abrir;
+  }
+  document.querySelectorAll("[data-bandeja]").forEach(bandeja => {
+    abrirBandeja(bandeja, false);
+    bandeja.querySelector("[data-asa]").addEventListener("click", () => abrirBandeja(bandeja, !bandeja.classList.contains("abierta")));
+  });
 
   /* ── E: reloj que corre de verdad ── */
   const appE = document.querySelector("#e [data-app]");
   const reloj = appE.querySelector("[data-reloj]");
   const play = appE.querySelector("[data-play]");
   const nota = appE.querySelector("[data-nota]");
-  const sel = appE.querySelector("[data-select-tareas]");
-  sel.innerHTML = `<option>Sin tarea</option>` + TAREAS.filter(t => !t.hecha).map((t, i) => `<option ${i === 0 ? "selected" : ""}>${t.titulo}</option>`).join("");
   let restante = 25 * 60, intervalo = null;
-  const fmt = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  const minutosModo = () => +appE.querySelector(".e-modos [aria-pressed='true']").dataset.min;
   const pintarPlay = () => {
     const corre = !!intervalo;
-    play.innerHTML = corre ? `${icono("i-pausa")}<span>Pausar</span>` : `${icono("i-play")}<span>${restante < currentMin() * 60 ? "Seguir" : "Empezar en una sala nueva"}</span>`;
+    play.innerHTML = corre ? `${icono("i-pausa")}<span>Pausar</span>` : `${icono("i-play")}<span>${restante < minutosModo() * 60 ? "Seguir" : "Empezar en una sala nueva"}</span>`;
     reloj.classList.toggle("corriendo", corre);
   };
-  const currentMin = () => +appE.querySelector(".e-modos [aria-pressed='true']").dataset.min;
   play.addEventListener("click", () => {
     if (intervalo) { clearInterval(intervalo); intervalo = null; }
     else {
-      if (restante === currentMin() * 60) nota.textContent = "En la app, acá se crea la sala y el reloj sigue allá con el link listo.";
+      if (restante === minutosModo() * 60) nota.textContent = "En la app, acá se crea la sala y el reloj sigue allá con el link listo.";
       intervalo = setInterval(() => {
         restante = Math.max(0, restante - 1); reloj.textContent = fmt(restante);
         if (!restante) { clearInterval(intervalo); intervalo = null; pintarPlay(); }
@@ -922,14 +1624,16 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     } else li.querySelector("[data-reloj-sala]").textContent = fmt(s.restante);
   }), 1000);
 
-  /* ── Marcos redimensionables con presets y medida en vivo ── */
+  /* ── Marcos redimensionables: presets, fondo propio y medida en vivo ── */
   const PRESETS = [["Móvil", 390, 760], ["Tablet", 820, 760], ["Escritorio", 1180, 680]];
   const opciones = [...document.querySelectorAll(".opcion")].filter(op => op.querySelector(".marco"));
   opciones.forEach(op => {
     const barra = op.querySelector("[data-barra]");
     const marco = op.querySelector(".marco");
+    const app = op.querySelector("[data-app]");
     barra.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
       <button class="btn-completa" data-completa>${icono("i-expandir")}Pantalla completa</button>
+      <label class="sel-fondo">Fondo <select id="fondo-${op.id}" data-fondo-local><option value="global">El de arriba</option>${FONDOS.map(([id, n]) => `<option value="${id}">${n}</option>`).join("")}</select></label>
       <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
     const medida = barra.querySelector(".medida");
     barra.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => {
@@ -937,34 +1641,63 @@ html.en-completa, html.en-completa body { overflow: hidden; }
       marco.style.height = b.dataset.h + "px";
     }));
     barra.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    barra.querySelector("[data-fondo-local]").addEventListener("change", e => {
+      app.dataset.fondo = e.target.value === "global" ? fondoGlobal : e.target.value;
+    });
     new ResizeObserver(() => {
       const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
       medida.textContent = t;
-      if (op.classList.contains("completa")) mandoMedida.textContent = t;
+      if (op.classList.contains("completa")) { const m = mando.querySelector(".medida"); if (m) m.textContent = t; }
     }).observe(marco);
   });
+  ponerFondoGlobal(fondoGlobal);
+
+  /* ── Mostrar todo o solo favoritos y variantes ── */
+  const grupoMostrar = document.getElementById("mostrar");
+  const ponerMostrar = v => {
+    document.querySelectorAll("[data-resto]").forEach(el => el.hidden = v === "favs");
+    pulsar(grupoMostrar, "m", v); guardar("doro-mostrar", v);
+    construirMando();
+  };
+  grupoMostrar.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerMostrar(b.dataset.m)));
 
   /* ── Pantalla completa: la maqueta ocupa toda la ventana; si el navegador deja, también la pantalla ── */
   const mando = document.createElement("div");
   mando.className = "mando"; mando.hidden = true;
   mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
-  mando.innerHTML = opciones.map(op => {
-    const letra = op.querySelector(".letra").textContent;
-    const nombre = op.querySelector("h2").textContent.slice(letra.length);
-    return `<button data-ir="${op.id}" title="${letra} · ${nombre}" aria-label="Boceto ${letra}, ${nombre}">${letra}</button>`;
-  }).join("") + `<span class="sep"></span><span class="medida"></span>
-    <button data-tema-rapido title="Claro / oscuro" aria-label="Cambiar entre claro y oscuro">${icono("i-tema")}</button>
-    <button data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${icono("i-x")}</button>`;
   document.body.appendChild(mando);
-  const mandoMedida = mando.querySelector(".medida");
   let actual = null;
-
+  const visibles = () => opciones.filter(op => !op.hidden);
+  const ciclarFondo = () => {
+    const i = FONDOS.findIndex(([id]) => id === fondoGlobal);
+    ponerFondoGlobal(FONDOS[(i + 1) % FONDOS.length][0]);
+    if (actual) avisar(actual.querySelector("[data-app]"), "Fondo: " + FONDOS.find(([id]) => id === fondoGlobal)[1]);
+  };
+  function construirMando() {
+    mando.innerHTML = visibles().map(op => {
+      const letra = op.querySelector(".letra").textContent;
+      const nombre = op.querySelector(".nombre").textContent;
+      const fav = op.querySelector(".fav") ? " es-fav" : "";
+      return `<button class="ir${fav}" data-ir="${op.id}" title="${letra} · ${nombre}" aria-label="Boceto ${letra}, ${nombre}">${letra}</button>`;
+    }).join("") + `<span class="sep"></span><span class="medida"></span>
+      <button data-fondo-rapido title="Cambiar fondo (F)" aria-label="Cambiar fondo">${icono("i-fondo")}</button>
+      <button data-tema-rapido title="Claro / oscuro / negro" aria-label="Cambiar tema">${icono("i-tema")}</button>
+      <button data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${icono("i-x")}</button>`;
+    mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+    mando.querySelector("[data-salir]").addEventListener("click", cerrarCompleta);
+    mando.querySelector("[data-fondo-rapido]").addEventListener("click", ciclarFondo);
+    mando.querySelector("[data-tema-rapido]").addEventListener("click", () => {
+      const orden = ["light", "dark", "negro"];
+      ponerTema(orden[(orden.indexOf(temaActual()) + 1) % orden.length]);
+    });
+    if (actual) mostrar(actual);
+  }
   const mostrar = op => {
-    if (actual) actual.classList.remove("completa");
+    if (actual && actual !== op) actual.classList.remove("completa");
     actual = op; op.classList.add("completa");
     mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
     const m = op.querySelector(".marco");
-    mandoMedida.textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+    mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
   };
   const abrirCompleta = op => {
     raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op);
@@ -979,24 +1712,19 @@ html.en-completa, html.en-completa body { overflow: hidden; }
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     op.scrollIntoView({ block: "start" });
   };
-  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
-  mando.querySelector("[data-salir]").addEventListener("click", cerrarCompleta);
-  mando.querySelector("[data-tema-rapido]").addEventListener("click", () => {
-    raiz.dataset.theme = esOscuro() ? "light" : "dark";
-    try { localStorage.setItem("doro-tema", raiz.dataset.theme); } catch (e) {}
-    pintarTema();
-  });
+  ponerMostrar(leer("doro-mostrar", "todo"));
   /* Esc del navegador sale de la pantalla real; salimos también de la maqueta */
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
   document.addEventListener("keydown", e => {
     if (!actual) return;
     if (e.key === "Escape") { cerrarCompleta(); return; }
     const escribiendo = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "");
-    if (escribiendo || (e.key !== "ArrowRight" && e.key !== "ArrowLeft")) return;
-    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
-    mostrar(opciones[(i + opciones.length) % opciones.length]);
+    if (escribiendo) return;
+    if (e.key === "f" || e.key === "F") { ciclarFondo(); return; }
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const lista = visibles();
+    const i = lista.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(lista[(i + lista.length) % lista.length]);
   });
 })();
 </script>
-
-</body></html>
