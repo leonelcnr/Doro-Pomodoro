@@ -1,0 +1,1002 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Home de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285);
+    --superficie: oklch(0.19 0.005 285);
+    --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285);
+    --linea: oklch(0.275 0.006 285);
+    --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285);
+  --superficie: oklch(0.19 0.005 285);
+  --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285);
+  --linea: oklch(0.275 0.006 285);
+  --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: color-mix(in oklch, var(--acento) 28%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 6px; }
+a { color: inherit; text-underline-offset: 3px; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+/* ───────── Página de comparación ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding: 40px 16px 96px; }
+@media (min-width: 720px) { .pagina { padding: 56px 32px 120px; } }
+
+.cabecera { display: flex; flex-wrap: wrap; gap: 24px 40px; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; }
+.cabecera p { margin: 0; color: var(--tenue); max-width: 60ch; }
+.controles { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.grupo-control { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); }
+.muestras { display: flex; gap: 6px; }
+.muestra {
+  width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0;
+  background: var(--c); box-shadow: 0 0 0 1px var(--linea);
+  transition: box-shadow .2s, transform .2s;
+}
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+.segmentado { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--linea); }
+.indice a { text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--linea); color: var(--tenue); transition: color .2s, border-color .2s; }
+.indice a:hover { color: var(--fg); border-color: var(--tenue); }
+
+.opcion { margin-bottom: 88px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; }
+.opcion-cabeza h2 .letra { color: var(--acento); margin-right: 6px; }
+.opcion-cabeza .resumen { margin: 0; color: var(--tenue); max-width: 52ch; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button { border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover { color: var(--fg); }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco {
+  resize: both; overflow: auto;
+  width: 100%; max-width: 100%; height: 640px;
+  min-width: 320px; min-height: 420px;
+  border: 1px solid var(--linea); border-radius: 14px;
+  background: var(--bg);
+}
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+/* ───────── Maquetas: base compartida ───────── */
+.app {
+  container: app / inline-size;
+  position: relative; min-height: 100%;
+  background: var(--bg); color: var(--fg);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 8px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 8px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; border: 1px solid transparent; padding: 0 16px; height: 40px; font-size: 14px; font-weight: 500; white-space: nowrap; transition: background-color .2s, border-color .2s, transform .15s; }
+.btn:active { transform: translateY(1px); }
+.btn svg { width: 16px; height: 16px; }
+.btn-acento { background: var(--acento); color: var(--acento-fg); }
+.btn-acento:hover { background: color-mix(in oklch, var(--acento) 86%, black); }
+.btn-borde { background: var(--superficie); border-color: var(--linea); }
+.btn-borde:hover { border-color: var(--tenue); }
+.btn-xl { height: 52px; padding: 0 24px; font-size: 16px; border-radius: 12px; }
+.btn-texto { border: 0; background: none; padding: 0; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 4px; }
+.btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
+
+.entrada { height: 40px; border-radius: 10px; border: 1px solid var(--linea); background: var(--superficie); padding: 0 12px; font-size: 14px; min-width: 0; width: 100%; transition: border-color .2s; }
+.entrada::placeholder { color: var(--tenue); opacity: .8; }
+.entrada:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px color-mix(in oklch, var(--acento) 18%, transparent); }
+.campo-fila { display: flex; gap: 8px; }
+
+.tenue { color: var(--tenue); }
+
+/* Lista de tareas compartida */
+.lista { list-style: none; margin: 0; padding: 0; }
+.tarea { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; }
+.tarea:last-child { border-bottom: 0; }
+.check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid color-mix(in oklch, var(--tenue) 60%, transparent); background: transparent; padding: 0; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
+.check svg { width: 11px; height: 11px; opacity: 0; color: var(--acento-fg); }
+.tarea.hecha .check { background: var(--acento); border-color: var(--acento); }
+.tarea.hecha .check svg { opacity: 1; }
+.tarea.hecha .titulo { color: var(--tenue); text-decoration: line-through; }
+.titulo { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cat { font-size: 12.5px; color: var(--tenue); }
+.prio { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.prio[hidden] { display: block; visibility: hidden; }
+
+.fila-titulo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.fila-titulo h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.fila-titulo a { font-size: 13px; color: var(--tenue); }
+
+.aviso {
+  position: absolute; left: 50%; bottom: 20px; transform: translate(-50%, 12px);
+  background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 10px;
+  opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1);
+  white-space: nowrap; z-index: 20;
+}
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── A · Dos puertas ───────── */
+.a-main { flex: 1; width: 100%; max-width: 1040px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 48px; }
+@container app (min-width: 720px) { .a-main { padding: 56px 32px 64px; gap: 72px; } }
+.a-saludo { margin: 0 0 20px; color: var(--tenue); font-size: 15px; }
+.a-puertas { display: grid; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.a-puerta { padding: 32px 0; display: flex; flex-direction: column; gap: 10px; }
+.a-puerta + .a-puerta { border-top: 1px solid var(--linea); }
+.a-puerta h2 { margin: 0; font-size: clamp(26px, 4.4cqi, 40px); letter-spacing: -0.03em; line-height: 1.1; font-weight: 600; }
+.a-puerta p { margin: 0 0 14px; color: var(--tenue); max-width: 34ch; }
+.a-puerta .btn-xl { align-self: flex-start; }
+.a-puerta .campo-fila { max-width: 420px; }
+.a-puerta .campo-fila .entrada, .a-puerta .campo-fila .btn { height: 52px; border-radius: 12px; }
+@container app (min-width: 720px) {
+  .a-puertas { grid-template-columns: 1.15fr 1fr; }
+  .a-puerta { padding: 48px 48px 48px 0; }
+  .a-puerta + .a-puerta { border-top: 0; border-left: 1px solid var(--linea); padding: 48px 0 48px 48px; }
+}
+.a-tareas { max-width: 560px; }
+
+/* ───────── B · Una frase ───────── */
+.b-main { flex: 1; width: 100%; max-width: 920px; margin: 0 auto; padding: 48px 20px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+@container app (min-width: 720px) { .b-main { padding: 64px 40px; } }
+.b-frase { margin: 0; font-size: clamp(30px, 6.2cqi, 60px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 600; text-wrap: balance; }
+.b-frase .tenue { font-weight: 400; }
+.b-frase b { font-weight: 600; color: var(--fg); }
+.b-progreso { height: 3px; background: var(--linea); border-radius: 3px; overflow: hidden; max-width: 520px; }
+.b-progreso span { display: block; height: 100%; background: var(--acento); border-radius: 3px; }
+.b-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.b-unirse { display: flex; gap: 8px; max-width: 460px; }
+.b-unirse[hidden] { display: none; }
+.b-siguiente { margin: 12px 0 0; padding-top: 24px; border-top: 1px solid var(--linea); color: var(--tenue); font-size: 14.5px; max-width: 520px; }
+.b-siguiente b { color: var(--fg); font-weight: 500; }
+
+/* ───────── C · Dos columnas ───────── */
+.c-main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 24px 20px 48px; display: grid; gap: 40px; align-content: start; }
+@container app (min-width: 820px) { .c-main { grid-template-columns: 300px minmax(0, 1fr); gap: 64px; padding: 48px 32px; } }
+.c-sala { display: flex; flex-direction: column; gap: 14px; align-self: start; }
+@container app (min-width: 820px) { .c-sala { position: sticky; top: 24px; } }
+.c-sala h2, .c-tareas h2 { margin: 0; font-size: 22px; letter-spacing: -0.02em; font-weight: 600; }
+.c-sala .btn-acento { width: 100%; height: 48px; }
+.separador { display: flex; align-items: center; gap: 12px; color: var(--tenue); font-size: 12.5px; }
+.separador::before, .separador::after { content: ""; flex: 1; height: 1px; background: var(--linea); }
+.c-hoy { margin: 10px 0 0; padding-top: 16px; border-top: 1px solid var(--linea); font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.c-hoy b { color: var(--fg); font-weight: 600; }
+.c-tareas { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.c-filtro { display: flex; gap: 18px; font-size: 13.5px; border-bottom: 1px solid var(--linea); }
+.c-filtro button { border: 0; background: none; padding: 0 0 10px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; font-variant-numeric: tabular-nums; }
+.c-filtro button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+.c-filtro span { opacity: .6; margin-left: 4px; }
+.alta { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); }
+.alta svg { width: 16px; height: 16px; flex-shrink: 0; }
+.alta input { border: 0; background: none; flex: 1; min-width: 0; font-size: 14px; outline: none; }
+.alta input::placeholder { color: var(--tenue); }
+
+/* ───────── D · Un anillo ───────── */
+.d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 32px 20px 56px; text-align: center; }
+.d-anillo {
+  position: relative; border: 0; background: none; padding: 0;
+  width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; border-radius: 50%;
+  display: grid; place-items: center;
+}
+.d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.d-anillo .pista-anillo { stroke: var(--linea); }
+.d-anillo .arco { stroke: var(--acento); transition: stroke-dashoffset .9s cubic-bezier(.16,1,.3,1); }
+.d-anillo:hover .arco, .d-anillo:focus-visible .arco { stroke-dashoffset: 0 !important; }
+.d-anillo .relleno { fill: var(--superficie); transition: fill .3s; }
+.d-anillo:hover .relleno { fill: var(--acento-suave); }
+.d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.d-texto strong { font-size: clamp(20px, 3.4cqi, 26px); font-weight: 600; letter-spacing: -0.02em; }
+.d-texto span { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.d-unirse { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(100%, 360px); }
+.d-unirse label { font-size: 13.5px; color: var(--tenue); }
+.d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 40px; font-size: 15px; transition: border-color .2s; }
+.d-linea:focus { outline: none; border-color: var(--acento); }
+.d-linea::placeholder { color: var(--tenue); opacity: .7; }
+.btn-tareas { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 999px; height: 32px; padding: 0 12px; font-size: 13px; }
+.btn-tareas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.d-cajon {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(100%, 380px);
+  background: var(--superficie); border-left: 1px solid var(--linea); box-shadow: var(--sombra);
+  padding: 20px 24px; transform: translateX(100%); transition: transform .45s cubic-bezier(.16,1,.3,1);
+  z-index: 10; display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
+}
+.d-cajon.abierto { transform: translateX(0); }
+.d-cajon header { display: flex; justify-content: space-between; align-items: center; }
+.d-cajon h3 { margin: 0; font-size: 17px; font-weight: 600; }
+.cerrar { border: 0; background: none; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: var(--tenue); }
+.cerrar:hover { background: var(--campo); color: var(--fg); }
+.cerrar svg { width: 16px; height: 16px; }
+
+/* ───────── E · Reloj en espera ───────── */
+.e-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 32px 20px 56px; text-align: center; }
+.e-modos { display: inline-flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--campo); }
+.e-modos button { border: 0; background: none; padding: 6px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.e-modos button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+@container app (max-width: 420px) { .e-modos button { padding: 6px 9px; font-size: 12.5px; } }
+.e-reloj { font-size: clamp(84px, 21cqi, 184px); font-weight: 300; letter-spacing: -0.05em; line-height: .95; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.e-reloj.corriendo { color: var(--acento); }
+.e-acciones { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.e-unirse { font-size: 14px; color: var(--tenue); margin: 0; }
+.e-unirse-form { display: flex; gap: 8px; width: min(100%, 380px); }
+.e-unirse-form[hidden] { display: none; }
+.e-tarea { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--tenue); max-width: 100%; }
+.e-tarea select { border: 0; border-bottom: 1px solid var(--linea); background: transparent; padding: 4px 2px; font-size: 13.5px; color: var(--fg); max-width: 220px; }
+.e-nota { font-size: 12.5px; color: var(--tenue); min-height: 1.5em; margin: 0; }
+
+/* ───────── F · Tus salas ───────── */
+.f-main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 32px; }
+@container app (min-width: 720px) { .f-main { padding: 64px 32px; } }
+.f-cabeza { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.f-saludo { margin: 0; font-size: clamp(24px, 4cqi, 32px); letter-spacing: -0.03em; font-weight: 600; line-height: 1.15; }
+.f-titulo { margin: 0 0 2px; font-size: 13px; font-weight: 600; color: var(--tenue); }
+.f-salas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea); }
+.f-sala { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 16px; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+.f-nombre { font-size: 15.5px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.f-estado { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.f-punto { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 50%, transparent); flex-shrink: 0; }
+.f-modo { display: inline-flex; align-items: center; gap: 7px; }
+.foco .f-punto { background: var(--acento); }
+.descanso .f-punto { background: transparent; box-shadow: inset 0 0 0 1.5px var(--acento); }
+.f-reloj { color: var(--fg); font-weight: 500; }
+.f-caras { display: inline-flex; }
+.f-cara { width: 22px; height: 22px; border-radius: 50%; background: var(--campo); box-shadow: 0 0 0 2px var(--bg); display: grid; place-items: center; font-size: 10.5px; font-weight: 600; color: var(--fg); }
+.f-cara + .f-cara { margin-left: -5px; }
+.f-sala .btn { grid-column: 2; grid-row: 1 / span 2; }
+.foco .btn { background: var(--acento); color: var(--acento-fg); }
+.foco .btn:hover { background: color-mix(in oklch, var(--acento) 86%, black); }
+.f-unirse { margin: 0; font-size: 14px; color: var(--tenue); }
+.f-unirse-form { display: flex; gap: 8px; max-width: 420px; }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 12.5px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 62ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+.c-pal { color: var(--acento); }
+
+
+/* ───────── Pantalla completa ───────── */
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--fg); }
+.btn-completa:hover { border-color: var(--tenue); }
+.btn-completa svg { width: 14px; height: 14px; }
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco {
+  position: fixed; inset: 0; z-index: 100;
+  width: 100% !important; height: 100% !important; max-width: none;
+  border: 0; border-radius: 0; resize: none;
+}
+.mando {
+  position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 4px; padding: 5px;
+  background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; box-shadow: var(--sombra);
+  font-size: 12.5px; color: var(--tenue); max-width: calc(100% - 32px); flex-wrap: wrap;
+}
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <div>
+      <h1>Home de Doro, seis bocetos</h1>
+      <p>Mismo contenido, seis formas de ordenarlo. En todas, entrar a una sala es lo primero. Cada maqueta se redimensiona desde la esquina inferior derecha, responde con container queries reales y se puede abrir en pantalla completa; ahí, las flechas ← → pasan de un boceto al otro y Esc sale.</p>
+    </div>
+    <div class="controles">
+      <div class="grupo-control">
+        <span>Acento</span>
+        <div class="muestras" id="muestras"></div>
+      </div>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema">
+        <button data-tema="light">Claro</button>
+        <button data-tema="dark">Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="indice" aria-label="Bocetos">
+    <a href="#a">A · Dos puertas</a>
+    <a href="#b">B · Una frase</a>
+    <a href="#c">C · Dos columnas</a>
+    <a href="#d">D · Un anillo</a>
+    <a href="#e">E · Reloj en espera</a>
+    <a href="#f">F · Tus salas</a>
+    <a href="#cierre">Recomendación</a>
+  </nav>
+
+  <!-- ═════════ A ═════════ -->
+  <section class="opcion" id="a">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span>Dos puertas</h2>
+        <p class="resumen">Crear o unirse, partido en dos mitades grandes y separadas por una línea. Las tareas quedan abajo como una lista corta.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Las dos acciones se entienden de un vistazo.</li><li>Ni una sola tarjeta: la estructura la dan las líneas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>"Unirme" pesa casi lo mismo que "Crear", aunque la mayoría entra por link.</li><li>Las estadísticas desaparecen del home.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="a-main">
+          <div>
+            <p class="a-saludo">Buenas tardes, Leo</p>
+            <div class="a-puertas">
+              <section class="a-puerta">
+                <h2>Nueva sala</h2>
+                <p>Arrancá un pomodoro y pasale el link a quien quieras.</p>
+                <button class="btn btn-acento btn-xl" data-crear><svg><use href="#i-mas"/></svg>Crear sala</button>
+              </section>
+              <section class="a-puerta">
+                <h2>Unirme</h2>
+                <p>¿Te pasaron un link o un código?</p>
+                <form class="campo-fila" data-unirse>
+                  <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+                  <button class="btn btn-borde">Entrar</button>
+                </form>
+              </section>
+            </div>
+          </div>
+          <section class="a-tareas">
+            <div class="fila-titulo"><h3>Tareas</h3><a href="#a">Ver todas</a></div>
+            <ul class="lista" data-tareas="3"></ul>
+          </section>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ B ═════════ -->
+  <section class="opcion" id="b">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B</span>Una frase</h2>
+        <p class="resumen">El home se lee como una oración: saludo, cuánto llevás hoy y qué hacer ahora. Una línea fina reemplaza al anillo de progreso.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más calmo de los seis: se lee, no se escanea.</li><li>El progreso del día sigue presente, sin números sueltos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En sesiones anónimas no hay nombre: la frase tiene que tener una versión sin él.</li><li>Solo muestra una tarea; el resto está a un clic.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="b-main">
+          <h1 class="b-frase">Buenas tardes, Leo.<br><span class="tenue">Llevás <b>45 min</b> de 2 h hoy.</span></h1>
+          <div class="b-progreso" role="img" aria-label="45 de 120 minutos"><span style="width:37.5%"></span></div>
+          <div class="b-acciones">
+            <button class="btn btn-acento btn-xl" data-crear>Crear sala</button>
+            <button class="btn-texto" data-mostrar="b-unirse">o unirme con un link</button>
+          </div>
+          <form class="b-unirse" id="b-unirse" data-unirse hidden>
+            <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+            <button class="btn btn-borde">Entrar</button>
+          </form>
+          <p class="b-siguiente">Siguiente tarea: <b>Terminar TP Redes</b> · <a href="#b">ver las 5</a></p>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ C ═════════ -->
+  <section class="opcion" id="c">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">C</span>Dos columnas</h2>
+        <p class="resumen">A la izquierda, una columna angosta y fija para la sala. A la derecha, las tareas con alta rápida y filtro por categoría. Un escritorio de trabajo, ordenado.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Todo a mano sin cambiar de pantalla.</li><li>Es el que menos cambia el flujo actual: migración más corta.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El más denso de los seis.</li><li>En móvil la sala se apila arriba y las tareas quedan más abajo del pliegue.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="c-main">
+          <aside class="c-sala">
+            <h2>Estudiar con otros</h2>
+            <button class="btn btn-acento" data-crear>Crear sala</button>
+            <div class="separador">o</div>
+            <form class="campo-fila" data-unirse>
+              <input class="entrada" placeholder="Link o código" aria-label="Link o código de sala">
+              <button class="btn btn-borde">Entrar</button>
+            </form>
+            <p class="c-hoy">Hoy <b>45 min</b> · <b>4</b> días seguidos</p>
+          </aside>
+          <section class="c-tareas">
+            <h2>Tus tareas</h2>
+            <label class="alta"><svg><use href="#i-mas"/></svg><input placeholder="Escribí una tarea… !alta #estudio" data-alta></label>
+            <div class="c-filtro" data-filtro></div>
+            <ul class="lista" data-tareas="all" data-filtrable></ul>
+          </section>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ D ═════════ -->
+  <section class="opcion" id="d">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span>Un anillo</h2>
+        <p class="resumen">El anillo del logo de Doro <em>es</em> el botón. Su arco muestra el progreso de hoy y al pasar el mouse se completa. Las tareas viven en un panel lateral.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Máximo minimalismo: un objeto en pantalla.</li><li>La identidad (el anillo) y la acción son la misma cosa.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las tareas quedan a un clic, fuera de vista.</li><li>Un botón circular es menos obvio que uno rectangular: necesita el texto adentro.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar data-boton-tareas></div>
+        <main class="d-main">
+          <button class="d-anillo" data-crear aria-label="Crear sala. 45 de 120 minutos hoy">
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="relleno" cx="100" cy="100" r="92"/>
+              <circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3"/>
+              <circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578.05" stroke-dashoffset="361.28"/>
+            </svg>
+            <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
+          </button>
+          <form class="d-unirse" data-unirse>
+            <label for="d-link">¿Te pasaron un link?</label>
+            <input id="d-link" class="d-linea" placeholder="Pegalo acá y tocá Enter">
+          </form>
+        </main>
+        <aside class="d-cajon" aria-label="Tareas">
+          <header><h3>Tus tareas</h3><button class="cerrar" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></header>
+          <label class="alta"><svg><use href="#i-mas"/></svg><input placeholder="Nueva tarea…" data-alta></label>
+          <ul class="lista" data-tareas="all"></ul>
+        </aside>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ E ═════════ -->
+  <section class="opcion" id="e">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">E</span>Reloj en espera</h2>
+        <p class="resumen">Lo primero que ves es tu pomodoro listo, con tus tiempos. Darle play crea la sala y arranca el reloj ahí. Unirse queda como un link secundario.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Dice "Pomodoro" sin explicar nada.</li><li>Entrar a estudiar es literalmente un clic, y con la sala ya andando.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hay que dejar claro que el reloj corre en la sala, no en el home.</li><li>Unirse por código queda más escondido.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="e-main">
+          <div class="e-modos" role="group" aria-label="Modo">
+            <button aria-pressed="true" data-min="25">Pomodoro</button>
+            <button aria-pressed="false" data-min="5">Descanso corto</button>
+            <button aria-pressed="false" data-min="15">Descanso largo</button>
+          </div>
+          <div class="e-reloj" data-reloj aria-live="off">25:00</div>
+          <div class="e-acciones">
+            <button class="btn btn-acento btn-xl" data-play><svg><use href="#i-play"/></svg><span>Empezar en una sala nueva</span></button>
+            <p class="e-nota" data-nota></p>
+            <p class="e-unirse">¿Te invitaron? <button class="btn-texto" data-mostrar="e-unirse">Unirme con un link</button></p>
+            <form class="e-unirse-form" id="e-unirse" data-unirse hidden>
+              <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+              <button class="btn btn-borde">Entrar</button>
+            </form>
+          </div>
+          <label class="e-tarea">Enfocado en
+            <select data-select-tareas></select>
+          </label>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ F ═════════ -->
+  <section class="opcion" id="f">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">F</span>Tus salas</h2>
+        <p class="resumen">El home muestra las salas donde estudiaste hace poco, con quién está adentro y en qué parte del ciclo van, en vivo. Volver con tu grupo es un clic; crear una nueva queda arriba a la derecha.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Volver con el grupo de siempre sin buscar el link en el chat.</li><li>Ves si tu grupo está en foco o en descanso antes de entrar, y elegís el momento.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Pide datos nuevos: un historial de salas por usuario, y escuchar varias salas a la vez (hoy hay un canal por sala, el de la sala abierta).</li><li>Un usuario nuevo la ve vacía: ese estado tiene que llevar a Crear sala.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco">
+      <div class="app" data-app>
+        <div data-topbar></div>
+        <main class="f-main">
+          <div class="f-cabeza">
+            <h2 class="f-saludo">Buenas tardes, Leo</h2>
+            <button class="btn btn-borde" data-crear><svg><use href="#i-mas"/></svg>Crear sala</button>
+          </div>
+          <section>
+            <h3 class="f-titulo">Tus salas</h3>
+            <ul class="f-salas" data-f-salas></ul>
+          </section>
+          <div>
+            <p class="f-unirse">¿Te pasaron un link de otra sala? <button class="btn-texto" data-mostrar="f-unirse">Pegalo acá</button></p>
+            <form class="f-unirse-form" id="f-unirse" data-unirse hidden style="margin-top:10px">
+              <input class="entrada" placeholder="Pegá el link o el código" aria-label="Link o código de sala">
+              <button class="btn btn-borde">Entrar</button>
+            </form>
+          </div>
+        </main>
+        <div class="aviso" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ Cierre ═════════ -->
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Boceto</th><th>Entrar a una sala</th><th>Tareas</th><th>Progreso del día</th><th>Móvil</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>A · Dos puertas</td><td>1 clic, muy visible</td><td>3 en lista</td><td>No</td><td>Bien, apila las puertas</td><td>Unirse pesa de más</td></tr>
+          <tr><td>B · Una frase</td><td>1 clic</td><td>Solo la siguiente</td><td>Línea fina</td><td>Muy bien</td><td>Frase sin nombre en anónimos</td></tr>
+          <tr><td>C · Dos columnas</td><td>1 clic</td><td>Completa + alta + filtro</td><td>Texto</td><td>Regular, scroll largo</td><td>Densidad</td></tr>
+          <tr><td>D · Un anillo</td><td>1 clic, objeto único</td><td>En panel lateral</td><td>El arco del anillo</td><td>Muy bien</td><td>Tareas fuera de vista</td></tr>
+          <tr class="elegida"><td>E · Reloj en espera</td><td>1 clic y el reloj ya corre</td><td>Elegís en qué enfocarte</td><td>No (va al Dashboard)</td><td>Muy bien</td><td>¿Dónde corre el reloj?</td></tr>
+          <tr><td>F · Tus salas</td><td>1 clic, a una sala conocida</td><td>No</td><td>No</td><td>Muy bien</td><td>Vacío en usuarios nuevos; pide datos nuevos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegiría E, Reloj en espera</h3>
+        <p><b>Es el único donde la acción principal y la identidad son lo mismo.</b> El home de un Pomodoro muestra un pomodoro listo; tocar play te deja en una sala con el reloj corriendo y el link para compartir. Entrar a estudiar acompañado cuesta exactamente un clic.</p>
+        <p><b>Lo liviano viene de lo que saca:</b> la tabla de tareas pasa a ser un selector de "en qué te enfocás" (la tabla completa ya vive en la sala y puede tener su propia página) y las estadísticas quedan en el Dashboard.</p>
+        <p><b>Para resolver su riesgo</b> le tomaría prestado algo a D: el texto del botón dice "en una sala nueva", y al tocarlo la transición lleva el reloj hasta la sala, para que se entienda que el reloj "se mudó" ahí. Si eso no convence, A es la alternativa segura.</p>
+        <p><b>F se le puede sumar más adelante:</b> las salas recientes como dos o tres líneas debajo del botón de play, para quien estudia siempre con el mismo grupo. Conviene dejarlo para después porque necesita el historial de salas, que hoy no existe.</p>
+        <p><b>Sobre el acento por usuario:</b> todos los bocetos ya funcionan así. Pintan con una sola variable, y elegir un color arriba la cambia en vivo. En la app sería <code>--brand</code>, guardada en el perfil.</p>
+      </div>
+      <pre><span class="c-com">// src/pages/Home.tsx (esqueleto de E)</span>
+&lt;div className="@container/main flex min-h-[calc(100dvh-3.5rem)]
+                flex-col items-center justify-center gap-6 px-4"&gt;
+  &lt;SelectorModo modo={modo} onCambiar={establecerModo} /&gt;
+
+  <span class="c-com">{/* cqi: escala con el ancho real del contenedor */}</span>
+  &lt;span className="text-[clamp(84px,21cqi,184px)] font-light
+                   tracking-[-0.05em] tabular-nums"&gt;
+    {formatearReloj(configuracion[modo] * 60)}
+  &lt;/span&gt;
+
+  &lt;Button size="lg" onClick={crearSalaYArrancar} disabled={creando}&gt;
+    &lt;IconPlayerPlay /&gt; Empezar en una sala nueva
+  &lt;/Button&gt;
+  &lt;UnirseConLink /&gt;   <span class="c-com">{/* colapsado por defecto */}</span>
+  &lt;SelectorTarea tareas={tareas} /&gt;
+&lt;/div&gt;
+
+<span class="c-com">// Acento por usuario: una sola variable</span>
+<span class="c-pal">document.documentElement.style.setProperty</span>(
+  "--brand", perfil.acento ?? "oklch(54.1% .281 293)"
+)</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+
+  /* ── Acentos: cada uno con su versión clara y oscura ── */
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)", oscuro: "oklch(0.70 0.18 293)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)", oscuro: "oklch(0.72 0.14 252)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)", oscuro: "oklch(0.76 0.14 162)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",  oscuro: "oklch(0.74 0.16 50)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",   oscuro: "oklch(0.72 0.16 6)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acentoActual = "violeta";
+  try { acentoActual = localStorage.getItem("doro-acento") || "violeta"; } catch (e) {}
+
+  const esOscuro = () => {
+    const t = raiz.dataset.theme;
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    return matchMedia("(prefers-color-scheme: dark)").matches;
+  };
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acentoActual) || ACENTOS[0];
+    const o = esOscuro();
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    document.querySelectorAll(".muestra").forEach(b => {
+      b.style.setProperty("--c", (ACENTOS.find(x => x.id === b.dataset.id))[o ? "oscuro" : "claro"]);
+      b.setAttribute("aria-pressed", b.dataset.id === acentoActual);
+    });
+  };
+  const contMuestras = document.getElementById("muestras");
+  ACENTOS.forEach(a => {
+    const b = document.createElement("button");
+    b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre);
+    b.addEventListener("click", () => { acentoActual = a.id; try { localStorage.setItem("doro-acento", a.id); } catch (e) {} aplicarAcento(); });
+    contMuestras.appendChild(b);
+  });
+
+  /* ── Tema ── */
+  const botonesTema = document.querySelectorAll("#tema button");
+  const pintarTema = () => {
+    const o = esOscuro();
+    botonesTema.forEach(b => b.setAttribute("aria-pressed", (b.dataset.tema === "dark") === o));
+    aplicarAcento();
+  };
+  botonesTema.forEach(b => b.addEventListener("click", () => {
+    raiz.dataset.theme = b.dataset.tema;
+    try { localStorage.setItem("doro-tema", b.dataset.tema); } catch (e) {}
+    pintarTema();
+  }));
+  try { const t = localStorage.getItem("doro-tema"); if (t) raiz.dataset.theme = t; } catch (e) {}
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", pintarTema);
+  pintarTema();
+
+  /* ── Datos de ejemplo (tareas reales de la captura del home) ── */
+  const TAREAS = [
+    { titulo: "Terminar TP Redes", cat: "Uni", alta: true, hecha: false },
+    { titulo: "Terminar TP AyD", cat: "Uni", alta: true, hecha: false },
+    { titulo: "Avanzar TP IA", cat: "Uni", alta: false, hecha: false },
+    { titulo: "Poder agrupar tareas por etiqueta", cat: "Doro", alta: false, hecha: false },
+    { titulo: "Conectar Google Calendar", cat: "Doro", alta: false, hecha: true },
+  ];
+
+  const icono = id => `<svg><use href="#${id}"/></svg>`;
+  const htmlTarea = t => `
+    <li class="tarea${t.hecha ? " hecha" : ""}">
+      <button class="check" aria-label="Marcar como hecha">${icono("i-check")}</button>
+      <span class="titulo">${t.titulo}</span>
+      <span class="prio" ${t.alta ? 'title="Prioridad alta"' : "hidden"}></span>
+      <span class="cat">${t.cat}</span>
+    </li>`;
+
+  const renderLista = (ul, filtro = "Todas", texto = "") => {
+    const n = ul.dataset.tareas === "all" ? Infinity : +ul.dataset.tareas;
+    const lista = ul._tareas || (ul._tareas = TAREAS.map(t => ({ ...t })));
+    const visibles = lista
+      .filter(t => filtro === "Todas" || t.cat === filtro)
+      .filter(t => !texto || t.titulo.toLowerCase().includes(texto.toLowerCase()))
+      .slice(0, n);
+    ul.innerHTML = visibles.map(htmlTarea).join("") || `<li class="tarea tenue">Nada coincide con “${texto}”</li>`;
+    ul.querySelectorAll(".check").forEach((b, i) => b.addEventListener("click", () => {
+      visibles[i].hecha = !visibles[i].hecha;
+      b.closest(".tarea").classList.toggle("hecha", visibles[i].hecha);
+    }));
+  };
+  document.querySelectorAll("[data-tareas]").forEach(ul => renderLista(ul));
+
+  /* ── Barra superior compartida ── */
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  document.querySelectorAll("[data-topbar]").forEach(tb => {
+    const conTareas = tb.hasAttribute("data-boton-tareas");
+    tb.outerHTML = `
+      <header class="tb">
+        <a class="marca" href="#"><svg><use href="#i-logo"/></svg>Doro</a>
+        <nav class="tb-nav"><a aria-current="page" href="#">Inicio</a><a href="#">Dashboard</a><a href="#">Calendario</a></nav>
+        <div class="tb-der">
+          ${conTareas ? `<button class="btn-tareas" data-abrir-cajon>Tareas <b>5</b></button>` : `<span class="hora" data-hora>${ahora()}</span>`}
+          <span class="avatar" aria-label="Tu cuenta">L</span>
+          <button class="menu" aria-label="Menú">${icono("i-menu")}</button>
+        </div>
+      </header>`;
+  });
+  setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Avisos dentro de cada maqueta ── */
+  const avisar = (app, texto) => {
+    const a = app.querySelector(".aviso");
+    a.textContent = texto; a.classList.add("ver");
+    clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2200);
+  };
+  const codigoDe = v => {
+    const m = v.trim().match(/([0-9a-f]{6,})\/?$/i);
+    return m ? m[1].toUpperCase() : null;
+  };
+  const salaFalsa = () => Math.random().toString(16).slice(2, 10).toUpperCase();
+
+  document.querySelectorAll("[data-app]").forEach(app => {
+    app.querySelectorAll("[data-crear]").forEach(b => b.addEventListener("click", () => avisar(app, `Sala ${salaFalsa()} creada → /room/… (demo)`)));
+    app.querySelectorAll("form[data-unirse]").forEach(f => f.addEventListener("submit", e => {
+      e.preventDefault();
+      const v = f.querySelector("input").value;
+      const c = codigoDe(v);
+      avisar(app, c ? `Entrando a la sala ${c}… (demo)` : "Ese link o código no parece válido");
+    }));
+    app.querySelectorAll("[data-mostrar]").forEach(b => b.addEventListener("click", () => {
+      const f = app.querySelector("#" + b.dataset.mostrar);
+      f.hidden = !f.hidden;
+      if (!f.hidden) f.querySelector("input").focus();
+    }));
+    app.querySelectorAll("[data-alta]").forEach(inp => inp.addEventListener("keydown", e => {
+      if (e.key !== "Enter" || !inp.value.trim()) return;
+      const ul = app.querySelector("[data-tareas]");
+      const texto = inp.value.trim();
+      const cat = (texto.match(/#(\S+)/) || [])[1];
+      ul._tareas.unshift({ titulo: texto.replace(/[!#]\S+/g, "").trim() || texto, cat: cat ? cat[0].toUpperCase() + cat.slice(1) : "General", alta: /!alta/i.test(texto), hecha: false });
+      inp.value = "";
+      renderLista(ul, app._filtro || "Todas");
+      if (app._pintarFiltro) app._pintarFiltro();
+    }));
+  });
+
+  /* ── C: filtro por categoría ── */
+  const appC = document.querySelector("#c [data-app]");
+  const filtroC = appC.querySelector("[data-filtro]");
+  const ulC = appC.querySelector("[data-tareas]");
+  appC._filtro = "Todas";
+  appC._pintarFiltro = () => {
+    const cats = ["Todas", ...new Set(ulC._tareas.map(t => t.cat))];
+    filtroC.innerHTML = cats.map(c => {
+      const n = c === "Todas" ? ulC._tareas.length : ulC._tareas.filter(t => t.cat === c).length;
+      return `<button aria-pressed="${c === appC._filtro}" data-cat="${c}">${c}<span>${n}</span></button>`;
+    }).join("");
+    filtroC.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      appC._filtro = b.dataset.cat; appC._pintarFiltro(); renderLista(ulC, appC._filtro);
+    }));
+  };
+  appC._pintarFiltro();
+
+  /* ── D: panel de tareas ── */
+  const appD = document.querySelector("#d [data-app]");
+  const cajon = appD.querySelector(".d-cajon");
+  appD.querySelector("[data-abrir-cajon]").addEventListener("click", () => cajon.classList.add("abierto"));
+  appD.querySelector("[data-cerrar]").addEventListener("click", () => cajon.classList.remove("abierto"));
+  appD.querySelector(".d-unirse").addEventListener("submit", () => {});
+
+  /* ── E: reloj que corre de verdad ── */
+  const appE = document.querySelector("#e [data-app]");
+  const reloj = appE.querySelector("[data-reloj]");
+  const play = appE.querySelector("[data-play]");
+  const nota = appE.querySelector("[data-nota]");
+  const sel = appE.querySelector("[data-select-tareas]");
+  sel.innerHTML = `<option>Sin tarea</option>` + TAREAS.filter(t => !t.hecha).map((t, i) => `<option ${i === 0 ? "selected" : ""}>${t.titulo}</option>`).join("");
+  let restante = 25 * 60, intervalo = null;
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  const pintarPlay = () => {
+    const corre = !!intervalo;
+    play.innerHTML = corre ? `${icono("i-pausa")}<span>Pausar</span>` : `${icono("i-play")}<span>${restante < currentMin() * 60 ? "Seguir" : "Empezar en una sala nueva"}</span>`;
+    reloj.classList.toggle("corriendo", corre);
+  };
+  const currentMin = () => +appE.querySelector(".e-modos [aria-pressed='true']").dataset.min;
+  play.addEventListener("click", () => {
+    if (intervalo) { clearInterval(intervalo); intervalo = null; }
+    else {
+      if (restante === currentMin() * 60) nota.textContent = "En la app, acá se crea la sala y el reloj sigue allá con el link listo.";
+      intervalo = setInterval(() => {
+        restante = Math.max(0, restante - 1); reloj.textContent = fmt(restante);
+        if (!restante) { clearInterval(intervalo); intervalo = null; pintarPlay(); }
+      }, 1000);
+    }
+    pintarPlay();
+  });
+  appE.querySelectorAll(".e-modos button").forEach(b => b.addEventListener("click", () => {
+    appE.querySelectorAll(".e-modos button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    clearInterval(intervalo); intervalo = null;
+    restante = +b.dataset.min * 60; reloj.textContent = fmt(restante); nota.textContent = "";
+    pintarPlay();
+  }));
+
+  /* ── F: salas recientes con estado en vivo ── */
+  const appF = document.querySelector("#f [data-app]");
+  const ulF = appF.querySelector("[data-f-salas]");
+  const SALAS = [
+    { id: "A3F9C21E", nombre: "Redes · grupo del TP", gente: ["M", "J", "A"], modo: "foco", restante: 18 * 60 + 42 },
+    { id: "7BD04E88", nombre: "Biblioteca virtual", gente: ["S", "L", "R", "+4"], modo: "descanso", restante: 3 * 60 + 10 },
+    { id: "C10E5A92", nombre: "AyD con Caro", gente: [], modo: "vacia", ultima: "ayer, 21:30" },
+  ];
+  const DURACION = { foco: 25 * 60, descanso: 5 * 60 };
+  const caras = g => g.length ? `<span class="f-caras" aria-label="${g.length} personas">${g.map(c => `<span class="f-cara">${c}</span>`).join("")}</span>` : "";
+  const estadoSala = s => s.modo === "vacia"
+    ? `<span class="f-modo"><span class="f-punto"></span>Sin nadie · última vez ${s.ultima}</span>`
+    : `<span class="f-modo"><span class="f-punto"></span>${s.modo === "foco" ? "En foco" : "En descanso"} · <span class="f-reloj" data-reloj-sala>${fmt(s.restante)}</span></span>${caras(s.gente)}`;
+  ulF.innerHTML = SALAS.map((s, i) => `
+    <li class="f-sala ${s.modo}" data-i="${i}">
+      <span class="f-nombre">${s.nombre}</span>
+      <span class="f-estado">${estadoSala(s)}</span>
+      <button class="btn btn-borde" data-entrar>${s.modo === "vacia" ? "Abrir" : "Entrar"}</button>
+    </li>`).join("");
+  ulF.querySelectorAll("[data-entrar]").forEach(b => b.addEventListener("click", () => {
+    const s = SALAS[+b.closest(".f-sala").dataset.i];
+    avisar(appF, `Entrando a ${s.nombre} → /room/${s.id} (demo)`);
+  }));
+  setInterval(() => SALAS.forEach((s, i) => {
+    if (s.modo === "vacia") return;
+    s.restante -= 1;
+    const li = ulF.querySelector(`[data-i="${i}"]`);
+    if (s.restante <= 0) {
+      s.modo = s.modo === "foco" ? "descanso" : "foco"; s.restante = DURACION[s.modo];
+      li.className = "f-sala " + s.modo; li.querySelector(".f-estado").innerHTML = estadoSala(s);
+    } else li.querySelector("[data-reloj-sala]").textContent = fmt(s.restante);
+  }), 1000);
+
+  /* ── Marcos redimensionables con presets y medida en vivo ── */
+  const PRESETS = [["Móvil", 390, 760], ["Tablet", 820, 760], ["Escritorio", 1180, 680]];
+  const opciones = [...document.querySelectorAll(".opcion")].filter(op => op.querySelector(".marco"));
+  opciones.forEach(op => {
+    const barra = op.querySelector("[data-barra]");
+    const marco = op.querySelector(".marco");
+    barra.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button class="btn-completa" data-completa>${icono("i-expandir")}Pantalla completa</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    const medida = barra.querySelector(".medida");
+    barra.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => {
+      marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px";
+      marco.style.height = b.dataset.h + "px";
+    }));
+    barra.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    new ResizeObserver(() => {
+      const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
+      medida.textContent = t;
+      if (op.classList.contains("completa")) mandoMedida.textContent = t;
+    }).observe(marco);
+  });
+
+  /* ── Pantalla completa: la maqueta ocupa toda la ventana; si el navegador deja, también la pantalla ── */
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true;
+  mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  mando.innerHTML = opciones.map(op => {
+    const letra = op.querySelector(".letra").textContent;
+    const nombre = op.querySelector("h2").textContent.slice(letra.length);
+    return `<button data-ir="${op.id}" title="${letra} · ${nombre}" aria-label="Boceto ${letra}, ${nombre}">${letra}</button>`;
+  }).join("") + `<span class="sep"></span><span class="medida"></span>
+    <button data-tema-rapido title="Claro / oscuro" aria-label="Cambiar entre claro y oscuro">${icono("i-tema")}</button>
+    <button data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${icono("i-x")}</button>`;
+  document.body.appendChild(mando);
+  const mandoMedida = mando.querySelector(".medida");
+  let actual = null;
+
+  const mostrar = op => {
+    if (actual) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco");
+    mandoMedida.textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  };
+  const abrirCompleta = op => {
+    raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op);
+    const pedido = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null;
+    if (pedido) pedido.catch(() => {}); /* sin permiso: queda ocupando la ventana */
+  };
+  const cerrarCompleta = () => {
+    if (!actual) return;
+    const op = actual;
+    actual.classList.remove("completa"); actual = null;
+    raiz.classList.remove("en-completa"); mando.hidden = true;
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    op.scrollIntoView({ block: "start" });
+  };
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelector("[data-salir]").addEventListener("click", cerrarCompleta);
+  mando.querySelector("[data-tema-rapido]").addEventListener("click", () => {
+    raiz.dataset.theme = esOscuro() ? "light" : "dark";
+    try { localStorage.setItem("doro-tema", raiz.dataset.theme); } catch (e) {}
+    pintarTema();
+  });
+  /* Esc del navegador sale de la pantalla real; salimos también de la maqueta */
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    const escribiendo = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "");
+    if (escribiendo || (e.key !== "ArrowRight" && e.key !== "ArrowLeft")) return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>
+
+</body></html>

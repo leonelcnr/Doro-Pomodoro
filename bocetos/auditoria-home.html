@@ -1,0 +1,1485 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Bocetos del home de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Geist:wght@400;500;600;700&display=swap">
+
+<style>
+/* ============================================================
+   TOKENS DEL BOCETO (el "banco de trabajo")
+   Deliberadamente distintos de los de la app, para que las
+   maquetas se lean como especímenes apoyados sobre una mesa y
+   no se confundan con el cromo de la página.
+   ============================================================ */
+:root {
+  --frame:        #e7e8ee;
+  --frame-2:      #f3f4f8;
+  --ink:          #17171d;
+  --ink-2:        #5d5d6b;
+  --ink-3:        #8a8a99;
+  --line:         #d3d4dd;
+  --line-2:       #c2c3ce;
+
+  --actual:       #a8483a;   /* rojo tierra: lo que hay hoy */
+  --actual-bg:    #f6e6e3;
+  --prop:         #0d6f68;   /* verde azulado: lo propuesto */
+  --prop-bg:      #ddefec;
+  --pick:         #7a5a12;   /* ocre: la recomendación */
+  --pick-bg:      #f7eed8;
+
+  --shadow: 0 1px 2px rgb(23 23 29 / .06), 0 8px 24px -12px rgb(23 23 29 / .18);
+
+  --display: "Familjen Grotesk", "Trebuchet MS", sans-serif;
+  --body: "Instrument Sans", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --frame:      #0e0e13;
+    --frame-2:    #17171e;
+    --ink:        #eaeaf2;
+    --ink-2:      #a0a0b2;
+    --ink-3:      #6f6f82;
+    --line:       #26262f;
+    --line-2:     #35353f;
+    --actual:     #e2938a;
+    --actual-bg:  #2c1a18;
+    --prop:       #62cfc4;
+    --prop-bg:    #0f2725;
+    --pick:       #dcbc72;
+    --pick-bg:    #2a2314;
+    --shadow: 0 1px 2px rgb(0 0 0 / .5), 0 10px 28px -14px rgb(0 0 0 / .8);
+  }
+}
+:root[data-theme="dark"] {
+  --frame:      #0e0e13;
+  --frame-2:    #17171e;
+  --ink:        #eaeaf2;
+  --ink-2:      #a0a0b2;
+  --ink-3:      #6f6f82;
+  --line:       #26262f;
+  --line-2:     #35353f;
+  --actual:     #e2938a;
+  --actual-bg:  #2c1a18;
+  --prop:       #62cfc4;
+  --prop-bg:    #0f2725;
+  --pick:       #dcbc72;
+  --pick-bg:    #2a2314;
+  --shadow: 0 1px 2px rgb(0 0 0 / .5), 0 10px 28px -14px rgb(0 0 0 / .8);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--frame);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 96px; }
+
+/* ---------- Cabecera ---------- */
+.top {
+  display: flex; flex-wrap: wrap; gap: 24px;
+  align-items: flex-end; justify-content: space-between;
+  padding: 48px 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.top h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -.028em;
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+.top p { margin: 0; color: var(--ink-2); max-width: 60ch; }
+.top .rama {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+  margin-top: 10px; display: block;
+}
+
+.themebtn {
+  font: 500 12px/1 var(--mono);
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 10px 14px; border-radius: 999px;
+  border: 1px solid var(--line-2); background: var(--frame-2);
+  color: var(--ink); cursor: pointer; white-space: nowrap;
+}
+.themebtn:hover { border-color: var(--ink-3); }
+.themebtn:focus-visible { outline: 2px solid var(--prop); outline-offset: 2px; }
+
+/* ---------- Secciones ---------- */
+section { padding-top: 56px; }
+.sec-head { max-width: 68ch; margin-bottom: 8px; }
+.sec-head h2 {
+  font-family: var(--display); font-weight: 600;
+  font-size: 26px; letter-spacing: -.02em; margin: 0 0 8px;
+}
+.sec-head p { margin: 0 0 12px; color: var(--ink-2); }
+
+.tells { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 4px; padding: 0; list-style: none; }
+.tells li {
+  font: 500 11px/1 var(--mono);
+  padding: 6px 9px; border-radius: 5px;
+  background: var(--actual-bg); color: var(--actual);
+  border: 1px solid color-mix(in oklab, var(--actual) 25%, transparent);
+}
+
+/* ---------- Barra de control ---------- */
+.ctrl {
+  display: flex; flex-wrap: wrap; gap: 22px 32px; align-items: flex-end;
+  margin: 22px 0 26px; padding: 16px 18px;
+  background: var(--frame-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.ctrl-item { display: flex; flex-direction: column; gap: 7px; }
+.ctrl-item > label,
+.ctrl-legend {
+  font: 500 10px/1 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+}
+.ctrl input[type="range"] { width: 190px; accent-color: var(--prop); }
+.ctrl-val { font: 500 13px/1 var(--mono); color: var(--ink); }
+
+.presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.presets button {
+  font: 500 12px/1 var(--mono);
+  padding: 8px 11px; border-radius: 6px;
+  border: 1px solid var(--line-2); background: transparent;
+  color: var(--ink-2); cursor: pointer;
+}
+.presets button:hover { color: var(--ink); border-color: var(--ink-3); }
+.presets button[aria-pressed="true"] {
+  background: var(--prop); border-color: var(--prop);
+  color: var(--frame-2);
+}
+.presets button:focus-visible { outline: 2px solid var(--prop); outline-offset: 2px; }
+
+/* ---------- Especímenes ---------- */
+.specs { display: grid; gap: 22px; }
+.spec {
+  background: var(--frame-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.spec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; margin-bottom: 14px; }
+.spec-head h3 {
+  font-family: var(--display); font-weight: 600;
+  font-size: 18px; letter-spacing: -.015em; margin: 0;
+}
+.spec-sum { flex: 1 1 320px; margin: 0; color: var(--ink-2); font-size: 14px; }
+
+.tag {
+  font: 700 10px/1 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 8px; border-radius: 4px; white-space: nowrap;
+}
+.tag-actual { background: var(--actual-bg); color: var(--actual); }
+.tag-prop   { background: var(--prop-bg);   color: var(--prop); }
+.tag-pick   { background: var(--pick-bg);   color: var(--pick); }
+
+/* La mesa donde se apoya la maqueta: cuadriculada, para que el
+   redimensionado se lea contra una referencia. */
+.stage {
+  position: relative;
+  padding: 14px 14px 30px;
+  border-radius: 10px;
+  background-color: var(--frame);
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--line) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--line) 55%, transparent) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* EL PUNTO TÉCNICO: contenedor real de container queries + resize a mano.
+   Es la misma técnica que tiene que usar el componente, así que un bug
+   de reflujo aparece acá y no en el navegador con el código ya escrito. */
+.frame {
+  container-type: inline-size;
+  container-name: home;
+  resize: horizontal;
+  overflow: auto;
+  width: 100%;
+  min-width: 300px;
+  max-width: 100%;
+  padding: 20px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+}
+.frame::-webkit-resizer { background: var(--line-2); }
+
+.size-out {
+  position: absolute; right: 16px; bottom: 8px;
+  font: 500 11px/1 var(--mono); color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.grab {
+  position: absolute; left: 16px; bottom: 8px;
+  font: 400 11px/1 var(--mono); color: var(--ink-3);
+}
+
+/* ---------- Notas gana / pierde ---------- */
+.notes { display: grid; gap: 10px 26px; margin: 16px 0 0; }
+@media (min-width: 720px) { .notes { grid-template-columns: 1fr 1fr; } }
+.notes > div { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+.notes dt {
+  font: 700 10px/1.7 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.notes .gana dt { color: var(--prop); }
+.notes .pierde dt { color: var(--actual); }
+.notes dd { margin: 0; font-size: 14px; color: var(--ink-2); }
+
+/* ============================================================
+   TOKENS REALES DE LA APP
+   Copiados de src/index.css para que las maquetas se vean como
+   la app y no como una aproximación.
+   ============================================================ */
+.app {
+  --bg:          oklch(1 0 0);
+  --fg:          oklch(.141 .005 285.823);
+  --card:        oklch(1 0 0);
+  --muted:       oklch(.967 .001 286.375);
+  --muted-fg:    oklch(.552 .016 285.938);
+  --border:      oklch(.92 .004 286.32);
+  /* Ojo: el --primary real lo define src/App.css, que se importa después de
+     index.css y le gana. Es violeta, no zinc. */
+  --primary:     oklch(.541 .281 293.009);
+  --primary-fg:  oklch(.969 .016 293.756);
+  --brand:       oklch(60.6% .25 292.717);
+  --brand-strong:oklch(54.1% .281 293.009);
+  --brand-fg:    oklch(.985 0 0);
+  --radius:      .625rem;
+
+  font-family: Geist, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .app {
+    --bg:        oklch(.141 .005 285.823);
+    --fg:        oklch(.985 0 0);
+    --card:      oklch(.21 .006 285.885);
+    --muted:     oklch(.274 .006 286.033);
+    --muted-fg:  oklch(.705 .015 286.067);
+    --border:    oklch(1 0 0 / 14%);
+    --primary:   oklch(51.239% .24794 301.697);
+    --primary-fg:oklch(.969 .016 293.756);
+    --brand:     oklch(70.2% .183 293.541);
+  }
+}
+:root[data-theme="dark"] .app {
+  --bg:        oklch(.141 .005 285.823);
+  --fg:        oklch(.985 0 0);
+  --card:      oklch(.21 .006 285.885);
+  --muted:     oklch(.274 .006 286.033);
+  --muted-fg:  oklch(.705 .015 286.067);
+  --border:    oklch(1 0 0 / 14%);
+  --primary:   oklch(51.239% .24794 301.697);
+  --primary-fg:oklch(.969 .016 293.756);
+  --brand:     oklch(70.2% .183 293.541);
+}
+
+/* ---------- Piezas compartidas de las maquetas ---------- */
+.hero { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
+@container home (min-width: 640px) {
+  .hero { flex-direction: row; align-items: center; text-align: left; }
+  .hero-body { align-items: flex-start; }
+  .hero-pills { justify-content: flex-start; }
+}
+.hero-body { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+.greet {
+  font-size: 24px; font-weight: 700; letter-spacing: -.025em;
+  margin: 0; line-height: 1.15;
+}
+@container home (min-width: 640px) { .greet { font-size: 30px; } }
+
+/* El tell: gradiente violeta con recorte de texto */
+.grad {
+  background-image: linear-gradient(to right, oklch(70.2% .183 293.541), oklch(54.1% .281 293.009));
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+
+.ringwrap { position: relative; flex-shrink: 0; }
+.ringwrap.s112 { width: 112px; height: 112px; }
+.ringwrap.s56  { width: 56px;  height: 56px; }
+.ring { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.ring-track { fill: none; stroke: var(--muted); }
+.ring-fill  { fill: none; stroke: var(--brand); stroke-linecap: round; transition: stroke-dashoffset .7s ease-out; }
+@media (prefers-reduced-motion: reduce) { .ring-fill { transition: none; } }
+.ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.ring-num { font-size: 20px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ring-sub { margin-top: 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-fg); }
+
+/* El tell: píldoras decorativas con ícono de color */
+.hero-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--border); background: var(--card);
+  border-radius: 999px; padding: 6px 12px;
+  font-size: 14px; color: var(--muted-fg);
+}
+.pill b { font-weight: 600; color: var(--fg); }
+.pill svg { width: 16px; height: 16px; }
+.i-flame { color: #f97316; }
+.i-check { color: #10b981; }
+
+/* Texto plano en lugar de píldoras */
+.meta-plain { margin: 0; font-size: 14px; color: var(--muted-fg); font-variant-numeric: tabular-nums; }
+.meta-plain b { font-weight: 600; color: var(--fg); }
+
+/* Variante barra */
+.hero-bar { display: flex; flex-direction: column; align-items: stretch; gap: 12px; text-align: left; }
+.bar-meta {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  font-size: 14px; color: var(--muted-fg); font-variant-numeric: tabular-nums;
+}
+.bar-meta b { font-weight: 600; color: var(--fg); }
+.bar { height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 999px; background: var(--brand); transition: width .7s ease-out; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+
+/* Variante compacta */
+.hero-compact { display: flex; flex-direction: row; align-items: center; gap: 14px; text-align: left; }
+.compact-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.compact-greet { font-size: 17px; font-weight: 600; letter-spacing: -.015em; }
+.compact-meta { font-size: 13px; color: var(--muted-fg); font-variant-numeric: tabular-nums; }
+.compact-meta b { font-weight: 600; color: var(--fg); }
+
+/* ---------- Maquetas de sala ---------- */
+.cards { display: grid; gap: 16px; }
+@container home (min-width: 640px) {
+  .cards.dos { grid-template-columns: 1fr 1fr; }
+  .cards.dostercios { grid-template-columns: 2fr 1fr; }
+}
+.card {
+  border: 1px solid var(--border); background: var(--card);
+  border-radius: var(--radius); padding: 24px;
+  display: flex; flex-direction: column;
+}
+.card h4 { font-size: 18px; font-weight: 700; letter-spacing: -.015em; margin: 0 0 8px; }
+.card p { margin: 0 0 20px; font-size: 14px; color: var(--muted-fg); flex-grow: 1; }
+
+/* El tell: ícono en cuadradito con fondo tenue */
+.iconbox {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: color-mix(in oklab, var(--brand) 10%, transparent);
+  color: var(--brand);
+}
+.iconbox svg { width: 20px; height: 20px; }
+.card-title { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.card-title h4 { margin: 0; }
+
+.btn {
+  font: 500 14px/1 Geist, system-ui, sans-serif;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid transparent; padding: 12px 18px;
+  background: var(--primary); color: var(--primary-fg);
+  cursor: pointer; text-align: center;
+}
+.btn.grande { padding: 18px; font-size: 15px; width: 100%; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--border); }
+.btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+.inp {
+  font: 400 14px/1 Geist, system-ui, sans-serif;
+  border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px);
+  padding: 12px 14px; background: var(--bg); color: var(--fg);
+  min-width: 0; width: 100%;
+}
+.inp::placeholder { color: var(--muted-fg); }
+.inp:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+.fila { display: flex; flex-direction: column; gap: 10px; }
+@container home (min-width: 520px) { .fila { flex-direction: row; } .fila .btn { flex-shrink: 0; } }
+
+/* Línea secundaria de "unirse" */
+.unirse-linea {
+  display: flex; flex-direction: column; gap: 10px;
+  padding-top: 16px; margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+@container home (min-width: 520px) {
+  .unirse-linea { flex-direction: row; align-items: center; }
+  .unirse-linea .inp { max-width: 220px; }
+}
+.unirse-linea .et { font-size: 14px; color: var(--muted-fg); white-space: nowrap; }
+
+.link-revelar {
+  background: none; border: 0; padding: 0;
+  font: 500 14px/1.4 Geist, system-ui, sans-serif;
+  color: var(--brand); cursor: pointer; text-align: left;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.link-revelar:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.revelado { display: none; margin-top: 14px; }
+.revelado[data-abierto="true"] { display: block; }
+
+/* ---------- Filtros de categoría ---------- */
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filtros button {
+  font: 500 13px/1 Geist, system-ui, sans-serif;
+  cursor: pointer; background: none; border: 0; color: inherit;
+}
+.filtros button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.cnt { font-variant-numeric: tabular-nums; }
+
+/* F0 · lo que hay hoy: cápsula rellena + cápsula adentro */
+.f-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px; padding: 7px 14px;
+  background: var(--muted); color: var(--fg);
+}
+.f-pill .cnt {
+  border-radius: 999px; padding: 1px 6px;
+  font-size: 10.5px; font-weight: 600;
+  background: var(--bg); color: var(--muted-fg);
+}
+.f-pill[aria-pressed="true"] {
+  background: var(--brand-strong); color: var(--brand-fg);
+  border-color: var(--brand-strong) !important;
+}
+.f-pill[aria-pressed="true"] .cnt { background: rgb(255 255 255 / .2); color: var(--brand-fg); }
+
+/* F1 · pestañas con subrayado */
+.f-tabs { gap: 22px; border-bottom: 1px solid var(--border); }
+.f-tab {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding: 0 0 10px; margin-bottom: -1px;
+  border-bottom: 2px solid transparent !important;
+  color: var(--muted-fg);
+}
+.f-tab .cnt { font-size: 12px; color: var(--muted-fg); }
+.f-tab[aria-pressed="true"] { color: var(--fg); font-weight: 600; border-bottom-color: var(--brand) !important; }
+.f-tab:hover { color: var(--fg); }
+
+/* F2 · texto plano */
+.f-txt { display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 0; color: var(--muted-fg); }
+.f-txt .cnt { font-size: 12px; opacity: .7; }
+.f-txt[aria-pressed="true"] { color: var(--fg); font-weight: 600; }
+.f-txt:hover { color: var(--fg); }
+.sep-filtro { color: var(--border); user-select: none; }
+
+/* F3 · cápsula solo en la activa */
+.f-solo {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  border-radius: 999px; padding: 6px 12px;
+  color: var(--muted-fg); background: transparent;
+}
+.f-solo .cnt { font-size: 12px; opacity: .75; }
+.f-solo[aria-pressed="true"] { background: var(--muted); color: var(--fg); font-weight: 600; }
+.f-solo:hover { color: var(--fg); }
+
+.resultado {
+  margin: 14px 0 0; font-size: 13px; color: var(--muted-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Réplica exacta de las pestañas de ámbito de PanelTareas.tsx:130 */
+.ctx { display: none; }
+.ctx[data-on="true"] { display: block; }
+.tabs-ambito {
+  display: flex; margin-bottom: 16px;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
+}
+.tabs-ambito button {
+  padding: 8px 16px; margin-bottom: -1px;
+  font: 500 14px/1.4 Geist, system-ui, sans-serif;
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: var(--muted-fg); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.tabs-ambito button[aria-pressed="true"] { border-bottom-color: var(--primary); color: var(--fg); }
+.tabs-ambito .aviso-nuevas {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 20px; min-width: 20px; padding: 0 4px; border-radius: 999px;
+  background: var(--brand-strong); color: var(--brand-fg);
+  font-size: 10px; font-weight: 700;
+}
+.marca-choque {
+  margin-top: 10px; padding: 8px 10px; border-radius: 6px;
+  font: 500 12px/1.4 var(--mono);
+  background: var(--actual-bg); color: var(--actual);
+}
+
+/* ---------- Aviso técnico ---------- */
+.aviso {
+  margin: 26px 0 0; padding: 16px 18px;
+  border-left: 3px solid var(--pick);
+  background: var(--pick-bg);
+  border-radius: 0 8px 8px 0;
+}
+.aviso h3 {
+  font: 700 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--pick); margin: 0 0 8px;
+}
+.aviso p { margin: 0 0 8px; font-size: 14px; }
+.aviso p:last-child { margin-bottom: 0; }
+.aviso code, .inline-code {
+  font: 500 12.5px/1.4 var(--mono);
+  background: color-mix(in oklab, var(--ink) 8%, transparent);
+  padding: 2px 5px; border-radius: 4px;
+}
+
+/* ---------- Tabla ---------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.tabla-wrap { overflow-x: auto; margin: 22px 0 0; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 620px; background: var(--frame-2); }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th {
+  font: 700 10px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-3); background: var(--frame);
+}
+tbody tr:last-child td { border-bottom: 0; }
+td.op { font-weight: 600; white-space: nowrap; }
+.si { color: var(--prop); font-weight: 700; }
+.no { color: var(--actual); font-weight: 700; }
+.mas { color: var(--ink-3); }
+
+/* ---------- Cierre ---------- */
+.reco { display: grid; gap: 18px; margin-top: 22px; }
+@media (min-width: 820px) { .reco { grid-template-columns: 1fr 1fr; } }
+.reco-card {
+  background: var(--frame-2); border: 1px solid var(--line);
+  border-left: 3px solid var(--pick);
+  border-radius: 0 12px 12px 0; padding: 20px;
+}
+.reco-card h3 { font-family: var(--display); font-size: 19px; font-weight: 600; margin: 10px 0 8px; letter-spacing: -.015em; }
+.reco-card p { margin: 0 0 10px; font-size: 14px; color: var(--ink-2); }
+.reco-card p:last-child { margin-bottom: 0; }
+.reco-card strong { color: var(--ink); }
+
+pre {
+  margin: 18px 0 0; padding: 18px;
+  background: var(--frame-2); border: 1px solid var(--line);
+  border-radius: 12px; overflow-x: auto;
+  font: 400 12.5px/1.65 var(--mono); color: var(--ink);
+  tab-size: 2;
+}
+pre .c { color: var(--ink-3); }
+pre .t { color: var(--prop); }
+pre .s { color: var(--actual); }
+
+footer {
+  margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+  font: 400 12px/1.7 var(--mono); color: var(--ink-3);
+}
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Bocetos del home</h1>
+      <p>
+        Grupo 2 de la auditoría: los tells de IA que no se podían arreglar sin decidir una
+        dirección primero. Cada maqueta corre de verdad, se estira a mano y responde al click.
+      </p>
+      <span class="rama">rama refactor/home-auditoria-diseno · sobre main 619217a · maquetas con los tokens reales de src/index.css</span>
+    </div>
+    <button class="themebtn" id="tema" type="button">Tema: sistema</button>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section>
+    <div class="sec-head">
+      <h2>1. El hero de enfoque</h2>
+      <p>
+        Hoy el hero tiene tres indicadores compitiendo, cinco colores de acento y un gradiente
+        violeta sobre tu nombre. Las tres alternativas se diferencian en cuánto consolidan.
+      </p>
+      <ul class="tells">
+        <li>G2-01 gradiente</li>
+        <li>G2-02 cinco acentos</li>
+        <li>G2-03 tres indicadores</li>
+        <li>G2-04 píldoras decorativas</li>
+      </ul>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-item">
+        <label for="hora">Hora del día</label>
+        <input type="range" id="hora" min="0" max="23" value="15">
+        <span class="ctrl-val" id="hora-val">15:00 · Buenas tardes</span>
+      </div>
+      <div class="ctrl-item">
+        <label for="mins">Enfoque de hoy</label>
+        <input type="range" id="mins" min="0" max="120" step="5" value="45">
+        <span class="ctrl-val" id="mins-val">45 min de 120</span>
+      </div>
+      <div class="ctrl-item">
+        <span class="ctrl-legend">Ancho del contenedor</span>
+        <div class="presets" id="presets-hero">
+          <button type="button" data-w="390">390 móvil</button>
+          <button type="button" data-w="620">620 estrecho</button>
+          <button type="button" data-w="760" aria-pressed="true">760 sidebar abierto</button>
+          <button type="button" data-w="0">Ancho total</button>
+        </div>
+      </div>
+      <div class="ctrl-item">
+        <span class="ctrl-legend">Reloj</span>
+        <span class="ctrl-val" id="reloj">--:--:--</span>
+      </div>
+    </div>
+
+    <div class="specs">
+
+      <!-- H0 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-actual">Actual</span>
+          <h3>Anillo + saludo + dos píldoras</h3>
+          <p class="spec-sum">Lo que hay hoy en <code class="inline-code">main</code>, ya con el grupo 1 aplicado.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="hero">
+              <div class="ringwrap s112">
+                <svg class="ring" viewBox="0 0 112 112" data-ring data-r="46" data-sw="9" role="img" aria-label="Progreso de enfoque de hoy">
+                  <circle class="ring-track" cx="56" cy="56" r="46" stroke-width="9"></circle>
+                  <circle class="ring-fill"  cx="56" cy="56" r="46" stroke-width="9"></circle>
+                </svg>
+                <div class="ring-center">
+                  <span class="ring-num" data-mins-short>45m</span>
+                  <span class="ring-sub">de 2h</span>
+                </div>
+              </div>
+              <div class="hero-body">
+                <h1 class="greet"><span data-greet>Buenas tardes</span>, <span class="grad">Leo</span></h1>
+                <div class="hero-pills">
+                  <span class="pill">
+                    <svg class="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    <b>3</b> días de racha
+                  </span>
+                  <span class="pill">
+                    <svg class="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    <b>2</b> tareas hoy
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>La racha se siente como un premio: tiene ícono, color y borde propio.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Cuatro acentos (violeta, naranja, esmeralda, y el gradiente) sobre una paleta zinc. Nada manda.</dd></div>
+        </dl>
+      </article>
+
+      <!-- H1 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta A</span>
+          <h3>Anillo protagonista</h3>
+          <p class="spec-sum">El anillo es lo único con color; racha y tareas bajan a una línea de texto.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="hero">
+              <div class="ringwrap s112">
+                <svg class="ring" viewBox="0 0 112 112" data-ring data-r="46" data-sw="9" role="img" aria-label="Progreso de enfoque de hoy">
+                  <circle class="ring-track" cx="56" cy="56" r="46" stroke-width="9"></circle>
+                  <circle class="ring-fill"  cx="56" cy="56" r="46" stroke-width="9"></circle>
+                </svg>
+                <div class="ring-center">
+                  <span class="ring-num" data-mins-short>45m</span>
+                  <span class="ring-sub">de 2h</span>
+                </div>
+              </div>
+              <div class="hero-body">
+                <h1 class="greet"><span data-greet>Buenas tardes</span>, Leo</h1>
+                <p class="meta-plain"><b>3</b> días seguidos · <b>2</b> tareas completadas hoy</p>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Conserva el anillo, que es la única metáfora de Pomodoro del home. Un solo acento, el de marca.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>La racha deja de ser un objeto con premio visual y pasa a ser un dato más.</dd></div>
+        </dl>
+      </article>
+
+      <!-- H2 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta B</span>
+          <h3>Barra editorial</h3>
+          <p class="spec-sum">Sin anillo: el saludo manda y el progreso es una barra a todo el ancho.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="hero-bar">
+              <h1 class="greet"><span data-greet>Buenas tardes</span>, Leo</h1>
+              <div class="bar-meta">
+                <span><b data-mins-long>45 min</b> de enfoque hoy</span>
+                <span>meta 2 h</span>
+              </div>
+              <div class="bar"><i data-bar style="width:37.5%"></i></div>
+              <p class="meta-plain"><b>3</b> días seguidos · <b>2</b> tareas completadas hoy</p>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Escala igual de bien a 390px que a 1400px: no hay que reacomodar nada. Cero decoración.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Se va el anillo. El home queda sin ninguna señal visual de que la app es un Pomodoro.</dd></div>
+        </dl>
+      </article>
+
+      <!-- H3 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta C</span>
+          <h3>Compacto en línea</h3>
+          <p class="spec-sum">El hero deja de ser un hero: una fila de 64px y las salas suben a la primera pantalla.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="hero-compact">
+              <div class="ringwrap s56">
+                <svg class="ring" viewBox="0 0 56 56" data-ring data-r="22" data-sw="5" role="img" aria-label="Progreso de enfoque de hoy">
+                  <circle class="ring-track" cx="28" cy="28" r="22" stroke-width="5"></circle>
+                  <circle class="ring-fill"  cx="28" cy="28" r="22" stroke-width="5"></circle>
+                </svg>
+              </div>
+              <div class="compact-body">
+                <span class="compact-greet"><span data-greet>Buenas tardes</span>, Leo</span>
+                <span class="compact-meta"><b data-mins-short>45m</b> de 2h · <b>3</b> días seguidos · <b>2</b> tareas hoy</span>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Recupera unos 130px de scroll. Crear sala y las tareas entran en la primera pantalla del portátil.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Desaparece el momento de bienvenida. El progreso del día se vuelve un dato al pasar.</dd></div>
+        </dl>
+      </article>
+
+    </div>
+
+    <div class="aviso">
+      <h3>Bug encontrado al hacer el boceto</h3>
+      <p>
+        Estas maquetas reflowean con <code>@container home (min-width: 640px)</code>, que es la
+        técnica correcta acá. <strong>El componente real no lo hace:</strong>
+        <code>HeroEnfoque.tsx</code> usa <code>sm:flex-row</code>, que mide el <em>viewport</em>,
+        mientras vive dentro del <code>@container/main</code> que declara <code>Home.tsx</code>.
+      </p>
+      <p>
+        Consecuencia concreta: con la sidebar abierta en una pantalla de 1000px el contenido baja a
+        unos 700px, pero <code>sm:</code> sigue viendo 1000 y mantiene la fila horizontal apretada.
+        Arrastrá cualquier maqueta por debajo de 640px y vas a ver el reflujo que el código hoy
+        <em>no</em> hace. Se arregla cambiando <code>sm:</code> por <code>@md:</code> en ese componente.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= SALA ================= -->
+  <section>
+    <div class="sec-head">
+      <h2>2. Crear o unirse a una sala</h2>
+      <p>
+        Dos tarjetas gemelas para dos acciones que no pesan igual: crear es el camino principal,
+        unirse solo aplica si alguien ya te pasó un código, y la mayoría llega por link de invitación
+        sin tipear nada.
+      </p>
+      <ul class="tells">
+        <li>G2-05 simetría falsa</li>
+        <li>G2-06 ícono en cuadradito</li>
+        <li>G2-07 ArrowRight = "unirse"</li>
+      </ul>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-item">
+        <span class="ctrl-legend">Ancho del contenedor</span>
+        <div class="presets" id="presets-sala">
+          <button type="button" data-w="390">390 móvil</button>
+          <button type="button" data-w="620">620 estrecho</button>
+          <button type="button" data-w="760" aria-pressed="true">760 sidebar abierto</button>
+          <button type="button" data-w="0">Ancho total</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="specs">
+
+      <!-- S0 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-actual">Actual</span>
+          <h3>Dos tarjetas gemelas</h3>
+          <p class="spec-sum">Mismo tamaño, mismo cuadradito de ícono, mismo peso visual.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="cards dos">
+              <div class="card">
+                <div class="card-title">
+                  <span class="iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></span>
+                  <h4>Nueva sala</h4>
+                </div>
+                <p>Iniciá una sesión de Pomodoro y obtené un enlace para compartir con tus amigos.</p>
+                <button class="btn grande" type="button">Crear sala</button>
+              </div>
+              <div class="card">
+                <div class="card-title">
+                  <span class="iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                  <h4>Unirse a sala</h4>
+                </div>
+                <p>¿Ya tenés una invitación? Introducí el código de la sala para unirte a una sesión existente.</p>
+                <div class="fila">
+                  <input class="inp" type="text" placeholder="Código de sala (Ej: 0852EF11)" aria-label="Código de sala">
+                  <button class="btn ghost" type="button">Unirse</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Las dos acciones son igual de descubribles. Nadie se pierde.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>La simetría dice que las dos pesan igual, y no es cierto. Duplica el cromo.</dd></div>
+        </dl>
+      </article>
+
+      <!-- S1 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta A</span>
+          <h3>Primaria con línea secundaria</h3>
+          <p class="spec-sum">Una tarjeta para crear; unirse baja a una línea con el campo inline.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="card">
+              <h4>Nueva sala</h4>
+              <p>Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.</p>
+              <button class="btn grande" type="button">Crear sala</button>
+              <div class="unirse-linea">
+                <span class="et">¿Tenés un código?</span>
+                <input class="inp" type="text" placeholder="0852EF11" aria-label="Código de sala">
+                <button class="btn ghost" type="button">Unirse</button>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>La jerarquía visual coincide con la real. Un solo borde en vez de dos, sin cuadraditos de ícono.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Unirse queda visualmente por debajo. Para quien llega con un código a mano, un escalón más.</dd></div>
+        </dl>
+      </article>
+
+      <!-- S2 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta B</span>
+          <h3>Acción única con revelado</h3>
+          <p class="spec-sum">Solo "Crear sala". El campo de código aparece al pedirlo.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="card">
+              <h4>Nueva sala</h4>
+              <p>Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.</p>
+              <button class="btn grande" type="button">Crear sala</button>
+              <div class="unirse-linea" style="border-top:0; padding-top:14px;">
+                <button class="link-revelar" type="button" data-revelar>Tengo un código de invitación</button>
+              </div>
+              <div class="revelado" data-panel>
+                <div class="fila">
+                  <input class="inp" type="text" placeholder="0852EF11" aria-label="Código de sala">
+                  <button class="btn ghost" type="button">Unirse</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Lo más limpio de los cuatro. Una sola decisión en pantalla.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Un click extra y un estado más que mantener. Malo si mucha gente entra tipeando el código.</dd></div>
+        </dl>
+      </article>
+
+      <!-- S3 -->
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta C</span>
+          <h3>Asimétrica 2 a 1</h3>
+          <p class="spec-sum">Siguen siendo dos tarjetas, pero crear ocupa el doble.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="cards dostercios">
+              <div class="card">
+                <h4>Nueva sala</h4>
+                <p>Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.</p>
+                <button class="btn grande" type="button">Crear sala</button>
+              </div>
+              <div class="card">
+                <h4>Unirse</h4>
+                <p>Con el código que te pasaron.</p>
+                <div class="fila" style="flex-direction:column">
+                  <input class="inp" type="text" placeholder="0852EF11" aria-label="Código de sala">
+                  <button class="btn ghost" type="button">Unirse</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="grab">↔ arrastrá la esquina</span>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Rompe la simetría sin esconder nada. El cambio más chico respecto de lo que ya hay.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Siguen siendo dos tarjetas: dos bordes, dos títulos, dos bloques de texto.</dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= FILTROS ================= -->
+  <section>
+    <div class="sec-head">
+      <h2>3. El filtro por categoría</h2>
+      <p>
+        Los chips que están arriba de la tabla. Son un <em>control</em> (elegís qué lista ves)
+        pero están vestidos de <em>etiqueta</em>. Hacé clic en cualquiera: los cuatro filtran de verdad.
+      </p>
+      <ul class="tells">
+        <li>cápsula dentro de cápsula</li>
+        <li>relleno violeta sólido</li>
+        <li>animación de barrido</li>
+        <li>bg-white/20 sin token</li>
+      </ul>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-item">
+        <span class="ctrl-legend">Contexto</span>
+        <div class="presets" id="presets-ctx">
+          <button type="button" data-ctx-on="false" aria-pressed="true">Home</button>
+          <button type="button" data-ctx-on="true">Dentro de una sala</button>
+        </div>
+      </div>
+      <div class="ctrl-item">
+        <span class="ctrl-legend">Por qué importa</span>
+        <span class="ctrl-val" style="font-family:var(--body);font-size:13px;font-weight:400;color:var(--ink-2);max-width:46ch">
+          En la sala, PanelTareas ya pone pestañas de ámbito justo arriba de este filtro.
+        </span>
+      </div>
+    </div>
+
+    <div class="specs">
+
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-actual">Actual</span>
+          <h3>Cápsulas con contador adentro</h3>
+          <p class="spec-sum">La activa se rellena de violeta y el contador es otra cápsula dentro de la primera.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="ctx" data-ctx>
+              <div class="tabs-ambito">
+                <button type="button" aria-pressed="false">Mis Tareas</button>
+                <button type="button" aria-pressed="true">Tareas de la Sala <span class="aviso-nuevas">2</span></button>
+              </div>
+            </div>
+            <div class="filtros" data-filtro data-clase="f-pill">
+              <button type="button" class="f-pill" aria-pressed="true"  data-n="12">Todas <span class="cnt">12</span></button>
+              <button type="button" class="f-pill" aria-pressed="false" data-n="5">Estudio <span class="cnt">5</span></button>
+              <button type="button" class="f-pill" aria-pressed="false" data-n="4">Trabajo <span class="cnt">4</span></button>
+              <button type="button" class="f-pill" aria-pressed="false" data-n="3">Personal <span class="cnt">3</span></button>
+            </div>
+            <p class="resultado" data-res>Mostrando 12 de 12 tareas</p>
+          </div>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>La categoría activa se ve desde lejos, sin ninguna duda.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Cinco cápsulas en fila más una anidada en cada una. Y el violeta acá compite con el del anillo del hero.</dd></div>
+        </dl>
+      </article>
+
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-actual">Descartada</span>
+          <h3>Pestañas con subrayado</h3>
+          <p class="spec-sum">Choca con las pestañas de ámbito que PanelTareas ya tiene arriba. Prendé "Dentro de una sala" para verlo.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="ctx" data-ctx>
+              <div class="tabs-ambito">
+                <button type="button" aria-pressed="false">Mis Tareas</button>
+                <button type="button" aria-pressed="true">Tareas de la Sala <span class="aviso-nuevas">2</span></button>
+              </div>
+            </div>
+            <div class="filtros f-tabs" data-filtro data-clase="f-tab">
+              <button type="button" class="f-tab" aria-pressed="true"  data-n="12">Todas <span class="cnt">12</span></button>
+              <button type="button" class="f-tab" aria-pressed="false" data-n="5">Estudio <span class="cnt">5</span></button>
+              <button type="button" class="f-tab" aria-pressed="false" data-n="4">Trabajo <span class="cnt">4</span></button>
+              <button type="button" class="f-tab" aria-pressed="false" data-n="3">Personal <span class="cnt">3</span></button>
+            </div>
+            <p class="resultado" data-res>Mostrando 12 de 12 tareas</p>
+            <p class="marca-choque ctx" data-ctx>↑ dos barras de pestañas subrayadas, una encima de la otra</p>
+          </div>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>La forma dice lo que el control hace. Cero cápsulas, y el subrayado ancla la barra a la tabla de abajo.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>En la sala duplica una barra idéntica, y le da a la categoría el mismo peso que al ámbito cuando es un refinamiento dentro de él.</dd></div>
+        </dl>
+      </article>
+
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-prop">Propuesta A</span>
+          <h3>Texto plano</h3>
+          <p class="spec-sum">Lo más liviano posible: la activa en negrita, el resto en gris.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="ctx" data-ctx>
+              <div class="tabs-ambito">
+                <button type="button" aria-pressed="false">Mis Tareas</button>
+                <button type="button" aria-pressed="true">Tareas de la Sala <span class="aviso-nuevas">2</span></button>
+              </div>
+            </div>
+            <div class="filtros" data-filtro data-clase="f-txt">
+              <button type="button" class="f-txt" aria-pressed="true"  data-n="12">Todas <span class="cnt">12</span></button>
+              <span class="sep-filtro" aria-hidden="true">/</span>
+              <button type="button" class="f-txt" aria-pressed="false" data-n="5">Estudio <span class="cnt">5</span></button>
+              <span class="sep-filtro" aria-hidden="true">/</span>
+              <button type="button" class="f-txt" aria-pressed="false" data-n="4">Trabajo <span class="cnt">4</span></button>
+              <span class="sep-filtro" aria-hidden="true">/</span>
+              <button type="button" class="f-txt" aria-pressed="false" data-n="3">Personal <span class="cnt">3</span></button>
+            </div>
+            <p class="resultado" data-res>Mostrando 12 de 12 tareas</p>
+          </div>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Desaparece como elemento y deja toda la atención en las tareas. Ocupa la mitad de alto.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>No parece clicable hasta que pasás el mouse. El área de click es chica en móvil.</dd></div>
+        </dl>
+      </article>
+
+      <article class="spec">
+        <div class="spec-head">
+          <span class="tag tag-pick">Propuesta B · elegida</span>
+          <h3>Cápsula solo en la activa</h3>
+          <p class="spec-sum">Conserva la píldora, pero hay una sola en pantalla y es gris, no violeta.</p>
+        </div>
+        <div class="stage">
+          <div class="frame app" data-frame>
+            <div class="ctx" data-ctx>
+              <div class="tabs-ambito">
+                <button type="button" aria-pressed="false">Mis Tareas</button>
+                <button type="button" aria-pressed="true">Tareas de la Sala <span class="aviso-nuevas">2</span></button>
+              </div>
+            </div>
+            <div class="filtros" data-filtro data-clase="f-solo">
+              <button type="button" class="f-solo" aria-pressed="true"  data-n="12">Todas <span class="cnt">12</span></button>
+              <button type="button" class="f-solo" aria-pressed="false" data-n="5">Estudio <span class="cnt">5</span></button>
+              <button type="button" class="f-solo" aria-pressed="false" data-n="4">Trabajo <span class="cnt">4</span></button>
+              <button type="button" class="f-solo" aria-pressed="false" data-n="3">Personal <span class="cnt">3</span></button>
+            </div>
+            <p class="resultado" data-res>Mostrando 12 de 12 tareas</p>
+          </div>
+          <output class="size-out" data-size>— px</output>
+        </div>
+        <dl class="notes">
+          <div class="gana"><dt>Gana</dt><dd>Se distingue de las pestañas de arriba y se lee como lo que es: un refinamiento dentro del ámbito ya elegido. Una sola cápsula, y gris, así el violeta queda libre.</dd></div>
+          <div class="pierde"><dt>Pierde</dt><dd>Las inactivas no gritan que son botones. Necesita un hover claro.</dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= CIERRE ================= -->
+  <section>
+    <div class="sec-head">
+      <h2>4. Comparativa y recomendación</h2>
+      <p>Qué tell resuelve cada opción, y cuánto cuesta implementarla.</p>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <caption class="sr-only">Comparativa de las opciones del hero y de las salas</caption>
+        <thead>
+          <tr>
+            <th scope="col">Opción</th>
+            <th scope="col">Tells que resuelve</th>
+            <th scope="col">Acentos</th>
+            <th scope="col">Alto del bloque</th>
+            <th scope="col">Costo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="op">Hero · Actual</td>
+            <td><span class="no">ninguno</span></td>
+            <td>4</td>
+            <td>~180 px</td>
+            <td class="mas">—</td>
+          </tr>
+          <tr>
+            <td class="op">Hero A · Anillo protagonista</td>
+            <td><span class="si">01 · 02 · 03 · 04</span></td>
+            <td>1</td>
+            <td>~150 px</td>
+            <td>Borrar el gradiente y las píldoras. Una línea de texto nueva.</td>
+          </tr>
+          <tr>
+            <td class="op">Hero B · Barra editorial</td>
+            <td><span class="si">01 · 02 · 03 · 04</span></td>
+            <td>1</td>
+            <td>~140 px</td>
+            <td>Reescribir el componente entero. Se tira el SVG del anillo.</td>
+          </tr>
+          <tr>
+            <td class="op">Hero C · Compacto</td>
+            <td><span class="si">01 · 02 · 03 · 04</span></td>
+            <td>1</td>
+            <td>~64 px</td>
+            <td>Reescribir el componente. Hay que rehacer el esqueleto de carga.</td>
+          </tr>
+          <tr>
+            <td class="op">Filtro · Actual</td>
+            <td><span class="no">ninguno</span></td>
+            <td>1</td>
+            <td>~34 px</td>
+            <td class="mas">—</td>
+          </tr>
+          <tr>
+            <td class="op">Filtro · Pestañas</td>
+            <td><span class="no">choca con PanelTareas</span></td>
+            <td>1 (subrayado)</td>
+            <td>~34 px</td>
+            <td class="mas">descartada</td>
+          </tr>
+          <tr>
+            <td class="op">Filtro A · Texto plano</td>
+            <td><span class="si">cápsulas · relleno · barrido</span></td>
+            <td>0</td>
+            <td>~22 px</td>
+            <td>Lo mismo, más simple todavía.</td>
+          </tr>
+          <tr>
+            <td class="op">Filtro B · Solo la activa</td>
+            <td><span class="si">relleno · barrido</span> <span class="no">cápsula no</span></td>
+            <td>0</td>
+            <td>~32 px</td>
+            <td>Solo cambian clases condicionales.</td>
+          </tr>
+          <tr>
+            <td class="op">Sala · Actual</td>
+            <td><span class="no">ninguno</span></td>
+            <td>1</td>
+            <td>~230 px</td>
+            <td class="mas">—</td>
+          </tr>
+          <tr>
+            <td class="op">Sala A · Primaria + línea</td>
+            <td><span class="si">05 · 06 · 07</span></td>
+            <td>0</td>
+            <td>~250 px</td>
+            <td>Un solo <code class="inline-code">Card</code>. Se va el grid y los dos cuadraditos.</td>
+          </tr>
+          <tr>
+            <td class="op">Sala B · Revelado</td>
+            <td><span class="si">05 · 06 · 07</span></td>
+            <td>1</td>
+            <td>~215 px</td>
+            <td>Un <code class="inline-code">useState</code> más y foco al revelar.</td>
+          </tr>
+          <tr>
+            <td class="op">Sala C · Asimétrica</td>
+            <td><span class="si">05 · 06</span> <span class="no">07 no</span></td>
+            <td>0</td>
+            <td>~230 px</td>
+            <td>Cambiar la clase del grid y sacar los íconos.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reco">
+      <div class="reco-card">
+        <span class="tag tag-pick">Elegiría</span>
+        <h3>Hero A · Anillo protagonista</h3>
+        <p>
+          Resuelve los cuatro tells y es la única que <strong>no tira el anillo</strong>. Ese arco es la
+          única cosa del home que dice visualmente "esto es un Pomodoro"; B y C lo sacrifican por
+          limpieza y quedan indistinguibles de cualquier app de tareas.
+        </p>
+        <p>
+          Es además el cambio más barato: borrar el <code>span</code> del gradiente, borrar las dos
+          píldoras y poner una línea de texto. El SVG, el <code>aria-label</code> y el esqueleto de
+          carga que ya escribimos quedan intactos.
+        </p>
+        <p>
+          <strong>Si te importa más el scroll que la bienvenida</strong>, C es la respuesta correcta:
+          recupera 130px y mete las salas en la primera pantalla. Pero es un cambio de producto, no
+          de estética.
+        </p>
+      </div>
+      <div class="reco-card">
+        <span class="tag tag-pick">Elegiría</span>
+        <h3>Sala A · Primaria con línea secundaria</h3>
+        <p>
+          Es la única que hace coincidir la jerarquía visual con la real. Y el dato que la justifica
+          es del propio código: existen <code>InvitacionPage</code> y <code>parsearInvitacion</code>,
+          o sea que <strong>el camino normal de un invitado es un link, no tipear un código</strong>.
+          Si tipear es la excepción, no merece media pantalla.
+        </p>
+        <p>
+          De yapa mata el <code>ArrowRight</code> y los dos cuadraditos de ícono sin tener que
+          elegirles reemplazo.
+        </p>
+        <p>
+          <strong>C es el plan conservador</strong> si te preocupa que unirse pierda visibilidad:
+          rompe la simetría con un cambio de una clase, aunque deja el segundo borde en pie.
+        </p>
+      </div>
+      <div class="reco-card">
+        <span class="tag tag-pick">Elegiría</span>
+        <h3>Filtro B · Cápsula solo en la activa</h3>
+        <p>
+          <strong>Las pestañas quedaron descartadas.</strong> En la sala, <code>PanelTareas.tsx:130</code>
+          ya usa exactamente ese patrón para elegir ámbito (Mis Tareas / Tareas de la Sala), y el
+          filtro de categoría se renderiza justo debajo. Serían dos barras idénticas queriendo
+          decir cosas distintas.
+        </p>
+        <p>
+          Hay un argumento más fuerte que la duplicación: el ámbito es el eje principal y la
+          categoría es un refinamiento <em>dentro</em> del ámbito elegido. Darles la misma forma
+          les daría el mismo peso, y la jerarquía quedaría plana.
+        </p>
+        <p>
+          La cápsula única resuelve los cuatro tells igual (se va la cápsula anidada, el relleno
+          violeta, el barrido y el <code>bg-white/20</code>) y encima se lee como secundaria
+          respecto de las pestañas de arriba. <strong>Si querés todavía menos peso</strong>, la A
+          de texto plano también funciona; el riesgo es que no parezca clicable.
+        </p>
+      </div>
+    </div>
+
+    <pre><span class="c">// HeroEnfoque.tsx — Propuesta A. El bloque completo que cambia.</span>
+<span class="c">// Antes: h1 con gradiente + dos píldoras con ícono de color.</span>
+&lt;<span class="t">div</span> className=<span class="s">"flex flex-col items-center gap-2 @md:items-start"</span>&gt;
+  &lt;<span class="t">h1</span> className=<span class="s">"text-2xl font-bold tracking-tight @md:text-3xl"</span>&gt;
+    {saludo}{nombre &amp;&amp; <span class="s">`, ${nombre}`</span>}
+  &lt;/<span class="t">h1</span>&gt;
+  &lt;<span class="t">p</span> className=<span class="s">"text-sm text-muted-foreground tabular-nums"</span>&gt;
+    &lt;<span class="t">b</span> className=<span class="s">"font-semibold text-foreground"</span>&gt;{racha}&lt;/<span class="t">b</span>&gt;{<span class="s">" "</span>}
+    {racha === 1 ? <span class="s">"día seguido"</span> : <span class="s">"días seguidos"</span>} ·{<span class="s">" "</span>}
+    &lt;<span class="t">b</span> className=<span class="s">"font-semibold text-foreground"</span>&gt;{tareasHoy}&lt;/<span class="t">b</span>&gt;{<span class="s">" "</span>}
+    {tareasHoy === 1 ? <span class="s">"tarea completada"</span> : <span class="s">"tareas completadas"</span>}
+  &lt;/<span class="t">p</span>&gt;
+&lt;/<span class="t">div</span>&gt;
+
+<span class="c">// Y el reflujo, que hoy está roto: sm: mide el viewport, @md: mide</span>
+<span class="c">// el @container/main que ya declara Home.tsx. Cambiar en toda la sección:</span>
+<span class="c">//   sm:flex-row  →  @md:flex-row</span>
+<span class="c">//   sm:text-3xl  →  @md:text-3xl</span>
+<span class="c">//   sm:items-start sm:text-left  →  @md:items-start @md:text-left</span></pre>
+  </section>
+
+  <footer>
+    Doro Pomodoro · boceto del grupo 2 de la auditoría del home ·
+    maquetas construidas con los tokens de src/index.css y container queries reales
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Tema ---------- */
+  var raiz = document.documentElement;
+  var btnTema = document.getElementById("tema");
+  var estados = ["sistema", "light", "dark"];
+  var etiquetas = { sistema: "Tema: sistema", light: "Tema: claro", dark: "Tema: oscuro" };
+  var iTema = 0;
+  btnTema.addEventListener("click", function () {
+    iTema = (iTema + 1) % estados.length;
+    var e = estados[iTema];
+    if (e === "sistema") raiz.removeAttribute("data-theme");
+    else raiz.setAttribute("data-theme", e);
+    btnTema.textContent = etiquetas[e];
+  });
+
+  /* ---------- Saludo y progreso ---------- */
+  var META = 120;
+  var elHora = document.getElementById("hora");
+  var elMins = document.getElementById("mins");
+  var salidaHora = document.getElementById("hora-val");
+  var salidaMins = document.getElementById("mins-val");
+
+  function saludoDe(h) {
+    if (h >= 6 && h < 13) return "Buenos días";
+    if (h >= 13 && h < 20) return "Buenas tardes";
+    return "Buenas noches";
+  }
+  function compacto(m) {
+    if (m < 60) return m + "m";
+    var h = Math.floor(m / 60), r = m % 60;
+    return r === 0 ? h + "h" : h + "h" + r;
+  }
+  function largo(m) {
+    if (m < 60) return m + " min";
+    var h = Math.floor(m / 60), r = m % 60;
+    return r === 0 ? h + " h" : h + " h " + r;
+  }
+
+  function pintar() {
+    var h = parseInt(elHora.value, 10);
+    var m = parseInt(elMins.value, 10);
+    var saludo = saludoDe(h);
+    var progreso = Math.min(m / META, 1);
+
+    salidaHora.textContent = String(h).padStart(2, "0") + ":00 · " + saludo;
+    salidaMins.textContent = m + " min de " + META;
+
+    document.querySelectorAll("[data-greet]").forEach(function (n) { n.textContent = saludo; });
+    document.querySelectorAll("[data-mins-short]").forEach(function (n) { n.textContent = compacto(m); });
+    document.querySelectorAll("[data-mins-long]").forEach(function (n) { n.textContent = largo(m); });
+    document.querySelectorAll("[data-bar]").forEach(function (n) { n.style.width = (progreso * 100).toFixed(1) + "%"; });
+
+    document.querySelectorAll("[data-ring]").forEach(function (svg) {
+      var r = parseFloat(svg.getAttribute("data-r"));
+      var circ = 2 * Math.PI * r;
+      var fill = svg.querySelector(".ring-fill");
+      fill.style.strokeDasharray = circ.toFixed(2);
+      fill.style.strokeDashoffset = (circ * (1 - progreso)).toFixed(2);
+      svg.setAttribute("aria-label", m + " minutos de enfoque hoy de una meta de " + META);
+    });
+  }
+  elHora.addEventListener("input", pintar);
+  elMins.addEventListener("input", pintar);
+
+  /* ---------- Reloj vivo ---------- */
+  var elReloj = document.getElementById("reloj");
+  function tic() {
+    var d = new Date();
+    elReloj.textContent =
+      String(d.getHours()).padStart(2, "0") + ":" +
+      String(d.getMinutes()).padStart(2, "0") + ":" +
+      String(d.getSeconds()).padStart(2, "0");
+  }
+  tic();
+  setInterval(tic, 1000);
+
+  /* ---------- Medición viva de cada contenedor ---------- */
+  var obs = new ResizeObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      var salida = e.target.parentElement.querySelector("[data-size]");
+      if (salida) salida.textContent = Math.round(e.contentRect.width + 40) + " px";
+    });
+  });
+  document.querySelectorAll("[data-frame]").forEach(function (f) { obs.observe(f); });
+
+  /* ---------- Presets de ancho ---------- */
+  function conectarPresets(idGrupo, seccion) {
+    var grupo = document.getElementById(idGrupo);
+    if (!grupo) return;
+    grupo.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button[data-w]");
+      if (!b) return;
+      grupo.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+      var w = parseInt(b.getAttribute("data-w"), 10);
+      seccion.querySelectorAll("[data-frame]").forEach(function (f) {
+        f.style.width = w === 0 ? "100%" : w + "px";
+      });
+    });
+  }
+  var secciones = document.querySelectorAll("section");
+  conectarPresets("presets-hero", secciones[0]);
+  conectarPresets("presets-sala", secciones[1]);
+
+  /* ---------- Contexto: home suelto vs dentro de una sala ---------- */
+  var grupoCtx = document.getElementById("presets-ctx");
+  if (grupoCtx) {
+    grupoCtx.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button[data-ctx-on]");
+      if (!b) return;
+      grupoCtx.querySelectorAll("button").forEach(function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      var encendido = b.getAttribute("data-ctx-on") === "true";
+      document.querySelectorAll("[data-ctx]").forEach(function (n) {
+        n.setAttribute("data-on", String(encendido));
+      });
+    });
+  }
+
+  /* ---------- Filtros de categoría: los cuatro filtran de verdad ---------- */
+  document.querySelectorAll("[data-filtro]").forEach(function (barra) {
+    var salida = barra.parentElement.querySelector("[data-res]");
+    barra.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button");
+      if (!b || !barra.contains(b)) return;
+      barra.querySelectorAll("button").forEach(function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      var n = b.getAttribute("data-n");
+      salida.textContent = "Mostrando " + n + " de 12 " + (n === "1" ? "tarea" : "tareas");
+    });
+  });
+
+  /* ---------- Revelado del código de invitación (propuesta B) ---------- */
+  document.querySelectorAll("[data-revelar]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var panel = b.closest(".card").querySelector("[data-panel]");
+      var abierto = panel.getAttribute("data-abierto") === "true";
+      panel.setAttribute("data-abierto", String(!abierto));
+      b.textContent = abierto ? "Tengo un código de invitación" : "Cancelar";
+      if (!abierto) { var i = panel.querySelector("input"); if (i) i.focus(); }
+    });
+  });
+
+  /* Estado inicial: arranca en la hora real y con el preset de 760px */
+  elHora.value = String(new Date().getHours());
+  pintar();
+  document.querySelectorAll("[data-frame]").forEach(function (f) { f.style.width = "760px"; });
+})();
+</script>
+
+</body></html>
