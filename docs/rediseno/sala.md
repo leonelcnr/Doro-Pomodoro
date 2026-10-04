@@ -85,12 +85,26 @@ de la sala.
 **Pregunta abierta:** si se cierra la pestaña sin tocar Salir, las notas quedan. Propuse
 que al volver a esa sala sigan ahí y que al entrar se descarten solas las de más de 12 h.
 
+**Devolución de la 4ª ronda (2026-10-04):** **P · En la esquina es la favorita.** Pidió
+una última ronda explorando alternativas en esa línea, y que en pantalla completa la X
+esconda la barra de ajustes (para ver la pantalla sola) en vez de salir.
+
+**Quinta ronda, la última (misma URL):** variaciones de P. Q · Asoma la última (plegada
+muestra la última nota), R · Se escribe en el asa (plegada es una línea para escribir; lo
+anotado se apila arriba), S · Cuelga de arriba (arriba a la izquierda, bajo Salir; entra
+desde 720 px), T · Sin caja (texto suelto en el margen, lo viejo se apaga), U · Bandejas
+gemelas (una segunda bandeja angosta pegada a la de tareas; funciona en todos los anchos).
+Recomendación: **U, con la línea para escribir de R**, porque es la única que se comporta
+igual en el celular. Si se queda P, Q es la mejora más barata. Puntos: «Al centro»
+(liso si fuera T). En pantalla completa, la X (o H) esconde la barra; H o la esquina de
+abajo a la derecha la traen, y Esc sale.
+
 ---
 
 ## Dónde retomamos
 
-4ª ronda publicada (M–P), esperando la opinión de Leo. **Próximo paso:** elegir dónde
-viven las notas, confirmar el vencimiento de 12 h y, con eso, dar la sala por cerrada.
+5ª ronda publicada (Q–U), esperando la opinión de Leo. **Próximo paso:** elegir entre P y
+sus variaciones, confirmar el vencimiento de 12 h y dar la sala por cerrada.
 
 ## Propuestas transversales
 

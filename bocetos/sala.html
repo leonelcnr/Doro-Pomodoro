@@ -497,7 +497,7 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 
 /* El botón de notas en la barra (M, y P en angosto) */
 .btn-notas { display: none; }
-.app:is(.v-m, .v-p) .btn-notas { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 30px; padding: 0 9px; font-size: 13px; transition: background-color .3s, border-color .3s; }
+.app:is(.v-m, .con-esquina) .btn-notas { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 30px; padding: 0 9px; font-size: 13px; transition: background-color .3s, border-color .3s; }
 .btn-notas:hover { border-color: var(--tenue); }
 .btn-notas svg { width: 15px; height: 15px; color: var(--tenue); }
 .btn-notas b { font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -513,12 +513,12 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
   transition: opacity .28s ease, transform .5s var(--salida), visibility 0s linear .5s; }
 .notas-cajon.abierta { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
 @container app (min-width: 900px) {
-  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) .zona { transform: translateX(calc((var(--ancho-notas) + 32px) / -2)); }
-  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) :is(.ctrl.izq, [data-pip], [data-ajustes]) { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) .zona { transform: translateX(calc((var(--ancho-notas) + 32px) / -2)); }
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) :is(.ctrl.izq, [data-pip], [data-ajustes]) { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
 }
 @container app (max-width: 899px) {
   .notas-cajon { left: 12px; right: 12px; width: auto; }
-  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) .zona { opacity: .1; }
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) .zona { opacity: .1; }
 }
 
 /* N · Pestaña en la bandeja: nada nuevo en pantalla, las notas son una tercera pestaña */
@@ -542,10 +542,15 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 .app.v-o:has(.bandeja.abierta) .al-pie { opacity: 0; pointer-events: none; transition-delay: 0s; }
 
 /* P · En la esquina: una bandeja chica abajo a la izquierda que se desvanece como la de tareas */
-.esquina { display: none; }
+.esquina { display: none; flex-direction: column; position: absolute; left: 20px; bottom: 16px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); max-height: calc(100% - 92px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; box-shadow: var(--sombra); transition: background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s, opacity .45s ease .5s; }
+/* Si no entra al lado de la bandeja, pasa al lápiz de la barra con el cajón de M */
 @container app (min-width: 1040px) {
-  .v-p .esquina { display: flex; flex-direction: column; position: absolute; left: 20px; bottom: 16px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); max-height: calc(100% - 92px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; box-shadow: var(--sombra); transition: background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s, opacity .45s ease .5s; }
-  .v-p .btn-notas, .v-p .notas-cajon { display: none; }
+  .app.con-esquina:not(.v-s) :is(.esquina, .suelta) { display: flex; }
+  .app.con-esquina:not(.v-s) :is(.btn-notas, .notas-cajon) { display: none; }
+}
+@container app (min-width: 720px) {
+  .app.v-s .esquina { display: flex; }
+  .app.v-s :is(.btn-notas, .notas-cajon) { display: none; }
 }
 .esquina-asa { display: flex; align-items: center; gap: 8px; width: 100%; height: 44px; padding: 0 14px; border: 0; background: none; text-align: left; font-size: 13.5px; flex-shrink: 0; border-radius: 14px; }
 .esquina-asa svg { width: 15px; height: 15px; color: var(--tenue); flex-shrink: 0; }
@@ -564,6 +569,81 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
   :root:not([data-tactil]) .esquina:not(:hover, :focus-within, .abierta) :is(.esq-etq, .flecha) { opacity: 0; filter: blur(3px); }
   :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .esquina:not(.abierta) { opacity: 0; }
 }
+
+/* ── Quinta ronda: variaciones de P ── */
+
+/* Q · Asoma la última: plegada, en vez de «Notas» se lee la última nota */
+.esq-ult { display: none; }
+.v-q .esq-etq { display: none; }
+.v-q .esq-ult { display: block; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tenue); }
+.v-q .esquina-asa .flecha { margin-left: 0; }
+.v-q .esquina { width: clamp(220px, calc(50cqi - 316px), 320px); }
+
+/* R · Se escribe en el asa: plegada es una línea para escribir; lo anotado se apila arriba */
+.v-r .esquina-cuerpo .alta { display: none; }
+.v-r .esquina .notas-lista { display: flex; flex-direction: column-reverse; }
+.v-r .esquina-cuerpo .notas-bloque { padding: 12px 14px 4px; }
+.esq-escribir { cursor: text; }
+.esq-escribir input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14px; transition: opacity .35s ease .5s; }
+.esq-escribir input::placeholder { color: var(--tenue); }
+.v-r .esquina.abierta .esq-escribir { border-top: 1px solid var(--linea); border-radius: 0 0 14px 14px; }
+.v-r .esquina:is(:hover, :focus-within, .abierta) .esq-escribir input { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .v-r .esquina:not(:hover, :focus-within, .abierta) .esq-escribir input { opacity: 0; }
+}
+
+/* S · Cuelga de arriba: la esquina de arriba a la izquierda, bajo Salir, y se despliega hacia abajo */
+.v-s .esquina { top: 64px; bottom: auto; width: clamp(220px, 28cqi, 300px); max-height: calc(100% - 150px); }
+.v-s .esquina-asa .flecha { transform: rotate(180deg); }
+.v-s .esquina.abierta .esquina-asa .flecha { transform: none; }
+
+/* T · Sin caja: texto suelto en el margen, lo más viejo se va apagando */
+.suelta { display: none; flex-direction: column; position: absolute; left: 24px; bottom: 18px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); transition: opacity .45s ease .5s; }
+.suelta .notas-lista { max-height: min(260px, 36cqh); display: flex; flex-direction: column-reverse; }
+.suelta .nota { padding: 6px 4px; border-bottom: 0; font-size: 14px; }
+.suelta:not(.todas) .nota:nth-child(2) { opacity: .6; }
+.suelta:not(.todas) .nota:nth-child(3) { opacity: .35; }
+.app:not([data-quieto]) .suelta { transition-delay: 0s; }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .suelta { opacity: 0; }
+}
+
+/* U · Bandejas gemelas: las notas son una segunda bandeja, angosta, pegada a la de tareas */
+.gemela { display: none; }
+.v-u .gemela { display: flex; flex-direction: column; position: absolute; bottom: 0; right: calc(50% + 288px); z-index: 11; width: 64px; max-height: 52%; overflow: hidden;
+  background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
+  transform: translateY(calc(100% - 60px));
+  transition: transform .5s var(--salida), width .45s var(--salida), background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s; }
+.v-u .gemela.abierta { transform: none; width: min(var(--ancho-notas), calc(50% - 300px)); }
+.gemela-asa { justify-content: center; gap: 6px; padding: 4px 0 0; }
+.gemela-asa::before { width: 20px; }
+.gemela-asa svg { width: 15px; height: 15px; color: var(--tenue); }
+.gemela-asa b { font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--tenue); }
+.gemela-asa > * { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.gem-etq { display: none; font-size: 14px; }
+.gemela.abierta .gemela-asa { justify-content: flex-start; padding: 4px 20px 0; }
+.gemela.abierta .gem-etq { display: inline; }
+.gemela .cuerpo { width: var(--ancho-notas); max-width: 100%; padding: 4px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+.gemela:is(:hover, :focus-within, .abierta), .gemela:is(:hover, :focus-within, .abierta) .gemela-asa > *, .gemela:is(:hover, :focus-within, .abierta) .asa::before { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) .gemela-asa > * { opacity: 0; filter: blur(4px); }
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) .asa::before { background-color: color-mix(in oklch, var(--tenue) 45%, transparent); width: 24px; }
+}
+/* Sin lugar para abrir al costado: abre encima de la de tareas */
+@container app (max-width: 1119px) {
+  .v-u .gemela.abierta { right: auto; left: max(12px, calc(50% - 280px)); width: min(calc(100% - 24px), 560px); }
+  .v-u .gemela.abierta .cuerpo { width: 100%; }
+}
+/* En angosto la bandeja de tareas se corre para dejarle lugar al asa de las notas */
+@container app (max-width: 739px) {
+  .v-u .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .v-u .gemela { right: auto; left: 12px; }
+  .v-u .gemela.abierta { left: 12px; width: calc(100% - 24px); }
+}
+
+/* Pantalla completa: la barra de ajustes se puede esconder; la esquina de abajo a la derecha la trae */
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
 
 .aviso { position: absolute; left: 50%; top: 66px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); white-space: nowrap; z-index: 40; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
 .aviso.ver { opacity: 1; transform: translate(-50%, 0); }
@@ -616,6 +696,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
   <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5c3 3.6 6 6.6 6 10a6 6 0 0 1-12 0c0-3.4 3-6.4 6-10z"/></symbol>
   <symbol id="i-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
   <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
 </svg>
 
@@ -623,7 +704,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
     <p>La sala es la pantalla que menos cambia. Se queda lo que ya funciona: salir a la izquierda, quién está a la derecha, el reloj grande con sus dos puntos en el medio y los controles a los costados. Se va el recuadro punteado, los botones pierden el borde y el punto del modo pasa a usar el acento. <b>Con el reloj corriendo, si no movés el mouse, queda solo el reloj.</b> Moverlo trae todo de vuelta.</p>
-    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A), <b>la tercera</b> (I a L, sobre A + F) <b>y la cuarta</b> (M a P, las notas rápidas sobre A + F + I). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale.</p>
+    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A), <b>la tercera</b> (I a L, sobre A + F) <b>la cuarta</b> (M a P, las notas rápidas sobre A + F + I) <b>y la quinta</b> (Q a U, variaciones de P). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema, N abre las notas y Esc sale. <b>La X (o H) esconde la barra de ajustes</b> para ver la pantalla sola; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
@@ -927,12 +1008,92 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="p" data-v="p">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">P</span><span class="nombre">En la esquina</span><span class="recomendada">Recomendada</span></h2>
+        <h2><span class="letra">P</span><span class="nombre">En la esquina</span><span class="recomendada">Favorita</span></h2>
         <p class="resumen">Una bandeja chica abajo a la izquierda, al lado de la de tareas. Se desvanece igual: sin el mouse encima queda el lápiz con el número. Tocarla la despliega hacia arriba. En pantallas de menos de 1040 px no entra al lado de la bandeja y pasa al lápiz de la barra, con el cajón de M.</p>
       </div>
       <div class="notas">
         <div><h3>Qué gana</h3><ul><li>El reloj no se mueve nunca.</li><li>Notas y tareas pueden estar abiertas a la vez.</li><li>Es el mismo gesto de la bandeja, en chico.</li></ul></div>
         <div><h3>Qué pierde</h3><ul><li>Dos comportamientos según el ancho.</li><li>El lugar es angosto para notas largas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-5">
+    <h2>Quinta ronda, la última: variaciones de P</h2>
+    <p>P queda como favorita. Estas cinco mantienen lo que la hace funcionar (el reloj no se mueve y las notas no compiten con las tareas) y cambian una cosa por vez: qué se ve plegada, dónde se escribe, de qué esquina cuelga, si tiene caja y cómo se lleva con la bandeja de tareas.</p>
+  </header>
+
+  <section class="opcion" id="q" data-v="q">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">Q</span><span class="nombre">Asoma la última</span></h2>
+        <p class="resumen">Igual que P, pero plegada no dice «Notas»: muestra la última nota en gris, cortada en una línea, y la cuenta al lado. Al desvanecerse queda el texto, sin la caja.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo último que anotaste se lee sin abrir nada.</li><li>Es P con un solo cambio.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un renglón de texto más en pantalla, aunque tenue.</li><li>Con el reloj quieto se va igual que P.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r" data-v="r">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">R</span><span class="nombre">Se escribe en el asa</span></h2>
+        <p class="resumen">Plegada, la esquina es una línea para escribir. Al tocarla (o con N) se abre hacia arriba con lo que ya anotaste, lo más nuevo pegado a donde escribís. Al salir de la línea se pliega sola.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Anotar es un solo gesto: tocar y escribir.</li><li>Lo nuevo aparece justo arriba de donde escribiste.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No hay un «abrir» sin escribir: para releer, se toca la línea.</li><li>Plegada se ve poco: solo el lápiz y la cuenta.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="s" data-v="s">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">S</span><span class="nombre">Cuelga de arriba</span></h2>
+        <p class="resumen">La misma esquina, arriba a la izquierda, debajo de Salir, y se despliega hacia abajo. Lejos de la bandeja de tareas, entra desde 720 px de ancho.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Funciona en tablets, no solo en pantallas anchas.</li><li>Las notas y las tareas quedan en extremos opuestos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abierta puede tapar los controles de la izquierda.</li><li>Arriba se lee como menú, menos como bandeja.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="t" data-v="t">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">T</span><span class="nombre">Sin caja</span></h2>
+        <p class="resumen">Las notas son texto suelto en el margen de abajo a la izquierda, sin borde ni fondo, con una línea para escribir debajo. Se ven las tres últimas y las más viejas se van apagando; «y 2 más» trae el resto.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más liviano: no hay ninguna superficie nueva.</li><li>Lo anotado queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sobre el fondo con puntos se lee peor.</li><li>Siempre ocupa ese rincón, aunque no lo uses.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="u" data-v="u">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">U</span><span class="nombre">Bandejas gemelas</span></h2>
+        <p class="resumen">Las notas son una segunda bandeja, angosta, pegada a la izquierda de la de tareas: dos asas en la misma fila. Desvanecidas quedan dos rayitas. Abierta, crece hacia la izquierda; si no hay lugar, abre encima de la de tareas. En el celular, la de tareas se corre para dejarle lugar.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Funciona en todos los anchos, también en el celular.</li><li>Es literalmente la misma pieza que la bandeja de tareas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abajo se juntan dos cosas que se tocan.</li><li>Entre 740 y 1120 px abre encima de las tareas, no al lado.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1092,7 +1253,7 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo P · En la esquina</h3>
+        <h3>Favorita: P · En la esquina (era mi recomendación)</h3>
         <p><b>Es la única en la que no se mueve nada.</b> El reloj se queda donde está, como pediste en la tercera ronda, y las notas no compiten con las tareas por el mismo lugar: podés tener las dos abiertas.</p>
         <p><b>Habla el mismo idioma que la sala.</b> Es la bandeja de tareas en chico: se desvanece, queda el lápiz con la cuenta, y con «Queda el reloj» se va del todo.</p>
         <p><b>N es el plan B</b> si preferís no sumar ninguna pieza. Con la tecla N se anota igual de rápido; sin teclado, cuesta un toque más. <b>O</b> es la más rápida, pero vuelve a poner un renglón fijo bajo el reloj, que fue lo que menos te convenció de D.</p>
@@ -1135,6 +1296,62 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
 @container sala (max-width: 1039px) {
   .notas-esquina { display: none; }   <span class="c-com">/* pasa al lápiz de la barra */</span>
 }</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Quinta ronda · variaciones de P</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Plegada se ve</th><th>Cómo se anota</th><th>Desde qué ancho</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>P · En la esquina</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+          <tr><td>Q · Asoma la última</td><td>La última nota</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Un renglón más a la vista</td></tr>
+          <tr><td>R · Se escribe en el asa</td><td>Lápiz y cuenta</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Para releer hay que tocar la línea</td></tr>
+          <tr><td>S · Cuelga de arriba</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>720 px</td><td>Las dos a la vez</td><td>Tapar los controles de la izquierda</td></tr>
+          <tr><td>T · Sin caja</td><td>Las tres últimas</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Se lee mal sobre los puntos</td></tr>
+          <tr class="elegida"><td>U · Bandejas gemelas</td><td>Una rayita junto a la otra</td><td>Tocar y escribir, o N</td><td>Todos</td><td>Al costado desde 1120 px</td><td>Dos asas juntas abajo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Recomiendo U · Bandejas gemelas, con la línea para escribir de R</h3>
+        <p><b>Lo único que le faltaba a P era el celular.</b> P, Q, R y T necesitan 1040 px para entrar al lado de la bandeja; abajo de eso pasan a otro objeto (el lápiz de la barra). U es la única que se comporta igual en todos los anchos: siempre son dos asas abajo.</p>
+        <p><b>Es la misma pieza dos veces.</b> Se construye una bandeja (<code>BandejaSala</code>) y se usa para tareas y para notas, con el mismo desvanecido y la misma rayita. No hay nada nuevo que aprender.</p>
+        <p><b>De R tomaría la línea para escribir al pie de la bandeja de notas</b>, con lo nuevo apilado justo arriba, porque anotar mientras estudiás tiene que ser un solo gesto.</p>
+        <p><b>Si preferís quedarte con P tal cual, Q es la mejora más barata:</b> leer la última nota sin abrir nada sirve para el caso típico, «¿qué era lo que tenía que preguntar?».</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>«Al centro», como en toda la sala.</b> La única que sufre con los puntos es T, porque su texto no tiene fondo propio. Con T habría que ir con fondo liso.</p>
+        <h4>En pantalla completa</h4>
+        <p><b>La X ahora esconde la barra de ajustes</b> para que veas la pantalla sola. H o la esquina de abajo a la derecha la traen de vuelta, y Esc sale de pantalla completa.</p>
+      </div>
+      <pre><span class="c-com">/* U · dos bandejas en la misma fila: la de notas se pega a la izquierda de la de tareas */</span>
+.bandeja-notas {
+  position: absolute; bottom: 0;
+  right: calc(50% + 288px);              <span class="c-com">/* 560 / 2 + 8 de aire */</span>
+  width: 64px;                            <span class="c-com">/* plegada: el asa con el lápiz */</span>
+  transform: translateY(calc(100% - 60px));
+}
+.bandeja-notas[data-abierta] {
+  transform: none;
+  width: min(var(--ancho-notas), calc(50% - 300px));
+}
+<span class="c-com">/* sin lugar al costado, abre encima de la de tareas */</span>
+@container sala (max-width: 1119px) {
+  .bandeja-notas[data-abierta] {
+    right: auto; left: max(12px, calc(50% - 280px));
+    width: min(calc(100% - 24px), 560px);
+  }
+}
+<span class="c-com">/* celular: la de tareas se corre y deja lugar al asa */</span>
+@container sala (max-width: 739px) {
+  .bandeja-tareas { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .bandeja-notas  { right: auto; left: 12px; }
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx</span>
+&lt;BandejaSala lado="tareas" … /&gt;
+&lt;BandejaSala lado="notas" notas={notas}
+             alAnotar={agregar} alDescartar={descartar} /&gt;</pre>
     </div>
   </section>
 </div>
@@ -1317,7 +1534,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     const zona = app.querySelector("[data-zona]");
 
     /* Cada variante pone las tareas en otro lugar */
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
       const aside = document.createElement("aside");
       aside.className = "bandeja" + (v === "b" ? " cajon" : "");
       aside.setAttribute("aria-label", "Tareas");
@@ -1362,7 +1579,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
       reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
       reloj.title = "Tocá para dar play o pausa";
     }
-    if (["f", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
     if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
       <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
       <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
@@ -1383,7 +1600,8 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
       tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
     }
     /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
-    const conNotas = ["m", "n", "o", "p"].includes(v);
+    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v);
+    const conEsquina = ["p", "q", "r", "s", "t"].includes(v);
     const notasHTML = (cerrar) => `
       <div class="notas-bloque">
         <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button>${cerrar ? `<button type="button" data-cerrar-notas aria-label="Cerrar las notas"><svg><use href="#i-x"/></svg></button>` : ""}</div>
@@ -1393,7 +1611,8 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
       </div>`;
     if (conNotas) {
       app.classList.add("v-i");
-      if (v === "m" || v === "p") app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
+      if (conEsquina) app.classList.add("con-esquina");
+      if (v === "m" || conEsquina) app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
       if (v === "n") {
         app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
         app.querySelector(".bandeja .panel").insertAdjacentHTML("beforeend", notasHTML(false));
@@ -1402,9 +1621,19 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
         <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label>
         <ul class="notas-lista" data-notas-lista data-max="2"></ul>
         <button type="button" class="ver-mas" data-notas-mas hidden></button></div>`);
-      if (v === "p") app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
-        <button type="button" class="esquina-asa" data-esquina aria-expanded="false"><svg><use href="#i-nota"/></svg><span class="esq-etq">Notas</span><b data-notas-n></b><svg class="flecha"><use href="#i-arriba"/></svg></button>
+      if (["p", "q", "s"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <button type="button" class="esquina-asa" data-esquina aria-expanded="false"><svg><use href="#i-nota"/></svg><span class="esq-etq">Notas</span><span class="esq-ult" data-notas-ultima></span><b data-notas-n></b><svg class="flecha"><use href="#i-arriba"/></svg></button>
         <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div></aside>`);
+      if (v === "r") app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div>
+        <label class="esquina-asa esq-escribir"><svg><use href="#i-nota"/></svg><input data-notas-alta data-esquina-input placeholder="Anotá algo… (N)" aria-label="Nueva nota"><b data-notas-n></b></label></aside>`);
+      if (v === "t") app.insertAdjacentHTML("beforeend", `<aside class="suelta" aria-label="Notas de la sesión">
+        <button type="button" class="ver-mas" data-notas-mas hidden></button>
+        <ul class="notas-lista" data-notas-lista data-max="3"></ul>
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label></aside>`);
+      if (v === "u") app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
+        <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b></button>
+        <div class="cuerpo" data-gemela-cuerpo>${notasHTML(false)}</div></aside>`);
     }
     const $ = s => app.querySelector(s);
     const $$ = s => app.querySelectorAll(s);
@@ -1483,7 +1712,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
 
     /* Quietud: con el reloj corriendo y el puntero quieto 2,5 s, queda el reloj */
     let tQuieto = null;
-    const algoAbierto = () => !!app.querySelector(".bandeja.abierta, .ahora.abierta, .pop.abierto, .notas-cajon.abierta, .esquina.abierta") || app.contains(document.activeElement) && /INPUT/.test(document.activeElement.tagName);
+    const algoAbierto = () => !!app.querySelector(".bandeja.abierta, .ahora.abierta, .pop.abierto, .notas-cajon.abierta, .esquina.abierta, .gemela.abierta") || app.contains(document.activeElement) && /INPUT/.test(document.activeElement.tagName);
     function evaluarQuietud() {
       clearTimeout(tQuieto); delete app.dataset.quieto; marcarGlobal();
       if (!s.corriendo) return;
@@ -1592,7 +1821,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     let estaAbierta = () => false;
     let alternarTareas = () => {};
     let alAbrirTareas = () => {};
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
       const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
       const abrir = a => {
         bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
@@ -1672,8 +1901,10 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
         nueva = null;
         $$("[data-notas-n]").forEach(e => e.textContent = notas.length || "");
         $$("[data-notas-borrar]").forEach(b => b.hidden = notas.length < 2);
-        const mas = $("[data-notas-mas]");
-        if (mas) { const resto = notas.length - 2; mas.hidden = resto <= 0; mas.textContent = todas ? "Ver menos" : `y ${resto} más`; }
+        $$("[data-notas-ultima]").forEach(e => e.textContent = notas[0] ? notas[0].texto : "Anotá algo (N)");
+        $(".suelta")?.classList.toggle("todas", todas);
+        const mas = $("[data-notas-mas]"), corta = $("[data-notas-lista][data-max]");
+        if (mas) { const resto = notas.length - +corta.dataset.max; mas.hidden = resto <= 0; mas.textContent = todas ? "Ver menos" : `y ${resto} más`; }
       };
       app.addEventListener("keydown", e => {
         const inp = e.target.closest("[data-notas-alta]");
@@ -1694,7 +1925,8 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
       });
 
       /* Abrir y cerrar según la variante; s.abrirNotas lo usa la tecla N */
-      const cajon = $(".notas-cajon"), btnN = $("[data-btn-notas]"), esquina = $(".esquina");
+      const cajon = $(".notas-cajon"), btnN = $("[data-btn-notas]"), esquina = $(".esquina"), gemela = $(".gemela");
+      const umbral = v === "s" ? 720 : 1040;
       const abrirCajon = a => {
         if (!cajon) return;
         cajon.classList.toggle("abierta", a); btnN.setAttribute("aria-expanded", a); cajon.inert = !a;
@@ -1702,7 +1934,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
         evaluarQuietud();
       };
       const abrirEsquina = a => {
-        esquina.classList.toggle("abierta", a); $("[data-esquina]").setAttribute("aria-expanded", a); $("[data-esquina-cuerpo]").inert = !a;
+        esquina.classList.toggle("abierta", a); $("[data-esquina]")?.setAttribute("aria-expanded", a); $("[data-esquina-cuerpo]").inert = !a;
         evaluarQuietud();
       };
       if (cajon) {
@@ -1711,18 +1943,39 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
         $("[data-cerrar-notas]").addEventListener("click", () => { abrirCajon(false); btnN.focus(); });
         alAbrirTareas = () => abrirCajon(false);
       }
-      if (esquina) { abrirEsquina(false); $("[data-esquina]").addEventListener("click", () => abrirEsquina(!esquina.classList.contains("abierta"))); }
+      if (esquina) { abrirEsquina(false); $("[data-esquina]")?.addEventListener("click", () => abrirEsquina(!esquina.classList.contains("abierta"))); }
+      /* R · se abre al escribir y se pliega sola cuando el foco sale de la esquina */
+      if (v === "r") {
+        esquina.addEventListener("focusin", () => abrirEsquina(true));
+        esquina.addEventListener("focusout", e => { if (!esquina.contains(e.relatedTarget)) setTimeout(() => { if (!esquina.contains(document.activeElement)) abrirEsquina(false); }, 150); });
+      }
+      /* U · la segunda bandeja; donde no entra al costado, una cierra la otra */
+      const abrirGemela = a => {
+        if (!gemela) return;
+        gemela.classList.toggle("abierta", a); $("[data-gemela]").setAttribute("aria-expanded", a); $("[data-gemela-cuerpo]").inert = !a;
+        if (a && estaAbierta() && app.clientWidth < 1120) alternarTareas();
+        evaluarQuietud();
+      };
+      if (gemela) {
+        abrirGemela(false);
+        $("[data-gemela]").addEventListener("click", () => abrirGemela(!gemela.classList.contains("abierta")));
+        alAbrirTareas = () => { if (app.clientWidth < 1120) abrirGemela(false); };
+      }
       const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
       s.abrirNotas = () => {
-        if (v === "m" || (v === "p" && app.clientWidth < 1040)) { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); }
-        else if (v === "p") { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
+        if (v === "m" || (conEsquina && app.clientWidth < umbral)) { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); }
+        else if (v === "t") enfocar(".suelta [data-notas-alta]");
+        else if (v === "r") enfocar("[data-esquina-input]");
+        else if (conEsquina) { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
+        else if (v === "u") { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); }
         else if (v === "n") { if (!estaAbierta()) alternarTareas(); cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]"); }
         else enfocar(".al-pie [data-notas-alta]");
       };
       app.addEventListener("keydown", e => {
         if (e.key === "Escape") {
           if (cajon?.classList.contains("abierta")) { e.stopPropagation(); abrirCajon(false); return; }
-          if (esquina?.classList.contains("abierta")) { e.stopPropagation(); abrirEsquina(false); return; }
+          if (esquina?.classList.contains("abierta")) { e.stopPropagation(); if (v === "r") document.activeElement.blur(); abrirEsquina(false); return; }
+          if (gemela?.classList.contains("abierta")) { e.stopPropagation(); abrirGemela(false); return; }
         }
         if (e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.stopPropagation(); s.abrirNotas(); }
       });
@@ -1787,15 +2040,28 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     <button type="button" data-ciclo="vineta" title="Desvanecer puntos: no, a los lados, al centro (D)" aria-label="Cambiar desvanecido de los puntos"><svg><use href="#i-vineta"/></svg></button>
     <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento"><svg><use href="#i-color"/></svg></button>
     <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema"><svg><use href="#i-tema"/></svg></button>
-    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa"><svg><use href="#i-x"/></svg></button>`;
+    <button type="button" data-contraer title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa"><svg><use href="#i-contraer"/></svg></button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra de ajustes"><svg><use href="#i-x"/></svg></button>`;
   const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
   const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
-  const avisarMando = t => {
+  const avisarMando = (t, ms = 1600) => {
     if (!actual) return;
     const a = actual.querySelector(".aviso");
     a.textContent = t; a.classList.add("ver");
-    clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 1600);
+    clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), ms);
   };
+  /* La X esconde la barra para ver la pantalla sola; H o la esquina de abajo a la derecha la traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra de ajustes");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisarMando("Barra escondida. H o la esquina de abajo a la derecha la traen", 2800);
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
   const usarCiclo = id => { ciclar(id, CICLOS[id]); if (id !== "tema") avisarMando(NOMBRES[raiz.dataset[id]]); };
   const playActual = () => { const s = salas.find(x => x.op === actual); if (s) s.alternar(); };
   mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
@@ -1806,7 +2072,8 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     ponerAcento(a.id); avisarMando("Acento " + a.nombre.toLowerCase());
   };
   mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
-  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-contraer]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
   function mostrar(op) {
     if (actual && actual !== op) actual.classList.remove("completa");
     actual = op; op.classList.add("completa");
@@ -1816,7 +2083,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     marcarGlobal();
   }
   function abrirCompleta(op) {
-    raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op);
+    raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false);
     const pedido = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null;
     if (pedido) pedido.catch(() => {});
   }
@@ -1824,7 +2091,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     if (!actual) return;
     const op = actual;
     op.classList.remove("completa"); actual = null; marcarGlobal();
-    raiz.classList.remove("en-completa"); mando.hidden = true;
+    raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false;
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     op.scrollIntoView({ block: "start" });
   }
@@ -1839,6 +2106,7 @@ const salir = () =&gt; { descartarTodas(); navegar("/"); };
     if (k === "d") return usarCiclo("vineta");
     if (k === "t") return usarCiclo("tema");
     if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
     if (k === "n") { e.preventDefault(); return salas.find(x => x.op === actual)?.abrirNotas?.(); }
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);

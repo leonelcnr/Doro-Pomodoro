@@ -13,7 +13,7 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `tareas-ronda3.html` | Ronda 3 de tareas (G–L), guardada como referencia. | — |
 | `tareas-ronda2.html` | Ronda 2 de tareas (A–F, con la regla de F), guardada como referencia. No está publicada aparte. | — |
 | `dashboard.html` | Dashboard, 1ª ronda: frase y barras, anillos, el año, franjas, una cifra por vez. | https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ |
-| `sala.html` | Sala, cuatro rondas (A–P). Base A (bandeja) + F (hilo solo corriendo) + I (sube sin achicarse). 4ª ronda: notas rápidas de sesión (M–P). | https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i |
+| `sala.html` | Sala, cinco rondas (A–U). Base A (bandeja) + F (hilo solo corriendo) + I (sube sin achicarse). Notas rápidas de sesión: 4ª ronda (M–P, favorita P) y 5ª con variaciones de P (Q–U). | https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i |
 | `primary-violeta-zinc.html` | `--primary`: violeta de hoy, violeta unificado y zinc (Fase 2 del plan). | https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd |
 
 Para actualizar un boceto, editar el archivo de acá y republicarlo sobre la misma URL.
