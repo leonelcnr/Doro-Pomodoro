@@ -1,0 +1,874 @@
+<title>Dashboard de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Primera ronda del dashboard dentro del mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado, líneas finas, el detalle aparece al pedirlo. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 70ch; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.resumen { margin: 0; color: var(--tenue); max-width: 54ch; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 700px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 6px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); white-space: nowrap; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── Piezas compartidas del dashboard ───────── */
+.tip { position: absolute; z-index: 30; transform: translate(-50%, calc(-100% - 8px)); background: var(--fg); color: var(--bg); font-size: 12.5px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; font-variant-numeric: tabular-nums; }
+.tip.ver { opacity: 1; }
+.main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 36px; }
+@container app (min-width: 720px) { .main { padding: 48px 32px 80px; } }
+.frase { margin: 0; font-size: clamp(26px, 4.6cqi, 40px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.12; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.frase span { color: var(--tenue); font-weight: 400; }
+.bajada { margin: 8px 0 0; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.subtitulo { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--tenue); }
+.btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; }
+.btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
+.btn-texto svg { width: 14px; height: 14px; transition: transform .25s; }
+.btn-texto[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Rango de tiempo: pestañas subrayadas, en texto */
+.rangos { display: flex; gap: 22px; border-bottom: 1px solid var(--linea); overflow-x: auto; scrollbar-width: none; }
+.rangos button { flex-shrink: 0; border: 0; background: none; padding: 0 0 11px; font-size: 14.5px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.rangos button:hover { color: var(--fg); }
+.rangos button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+
+/* Barras: una serie, un color; la de hoy en acento lleno */
+.graf { padding-left: 44px; }
+.graf.sin-guias { padding-left: 0; }
+.graf-area { position: relative; height: var(--alto, 200px); border-bottom: 1px solid var(--linea); }
+.graf-guia { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid color-mix(in oklch, var(--linea) 60%, transparent); }
+.graf-guia span { position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%); font-size: 11.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-cols { position: absolute; inset: 0; display: flex; gap: var(--hueco, 6px); align-items: flex-end; }
+.graf-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.graf-col i { display: block; width: 100%; max-width: 40px; background: color-mix(in oklch, var(--acento) 45%, var(--superficie)); border-radius: 4px 4px 0 0; transition: background-color .15s, height .5s cubic-bezier(.16,1,.3,1); }
+.graf-col.hoy i, .graf-col:hover i { background: var(--acento); }
+.graf-etqs { display: flex; gap: var(--hueco, 6px); padding-top: 8px; }
+.graf-etqs span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--tenue); white-space: nowrap; overflow: visible; font-variant-numeric: tabular-nums; }
+.graf-etqs span.hoy { color: var(--fg); font-weight: 500; }
+
+/* Cifras en texto, sin tarjetas */
+.cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: 0; padding-top: 20px; border-top: 1px solid var(--linea); }
+@container app (min-width: 640px) { .cifras { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cifras dt { font-size: 13px; color: var(--tenue); }
+.cifras dd { margin: 2px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+/* Lista por tema: línea fina proporcional */
+.temas { display: flex; flex-direction: column; }
+.tema-fila { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr) 3ch; gap: 14px; align-items: center; min-height: 36px; font-size: 14.5px; }
+.tema-fila .n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tema-fila .c { text-align: right; color: var(--tenue); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.linea-avance { display: block; height: 2px; background: var(--linea); border-radius: 2px; overflow: hidden; }
+.linea-avance span { display: block; height: 100%; background: var(--acento); }
+.dos-col { display: grid; gap: 36px; }
+@container app (min-width: 760px) { .dos-col { grid-template-columns: 1fr 1fr; gap: 56px; } }
+
+/* Mapa del año: el mismo DOM gira con container queries.
+   Cada semana es [etiqueta de mes, lun…dom]. Angosto: una fila por semana.
+   Ancho: una columna por semana, y la etiqueta queda arriba. */
+.mapa { container: mapa / inline-size; }
+.mapa-grilla { display: grid; gap: 3px; grid-auto-flow: row; grid-template-columns: 3em repeat(7, minmax(0, 26px)); justify-content: start; }
+.mapa-grilla .mes { font-size: 11.5px; color: var(--tenue); white-space: nowrap; align-self: center; line-height: 1; }
+@container mapa (min-width: 600px) {
+  .mapa-grilla { grid-auto-flow: column; grid-template-columns: none; grid-template-rows: 1.4em repeat(7, auto); grid-auto-columns: minmax(0, 1fr); justify-content: stretch; }
+  .mapa-grilla .mes { align-self: start; }
+}
+.celda { aspect-ratio: 1; min-width: 0; border: 0; padding: 0; border-radius: 2px; background: color-mix(in oklch, var(--linea) 75%, var(--bg)); }
+.celda[data-n="1"] { background: color-mix(in oklch, var(--acento) 25%, var(--linea)); }
+.celda[data-n="2"] { background: color-mix(in oklch, var(--acento) 50%, var(--linea)); }
+.celda[data-n="3"] { background: color-mix(in oklch, var(--acento) 75%, var(--linea)); }
+.celda[data-n="4"] { background: var(--acento); }
+.celda.vacia { visibility: hidden; }
+button.celda:hover { box-shadow: 0 0 0 1.5px var(--fg); }
+button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
+.mapa-ley { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--tenue); margin-top: 12px; }
+.mapa-ley .celda { width: 11px; }
+.mapa-ley span:first-child { margin-right: 4px; } .mapa-ley span:last-child { margin-left: 4px; }
+
+/* Anillo: el mismo trazo que el logo y el home */
+.anillo { display: block; }
+.anillo .fondo-a { stroke: var(--linea); }
+.anillo .prog { stroke: var(--acento); transition: stroke-dasharray .6s cubic-bezier(.16,1,.3,1); }
+
+/* ───────── A · Frase y barras ───────── */
+.a-cab { display: flex; flex-direction: column; gap: 20px; }
+
+/* ───────── B · Anillos ───────── */
+.b-main { align-items: center; text-align: center; gap: 40px; max-width: 760px; }
+.b-hoy { position: relative; width: min(66cqi, 280px); aspect-ratio: 1; }
+.b-hoy .anillo { width: 100%; height: 100%; }
+.b-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.b-centro b { font-size: clamp(30px, 8cqi, 46px); font-weight: 600; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.b-centro span { font-size: 13.5px; color: var(--tenue); }
+.b-semana { display: grid; grid-template-columns: repeat(7, minmax(0, 52px)); gap: 6px; justify-content: center; width: 100%; }
+.b-dia { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12.5px; color: var(--tenue); border: 0; background: none; padding: 4px 0; border-radius: 6px; }
+.b-dia .anillo { width: 100%; max-width: 40px; height: auto; aspect-ratio: 1; }
+.b-dia.hoy { color: var(--fg); font-weight: 600; }
+.b-dia:hover { background: var(--campo); }
+.b-pie { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 28px; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.b-pie b { color: var(--fg); font-weight: 600; }
+.b-ano { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 14px; }
+.b-ano[hidden] { display: none; }
+
+/* ───────── C · El año ───────── */
+.c-main { max-width: 1060px; gap: 28px; }
+.c-dia { min-height: 92px; padding-top: 18px; border-top: 1px solid var(--linea); display: flex; flex-direction: column; gap: 12px; }
+.c-dia h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.c-dia h2 span { color: var(--tenue); font-weight: 400; }
+
+/* ───────── D · Franjas ───────── */
+.d-nav { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.flecha { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--linea); background: transparent; display: grid; place-items: center; color: var(--fg); }
+.flecha:hover:not(:disabled) { border-color: var(--tenue); }
+.flecha:disabled { opacity: .35; cursor: default; }
+.flecha svg { width: 15px; height: 15px; }
+.flecha.izq svg { transform: rotate(180deg); }
+.franjas { display: flex; flex-direction: column; gap: 6px; }
+.fr { display: grid; grid-template-columns: 4em minmax(0, 1fr) 4.6em; gap: 0 12px; align-items: center; }
+.fr-nombre { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fr.hoy .fr-nombre { color: var(--fg); font-weight: 600; }
+.fr-total { font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fr-total.cero { color: var(--tenue); }
+.fr-pista { position: relative; height: 24px; border-radius: 3px; background: var(--campo); }
+.fr-pista .guia { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.fr-bloque { position: absolute; top: 4px; bottom: 4px; min-width: 3px; border-radius: 2px; background: var(--acento); }
+.fr-bloque:hover { box-shadow: 0 0 0 1.5px var(--fg); }
+.fr-eje { position: relative; height: 18px; }
+.fr-eje span { position: absolute; transform: translateX(-50%); font-size: 11.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.fr-hist { position: relative; height: 56px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--linea); }
+.fr-hist i { flex: 1 1 0; background: color-mix(in oklch, var(--acento) 45%, var(--superficie)); border-radius: 2px 2px 0 0; }
+.fr-hist i.pico { background: var(--acento); }
+
+/* ───────── E · Una cifra por vez ───────── */
+.e-main { max-width: 640px; align-items: center; text-align: center; justify-content: center; gap: 28px; }
+.e-cifra { display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 0; }
+.e-grande { margin: 0; font-size: clamp(56px, 15cqi, 112px); font-weight: 600; letter-spacing: -0.055em; line-height: 1; font-variant-numeric: tabular-nums; }
+.e-chico { margin: 0; font-size: 17px; color: var(--tenue); max-width: 34ch; text-wrap: balance; }
+.e-chico b { color: var(--fg); font-weight: 500; }
+.e-graf { width: min(100%, 420px); text-align: left; }
+.e-marcas { display: flex; gap: 4px; justify-content: center; }
+.e-marcas i { width: 18px; height: 18px; border-radius: 3px; background: var(--linea); }
+.e-marcas i.si { background: var(--acento); }
+.e-nav { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.e-entrar { animation: entrar .45s cubic-bezier(.16,1,.3,1) both; }
+@keyframes entrar { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+table { border-collapse: collapse; width: 100%; min-width: 780px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 64ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-campana" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-tp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M4 12h3M4 17h3M10 7h10M10 12h10M10 17h6"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-abajo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+</svg>
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Dashboard, primera ronda</h1>
+    <p>Hoy el dashboard es una grilla de tarjetas: cuatro cifras con un ícono de color cada una, dos gráficos de barras, una torta con un color por categoría, la lista de tareas terminadas y el mapa del año. Es la pantalla con más color y más cosas a la vez de toda la app.</p>
+    <p>Los cinco bocetos siguen el idioma del home: un solo acento, que acá pinta el tiempo estudiado, nada de colores por categoría, y el detalle escondido hasta pedirlo. Comparten los mismos datos de ejemplo: un año inventado de un estudiante, con una racha de 6 días que termina hoy, domingo 4 de octubre. Pasá el mouse sobre cualquier barra, bloque o día para ver el valor.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="a" data-v="a">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span><span class="nombre">Frase y barras</span></h2>
+        <p class="resumen">El dashboard de hoy, ordenado y sin tarjetas. Arriba, una frase con lo que estudiaste en el rango elegido y la comparación con el anterior. Un solo gráfico de barras, cuatro cifras en texto, las tareas terminadas por tema con líneas finas y el año plegado al final.</p>
+        <p class="enfoque">Lo primero: <b>cuánto estudiaste en el rango</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>No se pierde nada de lo que hay hoy, salvo la torta.</li><li>Es la más fácil de construir: los datos ya existen.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Es la que más se parece a cualquier dashboard.</li><li>Rango, gráfico, cifras y temas a la vez: cuatro cosas en una pantalla.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="b" data-v="b">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B</span><span class="nombre">Anillos</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">El anillo del home sigue acá, grande: lo que llevás hoy contra tu meta del día. Abajo, la semana en siete anillos chicos, la racha y el promedio por sesión. El año aparece solo si lo pedís.</p>
+        <p class="enfoque">Lo primero: <b>cómo vas hoy</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Sigue el hilo del home: el mismo objeto, ahora con detalle.</li><li>La meta le da sentido al número: «50 min» solo no dice si es mucho.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hace falta una meta diaria, que hoy no existe (dato nuevo).</li><li>Mes y año quedan en segundo plano.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="c" data-v="c">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">C</span><span class="nombre">El año</span></h2>
+        <p class="resumen">El mapa del año es la pantalla. En una ventana ancha, cada semana es una columna. En el celular el mismo mapa gira y las semanas bajan en filas. Tocás un día y debajo aparece cuánto estudiaste y a qué hora.</p>
+        <p class="enfoque">Lo primero: <b>el hábito, día por día</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La más visual: los huecos y las rachas se ven sin leer.</li><li>Gira con container queries, sin deslizar de costado como hoy.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las primeras semanas de uso se ve casi vacía.</li><li>El mapa ya es una trama de puntos: choca con el fondo con puntos.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="d" data-v="d">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span><span class="nombre">Franjas</span></h2>
+        <p class="resumen">La semana como una agenda. Cada día es una franja de 7 a 24 h y cada sesión es un bloque en su hora, con su largo real. Debajo, con el mismo eje, a qué hora estudiás normalmente. Las flechas pasan a semanas anteriores.</p>
+        <p class="enfoque">Lo primero: <b>cuándo estudiás</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Muestra un dato que la app ya tiene (minutos por hora) y hoy no enseña.</li><li>Cada sesión se ve; un Pomodoro deja de ser solo un total.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No da totales de mes ni de año.</li><li>En el celular los bloques de 25 min quedan finos.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="e" data-v="e">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">E</span><span class="nombre">Una cifra por vez</span></h2>
+        <p class="resumen">Como el home: un solo objeto en pantalla. Cada cifra ocupa la pantalla con una frase que la explica y un gráfico chico. La semana, la racha, tu mejor día, tu hora y el total. Se pasa con las flechas.</p>
+        <p class="enfoque">Lo primero: <b>una cifra, con su frase</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La más calma. Cada número viene con su explicación.</li><li>Funciona igual en el celular y en la compu.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Para comparar hay que pasar de una cifra a otra.</li><li>No sirve para mirar el detalle de un día.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Boceto</th><th>Lo primero que se ve</th><th>Rangos</th><th>El año</th><th>Datos nuevos</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>A · Frase y barras</td><td>Minutos del rango + comparación</td><td>Hoy, semana, mes, año</td><td>Plegado al final</td><td>Ninguno</td><td>Genérica, cuatro cosas a la vez</td></tr>
+          <tr class="elegida"><td>B · Anillos</td><td>Hoy contra la meta</td><td>Hoy y la semana</td><td>Plegado, «Ver el año»</td><td>Meta diaria</td><td>La meta es un concepto nuevo</td></tr>
+          <tr><td>C · El año</td><td>El mapa entero</td><td>Un año</td><td>Es la pantalla</td><td>Ninguno</td><td>Vacía al empezar; choca con los puntos</td></tr>
+          <tr><td>D · Franjas</td><td>Las sesiones de la semana</td><td>Semana por semana</td><td>No está</td><td>Hora de cada sesión</td><td>Sin totales largos</td></tr>
+          <tr><td>E · Una cifra por vez</td><td>Una cifra grande</td><td>Una por cifra</td><td>Solo el total</td><td>Ninguno</td><td>Comparar cuesta toques</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegiría B, con las franjas de D adentro de cada día</h3>
+        <p><b>Es la única que continúa al home en vez de empezar otra pantalla.</b> En D4 el anillo ya muestra el progreso del día. Entrar al dashboard es ver ese mismo anillo de cerca, con la semana al lado. Una intención por pantalla: cómo vas hoy y esta semana. El resto se pide.</p>
+        <p><b>La meta diaria es lo que hay que decidir.</b> Sin meta, el anillo no tiene contra qué llenarse. Propongo que arranque en 2 h y se cambie tocando el anillo. Si no la querés, B se puede hacer con la mejor marca de la semana como vuelta completa, pero se lee peor.</p>
+        <p><b>Lo que le sumaría de D:</b> al tocar un día de la semana, su franja de horas (cada sesión en su hora) en lugar de un número. Es el dato que la app ya calcula y nunca mostró.</p>
+        <p><b>Plan B: A,</b> si preferís no sumar la meta. Es la más segura y con los datos de hoy alcanza. <b>C</b> sirve como la vista de «Ver el año» de B: ahí el mapa gira bien en el celular.</p>
+        <h4>Qué se va del dashboard de hoy</h4>
+        <p>La torta por categoría, porque necesita un color por categoría. En A queda como lista con líneas finas, en un solo color. La lista de «Últimas tareas completadas» pasa a la pantalla de Tareas. Los íconos de colores de las cifras también se van.</p>
+        <h4>Fondo con puntos</h4>
+        <p><b>En B sí, con «Al centro»:</b> el anillo queda sobre liso y los puntos lo rodean, como en el home. En E, igual. <b>En C no:</b> el mapa ya es una grilla de cuadritos y con la trama de fondo no se distingue dónde termina. En A y D tampoco: son gráficos sobre el fondo y los puntos ensucian las guías.</p>
+      </div>
+      <div>
+        <pre><span class="c-com">// El anillo: mismo componente que el home, con meta</span>
+function AnilloDia({ minutos, meta, tam = 280 }: Props) {
+  const grosor = tam * 0.075;
+  const r = (tam - grosor) / 2;
+  const largo = 2 * Math.PI * r;
+  const avance = Math.min(minutos / meta, 1);
+  return (
+    &lt;svg viewBox={`0 0 ${tam} ${tam}`} className="size-full -rotate-90"&gt;
+      &lt;circle cx="50%" cy="50%" r={r} fill="none"
+        className="stroke-border" strokeWidth={grosor} /&gt;
+      {avance &gt; 0 &amp;&amp; (
+        &lt;circle cx="50%" cy="50%" r={r} fill="none"
+          className="stroke-brand" strokeWidth={grosor}
+          strokeLinecap="round"
+          strokeDasharray={`${largo * avance} ${largo}`} /&gt;
+      )}
+    &lt;/svg&gt;
+  );
+}
+
+<span class="c-com">/* El mapa del año gira con container queries:
+   cada semana es [mes, lun…dom]. Angosto, una fila
+   por semana; ancho, una columna por semana. */</span>
+.mapa { container: mapa / inline-size; }
+.mapa-grilla {
+  display: grid; gap: 3px; grid-auto-flow: row;
+  grid-template-columns: 3em repeat(7, minmax(0, 26px));
+}
+@container mapa (min-width: 600px) {
+  .mapa-grilla {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-template-rows: 1.4em repeat(7, auto);
+    grid-auto-columns: minmax(0, 1fr);
+  }
+}</pre>
+        <h4>Hallazgos para la Fase 3</h4>
+        <p>Los colores del dashboard no salen de los tokens: <code>chartConfig</code> y <code>COLORES_TORTA</code> en <code>Dashboard.tsx</code> tienen el violeta escrito a mano, y <code>--heatmap-0..4</code> en <code>index.css</code> también. Con el acento elegible, todo eso tiene que pasar a <code>--brand</code> y a mezclas con <code>color-mix</code>, como en este boceto.</p>
+        <p>La RPC <code>get_dashboard_aggregates</code> ya devuelve minutos por hora y por día, que es lo que necesitan B, D y E. Para B falta guardar la meta diaria (en <code>user_stats</code> o en el perfil). Para las franjas de D hace falta la hora de cada sesión, no solo el total por hora.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<template id="tpl-tb">
+  <header class="tb">
+    <a class="marca" href="#" aria-label="Doro, inicio"><svg><use href="#i-logo"/></svg><span class="desv">Doro</span></a>
+    <nav class="tb-nav desv" aria-label="Secciones"><a href="#">Inicio</a><a href="#">Tareas</a><a aria-current="page" href="#">Dashboard</a><a href="#">Calendario</a></nav>
+    <div class="tb-der">
+      <span class="hora desv" data-hora></span>
+      <span class="avatar" aria-label="Tu cuenta">L</span>
+      <button type="button" class="menu desv" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar("doro-d4-" + id, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer("doro-d4-" + id, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── Datos de ejemplo: un año inventado, con semilla fija ── */
+  let semilla = 20261004;
+  const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
+  const HOY = new Date(2026, 9, 4);           // domingo
+  const META = 120;                             // meta diaria de B, en minutos
+  const TEMAS = ["Paradigmas", "Redes", "Análisis y Diseño", "Inteligencia Artificial", "General"];
+  const PESOS = [.32, .26, .18, .14, .10];
+  const temaAzar = () => { let r = azar(), i = 0; while (i < PESOS.length - 1 && (r -= PESOS[i]) > 0) i++; return TEMAS[i]; };
+  const N_DIAS = 371;
+  const dias = [];                              // dias[i]: hace i días
+  for (let i = 0; i < N_DIAS; i++) {
+    const f = new Date(HOY); f.setDate(f.getDate() - i);
+    dias[i] = { i, f, dow: (f.getDay() + 6) % 7, ses: [], tareas: [], min: 0 };
+  }
+  for (let i = N_DIAS - 1; i >= 0; i--) {
+    const d = dias[i], mes = d.f.getMonth();
+    const receso = mes === 0 || mes === 1 || (mes === 6 && d.f.getDate() > 10) ? .3 : 1;
+    let estudia = azar() < (d.dow < 5 ? .74 : .38) * receso;
+    if (i <= 5) estudia = true;                 // racha de 6 días hasta hoy
+    if (i === 6) estudia = false;
+    if (!estudia) continue;
+    let n = i === 0 ? 2 : 1 + Math.floor(azar() * 5);
+    let h = i === 0 ? 10 : azar() < .62 ? 14 + azar() * 2.5 : azar() < .5 ? 9 + azar() * 2 : 20 + azar() * 1.2;
+    h = Math.round(h * 12) / 12;
+    for (let k = 0; k < n && h < 23.4; k++) {
+      const m = azar() < .7 ? 25 : 50;
+      d.ses.push({ h, m }); d.min += m;
+      h += m / 60 + (k % 4 === 3 ? 25 : 5) / 60;
+    }
+    const t = azar() < .35 ? 0 : azar() < .7 ? 1 : 2;
+    for (let k = 0; k < t; k++) d.tareas.push(temaAzar());
+  }
+  dias[0].tareas = ["Redes"];
+
+  /* ── Cálculos ── */
+  const suma = (a, b, campo = "min") => { let s = 0; for (let i = a; i <= b; i++) s += campo === "min" ? dias[i].min : campo === "ses" ? dias[i].ses.length : dias[i].tareas.length; return s; };
+  const fmt = m => { m = Math.round(m); if (m < 60) return `${m} min`; const h = Math.floor(m / 60), r = m % 60; return r ? `${h} h ${r} min` : `${h} h`; };
+  const fmtEje = m => m < 60 ? `${m} min` : `${(m / 60).toLocaleString("es-AR")} h`;
+  const DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
+  const DOW_L = ["L", "M", "M", "J", "V", "S", "D"];
+  const DOW_LARGO = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+  const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  const fecha = f => `${DOW[(f.getDay() + 6) % 7]} ${f.getDate()} ${MESES[f.getMonth()]}`;
+  const racha = (() => { let r = 0; while (dias[r].min > 0) r++; return r; })();
+  const totalAno = suma(0, 364), diasConEstudio = dias.slice(0, 365).filter(d => d.min).length;
+  const promSesion = (a, b) => { const s = suma(a, b, "ses"); return s ? suma(a, b) / s : 0; };
+  const porDow = Array.from({ length: 7 }, (_, k) => { const ds = dias.slice(0, 364).filter(d => d.dow === k); return ds.reduce((x, d) => x + d.min, 0) / ds.length; });
+  const mejorDow = porDow.indexOf(Math.max(...porDow));
+  const H0 = 7, H1 = 24;
+  const porHora = Array.from({ length: H1 - H0 }, () => 0);
+  dias.slice(0, 90).forEach(d => d.ses.forEach(s => { const k = Math.floor(s.h) - H0; if (k >= 0 && k < porHora.length) porHora[k] += s.m; }));
+  const ventana = (() => { let mejor = 0, at = 0; for (let k = 0; k + 3 <= porHora.length; k++) { const v = porHora[k] + porHora[k + 1] + porHora[k + 2]; if (v > mejor) { mejor = v; at = k; } } return at + H0; })();
+  const totalPorHora = porHora.reduce((a, b) => a + b, 0);
+  const shareVentana = Math.round((porHora[ventana - H0] + porHora[ventana - H0 + 1] + porHora[ventana - H0 + 2]) / totalPorHora * 100);
+
+  /* Rangos de A. Cada uno da barras, etiquetas y el rango anterior para comparar */
+  const RANGOS = {
+    hoy: () => {
+      const v = Array.from({ length: H1 - H0 }, () => 0);
+      dias[0].ses.forEach(s => v[Math.floor(s.h) - H0] += s.m);
+      return { barras: v.map((m, k) => ({ m, tip: `${k + H0} h · ${fmt(m)}`, etq: (k + H0) % 3 === 0 ? `${k + H0}` : "" })), hoyIdx: -1, a: 0, b: 0, ant: [1, 1], antNombre: "ayer", titulo: "Hoy llevás", hueco: 4 };
+    },
+    semana: () => ({ barras: [6, 5, 4, 3, 2, 1, 0].map(i => ({ m: dias[i].min, tip: `${fecha(dias[i].f)} · ${fmt(dias[i].min)}`, etq: DOW_L[dias[i].dow], hoy: i === 0 })), a: 0, b: 6, ant: [7, 13], antNombre: "la semana pasada", titulo: "Esta semana estudiaste", hueco: 10 }),
+    mes: () => ({ barras: Array.from({ length: 30 }, (_, k) => { const i = 29 - k, d = dias[i]; return { m: d.min, tip: `${fecha(d.f)} · ${fmt(d.min)}`, etq: d.f.getDate() % 7 === 1 || i === 0 ? `${d.f.getDate()}` : "", hoy: i === 0 }; }), a: 0, b: 29, ant: [30, 59], antNombre: "los 30 días anteriores", titulo: "En los últimos 30 días estudiaste", hueco: 3 }),
+    ano: () => {
+      const meses = [];
+      for (let k = 11; k >= 0; k--) { const m = new Date(HOY.getFullYear(), HOY.getMonth() - k, 1); meses.push({ y: m.getFullYear(), mo: m.getMonth(), m: 0 }); }
+      dias.slice(0, 365).forEach(d => { const x = meses.find(z => z.y === d.f.getFullYear() && z.mo === d.f.getMonth()); if (x) x.m += d.min; });
+      return { barras: meses.map((x, k) => ({ m: x.m, tip: `${MESES[x.mo]} ${x.y} · ${fmt(x.m)}`, etq: MESES[x.mo], hoy: k === 11 })), a: 0, b: 364, ant: null, titulo: "En el último año estudiaste", hueco: 8 };
+    },
+  };
+
+  /* ── Piezas ── */
+  const escalar = max => { const pasos = [15, 30, 60, 120, 180, 300, 600, 1200, 1800, 3000, 6000]; const p = pasos.find(s => max / s <= 3) || 6000; return { tope: Math.max(p, Math.ceil(max / p) * p), paso: p }; };
+  const barras = (lista, { alto = 200, hueco = 6, guias = true } = {}) => {
+    const max = Math.max(...lista.map(x => x.m), 1), { tope, paso } = escalar(max);
+    const g = guias ? Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("") : "";
+    return `<div class="graf${guias ? "" : " sin-guias"}" style="--alto:${alto}px;--hueco:${hueco}px">
+      <div class="graf-area">${g}<div class="graf-cols">${lista.map(x => `<div class="graf-col${x.hoy ? " hoy" : ""}" data-tip="${x.tip}" role="img" aria-label="${x.tip}"><i style="height:${x.m / tope * 100}%"></i></div>`).join("")}</div></div>
+      <div class="graf-etqs">${lista.map(x => `<span class="${x.hoy ? "hoy" : ""}">${x.etq || ""}</span>`).join("")}</div>
+    </div>`;
+  };
+  const linea = p => `<span class="linea-avance"><span style="width:${p}%"></span></span>`;
+  const anillo = (frac, tam, grosor) => {
+    const r = (tam - grosor) / 2, c = 2 * Math.PI * r, f = Math.min(Math.max(frac, 0), 1), m = tam / 2;
+    return `<svg class="anillo" viewBox="0 0 ${tam} ${tam}" aria-hidden="true"><circle class="fondo-a" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}"/>${f > 0 ? `<circle class="prog" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}" stroke-linecap="round" stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${m} ${m})"/>` : ""}</svg>`;
+  };
+  const nivel = m => !m ? 0 : m < 45 ? 1 : m < 90 ? 2 : m < 150 ? 3 : 4;
+  const mapa = (sel, tocable) => {
+    const ini = dias[364], primero = 364 + ini.dow;   // lunes de la primera semana
+    let html = "", mesAnt = -1;
+    for (let w = primero; w >= 0; w -= 7) {
+      const lunes = dias[Math.min(w, N_DIAS - 1)].f, enSemana = [];
+      for (let k = 0; k < 7; k++) enSemana.push(w - k);
+      const primerDia = enSemana.map(i => i >= 0 && i <= 364 ? dias[i] : null).find(Boolean);
+      const mes = primerDia ? primerDia.f.getMonth() : -1;
+      html += `<span class="mes">${mes !== mesAnt && mes >= 0 ? MESES[mes] : ""}</span>`;
+      if (mes >= 0) mesAnt = mes;
+      enSemana.forEach(i => {
+        if (i < 0 || i > 364) { html += `<span class="celda vacia"></span>`; return; }
+        const d = dias[i], tip = `${fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}`;
+        html += tocable
+          ? `<button type="button" class="celda" data-n="${nivel(d.min)}" data-dia="${i}" data-k="dia-${i}" data-tip="${tip}" aria-label="${tip}" aria-pressed="${sel === i}"></button>`
+          : `<span class="celda" data-n="${nivel(d.min)}" data-tip="${tip}"></span>`;
+      });
+    }
+    return `<div class="mapa"><div class="mapa-grilla">${html}</div>
+      <div class="mapa-ley"><span>Menos</span>${[0, 1, 2, 3, 4].map(n => `<i class="celda" data-n="${n}"></i>`).join("")}<span>Más</span></div></div>`;
+  };
+  const eje = (ticks) => `<div class="fr-eje">${ticks.map(h => `<span style="left:${(h - H0) / (H1 - H0) * 100}%">${h}</span>`).join("")}</div>`;
+  const TICKS = [8, 12, 16, 20, 24];
+  const pista = d => `<div class="fr-pista">${TICKS.map(h => `<span class="guia" style="left:${(h - H0) / (H1 - H0) * 100}%"></span>`).join("")}${d.ses.map(s => { const hh = Math.floor(s.h), mm = Math.round((s.h - hh) * 60); const tip = `${fecha(d.f)} · ${hh}:${String(mm).padStart(2, "0")} · ${s.m} min`; return `<span class="fr-bloque" style="left:${(s.h - H0) / (H1 - H0) * 100}%;width:${s.m / 60 / (H1 - H0) * 100}%" data-tip="${tip}"></span>`; }).join("")}</div>`;
+  const histHoras = () => { const max = Math.max(...porHora); return `<div class="fr-hist">${porHora.map((m, k) => `<i class="${k + H0 >= ventana && k + H0 < ventana + 3 ? "pico" : ""}" style="height:${m / max * 100}%" data-tip="${k + H0} h · ${fmt(m / 13)} por semana"></i>`).join("")}</div>`; };
+
+  /* ── Las cinco estructuras ── */
+  const V = {
+    a: (app, ab) => {
+      const r = app._rango || "semana", R = RANGOS[r]();
+      const min = r === "hoy" ? dias[0].min : suma(R.a, R.b), ses = r === "hoy" ? dias[0].ses.length : suma(R.a, R.b, "ses");
+      const tareas = r === "hoy" ? dias[0].tareas.length : suma(R.a, R.b, "t");
+      let comp = "";
+      if (R.ant) { const ant = suma(R.ant[0], R.ant[1]), dif = min - ant; comp = dif === 0 ? `Lo mismo que ${R.antNombre}.` : `${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${R.antNombre}.`; }
+      const conteo = {}; (r === "hoy" ? [dias[0]] : dias.slice(R.a, R.b + 1)).forEach(d => d.tareas.forEach(t => conteo[t] = (conteo[t] || 0) + 1));
+      const filas = TEMAS.map(t => [t, conteo[t] || 0]).filter(x => x[1]).sort((x, y) => y[1] - x[1]), maxT = Math.max(1, ...filas.map(x => x[1]));
+      const abierto = ab.has("ano");
+      return `<main class="main">
+        <div class="a-cab">
+          <div class="rangos" role="group" aria-label="Rango">${[["hoy", "Hoy"], ["semana", "Semana"], ["mes", "Mes"], ["ano", "Año"]].map(([v, n]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${n}</button>`).join("")}</div>
+          <div><h1 class="frase">${R.titulo} <span>${fmt(min)}.</span></h1>${comp ? `<p class="bajada">${comp}</p>` : `<p class="bajada">${diasConEstudio} días con estudio.</p>`}</div>
+        </div>
+        ${barras(R.barras, { hueco: R.hueco })}
+        <dl class="cifras">
+          <div><dt>Sesiones</dt><dd>${ses}</dd></div>
+          <div><dt>Promedio por sesión</dt><dd>${fmt(ses ? min / ses : 0)}</dd></div>
+          <div><dt>Racha</dt><dd>${racha} días</dd></div>
+          <div><dt>Tareas terminadas</dt><dd>${tareas}</dd></div>
+        </dl>
+        <div class="dos-col">
+          <div><h2 class="subtitulo">Terminaste, por tema</h2>
+            <div class="temas">${filas.length ? filas.map(([t, n]) => `<div class="tema-fila"><span class="n">${t}</span>${linea(n / maxT * 100)}<span class="c">${n}</span></div>`).join("") : `<p class="bajada">Todavía nada en este rango.</p>`}</div></div>
+          <div><h2 class="subtitulo">Tu mejor día</h2><p class="bajada" style="margin:0 0 12px">Los ${DOW_LARGO[mejorDow]}, ${fmt(porDow[mejorDow])} de promedio.</p>
+            ${barras(porDow.map((m, k) => ({ m, tip: `${DOW_LARGO[k]} · ${fmt(m)} de promedio`, etq: DOW_L[k], hoy: k === mejorDow })), { alto: 90, hueco: 8, guias: false })}</div>
+        </div>
+        <button type="button" class="btn-texto" data-abrir="ano" data-k="ano" aria-expanded="${abierto}">${abierto ? "Esconder el año" : "Ver el año"}${ic("i-abajo")}</button>
+        ${abierto ? mapa(null, false) : ""}
+      </main>`;
+    },
+    b: (app, ab) => {
+      const sel = app._sel ?? 0, d = dias[sel], abierto = ab.has("ano");
+      const falta = META - d.min;
+      return `<main class="main b-main">
+        <div class="b-hoy">${anillo(d.min / META, 280, 21)}<div class="b-centro"><b>${fmt(d.min)}</b><span>${sel === 0 ? "hoy" : DOW_LARGO[d.dow]}, de ${fmt(META)}</span></div></div>
+        <p class="bajada" style="margin:-16px 0 0">${sel === 0 ? (falta > 0 ? `Te faltan ${fmt(falta)} para tu meta.` : "Llegaste a tu meta de hoy.") : `${d.ses.length} sesiones ese día.`}</p>
+        <div class="b-semana" role="group" aria-label="Esta semana">${[6, 5, 4, 3, 2, 1, 0].map(i => `<button type="button" class="b-dia${i === sel ? " hoy" : ""}" data-sel="${i}" data-k="sel-${i}" data-tip="${fecha(dias[i].f)} · ${fmt(dias[i].min)}" aria-label="${fecha(dias[i].f)}, ${fmt(dias[i].min)}" aria-pressed="${i === sel}">${anillo(dias[i].min / META, 40, 5)}${DOW_L[dias[i].dow]}</button>`).join("")}</div>
+        <div class="b-pie"><span><b>${racha} días</b> seguidos</span><span>Semana <b>${fmt(suma(0, 6))}</b></span><span>Por sesión <b>${fmt(promSesion(0, 6))}</b></span></div>
+        <button type="button" class="btn-texto" style="align-self:center" data-abrir="ano" data-k="ano" aria-expanded="${abierto}">${abierto ? "Esconder el año" : "Ver el año"}${ic("i-abajo")}</button>
+        <div class="b-ano" ${abierto ? "" : "hidden"}><p class="bajada" style="margin:0">En el último año, ${fmt(totalAno)} en ${diasConEstudio} días.</p>${abierto ? mapa(null, false) : ""}</div>
+      </main>`;
+    },
+    c: (app) => {
+      const sel = app._dia ?? 0, d = dias[sel];
+      return `<main class="main c-main">
+        <div><h1 class="frase">En el último año estudiaste ${fmt(totalAno)} <span>en ${diasConEstudio} días.</span></h1>
+          <p class="bajada">Rendís más los ${DOW_LARGO[mejorDow]} y entre las ${ventana} y las ${ventana + 3} h. Tu racha: ${racha} días.</p></div>
+        ${mapa(sel, true)}
+        <div class="c-dia" aria-live="polite">
+          <h2>${fecha(d.f)} <span>· ${d.min ? `${fmt(d.min)} en ${d.ses.length} ${d.ses.length === 1 ? "sesión" : "sesiones"}` : "sin estudio"}</span></h2>
+          ${d.min ? `<div>${pista(d)}${eje(TICKS)}</div>` : `<p class="bajada" style="margin:0">Tocá otro día del mapa.</p>`}
+        </div>
+      </main>`;
+    },
+    d: (app) => {
+      const sem = app._sem ?? 0, base = sem * 7;
+      const lista = [6, 5, 4, 3, 2, 1, 0].map(i => dias[base + i]);
+      const lun = lista[0].f, dom = lista[6].f, tot = lista.reduce((x, y) => x + y.min, 0);
+      return `<main class="main">
+        <div><h1 class="frase">Rendís más entre las ${ventana} y las ${ventana + 3} h. <span>Ahí arranca el ${shareVentana} % de lo que estudiás.</span></h1></div>
+        <div class="d-nav"><button type="button" class="flecha izq" data-sem="${sem + 1}" data-k="d-ant" aria-label="Semana anterior" ${sem >= 8 ? "disabled" : ""}>${ic("i-flecha")}</button>
+          <span>${sem === 0 ? "Esta semana" : `Semana del ${lun.getDate()} ${MESES[lun.getMonth()]}`} · ${fmt(tot)}</span>
+          <button type="button" class="flecha" data-sem="${sem - 1}" data-k="d-sig" aria-label="Semana siguiente" ${sem === 0 ? "disabled" : ""}>${ic("i-flecha")}</button></div>
+        <div class="franjas">
+          ${lista.map(d => `<div class="fr${d.i === 0 ? " hoy" : ""}"><span class="fr-nombre">${DOW[d.dow]} ${d.f.getDate()}</span>${pista(d)}<span class="fr-total${d.min ? "" : " cero"}">${d.min ? fmt(d.min) : "—"}</span></div>`).join("")}
+          <div class="fr"><span></span>${eje(TICKS)}<span></span></div>
+        </div>
+        <div><h2 class="subtitulo">Cuándo estudiás, últimos tres meses</h2>
+          <div class="fr"><span class="fr-nombre">Por hora</span>${histHoras()}<span></span></div>
+          <div class="fr"><span></span>${eje(TICKS)}<span></span></div></div>
+      </main>`;
+    },
+    e: (app) => {
+      const k = app._cifra ?? 0;
+      const ultimos14 = Array.from({ length: 14 }, (_, j) => dias[13 - j]);
+      const difSem = suma(0, 6) - suma(7, 13);
+      const C = [
+        { g: fmt(suma(0, 6)).replace(" min", "<span style=\"font-size:.5em;letter-spacing:-.02em\"> min</span>"), c: `esta semana, <b>${fmt(Math.abs(difSem))} ${difSem >= 0 ? "más" : "menos"}</b> que la anterior.`, graf: barras(RANGOS.semana().barras, { alto: 90, hueco: 10, guias: false }) },
+        { g: `${racha} días`, c: `seguidos estudiando. Tu mejor racha del año fue de <b>${(() => { let m = 0, r = 0; dias.slice(0, 365).forEach(d => { r = d.min ? r + 1 : 0; m = Math.max(m, r); }); return m; })()} días</b>.`, graf: `<div class="e-marcas">${ultimos14.map(d => `<i class="${d.min ? "si" : ""}" data-tip="${fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}"></i>`).join("")}</div>` },
+        { g: DOW_LARGO[mejorDow][0].toUpperCase() + DOW_LARGO[mejorDow].slice(1), c: `es tu mejor día: <b>${fmt(porDow[mejorDow])}</b> de promedio.`, graf: barras(porDow.map((m, j) => ({ m, tip: `${DOW_LARGO[j]} · ${fmt(m)}`, etq: DOW_L[j], hoy: j === mejorDow })), { alto: 90, hueco: 8, guias: false }) },
+        { g: `${ventana} h`, c: `es tu hora. Entre las ${ventana} y las ${ventana + 3} arranca <b>el ${shareVentana} %</b> de lo que estudiás.`, graf: `${histHoras()}${eje(TICKS)}` },
+        { g: fmt(totalAno).split(" ").slice(0, 2).join(" "), c: `en el último año, en <b>${diasConEstudio} días</b> de estudio.`, graf: barras(RANGOS.ano().barras, { alto: 90, hueco: 6, guias: false }) },
+      ];
+      const x = C[k], n = C.length;
+      return `<main class="main e-main">
+        <div class="e-cifra e-entrar" data-anim="${k}"><p class="e-grande">${x.g}</p><p class="e-chico">${x.c}</p></div>
+        <div class="e-graf e-entrar">${x.graf}</div>
+        <div class="e-nav"><button type="button" class="flecha izq" data-cifra="${(k - 1 + n) % n}" data-k="e-ant" aria-label="Cifra anterior">${ic("i-flecha")}</button><span>${k + 1} de ${n}</span><button type="button" class="flecha" data-cifra="${(k + 1) % n}" data-k="e-sig" aria-label="Cifra siguiente">${ic("i-flecha")}</button></div>
+      </main>`;
+    },
+  };
+
+  /* ── Montaje ── */
+  const tplTb = document.getElementById("tpl-tb");
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
+  const pintar = (a, enfocar) => {
+    const k = enfocar && document.activeElement?.dataset?.k;
+    a.cuerpo.innerHTML = V[a.v](a.el, a.abiertas);
+    if (k) a.el.querySelector(`[data-k="${k}"]`)?.focus();
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+
+  opciones.forEach(op => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el.appendChild(tplTb.content.cloneNode(true));
+    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column"; el.appendChild(cuerpo);
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div><div class="tip" aria-hidden="true"></div>`);
+    el.querySelector("[data-hora]").textContent = ahora();
+    const a = { v, el, cuerpo, abiertas: new Set() };
+    apps.push(a);
+
+    const tip = el.querySelector(".tip");
+    const verTip = t => {
+      const r = t.getBoundingClientRect(), ra = el.getBoundingClientRect();
+      tip.textContent = t.dataset.tip;
+      const x = Math.min(Math.max(r.left - ra.left + r.width / 2, 70), ra.width - 70);
+      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top) + "px"; tip.classList.add("ver");
+    };
+    el.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) verTip(t); });
+    el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
+    el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
+
+    el.addEventListener("click", e => {
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
+      const b = e.target.closest("button"); if (!b || b.disabled) return;
+      const d = b.dataset;
+      tip.classList.remove("ver");
+      if (d.abrir) { a.abiertas.has(d.abrir) ? a.abiertas.delete(d.abrir) : a.abiertas.add(d.abrir); return pintar(a, true); }
+      if (d.rango) { el._rango = d.rango; return pintar(a, true); }
+      if (d.sel !== undefined) { el._sel = +d.sel; return pintar(a, true); }
+      if (d.dia !== undefined) { el._dia = +d.dia; return pintar(a, true); }
+      if (d.sem !== undefined) { el._sem = +d.sem; return pintar(a, true); }
+      if (d.cifra !== undefined) { el._cifra = +d.cifra; return pintar(a, true); }
+    });
+
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 720]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    pintar(a);
+  });
+  setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${ic("i-x")}</button>`;
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>
