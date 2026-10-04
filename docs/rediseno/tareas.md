@@ -102,6 +102,50 @@ probar escala. Espaciado: 44 px bajo la barra y contenido sin ancho máximo.
 Recomendación: **X, con el «Todos» de Y si pasan de 6 temas, y el detalle junto al ítem**
 (Popover de Radix; en el celular, Drawer). El diálogo queda para altas y ediciones.
 
+**Devolución de la 6ª ronda (2026-10-04):**
+- **Queda: el ajuste Detalle** (panel derecho / diálogo / junto al ítem / hoja / en el lugar)
+  y la forma de editar tareas y prácticos que trae.
+- **Queda: la vista de Calendario** y la **separación por materia o tema**.
+- **La bandeja de Y le gusta mucho más que la de X.**
+- **La lista se vuelve tediosa:** las secciones no tienen borde y con muchas materias se
+  complica.
+- **Falta margen a los costados.** Había pedido usar más el ancho, pero quedó corto.
+- La barra lateral izquierda le interesa, pero teme que se complique con muchas materias.
+  Pide seguir explorándola.
+- Direcciones nuevas:
+  1. **Separar claramente prácticos, tareas y parciales.** Se suman **informes** y, más
+     adelante, **notas**. Las notas se pegan en la sala como papelitos, viven primero en
+     el `localStorage` de la sala y se gestionan desde esta pantalla.
+  2. **Un boceto que arranque con los temas en cajas, al centro**, y que al entrar en uno
+     muestre sus tareas, prácticos, etc.
+
+**Séptima ronda (misma URL):** siete estructuras, todas con los cinco tipos (parciales,
+prácticos, informes, tareas y notas). Los márgenes laterales van de 40 a 120 px según el
+ancho, y el ajuste Temas llega a 15.
+- **A · Cajas al centro** (recomendada): una caja por tema, centradas. Al tocar una entrás
+  al tema y cada tipo vive en su propia caja. Para saltar de tema está la bandeja de Y.
+- **B · Cajas que se abren**: la caja se abre en el lugar y ocupa toda la fila.
+- **C · Tablero por tipo**: una columna por tipo, con tarjetas.
+- **D · El tipo primero**: pestañas por tipo; las materias aparecen como cajas dentro de
+  cada una.
+- **E · Índice y cajas**: la barra que se pliega de W, con las cajas por tipo de A.
+- **F · Árbol con buscador**: barra lateral fija con buscador; el tema se despliega en
+  ramas por tipo, que además filtran.
+- **G · Un renglón por tema**: acordeón de cajas de un renglón.
+
+Recomendación: **A**. Si pasan de 9 temas, sumar el buscador de F arriba de la grilla.
+Plan B: D. El detalle sigue «junto al ítem» (hoja en el celular).
+
+Cómo entran los tipos nuevos:
+- **Informe:** un práctico cuyas partes tienen nombre en vez de número. Usa el mismo
+  `checklist` (jsonb) con `kind = 'informe'`. En el detalle, las partes se marcan como
+  casilleros.
+- **Notas:** sin fecha ni avance. Se ven como papelitos, con la sala de la que vinieron, y
+  se pueden editar, pasar a tareas o borrar. Cuando salgan del `localStorage`, conviene
+  una tabla `notes` aparte.
+
+Fuente de la 6ª ronda: `bocetos/tareas-ronda6.html`.
+
 Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
 en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
 `kind` ('tarea' | 'tp') y otra `remind_at`.
@@ -120,6 +164,7 @@ Lo que tiene que resolver el boceto:
 - Cómo conviven TPs y tareas sueltas: ¿un TP es un tipo de tarea, o una entidad aparte
   que contiene puntos?
 - Qué ve de esto la bandeja del home y el panel de la sala.
+- Informes (partes con nombre) y notas de la sala (sin fecha, se pasan a tareas).
 
 Esto toca la capa de datos (tablas nuevas o columnas, RLS, quizás una edge function para
 los recordatorios). El boceto define la forma; el modelo de datos se cierra en la Fase 3
@@ -129,7 +174,12 @@ con el agente `arquitecto-features` antes de escribir nada.
 
 ## Dónde retomamos
 
-La 6ª ronda quedó «muy completa». Leo va a juntar referencias y opiniones de usuarios para elegir entre W, X e Y y el modo de detalle. **Próximo paso: definir el boceto final de Tareas** a partir de esa ronda.
+La 7ª ronda (A–G) está publicada y espera la opinión de Leo. Hay que decidir:
+1. La estructura (A a G).
+2. Si los informes y las notas quedan como están modelados.
+3. El modo de detalle, que todavía se compara con el ajuste.
+
+**Próximo paso:** con esa devolución, armar el boceto final de Tareas.
 
 ## Propuestas transversales
 
