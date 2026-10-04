@@ -474,9 +474,9 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 .notas-cab button { border: 0; background: none; height: 28px; padding: 0 8px; border-radius: 7px; font-size: 12.5px; color: var(--tenue); display: inline-grid; place-items: center; }
 .notas-cab button:hover { color: var(--fg); background: var(--campo); }
 .notas-cab button svg { width: 15px; height: 15px; }
-:is(.bandeja, .esquina, .gemela) .notas-cab b { display: none; }
-:is(.bandeja, .esquina, .gemela) .notas-cab { justify-content: flex-end; }
-:is(.bandeja, .esquina, .gemela) .notas-cab:not(:has(button:not([hidden]))) { display: none; }
+.bandeja .notas-cab b, .esquina .notas-cab b { display: none; }
+.bandeja .notas-cab, .esquina .notas-cab { justify-content: flex-end; }
+:is(.bandeja, .esquina) .notas-cab:not(:has(button:not([hidden]))) { display: none; }
 .notas-lista { list-style: none; margin: 0; padding: 0; overflow-y: auto; min-height: 0; }
 .nota { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; line-height: 1.45; transition: opacity .2s ease, transform .25s var(--salida); }
 .nota:last-child { border-bottom: 0; }
@@ -610,11 +610,11 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 
 /* U · Bandejas gemelas: las notas son una segunda bandeja, angosta, pegada a la de tareas */
 .gemela { display: none; }
-.app.gem .gemela { display: flex; flex-direction: column; position: absolute; bottom: 0; right: calc(50% + 288px); z-index: 11; width: 64px; max-height: 52%; overflow: hidden;
+.v-u .gemela { display: flex; flex-direction: column; position: absolute; bottom: 0; right: calc(50% + 288px); z-index: 11; width: 64px; max-height: 52%; overflow: hidden;
   background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
   transform: translateY(calc(100% - 60px));
   transition: transform .5s var(--salida), width .45s var(--salida), background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s; }
-.app.gem .gemela.abierta { transform: none; width: min(var(--ancho-notas), calc(50% - 300px)); }
+.v-u .gemela.abierta { transform: none; width: min(var(--ancho-notas), calc(50% - 300px)); }
 .gemela-asa { justify-content: center; gap: 6px; padding: 4px 0 0; }
 .gemela-asa::before { width: 20px; }
 .gemela-asa svg { width: 15px; height: 15px; color: var(--tenue); }
@@ -640,40 +640,6 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
   .v-u .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
   .v-u .gemela { right: auto; left: 12px; }
   .v-u .gemela.abierta { left: 12px; width: calc(100% - 24px); }
-}
-
-/* ── Sexta ronda: la bandeja de notas de U, con el asa de Q y lejos de las tareas ── */
-.gem-ult { display: none; }
-.app.gem-ancha .gemela { width: 236px; }
-.app.gem-ancha .gemela-asa { justify-content: flex-start; gap: 8px; padding: 4px 16px 0; }
-.app.gem-ancha .gem-ult { display: block; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tenue); font-size: 13.5px; }
-.app.gem-ancha .gemela.abierta .gem-ult { display: none; }
-.app:is(.v-v, .v-w) .gemela { right: auto; left: 20px; }
-.app.v-x .gemela { right: 20px; }
-.app.v-y .gemela { right: calc(50% + 320px); }
-.app.gem-ancha .gemela.abierta { width: max(272px, min(var(--ancho-notas), calc(50% - 312px))); }
-/* W y X · se escribe al pie y lo nuevo se apila arriba */
-.app:is(.v-w, .v-x) .gemela .notas-lista { order: 1; display: flex; flex-direction: column-reverse; }
-.app:is(.v-w, .v-x) .gemela .alta { order: 2; }
-.app:is(.v-w, .v-x) .gemela .notas-aviso { order: 3; }
-/* Sin lugar para la última nota, el asa queda en lápiz y número */
-@container app (max-width: 1139px) {
-  .app.gem-ancha .gemela:not(.abierta) { width: 64px; }
-  .app.gem-ancha .gemela:not(.abierta) .gemela-asa { justify-content: center; gap: 6px; padding: 4px 0 0; }
-  .app.gem-ancha .gem-ult { display: none; }
-}
-/* Sin lugar para abrir al costado, abre en el lugar de la de tareas */
-@container app (max-width: 1159px) {
-  .app.gem-ancha .gemela.abierta { left: max(12px, calc(50% - 280px)); right: auto; width: min(calc(100% - 24px), 560px); }
-  .app.gem-ancha .gemela.abierta .cuerpo { width: 100%; }
-}
-/* En angosto, la bandeja de tareas se corre para dejarle lugar al asa */
-@container app (max-width: 779px) {
-  .app:is(.v-v, .v-w, .v-y) .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
-  .app:is(.v-v, .v-w, .v-y) .gemela { right: auto; left: 12px; }
-  .app.v-x .bandeja { left: calc(50% - 38px); width: calc(100% - 100px); }
-  .app.v-x .gemela { left: auto; right: 12px; }
-  .app.gem-ancha .gemela.abierta { left: 12px; right: auto; width: calc(100% - 24px); }
 }
 
 /* Pantalla completa: la barra de ajustes se puede esconder; la esquina de abajo a la derecha la trae */
@@ -737,8 +703,8 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 <div class="pagina">
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
-    <p>La sala ya tiene su base: la bandeja de tareas del home, el hilo que aparece con el reloj corriendo y el reloj que sube sin achicarse. Lo que queda por cerrar son las <b>notas rápidas de la sesión</b>. Acá quedaron solo los bocetos que siguen en juego; las rondas anteriores están guardadas en <code>bocetos/sala-ronda5.html</code>.</p>
-    <p>El reloj corre de verdad: dale play, abrí las tareas y las notas, escribí algo y probá Salir. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
+    <p>La sala es la pantalla que menos cambia. Se queda lo que ya funciona: salir a la izquierda, quién está a la derecha, el reloj grande con sus dos puntos en el medio y los controles a los costados. Se va el recuadro punteado, los botones pierden el borde y el punto del modo pasa a usar el acento. <b>Con el reloj corriendo, si no movés el mouse, queda solo el reloj.</b> Moverlo trae todo de vuelta.</p>
+    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A), <b>la tercera</b> (I a L, sobre A + F) <b>la cuarta</b> (M a P, las notas rápidas sobre A + F + I) <b>y la quinta</b> (Q a U, variaciones de P). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema, N abre las notas y Esc sale. <b>La X (o H) esconde la barra de ajustes</b> para ver la pantalla sola; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
@@ -799,14 +765,144 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     </div>
   </div>
 
+  <section class="opcion" id="a" data-v="a">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span><span class="nombre">Bandeja, como en el home</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">La misma bandeja del home, con el asa que queda cuando se desvanece. Adentro se suman las dos pestañas de hoy, Mías y Sala. Si alguien agrega una tarea a la sala mientras está desvanecida, la rayita toma el acento.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Es el mismo componente que el home: se aprende una vez.</li><li>El reloj queda solo en la pantalla, como el anillo en el home.</li><li>La rayita en acento avisa sin agregar un globo con número.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abierta tapa la parte de abajo del reloj en pantallas bajas.</li><li>No se ven reloj y lista enteros a la vez.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="b" data-v="b">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B</span><span class="nombre">Al costado</span></h2>
+        <p class="resumen">En pantallas anchas las tareas son una columna a la derecha que corre el reloj hacia la izquierda. Cerrada, queda una rayita vertical en el borde. En angostas (menos de 860 px) se vuelve la bandeja de A.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Reloj y lista a la vez, sin taparse.</li><li>Sirve para ir tachando mientras corre el pomodoro.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Son dos comportamientos según el ancho.</li><li>La rayita vertical se descubre menos que la de abajo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="c" data-v="c">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">C</span><span class="nombre">Debajo, como hoy</span></h2>
+        <p class="resumen">La estructura de hoy: el reloj ocupa la primera pantalla y las tareas están abajo. Al bajar, el reloj se apaga y se muda chiquito al centro de la barra; tocarlo, o tocar el reloj grande apagado, vuelve arriba. Ya no usa desenfoque al bajar: era lo que trababa.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Es el cambio más chico: nadie tiene que reaprender la sala.</li><li>La lista tiene todo el ancho.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Para ver las tareas el reloj se va de la pantalla.</li><li>No comparte el gesto del home.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="d" data-v="d">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span><span class="nombre">Ahora, bajo el reloj</span></h2>
+        <p class="resumen">Debajo del reloj, una sola línea: la tarea en la que estás. Se tacha desde ahí y entra la siguiente. Al tocarla, la lista se despliega en el lugar, con las filas apareciendo de a una, y el reloj sube para hacerle espacio.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Une el pomodoro con la tarea: «estoy con esto».</li><li>Nada flota ni tapa: todo está en la misma columna.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Agrega una línea permanente debajo del reloj.</li><li>La lista desplegada es corta; con muchas tareas hay que desplazar.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-2">
+    <h2>Segunda ronda: qué más puede ser la sala</h2>
+    <p>Todas parten de A: las tareas quedan en la bandeja y lo que cambia es lo de arriba. Dos dicen cuánto queda de la fase, una muestra con qué está cada uno, y otra junta los controles en una fila.</p>
+  </header>
+
+  <section class="opcion" id="e" data-v="e">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">E</span><span class="nombre">Anillo</span></h2>
+        <p class="resumen">El anillo del home rodea el reloj y se llena a medida que avanza la fase. Tocar el anillo da play o pausa, igual que en el home el anillo crea la sala. Es la idea D3 de la mudanza: el mismo objeto en las dos pantallas.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La sala y el home se leen como la misma app de un vistazo.</li><li>Dice cuánto queda de la fase sin leer los números.</li><li>El botón principal es el reloj mismo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Los números quedan más chicos para entrar en el anillo.</li><li>Es el cambio más visible respecto de hoy.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="f" data-v="f">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">F</span><span class="nombre">Hilo</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">Una línea fina debajo de los números que se llena con la fase, la misma del reloj flotante. Solo aparece con el reloj corriendo: en pausa se desvanece. Es lo único que se suma a la vista de hoy; el reloj conserva su tamaño.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Los números siguen siendo enormes.</li><li>Coincide con el hilo de progreso del reloj flotante.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos píxeles se notan poco en pantallas lejanas.</li><li>No une con el anillo del home.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="g" data-v="g">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">G</span><span class="nombre">La sala a la vista</span></h2>
+        <p class="resumen">Debajo del reloj, quién está y con qué: «Ana · Resolver el ejercicio 4». Los avatares bajan de la barra a este renglón. Con el reloj corriendo y el mouse quieto, se apaga hasta casi desaparecer.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Hace visible lo que tiene la sala de distinto: estudiar acompañado.</li><li>No hace falta abrir nada para ver en qué anda cada uno.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma un renglón de texto bajo el reloj.</li><li>Necesita saber la tarea en curso de cada uno (dato nuevo de presencia).</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="h" data-v="h">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">H</span><span class="nombre">Una sola fila</span></h2>
+        <p class="resumen">Los seis controles juntos en una fila debajo del reloj, con play más grande en el medio. El reloj queda solo y centrado, igual en el celular que en el escritorio.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Un solo lugar para todos los controles, sin flancos.</li><li>El reloj queda perfectamente centrado.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Se pierde la simetría de hoy, con los controles a los costados.</li><li>La fila agrega altura: el reloj sube un poco.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-3">
+    <h2>Tercera ronda: el reloj no se achica</h2>
+    <p>Todas son A + F: la bandeja, y el hilo que aparece solo con el reloj corriendo. Lo único que cambia es qué hace el reloj cuando subís la bandeja, en vez de achicarse. Dale play y abrí las tareas en cada una.</p>
+  </header>
+
   <section class="opcion" id="i" data-v="i">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">I</span><span class="nombre">La base: A + F + I</span><span class="recomendada">Base</span></h2>
-        <p class="resumen">Lo que ya quedó decidido: la bandeja de tareas del home (A), el hilo bajo los números que aparece solo con el reloj corriendo (F) y, al abrir la bandeja, el reloj que sube sin achicarse (I). Todas las variantes de abajo están armadas sobre esta.</p>
+        <h2><span class="letra">I</span><span class="nombre">Sube sin achicarse</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">La bandeja abre más baja, hasta la mitad, y el reloj solo se corre hacia arriba con su tamaño de siempre. Si hay muchas tareas, la lista se desplaza adentro de la bandeja.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El reloj nunca cambia de tamaño.</li><li>Es la misma bandeja que el home.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El reloj nunca cambia de tamaño.</li><li>Es el movimiento más chico de los cuatro.</li></ul></div>
         <div><h3>Qué pierde</h3><ul><li>Entran menos tareas a la vista (unas cuatro).</li><li>En pantallas muy bajas el reloj queda pegado a la barra.</li></ul></div>
       </div>
     </div>
@@ -814,9 +910,119 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <header class="ronda" id="notas-vigentes">
-    <h2>Notas rápidas: lo que sigue en juego</h2>
-    <p>De la quinta ronda quedan tres. <b>U</b> te gustó, pero está muy pegada a las tareas. De <b>Q</b> te gustó ver la última nota, y de <b>R</b>, escribir donde se apila lo nuevo. Las notas son tuyas, viven en este navegador y se borran al salir de la sala; la tecla N las abre en todas.</p>
+  <section class="opcion" id="j" data-v="j">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">J</span><span class="nombre">Las tareas a pantalla completa</span></h2>
+        <p class="resumen">Abrir las tareas cambia de vista: el reloj se apaga y queda chico en el centro de la barra, y la bandeja ocupa casi toda la altura. Tocar el reloj de la barra vuelve.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La lista tiene todo el espacio: sirve para ordenar con calma.</li><li>El tiempo sigue a la vista, arriba.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Son dos vistas, no una: se pierde la sensación de sala.</li><li>Es el cambio más brusco de los cuatro.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="k" data-v="k">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">K</span><span class="nombre">El reloj se muda a la bandeja</span></h2>
+        <p class="resumen">Al subir la bandeja, el reloj de arriba se apaga y aparece chico en el asa, con su play al lado. El hilo pasa al borde de la bandeja. Al bajarla, vuelve a su lugar.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El tiempo y el play quedan a mano mientras tachás.</li><li>Nada se achica ni queda tapado: el reloj se apaga y reaparece.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos lugares para el mismo reloj.</li><li>El fundido tiene que ser rápido para que no parezcan dos relojes.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="l" data-v="l">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">L</span><span class="nombre">Se corre al costado</span></h2>
+        <p class="resumen">En pantallas anchas la bandeja abre abajo a la derecha y el reloj se desliza a la izquierda, del mismo tamaño. Los controles se apagan mientras está abierta. En angostas hace lo de I.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Reloj grande y lista a la vez, sin taparse.</li><li>La bandeja sigue siendo la del home, solo cambia dónde abre.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Mientras está abierta no hay controles a la vista.</li><li>Otra vez dos comportamientos según el ancho.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-4">
+    <h2>Cuarta ronda: notas rápidas de la sesión</h2>
+    <p>Todas son A + F + I. Las notas son tuyas, viven en el navegador y <b>se borran al salir de la sala</b>: sobreviven a recargar, no a irte. Cambia dónde viven y cómo se abren. En las cuatro, la tecla N abre las notas y deja el cursor listo para escribir. Probá también Salir: si tenés notas, te avisa que se borran y hay que tocarlo otra vez.</p>
+  </header>
+
+  <section class="opcion" id="m" data-v="m">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">M</span><span class="nombre">Cajón al costado</span></h2>
+        <p class="resumen">La idea tal como salió de L: un cajón a la derecha que se abre desde el botón del lápiz en la barra. El reloj se corre lo justo para quedar centrado en lo que sobra, sin achicarse; los controles de la izquierda se apagan y el play queda. En angosto, el cajón tapa el reloj.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Mucho lugar para leer y escribir.</li><li>Las notas son un lugar propio, separado de las tareas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El reloj se mueve cada vez que anotás algo.</li><li>Abrir las notas cierra las tareas, y al revés.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="n" data-v="n">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">N</span><span class="nombre">Pestaña en la bandeja</span></h2>
+        <p class="resumen">No se suma nada a la pantalla: la bandeja de tareas tiene una tercera pestaña, Notas, con la cuenta al lado. Se abre como siempre y el reloj sube como en I.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Cero piezas nuevas: es el mismo componente con otra pestaña.</li><li>Lo más simple de construir.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin teclado son dos toques para anotar: abrir y elegir la pestaña.</li><li>Las notas quedan escondidas detrás de las tareas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="o" data-v="o">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">O</span><span class="nombre">Bajo el reloj</span></h2>
+        <p class="resumen">Debajo del reloj hay una línea para escribir, sin caja, y las dos últimas notas en gris. El resto se despliega con «y 3 más». Con el reloj corriendo y el mouse quieto se va, como los controles.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más rápido: se escribe sin abrir nada.</li><li>Lo que anotaste queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma una línea fija debajo del reloj, como D.</li><li>Al abrir la bandeja las notas se apagan.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="p" data-v="p">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">P</span><span class="nombre">En la esquina</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">Una bandeja chica abajo a la izquierda, al lado de la de tareas. Se desvanece igual: sin el mouse encima queda el lápiz con el número. Tocarla la despliega hacia arriba. En pantallas de menos de 1040 px no entra al lado de la bandeja y pasa al lápiz de la barra, con el cajón de M.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj no se mueve nunca.</li><li>Notas y tareas pueden estar abiertas a la vez.</li><li>Es el mismo gesto de la bandeja, en chico.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos comportamientos según el ancho.</li><li>El lugar es angosto para notas largas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-5">
+    <h2>Quinta ronda, la última: variaciones de P</h2>
+    <p>P queda como favorita. Estas cinco mantienen lo que la hace funcionar (el reloj no se mueve y las notas no compiten con las tareas) y cambian una cosa por vez: qué se ve plegada, dónde se escribe, de qué esquina cuelga, si tiene caja y cómo se lleva con la bandeja de tareas.</p>
   </header>
 
   <section class="opcion" id="q" data-v="q">
@@ -849,6 +1055,36 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
+  <section class="opcion" id="s" data-v="s">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">S</span><span class="nombre">Cuelga de arriba</span></h2>
+        <p class="resumen">La misma esquina, arriba a la izquierda, debajo de Salir, y se despliega hacia abajo. Lejos de la bandeja de tareas, entra desde 720 px de ancho.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Funciona en tablets, no solo en pantallas anchas.</li><li>Las notas y las tareas quedan en extremos opuestos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abierta puede tapar los controles de la izquierda.</li><li>Arriba se lee como menú, menos como bandeja.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="t" data-v="t">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">T</span><span class="nombre">Sin caja</span></h2>
+        <p class="resumen">Las notas son texto suelto en el margen de abajo a la izquierda, sin borde ni fondo, con una línea para escribir debajo. Se ven las tres últimas y las más viejas se van apagando; «y 2 más» trae el resto.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más liviano: no hay ninguna superficie nueva.</li><li>Lo anotado queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sobre el fondo con puntos se lee peor.</li><li>Siempre ocupa ese rincón, aunque no lo uses.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
   <section class="opcion" id="u" data-v="u">
     <div class="opcion-cabeza">
       <div>
@@ -864,115 +1100,258 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <header class="ronda" id="ronda-6">
-    <h2>Sexta ronda: Q, U y R juntas, con aire</h2>
-    <p>Todas son una bandeja de notas que se despliega como U (sube y se ensancha) y que, plegada, muestra el lápiz con la cantidad juntos y la última nota, como Q. Desvanecida queda la rayita. Cambia dónde está y dónde se escribe.</p>
-  </header>
-
-  <section class="opcion" id="v" data-v="v">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">V</span><span class="nombre">En la esquina, con asa</span></h2>
-        <p class="resumen">La bandeja de notas se va a la esquina de abajo a la izquierda, lejos de la de tareas. Plegada es un asa: la rayita arriba y, debajo, el lápiz con la cantidad juntos y la última nota en gris. Desvanecida queda solo la rayita. Al tocarla sube y se ensancha, como U.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Aire de sobra entre notas y tareas.</li><li>Junta lo que te gustó de Q (la última nota) y de U (cómo se despliega).</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Con menos de 1112 px no entra la última nota: quedan el lápiz y el número.</li><li>Con menos de 1160 px abre en el lugar de la bandeja de tareas.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="w" data-v="w">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">W</span><span class="nombre">Se escribe al pie</span></h2>
-        <p class="resumen">V con el efecto de R. Abierta, la línea para escribir queda abajo, al pie de la bandeja, y lo anotado se apila arriba: lo más nuevo, pegado a donde escribís. Tocar el asa abre y deja el cursor listo; al salir de la línea se pliega sola.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Anotar es un solo toque.</li><li>Lo nuevo aparece justo donde estás mirando.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Se pliega al tocar afuera, aunque quisieras seguir leyendo.</li><li>Escribe abajo, al revés que la bandeja de tareas.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="x" data-v="x">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">X</span><span class="nombre">A la derecha</span></h2>
-        <p class="resumen">W en espejo: la esquina de abajo a la derecha, del lado del mouse y de los controles de play.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Queda a mano para quien usa el mouse con la derecha.</li><li>Deja libre el lado de Salir.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>En pantalla completa comparte esquina con la barra de ajustes (escondela con la X).</li><li>Se lee después de las tareas, no antes.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="y" data-v="y">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">Y</span><span class="nombre">Gemela con aire</span></h2>
-        <p class="resumen">U con 40 px de aire en vez de 8 y el asa ancha de V. Siguen leyéndose como un par, pero ya no parecen pegadas.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Notas y tareas se leen como una sola familia.</li><li>El mismo lugar que U, que ya conocés.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Sigue cerca de las tareas, aunque menos.</li><li>Ocupa más ancho abajo.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
   <section class="cierre" id="cierre">
-    <h2>Sexta ronda · comparación</h2>
+    <h2>Comparación · primera ronda</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Dónde está</th><th>Distancia a las tareas</th><th>Dónde se escribe</th><th>Se pliega</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Dónde están las tareas</th><th>Reloj y lista a la vez</th><th>Mismo gesto que el home</th><th>Cómo avisa una tarea nueva de la sala</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>U · Bandejas gemelas</td><td>Pegada a las tareas</td><td>8 px</td><td>Arriba</td><td>Al tocar el asa</td><td>Parecen una sola cosa</td></tr>
-          <tr><td>V · En la esquina, con asa</td><td>Abajo a la izquierda</td><td>Todo el margen</td><td>Arriba</td><td>Al tocar el asa</td><td>Abre encima de las tareas en pantallas medianas</td></tr>
-          <tr class="elegida"><td>W · Se escribe al pie</td><td>Abajo a la izquierda</td><td>Todo el margen</td><td>Al pie, lo nuevo arriba</td><td>Sola, al salir de la línea</td><td>Plegarse cuando querías releer</td></tr>
-          <tr><td>X · A la derecha</td><td>Abajo a la derecha</td><td>Todo el margen</td><td>Al pie, lo nuevo arriba</td><td>Sola, al salir de la línea</td><td>Compartir esquina con la barra de ajustes</td></tr>
-          <tr><td>Y · Gemela con aire</td><td>Al lado de las tareas</td><td>40 px</td><td>Arriba</td><td>Al tocar el asa</td><td>Sigue cerca</td></tr>
+          <tr class="elegida"><td>A · Bandeja</td><td>Abajo, en la bandeja</td><td>A medias (la bandeja tapa el pie)</td><td>Sí, es el mismo componente</td><td>La rayita toma el acento</td><td>Tapar el reloj en pantallas bajas</td></tr>
+          <tr><td>B · Al costado</td><td>Columna derecha / bandeja</td><td>Sí, en escritorio</td><td>Solo en el celular</td><td>La rayita lateral en acento</td><td>Dos comportamientos según el ancho</td></tr>
+          <tr><td>C · Debajo</td><td>Abajo, con scroll</td><td>No</td><td>No</td><td>Punto junto a «Tareas» que asoma</td><td>Las tareas quedan fuera de la vista</td></tr>
+          <tr><td>D · Ahora</td><td>Una línea bajo el reloj</td><td>Sí, la tarea en curso siempre</td><td>Parecido (la «Siguiente» de la bandeja)</td><td>Punto junto a la cuenta</td><td>Una línea más bajo el reloj</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="recomendacion">
+      <div>
+        <h3>Favorita: A · Bandeja</h3>
+        <p><b>Es la misma pieza que el home.</b> La bandeja se escribe una vez (<code>BandejaTareas</code>) y en la sala recibe las pestañas Mías y Sala. Quien la usó en el home ya sabe qué es la rayita de abajo.</p>
+        <p><b>El reloj vuelve a ser lo único en pantalla.</b> En el home el anillo está solo; en la sala, el reloj. Con «Queda el reloj», cuando corre y no tocás nada, se van los controles, la barra y la bandeja, y quedan los números.</p>
+        <p><b>Si en escritorio querés tachar sin abrir nada, B es el plan B.</b> La columna lateral es la única que deja ver la lista entera con el reloj corriendo. La idea de D (la tarea en curso) ya está en A: es la «Siguiente» del asa.</p>
+        <h4>Los puntos de fondo en la sala</h4>
+        <p><b>Suman, con «Al centro».</b> El reloj queda sobre un centro limpio y los puntos se ven en los bordes, como en el home. Con «No» o «A los lados» compiten con los dígitos, que son muy grandes. En C conviene liso: las filas que aparecen al bajar se mezclan con la trama.</p>
+        <h4>Dos decisiones para que confirmes</h4>
+        <p><b>El color de cada fase.</b> Hoy el punto es rojo en Pomodoro, verde en el descanso corto y azul en el largo. En el boceto usa el acento y la fase la dice el texto, siguiendo la regla de un solo color. Si extrañás saber la fase de un vistazo, se puede volver al color por fase solo en ese punto.</p>
+        <p><b>El recuadro punteado alrededor del reloj se va.</b> Hoy separa el reloj de la tabla; con las tareas en la bandeja ya no hay nada de qué separarlo.</p>
+      </div>
+      <pre><span class="c-com">/* src/index.css · con el reloj corriendo y el mouse quieto */</span>
+@media (hover: hover) {
+  [data-quieto] :is(.sala-controles, .encabezado-desv) {
+    opacity: 0; filter: blur(5px);
+    pointer-events: none;
+    transition: opacity .45s ease .5s, filter .45s ease .5s;
+  }
+  [data-quieto] .sala-modo { opacity: .45; }
+}
+
+<span class="c-com">// src/features/room/hooks/useQuietud.ts</span>
+<span class="c-com">// true cuando el reloj corre y nadie movió el mouse en 2,5 s</span>
+export function useQuietud(corriendo: boolean, espera = 2500) {
+  const [quieto, establecerQuieto] = useState(false);
+  useEffect(() =&gt; {
+    if (!corriendo) { establecerQuieto(false); return; }
+    let t = setTimeout(() =&gt; establecerQuieto(true), espera);
+    const despertar = () =&gt; {
+      establecerQuieto(false); clearTimeout(t);
+      t = setTimeout(() =&gt; establecerQuieto(true), espera);
+    };
+    addEventListener("pointermove", despertar);
+    addEventListener("keydown", despertar);
+    return () =&gt; { clearTimeout(t);
+      removeEventListener("pointermove", despertar);
+      removeEventListener("keydown", despertar); };
+  }, [corriendo, espera]);
+  return quieto;
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx</span>
+&lt;div data-quieto={quieto || undefined}&gt;
+  &lt;CabeceraSala usuariosEnSala={usuariosEnSala} /&gt;
+  &lt;TimerDisplay … /&gt;
+  &lt;BandejaTareas ambitos={["personal", "sala"]}
+                 noVistas={cantidadNoVistas} … /&gt;
+&lt;/div&gt;</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Segunda ronda</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Qué agrega</th><th>Tamaño del reloj</th><th>Dice cuánto queda</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>E · Anillo</td><td>El anillo del home, con progreso</td><td>Más chico</td><td>Sí, el arco</td><td>Pierde los números grandes</td></tr>
+          <tr class="elegida"><td>F · Hilo</td><td>Una línea de 2 px</td><td>El de hoy</td><td>Sí, la línea</td><td>Que se note poco</td></tr>
+          <tr><td>G · La sala a la vista</td><td>Quién está y con qué</td><td>El de hoy</td><td>No</td><td>Un renglón de texto más</td></tr>
+          <tr><td>H · Una sola fila</td><td>Nada: reordena</td><td>El de hoy</td><td>No</td><td>Romper la simetría que ya funciona</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo W · Se escribe al pie</h3>
-        <p><b>Junta todo lo que marcaste.</b> El asa con la rayita que se desvanece, el lápiz y la cantidad juntos, la última nota de Q, el despliegue de U y el efecto de R, en una esquina lejos de las tareas.</p>
-        <p><b>Escribir al pie tiene sentido en una bandeja que sube.</b> El cursor queda donde ya está tu mirada (abajo, cerca del asa) y cada nota nueva empuja las anteriores hacia arriba, como en un chat.</p>
-        <p><b>V es el plan B</b> si preferís que la bandeja no se pliegue sola: se abre y se cierra tocando el asa, como la de tareas. <b>X</b> es la misma idea del otro lado, por si te resulta más cómodo con el mouse.</p>
-        <h4>En pantallas medianas y en el celular</h4>
-        <p><b>El asa se va achicando.</b> Por debajo de 1112 px no entra la última nota y quedan el lápiz y el número. Por debajo de 780 px, la bandeja de tareas se corre para dejarle lugar al asa, como en U. Abierta, por debajo de 1160 px, la bandeja de notas abre en el lugar de la de tareas.</p>
-        <h4>Los puntos de fondo</h4>
-        <p><b>«Al centro», como en toda la sala.</b> Plegadas, las asas quedan sobre el borde, donde los puntos ya están apagados por el desvanecido.</p>
+        <h3>Favoritas: A con F · Hilo</h3>
+        <p><b>Es lo único que le falta a la vista de hoy:</b> saber cuánto queda de la fase sin hacer la cuenta. El hilo lo dice con dos píxeles y los números no se achican. El reloj flotante ya tiene el mismo hilo.</p>
+        <p><b>E es la más linda y la que más cambia.</b> Si querés que la sala y el home se sientan el mismo objeto, es esa. El precio es que los números se achican para entrar en el anillo.</p>
+        <p><b>G vale como detalle, no como renglón fijo.</b> Lo que dice (con qué está cada uno) podría aparecer al pasar el mouse por los avatares de la barra, sin sumar nada a la pantalla.</p>
+        <h4>Sobre el desenfoque</h4>
+        <p><b>Lo que trababa C era un desenfoque atado al scroll</b> sobre toda la zona del reloj: el navegador lo recalcula en cada cuadro mientras bajás. Lo saqué de ahí y de los dígitos, que son enormes y cambian cada segundo. Quedó solo en elementos chicos y en transiciones cortas, que cuestan poco. Con «Desenfoque: Nunca» podés comparar: los desvanecidos siguen, solo con opacidad.</p>
       </div>
-      <pre><span class="c-com">/* W · la bandeja de notas, en la esquina y con aire */</span>
+      <pre><span class="c-com">/* F · el hilo es un transform: no recalcula el layout */</span>
+.hilo i {
+  transform-origin: left center;
+  transform: scaleX(var(--progreso));
+}
+
+<span class="c-com">// src/features/timer/components/RelojDigital.tsx</span>
+&lt;div className="relative"&gt;
+  {/* … dígitos … */}
+  &lt;span className="hilo" aria-hidden&gt;
+    &lt;i style={{ "--progreso": 1 - restante / inicial }} /&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Tercera ronda</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Qué hace el reloj al abrir</th><th>El tiempo sigue a la vista</th><th>Tareas a la vista</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>I · Sube sin achicarse</td><td>Se corre hacia arriba</td><td>Sí, grande</td><td>Unas cuatro</td><td>Pantallas bajas</td></tr>
+          <tr><td>J · Pantalla completa</td><td>Se apaga y pasa a la barra</td><td>Sí, chico arriba</td><td>Todas</td><td>Se siente otra pantalla</td></tr>
+          <tr><td>K · Se muda a la bandeja</td><td>Se apaga y pasa al asa</td><td>Sí, chico y con play</td><td>Las de A</td><td>Dos relojes si el fundido es lento</td></tr>
+          <tr><td>L · Al costado</td><td>Se desliza a la izquierda</td><td>Sí, grande</td><td>Las de A</td><td>Sin controles mientras está abierta</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Favorita: I · Sube sin achicarse (posible finalista)</h3>
+        <p><b>Lo que dijiste (2026-10-04):</b> A y F favoritas de las rondas anteriores, e I la favorita de esta, muy posiblemente la finalista. El achique de A te gustaba y no a la vez; I lo resuelve sin cambiar el tamaño del reloj. El hilo de F aparece solo con el reloj corriendo.</p>
+        <p><b>Idea que salió de L, para seguir mañana:</b> notas rápidas de la sesión, que se despliegan al costado como la bandeja de L. Duran lo que dura la sesión y se descartan (pueden vivir en <code>localStorage</code>); si alguna toma relevancia, se guarda. Falta ver cómo se visualizan.</p>
+        <h4 style="margin-top:20px">Mi recomendación era K · El reloj se muda a la bandeja</h4>
+        <p><b>Lo que molestaba del achique era ver el reloj encogerse.</b> En K no se encoge: se apaga arriba y reaparece en el asa, donde mirás mientras tachás. El tiempo, el play y el hilo quedan a mano sin tapar nada.</p>
+        <p><b>Es el mismo gesto que el reloj de la barra en C</b>, que ya te gustó para volver: el reloj se muda a donde está la atención.</p>
+        <p><b>I es el plan B</b> si preferís que el reloj no se vaya nunca de su lugar. Cuesta tareas a la vista, no tamaño.</p>
+        <p><b>Sobre el hilo:</b> ahora aparece solo con el reloj corriendo y se desvanece en pausa, con un respiro corto para que no parpadee si pausás un segundo.</p>
+      </div>
+      <pre><span class="c-com">/* K · solo opacidad y transform: nada de achicar */</span>
+.sala:has(.bandeja[data-abierta]) .zona-reloj {
+  opacity: 0; transform: translateY(-10px);
+  pointer-events: none;
+}
+.bandeja[data-abierta] .asa-reloj {
+  opacity: 1; transition-delay: .15s;   <span class="c-com">/* entra cuando el otro ya se fue */</span>
+}
+
+<span class="c-com">/* F · el hilo solo con el reloj corriendo */</span>
+.hilo { opacity: 0; transition: opacity .6s ease .3s; }
+[data-corriendo] .hilo { opacity: 1; transition-delay: 0s; }</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Cuarta ronda · notas rápidas</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Dónde viven</th><th>Cómo se anota</th><th>El reloj se mueve</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>M · Cajón al costado</td><td>Panel a la derecha</td><td>Lápiz de la barra o N</td><td>Sí, a la izquierda</td><td>Una cierra la otra</td><td>El reloj se mueve cada vez que anotás</td></tr>
+          <tr><td>N · Pestaña en la bandeja</td><td>Tercera pestaña</td><td>Abrir la bandeja y elegir Notas, o N</td><td>Sube, como con las tareas</td><td>Comparten el lugar</td><td>Las notas quedan escondidas</td></tr>
+          <tr><td>O · Bajo el reloj</td><td>Debajo del reloj, siempre</td><td>Escribir directo</td><td>No</td><td>Las notas se apagan</td><td>Una línea fija bajo el reloj</td></tr>
+          <tr class="elegida"><td>P · En la esquina</td><td>Bandeja chica abajo a la izquierda</td><td>Tocar la esquina o N</td><td>No (en ancho)</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Favorita: P · En la esquina (era mi recomendación)</h3>
+        <p><b>Es la única en la que no se mueve nada.</b> El reloj se queda donde está, como pediste en la tercera ronda, y las notas no compiten con las tareas por el mismo lugar: podés tener las dos abiertas.</p>
+        <p><b>Habla el mismo idioma que la sala.</b> Es la bandeja de tareas en chico: se desvanece, queda el lápiz con la cuenta, y con «Queda el reloj» se va del todo.</p>
+        <p><b>N es el plan B</b> si preferís no sumar ninguna pieza. Con la tecla N se anota igual de rápido; sin teclado, cuesta un toque más. <b>O</b> es la más rápida, pero vuelve a poner un renglón fijo bajo el reloj, que fue lo que menos te convenció de D.</p>
+        <h4>Qué pasa con las notas</h4>
+        <p><b>Se guardan por sala</b> (<code>doro-notas-&lt;id de la sala&gt;</code>), así que recargar no las borra y otra sala no las ve. <b>Salir las borra</b>, con un aviso si hay alguna.</p>
+        <p><b>Una decisión para que confirmes:</b> si cerrás la pestaña sin tocar Salir, las notas quedan. Propongo que al volver a esa sala sigan ahí, pero que al entrar se descarten solas las de más de 12 horas, para que no se junten notas de otros días.</p>
+        <p><b>Lo que queda para después:</b> «Pasar a tarea» en cada nota, y ver las guardadas en Tareas o en el home. El hook ya deja el lugar: es una acción más sobre la misma lista.</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>Igual que en el resto de la sala: «Al centro».</b> La esquina y el cajón son superficies llenas que tapan la trama; no cambia nada.</p>
+      </div>
+      <pre><span class="c-com">// src/features/room/hooks/useNotasSesion.ts</span>
+<span class="c-com">// Notas personales de la sala: solo en este navegador, se borran al salir</span>
+const VENCEN_EN = 12 * 60 * 60 * 1000;
+
+export function useNotasSesion(idSala: string) {
+  const clave = `doro-notas-${idSala}`;
+  const [notas, establecerNotas] = useState&lt;NotaSesion[]&gt;(() =&gt;
+    leerNotas(clave).filter(n =&gt;
+      Date.now() - Date.parse(n.creada) &lt; VENCEN_EN));
+
+  useEffect(() =&gt; {
+    try { localStorage.setItem(clave, JSON.stringify(notas)); }
+    catch { <span class="c-com">/* modo privado: quedan en memoria */</span> }
+  }, [clave, notas]);
+
+  const agregar = (texto: string, fase: Modo) =&gt;
+    establecerNotas(n =&gt; [{ id: crypto.randomUUID(), texto, fase,
+      creada: new Date().toISOString() }, ...n]);
+  const descartar = (id: string) =&gt;
+    establecerNotas(n =&gt; n.filter(x =&gt; x.id !== id));
+  const descartarTodas = () =&gt; establecerNotas([]);
+
+  return { notas, agregar, descartar, descartarTodas };
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx · al confirmar la salida</span>
+const salir = () =&gt; { descartarTodas(); navegar("/"); };
+
+<span class="c-com">/* P · la esquina se esconde si no entra al lado de la bandeja */</span>
+@container sala (max-width: 1039px) {
+  .notas-esquina { display: none; }   <span class="c-com">/* pasa al lápiz de la barra */</span>
+}</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Quinta ronda · variaciones de P</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Plegada se ve</th><th>Cómo se anota</th><th>Desde qué ancho</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>P · En la esquina</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+          <tr><td>Q · Asoma la última</td><td>La última nota</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Un renglón más a la vista</td></tr>
+          <tr><td>R · Se escribe en el asa</td><td>Lápiz y cuenta</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Para releer hay que tocar la línea</td></tr>
+          <tr><td>S · Cuelga de arriba</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>720 px</td><td>Las dos a la vez</td><td>Tapar los controles de la izquierda</td></tr>
+          <tr><td>T · Sin caja</td><td>Las tres últimas</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Se lee mal sobre los puntos</td></tr>
+          <tr class="elegida"><td>U · Bandejas gemelas</td><td>Una rayita junto a la otra</td><td>Tocar y escribir, o N</td><td>Todos</td><td>Al costado desde 1120 px</td><td>Dos asas juntas abajo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Recomiendo U · Bandejas gemelas, con la línea para escribir de R</h3>
+        <p><b>Lo único que le faltaba a P era el celular.</b> P, Q, R y T necesitan 1040 px para entrar al lado de la bandeja; abajo de eso pasan a otro objeto (el lápiz de la barra). U es la única que se comporta igual en todos los anchos: siempre son dos asas abajo.</p>
+        <p><b>Es la misma pieza dos veces.</b> Se construye una bandeja (<code>BandejaSala</code>) y se usa para tareas y para notas, con el mismo desvanecido y la misma rayita. No hay nada nuevo que aprender.</p>
+        <p><b>De R tomaría la línea para escribir al pie de la bandeja de notas</b>, con lo nuevo apilado justo arriba, porque anotar mientras estudiás tiene que ser un solo gesto.</p>
+        <p><b>Si preferís quedarte con P tal cual, Q es la mejora más barata:</b> leer la última nota sin abrir nada sirve para el caso típico, «¿qué era lo que tenía que preguntar?».</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>«Al centro», como en toda la sala.</b> La única que sufre con los puntos es T, porque su texto no tiene fondo propio. Con T habría que ir con fondo liso.</p>
+        <h4>En pantalla completa</h4>
+        <p><b>La X ahora esconde la barra de ajustes</b> para que veas la pantalla sola. H o la esquina de abajo a la derecha la traen de vuelta, y Esc sale de pantalla completa.</p>
+      </div>
+      <pre><span class="c-com">/* U · dos bandejas en la misma fila: la de notas se pega a la izquierda de la de tareas */</span>
 .bandeja-notas {
-  position: absolute; bottom: 0; left: 20px;
-  width: 236px;                          <span class="c-com">/* plegada: lápiz, número y última nota */</span>
+  position: absolute; bottom: 0;
+  right: calc(50% + 288px);              <span class="c-com">/* 560 / 2 + 8 de aire */</span>
+  width: 64px;                            <span class="c-com">/* plegada: el asa con el lápiz */</span>
   transform: translateY(calc(100% - 60px));
 }
 .bandeja-notas[data-abierta] {
-  transform: none;                       <span class="c-com">/* sube… */</span>
-  width: max(272px, min(var(--ancho-notas),
-             calc(50% - 312px)));       <span class="c-com">/* …y se ensancha sin tocar las tareas */</span>
+  transform: none;
+  width: min(var(--ancho-notas), calc(50% - 300px));
 }
-<span class="c-com">/* al pie se escribe; lo nuevo se apila arriba */</span>
-.bandeja-notas .lista { flex-direction: column-reverse; }
-.bandeja-notas .alta  { order: 2; }
+<span class="c-com">/* sin lugar al costado, abre encima de la de tareas */</span>
+@container sala (max-width: 1119px) {
+  .bandeja-notas[data-abierta] {
+    right: auto; left: max(12px, calc(50% - 280px));
+    width: min(calc(100% - 24px), 560px);
+  }
+}
+<span class="c-com">/* celular: la de tareas se corre y deja lugar al asa */</span>
+@container sala (max-width: 739px) {
+  .bandeja-tareas { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .bandeja-notas  { right: auto; left: 12px; }
+}
 
 <span class="c-com">// src/pages/RoomPage.tsx</span>
 &lt;BandejaSala lado="tareas" … /&gt;
-&lt;BandejaSala lado="notas" esquina="izquierda" escribirAlPie
-             notas={notas} alAnotar={agregar} alDescartar={descartar} /&gt;</pre>
+&lt;BandejaSala lado="notas" notas={notas}
+             alAnotar={agregar} alDescartar={descartar} /&gt;</pre>
     </div>
   </section>
 </div>
@@ -1155,7 +1534,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     const zona = app.querySelector("[data-zona]");
 
     /* Cada variante pone las tareas en otro lugar */
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
       const aside = document.createElement("aside");
       aside.className = "bandeja" + (v === "b" ? " cajon" : "");
       aside.setAttribute("aria-label", "Tareas");
@@ -1200,7 +1579,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
       reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
       reloj.title = "Tocá para dar play o pausa";
     }
-    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
     if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
       <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
       <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
@@ -1221,7 +1600,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
       tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
     }
     /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
-    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v);
+    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v);
     const conEsquina = ["p", "q", "r", "s", "t"].includes(v);
     const notasHTML = (cerrar) => `
       <div class="notas-bloque">
@@ -1233,8 +1612,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     if (conNotas) {
       app.classList.add("v-i");
       if (conEsquina) app.classList.add("con-esquina");
-      if (["u", "v", "w", "x", "y"].includes(v)) app.classList.add("gem");
-      if (["v", "w", "x", "y"].includes(v)) app.classList.add("gem-ancha");
       if (v === "m" || conEsquina) app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
       if (v === "n") {
         app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
@@ -1254,8 +1631,8 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
         <button type="button" class="ver-mas" data-notas-mas hidden></button>
         <ul class="notas-lista" data-notas-lista data-max="3"></ul>
         <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label></aside>`);
-      if (["u", "v", "w", "x", "y"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
-        <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b><span class="gem-ult" data-notas-ultima></span></button>
+      if (v === "u") app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
+        <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b></button>
         <div class="cuerpo" data-gemela-cuerpo>${notasHTML(false)}</div></aside>`);
     }
     const $ = s => app.querySelector(s);
@@ -1444,7 +1821,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     let estaAbierta = () => false;
     let alternarTareas = () => {};
     let alAbrirTareas = () => {};
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
       const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
       const abrir = a => {
         bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
@@ -1573,26 +1950,16 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
         esquina.addEventListener("focusout", e => { if (!esquina.contains(e.relatedTarget)) setTimeout(() => { if (!esquina.contains(document.activeElement)) abrirEsquina(false); }, 150); });
       }
       /* U · la segunda bandeja; donde no entra al costado, una cierra la otra */
-      const anchoCostado = app.classList.contains("gem-ancha") ? 1160 : 1120;
       const abrirGemela = a => {
         if (!gemela) return;
         gemela.classList.toggle("abierta", a); $("[data-gemela]").setAttribute("aria-expanded", a); $("[data-gemela-cuerpo]").inert = !a;
-        if (a && estaAbierta() && app.clientWidth < anchoCostado) alternarTareas();
+        if (a && estaAbierta() && app.clientWidth < 1120) alternarTareas();
         evaluarQuietud();
       };
       if (gemela) {
         abrirGemela(false);
-        const alPie = v === "w" || v === "x";
-        $("[data-gemela]").addEventListener("click", () => {
-          const a = !gemela.classList.contains("abierta");
-          abrirGemela(a);
-          if (a && alPie) enfocar(".gemela [data-notas-alta]");
-        });
-        /* W y X · como R: se pliega sola cuando el foco sale de la bandeja */
-        if (alPie) gemela.addEventListener("focusout", e => {
-          if (!gemela.contains(e.relatedTarget)) setTimeout(() => { if (!gemela.contains(document.activeElement)) abrirGemela(false); }, 150);
-        });
-        alAbrirTareas = () => { if (app.clientWidth < anchoCostado) abrirGemela(false); };
+        $("[data-gemela]").addEventListener("click", () => abrirGemela(!gemela.classList.contains("abierta")));
+        alAbrirTareas = () => { if (app.clientWidth < 1120) abrirGemela(false); };
       }
       const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
       s.abrirNotas = () => {
@@ -1600,7 +1967,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
         else if (v === "t") enfocar(".suelta [data-notas-alta]");
         else if (v === "r") enfocar("[data-esquina-input]");
         else if (conEsquina) { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
-        else if (gemela) { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); }
+        else if (v === "u") { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); }
         else if (v === "n") { if (!estaAbierta()) alternarTareas(); cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]"); }
         else enfocar(".al-pie [data-notas-alta]");
       };

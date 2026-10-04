@@ -99,12 +99,31 @@ igual en el celular. Si se queda P, Q es la mejora más barata. Puntos: «Al cen
 (liso si fuera T). En pantalla completa, la X (o H) esconde la barra; H o la esquina de
 abajo a la derecha la traen, y Esc sale.
 
+**Devolución de la 5ª ronda (2026-10-04):**
+- **U le gustó**, pero está muy pegada a las tareas. **Le interesó cómo se despliega** (sube
+  y se ensancha).
+- Tiene que ser **más como Q** (ver la última nota), pero plegada prefiere que **quede la
+  rayita que se desvanece**, y que **el ícono y la cantidad queden juntos**.
+- **El efecto de R** (escribir donde se apila lo nuevo) también le pareció interesante.
+- **S y T no le gustaron.**
+- Pidió sacar del boceto lo que ya no se usa. La versión completa hasta la 5ª ronda quedó
+  en `bocetos/sala-ronda5.html`; el boceto vigente muestra solo la base (I) y Q, R y U.
+
+**Sexta ronda (misma URL):** una bandeja de notas que se despliega como U y, plegada,
+muestra el lápiz con la cantidad y la última nota; desvanecida queda la rayita.
+V · En la esquina, con asa (abajo a la izquierda), W · Se escribe al pie (V con el efecto de
+R: la línea para escribir abajo, lo nuevo se apila arriba, se pliega sola), X · A la derecha
+(W en espejo), Y · Gemela con aire (U con 40 px de aire y el asa ancha). El asa se achica
+a lápiz y número por debajo de 1140 px; abierta, por debajo de 1160 px abre en el lugar de
+la de tareas; por debajo de 780 px la bandeja de tareas se corre para dejarle lugar.
+Recomendación: **W**; plan B, V.
+
 ---
 
 ## Dónde retomamos
 
-5ª ronda publicada (Q–U), esperando la opinión de Leo. **Próximo paso:** elegir entre P y
-sus variaciones, confirmar el vencimiento de 12 h y dar la sala por cerrada.
+6ª ronda publicada (V–Y), esperando la opinión de Leo. **Próximo paso:** elegir la bandeja
+de notas, confirmar el vencimiento de 12 h y dar la sala por cerrada.
 
 ## Propuestas transversales
 
