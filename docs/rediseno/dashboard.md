@@ -68,6 +68,27 @@ Seis formas de cambiar la meta, en una sección aparte y como ajuste global del 
 al final de la línea de progreso, − y + aparecen al acercarse; en táctil siempre),
 6 Siempre a mano. Plan B: 4.
 
+**Opinión de Leo sobre la 3ª ronda:** F sigue bien pero faltan gráficos de barras y no
+quiere que haya que bajar. G: la barra quedó muy arriba y había poca información por
+pestaña. I: mejor organizada, pero no se ve lo relevante a primera vista. J: no. K: le
+falta información. Sin opinión todavía sobre la forma de cambiar la meta.
+
+**Cuarta ronda (2026-10-04, esperando opinión):** todo en una pantalla de compu (probado
+en 1180 × 760), más datos a la vista y barras por día contra la línea de la meta (llena =
+día cumplido). En el celular se apilan y se baja. Referencias: WHOOP (cifras arriba,
+tendencias abajo), Rize (vista semanal: barras + columna de totales), Screen Time (barras
+con línea de referencia rotulada).
+- **L · Semana en barras.** Meta de hoy y tres cifras arriba; barras grandes (semana /
+  30 días / año); al costado el día elegido y las horas.
+- **M · Tablero con divisiones** (recomendada). Cinco recuadros con líneas de 1 px: hoy +
+  14 días, barras de la semana, acumulado, mapa del año y días × horas.
+- **N · Cifras al costado.** Barras de esta semana contra la anterior, día por día;
+  columna con siete cifras.
+- **O · Cuatro cifras arriba.** Cada cifra con un gráfico chico; abajo 30 días en barras y
+  el acumulado.
+- **P · El año arriba.** F sin scroll: mapa del año y tres gráficos abajo.
+- **Q · Días en renglones.** Barras horizontales por día con la meta y la semana anterior.
+
 Puntos de fondo: liso en todas (el dashboard ya está hecho de celdas y anillos). Si los
 puntos quedan para toda la app, en J «A los lados».
 
@@ -86,9 +107,8 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-3ª ronda publicada (F base; G, I, J, K; recomendada J) y seis formas de cambiar la meta
-(recomendada 5 · En la línea). **Próximo paso:** recoger la opinión de Leo sobre estructura
-y control de la meta.
+4ª ronda publicada (F base; L a Q, recomendada M, plan B L). **Próximo paso:** recoger la
+opinión de Leo; sigue pendiente la forma de cambiar la meta (recomendada «En la línea»).
 
 ## Propuestas transversales
 
