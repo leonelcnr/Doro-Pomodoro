@@ -715,7 +715,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="i" data-v="i">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">I</span><span class="nombre">Sube sin achicarse</span></h2>
+        <h2><span class="letra">I</span><span class="nombre">Sube sin achicarse</span><span class="recomendada">Favorita</span></h2>
         <p class="resumen">La bandeja abre más baja, hasta la mitad, y el reloj solo se corre hacia arriba con su tamaño de siempre. Si hay muchas tareas, la lista se desplaza adentro de la bandeja.</p>
       </div>
       <div class="notas">
@@ -879,16 +879,19 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
       <table>
         <thead><tr><th>Variante</th><th>Qué hace el reloj al abrir</th><th>El tiempo sigue a la vista</th><th>Tareas a la vista</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>I · Sube sin achicarse</td><td>Se corre hacia arriba</td><td>Sí, grande</td><td>Unas cuatro</td><td>Pantallas bajas</td></tr>
+          <tr class="elegida"><td>I · Sube sin achicarse</td><td>Se corre hacia arriba</td><td>Sí, grande</td><td>Unas cuatro</td><td>Pantallas bajas</td></tr>
           <tr><td>J · Pantalla completa</td><td>Se apaga y pasa a la barra</td><td>Sí, chico arriba</td><td>Todas</td><td>Se siente otra pantalla</td></tr>
-          <tr class="elegida"><td>K · Se muda a la bandeja</td><td>Se apaga y pasa al asa</td><td>Sí, chico y con play</td><td>Las de A</td><td>Dos relojes si el fundido es lento</td></tr>
+          <tr><td>K · Se muda a la bandeja</td><td>Se apaga y pasa al asa</td><td>Sí, chico y con play</td><td>Las de A</td><td>Dos relojes si el fundido es lento</td></tr>
           <tr><td>L · Al costado</td><td>Se desliza a la izquierda</td><td>Sí, grande</td><td>Las de A</td><td>Sin controles mientras está abierta</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo K · El reloj se muda a la bandeja</h3>
+        <h3>Favorita: I · Sube sin achicarse (posible finalista)</h3>
+        <p><b>Lo que dijiste (2026-10-04):</b> A y F favoritas de las rondas anteriores, e I la favorita de esta, muy posiblemente la finalista. El achique de A te gustaba y no a la vez; I lo resuelve sin cambiar el tamaño del reloj. El hilo de F aparece solo con el reloj corriendo.</p>
+        <p><b>Idea que salió de L, para seguir mañana:</b> notas rápidas de la sesión, que se despliegan al costado como la bandeja de L. Duran lo que dura la sesión y se descartan (pueden vivir en <code>localStorage</code>); si alguna toma relevancia, se guarda. Falta ver cómo se visualizan.</p>
+        <h4 style="margin-top:20px">Mi recomendación era K · El reloj se muda a la bandeja</h4>
         <p><b>Lo que molestaba del achique era ver el reloj encogerse.</b> En K no se encoge: se apaga arriba y reaparece en el asa, donde mirás mientras tachás. El tiempo, el play y el hilo quedan a mano sin tapar nada.</p>
         <p><b>Es el mismo gesto que el reloj de la barra en C</b>, que ya te gustó para volver: el reloj se muda a donde está la atención.</p>
         <p><b>I es el plan B</b> si preferís que el reloj no se vaya nunca de su lugar. Cuesta tareas a la vista, no tamaño.</p>

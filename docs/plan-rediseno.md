@@ -22,7 +22,7 @@ aprobación se pasa a la siguiente.
 |---|---|---|---|---|
 | 1.1 | Home | `/` | ✅ D4 + bandeja «Queda el asa» (aprobado 2026-10-04) | [D4](https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b) · [2ª ronda](https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD) |
 | 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | 🔄 6ª ronda publicada (W–Y + ajuste Detalle), esperando opinión | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
-| 1.3 | Sala | `/room/:roomId` | 🔄 Favoritas A + F; 3ª y última ronda publicada (I–L), esperando opinión | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
+| 1.3 | Sala | `/room/:roomId` | 🔄 Favoritas A + F + I (I posible finalista). Pendiente: notas rápidas de sesión (retomar 2026-10-05) | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
 | 1.4 | Dashboard | `/dashboard` | 🔄 1ª ronda publicada (A–E), esperando opinión. Se trabaja en paralelo con Tareas | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ⏳ ¿se fusiona con Tareas? (ver 1.2) | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ⏳ | — |
@@ -222,7 +222,59 @@ tareas a pantalla completa (el reloj pasa a la barra), K · El reloj se muda a l
 bandeja), L · Se corre al costado (en ancho, la bandeja abre a la derecha y el reloj se
 desliza a la izquierda). Recomendación: **K**; plan B, I.
 
-### 1.4 a 1.9
+**Devolución de la 3ª ronda (2026-10-04):** **I · Sube sin achicarse es la favorita, muy
+posiblemente la finalista** (no la K que yo recomendaba). La sala queda, por ahora, como
+A (bandeja) + F (hilo solo corriendo) + I (al abrir la bandeja el reloj sube sin
+achicarse y la bandeja abre hasta la mitad). El boceto queda guardado en
+`bocetos/sala.html` con estas observaciones en el cierre.
+
+**Para retomar el 2026-10-05 · Notas rápidas de sesión (idea de Leo, salió de L):**
+- Una opción para escribir notas rápidas mientras se estudia, que se despliegan como la
+  bandeja de L (al costado del reloj) y se pueden visualizar de alguna forma (a definir).
+- Duran lo que dura la sesión y después se descartan. Pueden vivir en `localStorage`; si
+  alguna toma relevancia, se guarda (¿pasa a tarea?, ¿se persiste en Supabase?).
+- Preguntas abiertas: si son personales o de la sala, cómo conviven con la bandeja de
+  tareas (I abre abajo, las notas al costado), qué significa «fin de sesión» (salir de la
+  sala, cerrar la pestaña, fin del pomodoro), y cómo se rescata una nota.
+- Próximo paso: boceto de notas sobre la base A + F + I, con el mismo formato.
+
+### 1.4 Dashboard
+
+Boceto: https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ · fuente `bocetos/dashboard.html`.
+
+Hoy el dashboard es la pantalla más cargada de la app: cuatro tarjetas con íconos de
+colores, dos gráficos de barras, una torta con un color por categoría, la lista de tareas
+terminadas y el mapa del año.
+
+**Primera ronda (2026-10-04, esperando opinión):** cinco estructuras con un solo acento,
+que pinta el tiempo estudiado:
+- **A · Frase y barras.** El de hoy ordenado: frase del rango + comparación, un gráfico,
+  cuatro cifras en texto, terminadas por tema con líneas finas, el año plegado.
+- **B · Anillos.** El anillo del home en grande, hoy contra una meta diaria; la semana en
+  siete anillos chicos, racha y «Ver el año».
+- **C · El año.** El mapa anual es la pantalla y gira en el celular (container queries).
+  Tocar un día muestra sus sesiones.
+- **D · Franjas.** La semana como agenda de 7 a 24 h, cada sesión en su hora; debajo, a
+  qué hora estudiás normalmente.
+- **E · Una cifra por vez.** Una cifra grande con su frase y un gráfico chico, con flechas.
+
+Mi recomendación: **B, con las franjas de D al tocar un día**. Plan B: A (no necesita
+datos nuevos). C sirve como la vista de «Ver el año». Puntos de fondo: sí en B y E
+(«Al centro»); no en C (el mapa ya es una trama), ni en A ni D.
+
+Se va del dashboard actual: la torta por categoría, los íconos de colores de las cifras y
+la lista de últimas tareas terminadas (pasa a Tareas).
+
+**Pregunta abierta para Leo:** ¿se suma una **meta diaria**? B depende de eso. Propuse
+que arranque en 2 h y se cambie tocando el anillo.
+
+Hallazgos para la Fase 3:
+- `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
+  tienen el violeta escrito a mano: no van a seguir el acento elegido.
+- La RPC `get_dashboard_aggregates` ya da minutos por hora y por día (B, D y E). Faltan
+  la meta diaria (en `user_stats` o el perfil) y, para D, la hora de cada sesión.
+
+### 1.5 a 1.9
 
 Se detallan cuando les toque. Para la sala hay una idea anotada: **D3 · Anillo que se
 muda** (el anillo del home se convierte en el reloj de la sala). Quedó para cuando el
@@ -235,6 +287,8 @@ layout esté firme porque es una transición entre rutas.
 - **Tareas (1.2):** la 6ª ronda quedó «muy completa». Leo va a juntar referencias y
   opiniones de usuarios para elegir entre W, X e Y y el modo de detalle. **Mañana se
   define un boceto final de Tareas** a partir de esa ronda.
+- **Dashboard (1.4):** 1ª ronda publicada (A–E), Leo todavía no la vio. Mañana: recoger
+  su opinión, decidir si va la meta diaria y armar la 2ª ronda. Detalle en la sección 1.4.
 - Siguen abiertas para el final de la Fase 1: fondo con puntos sí/no, `--primary` violeta
   unificado o zinc, y si Calendario (1.5) se fusiona con Tareas.
 
@@ -299,3 +353,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-03 | Boceto de `--primary`: violeta de hoy, violeta unificado y zinc. |
 | 2026-10-04 | Plan por fases. Home: elegido D4, se pide que la bandeja también se desvanezca. |
 | 2026-10-04 | Home aprobado con la bandeja «Queda el asa». La decisión de los puntos pasa al final de la Fase 1. Arranca el boceto de Tareas. Se confirma que el usuario va a poder elegir el color de acento; todos los bocetos traen el selector. Home: contador de tareas junto al avatar. Tareas: 1ª ronda descartada por cargada; 2ª ronda con seis estructuras minimalistas. |
+| 2026-10-04 | Dashboard: 1ª ronda con cinco estructuras (A–E), recomendada B · Anillos. Queda abierta la meta diaria. |

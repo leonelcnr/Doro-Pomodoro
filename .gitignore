@@ -51,3 +51,7 @@ playwright-report/
 .agents/skills/minimalist-ui/
 .agents/skills/redesign-existing-projects/
 .agents/skills/stitch-design-taste/
+
+# Impeccable: config.json se versiona; las excepciones locales y la caché del hook no.
+.impeccable/config.local.json
+.impeccable/hook.cache.json
