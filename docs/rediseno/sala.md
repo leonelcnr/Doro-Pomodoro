@@ -118,11 +118,18 @@ a lápiz y número por debajo de 1140 px; abierta, por debajo de 1160 px abre en
 la de tareas; por debajo de 780 px la bandeja de tareas se corre para dejarle lugar.
 Recomendación: **W**; plan B, V.
 
+**Ajustes antes de mostrarlo a usuarios (2026-10-04):** en Q y R, plegadas, el lápiz y el
+número quedan juntos; con el mouse encima o con foco, la última nota (Q) o la línea para
+escribir (R) se abre en el medio y los separa. Se sumó **Z · Notas en cajas**: la bandeja de
+V con cada nota como un cuadrado tipo post-it, todas del mismo gris. En las bandejas de
+notas, «Borrar todas» pasó a la fila del asa. Leo va a usar el boceto para debatir ideas
+con algunos usuarios.
+
 ---
 
 ## Dónde retomamos
 
-6ª ronda publicada (V–Y), esperando la opinión de Leo. **Próximo paso:** elegir la bandeja
+6ª ronda publicada (V–Z), en debate con usuarios. **Próximo paso:** elegir la bandeja
 de notas, confirmar el vencimiento de 12 h y dar la sala por cerrada.
 
 ## Propuestas transversales

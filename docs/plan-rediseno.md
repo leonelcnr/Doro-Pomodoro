@@ -22,7 +22,7 @@ aprobación se pasa a la siguiente.
 |---|---|---|---|---|
 | 1.1 | Home | `/` | ✅ D4 + bandeja «Queda el asa» (aprobado 2026-10-04) | [D4](https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b) · [2ª ronda](https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD) |
 | 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | 🔄 8ª ronda publicada (H–N: cajas al centro de A + renglones por tipo, anotaciones opcionales, barra por práctico), esperando opinión | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
-| 1.3 | Sala | `/room/:roomId` | 🔄 Base A + F + I. Notas: 6ª ronda (V–Y, bandeja con asa en la esquina, recomendada W) esperando opinión | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
+| 1.3 | Sala | `/room/:roomId` | 🔄 Base A + F + I. Notas: 6ª ronda (V–Z, bandeja con asa en la esquina, recomendada W), en debate con usuarios | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
 | 1.4 | Dashboard | `/dashboard` | 🔄 2ª ronda publicada (F–H, recomendada F): tres preguntas y meta diaria (decidida), esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ⏳ ¿se fusiona con Tareas? (ver 1.2) | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ⏳ | — |

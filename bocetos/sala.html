@@ -648,7 +648,7 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 .app.gem-ancha .gemela-asa { justify-content: flex-start; gap: 8px; padding: 4px 16px 0; }
 .app.gem-ancha .gem-ult { display: block; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tenue); font-size: 13.5px; }
 .app.gem-ancha .gemela.abierta .gem-ult { display: none; }
-.app:is(.v-v, .v-w) .gemela { right: auto; left: 20px; }
+.app:is(.v-v, .v-w, .v-z) .gemela { right: auto; left: 20px; }
 .app.v-x .gemela { right: 20px; }
 .app.v-y .gemela { right: calc(50% + 320px); }
 .app.gem-ancha .gemela.abierta { width: max(272px, min(var(--ancho-notas), calc(50% - 312px))); }
@@ -669,12 +669,38 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
 }
 /* En angosto, la bandeja de tareas se corre para dejarle lugar al asa */
 @container app (max-width: 779px) {
-  .app:is(.v-v, .v-w, .v-y) .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
-  .app:is(.v-v, .v-w, .v-y) .gemela { right: auto; left: 12px; }
+  .app:is(.v-v, .v-w, .v-y, .v-z) .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .app:is(.v-v, .v-w, .v-y, .v-z) .gemela { right: auto; left: 12px; }
   .app.v-x .bandeja { left: calc(50% - 38px); width: calc(100% - 100px); }
   .app.v-x .gemela { left: auto; right: 12px; }
   .app.gem-ancha .gemela.abierta { left: 12px; right: auto; width: calc(100% - 24px); }
 }
+
+/* Q y R · plegadas, el lápiz y el número quedan juntos; con el mouse encima, lo del medio se abre y los separa */
+.v-q .esq-ult, .esq-escribir input { max-width: 100%; transition: max-width .5s var(--salida), opacity .3s ease, filter .3s ease; }
+.v-q .esquina:is(:hover, :focus-within, .abierta) .esq-ult, .v-r .esquina:is(:hover, :focus-within, .abierta) .esq-escribir input { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .v-q .esquina:not(:hover, :focus-within, .abierta) .esq-ult,
+  :root:not([data-tactil]) .v-r .esquina:not(:hover, :focus-within, .abierta) .esq-escribir input { max-width: 0; opacity: 0; filter: blur(3px); transition-delay: .5s; }
+}
+
+/* En las bandejas de notas, «Borrar todas» sube a la fila del asa, que abierta tiene lugar */
+.gemela .notas-cab { position: absolute; top: 18px; right: 14px; z-index: 1; }
+.gemela:not(.abierta) .notas-cab { display: none; }
+
+/* Z · Notas en cajas: la bandeja de V, y adentro cada nota es un cuadrado */
+.app.v-z .gemela { max-height: 74%; }
+.app.v-z .gemela.abierta { width: max(300px, min(380px, calc(50% - 312px))); }
+.app.v-z .gemela .cuerpo { width: 380px; }
+.app.v-z .gemela .notas-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; padding-top: 2px; }
+.app.v-z .gemela .nota { aspect-ratio: 1; display: flex; flex-direction: column; gap: 6px; padding: 12px 12px 10px; border: 0; border-radius: 6px 6px 6px 16px; background: var(--campo); font-size: 13.5px; line-height: 1.4; position: relative; min-width: 0; }
+.app.v-z .gemela .nota:hover { background: color-mix(in oklch, var(--campo) 70%, var(--linea)); }
+.app.v-z .gemela .nota-txt { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.app.v-z .gemela .nota-pie { margin-top: auto; font-size: 11.5px; }
+.app.v-z .gemela .quitar { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; }
+.app.v-z .gemela .nota.llega { animation: caja .5s var(--salida); }
+@keyframes caja { from { opacity: 0; transform: scale(.9); } }
+@container app (max-width: 1159px) { .app.v-z .gemela .cuerpo { width: 100%; } }
 
 /* Pantalla completa: la barra de ajustes se puede esconder; la esquina de abajo a la derecha la trae */
 .mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
@@ -929,6 +955,21 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
+  <section class="opcion" id="z" data-v="z">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">Z</span><span class="nombre">Notas en cajas</span></h2>
+        <p class="resumen">La bandeja de V, en la misma esquina y con el mismo asa. Abierta, cada nota es una caja cuadrada, como un post-it: dos por fila, con el texto cortado a cuatro renglones y la hora abajo. Sin colores: todas son del mismo gris.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se ven varias notas de un vistazo, como papelitos sobre la mesa.</li><li>Cada nota se siente un objeto que se puede tirar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las notas largas se cortan a cuatro renglones.</li><li>Necesita una bandeja más ancha (300 px o más).</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
   <section class="cierre" id="cierre">
     <h2>Sexta ronda · comparación</h2>
     <div class="tabla-envoltura">
@@ -940,6 +981,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
           <tr class="elegida"><td>W · Se escribe al pie</td><td>Abajo a la izquierda</td><td>Todo el margen</td><td>Al pie, lo nuevo arriba</td><td>Sola, al salir de la línea</td><td>Plegarse cuando querías releer</td></tr>
           <tr><td>X · A la derecha</td><td>Abajo a la derecha</td><td>Todo el margen</td><td>Al pie, lo nuevo arriba</td><td>Sola, al salir de la línea</td><td>Compartir esquina con la barra de ajustes</td></tr>
           <tr><td>Y · Gemela con aire</td><td>Al lado de las tareas</td><td>40 px</td><td>Arriba</td><td>Al tocar el asa</td><td>Sigue cerca</td></tr>
+          <tr><td>Z · Notas en cajas</td><td>Abajo a la izquierda</td><td>Todo el margen</td><td>Arriba; cada nota es un cuadrado</td><td>Al tocar el asa</td><td>Las notas largas se cortan</td></tr>
         </tbody>
       </table>
     </div>
@@ -949,6 +991,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
         <p><b>Junta todo lo que marcaste.</b> El asa con la rayita que se desvanece, el lápiz y la cantidad juntos, la última nota de Q, el despliegue de U y el efecto de R, en una esquina lejos de las tareas.</p>
         <p><b>Escribir al pie tiene sentido en una bandeja que sube.</b> El cursor queda donde ya está tu mirada (abajo, cerca del asa) y cada nota nueva empuja las anteriores hacia arriba, como en un chat.</p>
         <p><b>V es el plan B</b> si preferís que la bandeja no se pliegue sola: se abre y se cierra tocando el asa, como la de tareas. <b>X</b> es la misma idea del otro lado, por si te resulta más cómodo con el mouse.</p>
+        <p><b>Z cambia cómo se ven las notas, no dónde viven.</b> Las cajas se pueden combinar con cualquiera de las otras: sirven si se anotan cosas cortas («pág. 47», «preguntarle a Ana») y molestan si se escriben párrafos.</p>
         <h4>En pantallas medianas y en el celular</h4>
         <p><b>El asa se va achicando.</b> Por debajo de 1112 px no entra la última nota y quedan el lápiz y el número. Por debajo de 780 px, la bandeja de tareas se corre para dejarle lugar al asa, como en U. Abierta, por debajo de 1160 px, la bandeja de notas abre en el lugar de la de tareas.</p>
         <h4>Los puntos de fondo</h4>
@@ -1155,7 +1198,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     const zona = app.querySelector("[data-zona]");
 
     /* Cada variante pone las tareas en otro lugar */
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
       const aside = document.createElement("aside");
       aside.className = "bandeja" + (v === "b" ? " cajon" : "");
       aside.setAttribute("aria-label", "Tareas");
@@ -1200,7 +1243,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
       reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
       reloj.title = "Tocá para dar play o pausa";
     }
-    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
     if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
       <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
       <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
@@ -1221,7 +1264,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
       tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
     }
     /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
-    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v);
+    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v);
     const conEsquina = ["p", "q", "r", "s", "t"].includes(v);
     const notasHTML = (cerrar) => `
       <div class="notas-bloque">
@@ -1233,8 +1276,8 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     if (conNotas) {
       app.classList.add("v-i");
       if (conEsquina) app.classList.add("con-esquina");
-      if (["u", "v", "w", "x", "y"].includes(v)) app.classList.add("gem");
-      if (["v", "w", "x", "y"].includes(v)) app.classList.add("gem-ancha");
+      if (["u", "v", "w", "x", "y", "z"].includes(v)) app.classList.add("gem");
+      if (["v", "w", "x", "y", "z"].includes(v)) app.classList.add("gem-ancha");
       if (v === "m" || conEsquina) app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
       if (v === "n") {
         app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
@@ -1254,7 +1297,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
         <button type="button" class="ver-mas" data-notas-mas hidden></button>
         <ul class="notas-lista" data-notas-lista data-max="3"></ul>
         <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label></aside>`);
-      if (["u", "v", "w", "x", "y"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
+      if (["u", "v", "w", "x", "y", "z"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
         <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b><span class="gem-ult" data-notas-ultima></span></button>
         <div class="cuerpo" data-gemela-cuerpo>${notasHTML(false)}</div></aside>`);
     }
@@ -1444,7 +1487,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     let estaAbierta = () => false;
     let alternarTareas = () => {};
     let alAbrirTareas = () => {};
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
       const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
       const abrir = a => {
         bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
