@@ -278,7 +278,8 @@ button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
 /* Una pantalla: en la compu la maqueta se reparte el alto; angosto, se apila */
 .app.una { height: 100%; }
 .una-main { min-height: 0; padding: 20px 20px 40px; gap: 28px; }
-@container app (min-width: 1000px) { .una-main { padding: 22px 32px 26px; gap: 22px; display: grid; } }
+/* En pantallas grandes no se estira: tope de ancho y de alto, y el tablero queda centrado */
+@container app (min-width: 1000px) { .una-main { padding: 22px 32px 26px; gap: 22px; display: grid; max-width: 1440px; max-height: 900px; margin: auto; } }
 /* Angosto no hay una pantalla: los bloques se apilan con su alto natural y se baja */
 @container app (max-width: 999px) { .una-main > *, .l-der > *, .n-izq > *, .n-der > *, .q-izq > *, .q-der > *, .m-grid > *, .panel { flex-shrink: 0; } .m-grid { min-height: auto; } }
 .una .hoy { gap: 8px; }
