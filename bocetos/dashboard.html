@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Segunda ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Tercera ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -73,12 +73,13 @@ code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radiu
 .indice a:hover { color: var(--fg); border-color: var(--linea); }
 .indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
 
-.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion, .metas { margin-bottom: 96px; scroll-margin-top: 24px; }
 .opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
 @media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
-.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2, .metas > h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .opcion-cabeza h2 .letra { color: var(--acento); }
 .marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.marca-base { font-size: 13px; font-weight: 500; color: var(--tenue); }
 .resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
 .enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
 .enfoque b { color: var(--fg); font-weight: 500; }
@@ -157,18 +158,42 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 .btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; }
 .btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
 
-/* Hoy contra la meta: la misma cabecera en las tres variantes */
+/* Hoy contra la meta: la misma cabecera en todas las variantes */
 .hoy { display: flex; flex-direction: column; gap: 14px; }
-.hoy-linea { height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
+.hoy-fila { display: flex; align-items: center; gap: 12px; min-height: 30px; }
+.hoy-linea { flex: 1; height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
 .hoy-linea span { display: block; height: 100%; background: var(--acento); border-radius: 4px; transition: width .5s cubic-bezier(.16,1,.3,1); }
-.hoy-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
+.hoy-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; min-height: 30px; }
 .hoy-pie .bajada { margin: 0; }
-.meta-ed { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-variant-numeric: tabular-nums; }
-.meta-ed b { font-weight: 600; min-width: 4.6em; text-align: center; }
-.paso { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--linea); background: var(--superficie); display: grid; place-items: center; color: var(--fg); padding: 0; }
+.paso { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--linea); background: var(--superficie); display: grid; place-items: center; color: var(--fg); padding: 0; transition: border-color .15s, background-color .15s; }
 .paso:hover:not(:disabled) { border-color: var(--tenue); }
 .paso:disabled { opacity: .35; cursor: default; }
 .paso svg { width: 14px; height: 14px; }
+.paso.ok { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.meta-ed { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.meta-ed b { font-weight: 600; min-width: 4.8em; text-align: center; }
+.meta-ed .n { color: var(--tenue); margin-right: 2px; }
+.meta-ed.siempre .paso { width: 26px; height: 26px; border-color: transparent; background: var(--campo); }
+.meta-ed.siempre .paso:hover:not(:disabled) { border-color: var(--linea); }
+.meta-ed.siempre b { min-width: 4.4em; }
+
+/* 2 · Lápiz pegado a la meta */
+.meta-lapiz { display: inline-grid; place-items: center; width: 30px; height: 30px; vertical-align: 0.12em; margin-left: 2px; border: 0; border-radius: 6px; background: transparent; color: var(--tenue); padding: 0; transition: background-color .15s, color .15s; }
+.meta-lapiz:hover { background: var(--campo); color: var(--fg); }
+.meta-lapiz svg { width: 17px; height: 17px; }
+/* 3 · La cifra es el botón */
+.meta-cifra { font: inherit; letter-spacing: inherit; color: inherit; border: 0; padding: 0 .2em; margin: 0 -.05em; border-radius: 6px; background: var(--campo); box-shadow: inset 0 0 0 1px var(--linea); transition: background-color .15s, color .15s; }
+.meta-cifra:hover { background: var(--linea); color: var(--fg); }
+/* 4 · Ícono de objetivo con la meta */
+.meta-obj { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px 0 9px; border: 1px solid var(--linea); border-radius: 6px; background: var(--superficie); font-size: 13.5px; color: var(--fg); font-variant-numeric: tabular-nums; transition: border-color .15s; }
+.meta-obj:hover { border-color: var(--tenue); }
+.meta-obj svg { width: 16px; height: 16px; color: var(--acento); }
+/* 5 · La meta vive al final de la línea */
+.meta-linea { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.meta-linea b { font-weight: 600; min-width: 3.4em; text-align: center; }
+.meta-linea .paso { width: 26px; height: 26px; opacity: 0; transform: scale(.9); transition: opacity .18s, transform .22s cubic-bezier(.16,1,.3,1), border-color .15s; }
+.hoy-fila:is(:hover, :focus-within) .meta-linea .paso, :root[data-tactil] .meta-linea .paso { opacity: 1; transform: none; }
+@media (hover: none) { .meta-linea .paso { opacity: 1; transform: none; } }
 
 /* Pestañas subrayadas, en texto */
 .rangos { display: flex; gap: 22px; border-bottom: 1px solid var(--linea); }
@@ -239,8 +264,7 @@ button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
 .dh { display: grid; grid-template-columns: 2.6em repeat(var(--horas), minmax(0, 1fr)); gap: 3px; max-width: 760px; }
 .dh .d { font-size: 12px; color: var(--tenue); align-self: center; }
 .dh .h { font-size: 11.5px; color: var(--tenue); text-align: center; white-space: nowrap; overflow: visible; font-variant-numeric: tabular-nums; padding-top: 4px; }
-.dh .h.pico { color: var(--fg); font-weight: 600; }
-.dh .d.pico { color: var(--fg); font-weight: 600; }
+.dh .h.pico, .dh .d.pico { color: var(--fg); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
@@ -250,58 +274,77 @@ button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
 .f-par { display: grid; gap: 40px; }
 @container app (min-width: 900px) { .f-par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; } }
 
-/* ───────── G · Preguntas que cambian el gráfico ───────── */
-.g-cuerpo { display: grid; gap: 28px; }
-@container app (min-width: 860px) { .g-cuerpo { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr); gap: 56px; align-items: start; } }
+/* Renglones de preguntas (G y J) */
 .g-filas { display: flex; flex-direction: column; border-top: 1px solid var(--linea); }
-.g-fila { display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; gap: 4px 14px; align-items: start; text-align: left; border: 0; border-bottom: 1px solid var(--linea); background: none; padding: 18px 0; color: var(--tenue); transition: color .2s; }
+.g-fila { display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; gap: 4px 14px; align-items: start; text-align: left; border: 0; border-bottom: 1px solid var(--linea); background: none; padding: 18px 0; color: var(--tenue); transition: color .2s; width: 100%; }
 .g-fila:hover { color: var(--fg); }
 .g-fila > svg { width: 20px; height: 20px; margin-top: 2px; }
 .g-fila .t { font-size: 17px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.3; text-wrap: balance; font-variant-numeric: tabular-nums; }
 .g-fila .s { grid-column: 2; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
 .g-fila .ir { width: 16px; height: 16px; margin-top: 4px; opacity: 0; transform: translateX(-4px); transition: opacity .2s, transform .25s cubic-bezier(.16,1,.3,1); }
-.g-fila[aria-pressed="true"] { color: var(--fg); }
-.g-fila[aria-pressed="true"] > svg:first-child { color: var(--acento); }
-.g-fila[aria-pressed="true"] .ir { opacity: 1; transform: none; }
-@container app (max-width: 859px) { .g-fila .ir { transform: rotate(90deg); } .g-fila[aria-pressed="true"] .ir { transform: rotate(90deg); } }
+.g-fila:is([aria-pressed="true"], [aria-current="true"]) { color: var(--fg); }
+.g-fila:is([aria-pressed="true"], [aria-current="true"]) > svg:first-child { color: var(--acento); }
+.g-fila:is([aria-pressed="true"], [aria-current="true"]) .ir { opacity: 1; transform: none; }
+/* Paneles que se cruzan con un fundido (G e I) */
 .g-paneles { display: grid; min-width: 0; }
 .g-panel { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .22s ease, transform .3s cubic-bezier(.16,1,.3,1), visibility 0s linear .22s; }
 .g-panel.activo { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 
-/* ───────── H · Semanas en anillos ───────── */
-.h-cuerpo { display: grid; gap: 40px; }
-@container app (min-width: 860px) { .h-cuerpo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; } }
-.h-izq, .h-der { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.h-der { gap: 32px; }
-.h-nav { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.flecha { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--linea); background: transparent; display: grid; place-items: center; color: var(--fg); padding: 0; }
-.flecha:hover:not(:disabled) { border-color: var(--tenue); }
-.flecha:disabled { opacity: .35; cursor: default; }
-.flecha svg { width: 15px; height: 15px; }
-.flecha.izq svg { transform: rotate(180deg); }
-.h-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; max-width: 460px; }
-.h-cal .dow { font-size: 12px; color: var(--tenue); text-align: center; padding-bottom: 4px; }
-.h-dia { position: relative; border: 0; background: none; padding: 3px; border-radius: 8px; display: grid; place-items: center; color: var(--tenue); }
-.h-dia:hover { background: var(--campo); }
-.h-dia[aria-pressed="true"] { background: var(--campo); color: var(--fg); }
-.h-dia .anillo { width: 100%; max-width: 52px; height: auto; aspect-ratio: 1; }
-.h-dia .num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; font-variant-numeric: tabular-nums; }
-.h-dia.cumplido .num, .h-dia.hoy .num { color: var(--fg); font-weight: 600; }
-.anillo { display: block; }
-.anillo .fondo-a { stroke: var(--linea); }
-.anillo .prog { stroke: var(--acento); }
-.comp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
-.comp .n { color: var(--tenue); }
-.comp .barra { height: 6px; border-radius: 3px; background: color-mix(in oklch, var(--fg) 22%, var(--bg)); }
-.comp .barra.act { background: var(--acento); }
-.fr-hist { position: relative; height: 56px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--linea); }
-.fr-hist i { flex: 1 1 0; background: color-mix(in oklab, var(--acento) 40%, var(--superficie)); border-radius: 2px 2px 0 0; }
-.fr-hist i.pico { background: var(--acento); }
+/* ───────── G · Preguntas al centro ───────── */
+.g-cuerpo { display: grid; gap: 28px; margin-block: auto; }
+@container app (min-width: 860px) { .g-cuerpo { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr); gap: 56px; align-items: center; } }
+@container app (max-width: 859px) { .g-cuerpo .g-fila .ir { transform: rotate(90deg); } .g-cuerpo .g-fila[aria-pressed="true"] .ir { transform: rotate(90deg); } }
+.g-cuerpo .g-paneles { min-height: 300px; align-items: center; }
+
+/* ───────── I · Pestañas arriba ───────── */
+.i-cuerpo { display: flex; flex-direction: column; gap: 28px; }
+.i-tabs { display: grid; gap: 0; border-bottom: 1px solid var(--linea); }
+@container app (min-width: 760px) { .i-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; } }
+.i-tab { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 3px 12px; align-items: start; text-align: left; border: 0; background: none; padding: 14px 0 16px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .2s, border-color .2s; }
+@container app (max-width: 759px) { .i-tab { border-bottom: 1px solid var(--linea); margin-bottom: 0; padding: 12px 0; } .i-tab:last-child { border-bottom: 0; } }
+.i-tab:hover { color: var(--fg); }
+.i-tab > svg { width: 19px; height: 19px; margin-top: 2px; }
+.i-tab .t { font-size: 16px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.3; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.i-tab .s { grid-column: 2; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.i-tab[aria-pressed="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+.i-tab[aria-pressed="true"] > svg { color: var(--acento); }
+@container app (max-width: 759px) { .i-tab[aria-pressed="true"] { border-bottom-color: var(--linea); } }
+
+/* ───────── J · Índice fijo ───────── */
+@container app (min-width: 900px) {
+  .j-main { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); gap: 56px; align-items: start; }
+  .j-izq { position: sticky; top: 24px; }
+}
+.j-izq { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.j-der { display: flex; flex-direction: column; gap: 48px; min-width: 0; padding-bottom: 180px; }
+.j-der .bloque:first-child { border-top: 0; padding-top: 0; }
+@container app (min-width: 900px) { .j-izq .frase { font-size: 28px; } }
+.j-der .dh { max-width: 600px; }
+
+/* ───────── K · Tablero compacto ───────── */
+.k-main { gap: 32px; }
+@container app (min-width: 720px) { .k-main { padding-top: 28px; gap: 36px; } .k-main .frase { font-size: 28px; } }
+.k-const { display: grid; gap: 24px; }
+@container app (min-width: 1000px) { .k-const { grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); gap: 40px; align-items: start; } }
+.k-main .bloque { padding-top: 22px; gap: 16px; }
+.k-main .bloque-frase { font-size: 18px; }
+.k-main .graf-area { height: 160px !important; }
+
+/* ───────── Seis formas de cambiar la meta ───────── */
+.metas > .resumen { margin-bottom: 24px; max-width: 72ch; }
+.metas-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.meta-op { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.meta-op h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.meta-op h3 .num { color: var(--acento); }
+.meta-op h3 .marca-rec { font-size: 12.5px; }
+.meta-op > p { margin: 0; font-size: 13.5px; color: var(--tenue); }
+.meta-op > p b { color: var(--fg); font-weight: 500; }
+.app.mini { min-height: 0; border: 1px solid var(--linea); border-radius: 10px; padding: 22px 20px 20px; }
 
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
-.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
 table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
 th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
 th { font-size: 13px; font-weight: 600; color: var(--tenue); }
@@ -323,6 +366,9 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
   <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-menos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-lapiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 14.5l2 2 4-4"/></symbol>
@@ -337,15 +383,17 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, segunda ronda</h1>
-    <p>En la primera ronda ninguna variante cerró del todo. Lo que sirvió fue lo que explica: el mapa de C con la hora de cada sesión, la frase de D y las cifras de E. En A no quedaba claro qué aportaba cada cosa, y los anillos de B se veían bien pero decían poco.</p>
-    <p>Esta ronda responde <b>tres preguntas y nada más: ¿soy constante?, ¿voy mejor o peor? y ¿cuándo rindo?</b> Cada gráfico lleva arriba su respuesta en una frase. <b>La meta diaria es el centro:</b> arranca en 2 h y la racha cuenta los días en que la cumpliste. Se cambia desde «Cambiar la meta» en cualquier variante, y el cambio se ve en las tres. Probá subirla a 3 h.</p>
-    <p>Las tres usan los mismos datos de ejemplo, un año inventado. Hoy es domingo 4 de octubre: llevás 50 min y venís de 5 días seguidos cumpliendo la meta. Pasá el mouse por cualquier día, celda o punto para ver el valor. La primera ronda (A–E) queda en el historial de git.</p>
+    <h1>Dashboard, tercera ronda</h1>
+    <p>De la segunda ronda quedó <b>F como base</b>. De G gustó el orden pero sobraba espacio abajo, H no convenció, y el gráfico con el ritmo de la meta (la línea punteada) se queda en todas. Esta ronda trae F igual que antes y cuatro estructuras nuevas para comparar con ella. G vuelve centrado; I, J y K son nuevas.</p>
+    <p>Abajo de las maquetas hay una sección aparte con <b>seis formas de cambiar la meta</b>, todas tocables. El ajuste «Meta» de la barra de arriba elige cuál de las seis usan las maquetas, para verla en contexto. El texto subrayado de la ronda anterior está entre las seis, por si al final volvemos a él.</p>
+    <p>Datos de ejemplo: un año inventado. Hoy es domingo 4 de octubre, llevás 50 min y venís de 5 días seguidos cumpliendo la meta de 2 h.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
       <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Meta</span>
+      <div class="segmentado" id="ctlmeta" role="group" aria-label="Forma de cambiar la meta"><button type="button" data-v="texto">Texto</button><button type="button" data-v="lapiz">Lápiz</button><button type="button" data-v="cifra">Cifra</button><button type="button" data-v="objetivo">Ícono y meta</button><button type="button" data-v="linea">En la línea</button><button type="button" data-v="siempre">Siempre a mano</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Barra</span>
       <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
@@ -361,13 +409,13 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="f" data-v="f">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">F</span><span class="nombre">Página que baja</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Un dashboard de los de siempre, pero cada bloque se explica solo. Arriba, cómo vas hoy con la meta. Debajo, la constancia sobre el mapa del año: tocás un día y ves sus sesiones con la hora. Al final, lado a lado, si vas mejor o peor y a qué hora rendís.</p>
+        <h2><span class="letra">F</span><span class="nombre">Página que baja</span><span class="marca-base">La base, sin cambios</span></h2>
+        <p class="resumen">La favorita de la ronda anterior, igual que antes. Arriba, hoy contra la meta. Debajo, la constancia sobre el mapa del año: tocás un día y ves sus sesiones con la hora. Al final, lado a lado, si vas mejor o peor y a qué hora rendís.</p>
         <p class="enfoque">Lo primero: <b>hoy contra la meta, y la racha</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Todo a la vista, se recorre bajando, sin aprender nada.</li><li>El mapa de C, que es lo que mejor entendiste, ahora con la meta.</li><li>Cada gráfico tiene arriba la frase que lo explica.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Es la más larga: en el celular son tres pantallas de scroll.</li><li>En pantallas angostas el mapa muestra solo los últimos seis meses.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Todo a la vista, se recorre bajando, sin aprender nada.</li><li>Cada gráfico tiene arriba la frase que lo explica.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Es larga: en el celular son tres pantallas de scroll.</li><li>Las tres respuestas no se ven juntas hasta bajar.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -377,92 +425,140 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="g" data-v="g">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">G</span><span class="nombre">Preguntas que cambian el gráfico</span></h2>
-        <p class="resumen">Las tres preguntas son renglones y cada uno ya trae la respuesta escrita. Al tocar un renglón, el gráfico de al lado cambia con un fundido corto, sin el salto de E. En el celular los renglones quedan arriba y el gráfico debajo.</p>
+        <h2><span class="letra">G</span><span class="nombre">Preguntas al centro</span></h2>
+        <p class="resumen">G con el hueco corregido. Los renglones y el gráfico forman un bloque que se centra en el alto que queda debajo de la meta, y los renglones se alinean con el centro del gráfico. El panel tiene un alto mínimo fijo, así que cambiar de pregunta no mueve nada.</p>
         <p class="enfoque">Lo primero: <b>las tres respuestas, en texto</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Con leer los tres renglones ya está; el gráfico es el detalle.</li><li>Entra en una pantalla de compu, sin bajar.</li><li>Lo bueno de E (una cosa por vez) sin perder las otras de vista.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Para cruzar dos gráficos hay que ir y volver.</li><li>En el celular, los renglones empujan el gráfico hacia abajo.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El orden de G sin el espacio vacío abajo.</li><li>Entra en una pantalla de compu, sin bajar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En pantallas muy altas sobra aire arriba y abajo, repartido.</li><li>Para cruzar dos gráficos hay que ir y volver.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="h" data-v="h">
+  <section class="opcion" id="i" data-v="i">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">H</span><span class="nombre">Semanas en anillos</span></h2>
-        <p class="resumen">Lo que te gustó de B, con algo que decir: un calendario de seis semanas donde cada día es un anillo que se llena contra la meta. Un anillo cerrado es un día cumplido. Al lado, el día que toques con sus sesiones, y las otras dos preguntas en una frase y un gráfico chico.</p>
-        <p class="enfoque">Lo primero: <b>las últimas seis semanas, día por día</b></p>
+        <h2><span class="letra">I</span><span class="nombre">Pestañas arriba</span></h2>
+        <p class="resumen">Las tres respuestas en una fila, como pestañas, con su ícono. Debajo, el gráfico de la que elegiste, a todo el ancho y con el mismo fundido de G. En el celular las pestañas se apilan como renglones.</p>
+        <p class="enfoque">Lo primero: <b>las tres respuestas, una al lado de la otra</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Sigue el anillo del home: es el mismo objeto, un día por anillo.</li><li>La constancia se ve sin leer: anillos cerrados o abiertos.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El año queda detrás de las flechas, de seis semanas en seis.</li><li>Cuarenta y dos anillos chicos piden más ancho que los cuadritos del mapa.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El gráfico usa todo el ancho: el mapa del año se ve entero.</li><li>No quedan columnas vacías a los costados.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Tres frases largas en una fila piden una pantalla ancha.</li><li>Sigue siendo un gráfico por vez.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="j" data-v="j">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">J</span><span class="nombre">Índice fijo</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">F con el orden de G. A la izquierda quedan fijas la meta de hoy y las tres respuestas; a la derecha bajan los tres gráficos, como en F. Mientras bajás se marca la respuesta del gráfico que estás viendo, y tocar una respuesta te lleva a su gráfico.</p>
+        <p class="enfoque">Lo primero: <b>la meta y las tres respuestas, siempre a la vista</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Todo visible como en F y ordenado como en G.</li><li>Las respuestas no se van al bajar: los gráficos son el detalle.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En el celular el índice queda solo arriba, no se fija.</li><li>Tiene un comportamiento más: el índice sigue al scroll.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="k" data-v="k">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">K</span><span class="nombre">Tablero compacto</span></h2>
+        <p class="resumen">F apretado para que entre casi entero en una pantalla de compu: el día elegido va al lado del mapa, las frases son más chicas y los gráficos más bajos. En el celular queda igual que F.</p>
+        <p class="enfoque">Lo primero: <b>todo junto, de un vistazo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Las tres respuestas a la vista y los gráficos casi sin bajar.</li><li>Es F: no hay que aprender nada nuevo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Más densa y menos calma que F.</li><li>Las frases chicas pesan menos que los gráficos.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="metas" id="meta">
+    <h2>Cambiar la meta, seis formas</h2>
+    <p class="resumen">Las seis son la misma cabecera de hoy y funcionan de verdad: subí o bajá la meta y cambia en todas las maquetas de arriba. Con «Dispositivo: Táctil» se ve cómo queda cada una sin mouse.</p>
+    <div class="metas-grid" id="metas-grid"></div>
   </section>
 
   <section class="cierre" id="cierre">
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Boceto</th><th>¿Soy constante?</th><th>¿Voy mejor o peor?</th><th>¿Cuándo rindo?</th><th>Recorrido</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>Cómo se recorre</th><th>Las tres respuestas juntas</th><th>Gráficos juntos</th><th>En una pantalla de compu</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>F · Página que baja</td><td>El mapa del año con la meta</td><td>Acumulado contra el período anterior</td><td>Días por horas</td><td>Una página con scroll</td><td>Larga en el celular</td></tr>
-          <tr><td>G · Preguntas que cambian el gráfico</td><td>El mapa del año, al tocar</td><td>El mismo gráfico, al tocar</td><td>El mismo, al tocar</td><td>Renglones y un gráfico que cambia</td><td>Comparar exige ir y volver</td></tr>
-          <tr><td>H · Semanas en anillos</td><td>Seis semanas en anillos</td><td>Dos barras: esta semana y la anterior</td><td>Una franja por hora</td><td>Calendario + columna</td><td>El año queda lejos</td></tr>
+          <tr><td>F · Página que baja</td><td>Scroll</td><td>No, hay que bajar</td><td>Sí</td><td>No</td><td>Larga en el celular</td></tr>
+          <tr><td>G · Preguntas al centro</td><td>Renglones + un gráfico</td><td>Sí</td><td>No, uno por vez</td><td>Sí</td><td>Ir y volver para comparar</td></tr>
+          <tr><td>I · Pestañas arriba</td><td>Pestañas + un gráfico</td><td>Sí</td><td>No, uno por vez</td><td>Sí</td><td>Pide pantalla ancha</td></tr>
+          <tr class="elegida"><td>J · Índice fijo</td><td>Scroll con índice que lo sigue</td><td>Sí, siempre</td><td>Sí</td><td>No, pero no hace falta</td><td>En el celular el índice no se fija</td></tr>
+          <tr><td>K · Tablero compacto</td><td>Casi una pantalla</td><td>Sí</td><td>Sí</td><td>Casi</td><td>Densa, menos calma</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Meta</th><th>Se ve sin tocar</th><th>Toques para cambiarla</th><th>Qué agrega a la pantalla</th><th>Riesgo</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Texto</td><td>Sí, «Cambiar la meta»</td><td>1 + pasos</td><td>Un texto subrayado</td><td>No te gusta cómo se ve</td></tr>
+          <tr><td>2 · Lápiz</td><td>Sí, un ícono chico</td><td>1 + pasos</td><td>Un ícono en el título</td><td>Un ícono suelto en una frase grande</td></tr>
+          <tr><td>3 · Cifra</td><td>La cifra se ve marcada</td><td>1 + pasos</td><td>Nada nuevo, marca «2 h»</td><td>Hay que descubrir que se toca</td></tr>
+          <tr><td>4 · Ícono y meta</td><td>Sí, «Meta 2 h» con ícono</td><td>1 + pasos</td><td>Un botón con borde</td><td>Repite la meta de la frase</td></tr>
+          <tr class="elegida"><td>5 · En la línea</td><td>«2 h» al final de la línea</td><td>Directo (− / +)</td><td>Nada hasta acercarse</td><td>Con mouse se descubre al pasar</td></tr>
+          <tr><td>6 · Siempre a mano</td><td>Sí, − 2 h +</td><td>Directo</td><td>Dos botones fijos</td><td>Ruido para algo que se cambia poco</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría F</h3>
-        <p><b>Es la única que sigue pareciendo un dashboard,</b> que es lo que extrañaste en E, y es la que no te deja perdido como A: cada bloque empieza con su respuesta. Leés «Cumpliste la meta 5 días seguidos» y recién después el mapa, que pasa a ser la prueba de esa frase y deja de ser un adorno.</p>
-        <p><b>La meta ordena todo.</b> La cabecera dice cuánto falta hoy. El mapa deja de medir «más o menos minutos» y marca días cumplidos. La línea punteada del gráfico de tendencia es el ritmo que pide la meta: si tu línea va por encima, vas bien. Si mañana cambiás la meta, las tres cosas se recalculan solas.</p>
-        <p><b>G, si preferís verlo todo sin bajar.</b> Es F con los tres bloques apilados en el mismo lugar. Los dos usan los mismos gráficos y las mismas frases, así que se puede decidir después de construirlo: es cambiar el contenedor. <b>H</b> es la más linda y la que más continúa al home, pero muestra solo seis semanas: sirve más como versión del celular de la constancia que como dashboard entero.</p>
-        <h4>Qué cambió desde la primera ronda</h4>
-        <p>Se fueron las tareas por tema (era la pregunta «¿en qué se me va?», que dejaste afuera), las cifras sueltas de A y la agenda de D. La hora de cada sesión, que te gustó en C, quedó en el detalle del día. La frase de D pasó a ser la respuesta de «¿cuándo rindo?», ahora sobre una grilla de días por horas con las mismas celdas que el mapa, que se lee igual.</p>
+        <h3>Elegiría J, con la meta en la línea (5)</h3>
+        <p><b>J es F con lo que te gustó de G.</b> F te gustó porque está todo y se recorre sin pensar; G, porque las respuestas estaban ordenadas en un solo lugar. J mantiene la página de F a la derecha y deja fijas a la izquierda la meta y las tres respuestas, que pasan a ser también un índice. Así no queda el hueco de G, porque la derecha se llena con los tres gráficos.</p>
+        <p><b>Si preferís que todo entre sin bajar, K.</b> Es la misma información que F, más apretada. G centrada resuelve el hueco, pero sigue mostrando un gráfico por vez. I es la mejor de las de «un gráfico por vez» porque el gráfico gana todo el ancho.</p>
+        <p><b>Para la meta, la 5 · En la línea.</b> La línea de progreso ya termina donde termina la meta, así que poner «2 h» ahí, al final, dice qué es sin palabras. El − y el + aparecen al acercar el mouse (en el celular se ven siempre), y la meta se cambia directo, sin abrir nada. Sigue la regla del home: el detalle aparece al acercarse. <b>Plan B, la 4 · Ícono y meta</b>, que se ve siempre y no necesita descubrirse. Si ninguna te cierra, volvemos al texto (1).</p>
         <h4>Fondo con puntos</h4>
-        <p><b>En las tres, liso.</b> Todo el dashboard está hecho de celdas, anillos y guías, y los puntos se confunden con ellos. Si al final de la Fase 1 los puntos quedan para toda la app, en H se pueden dejar «A los lados»: el calendario queda limpio en el centro.</p>
+        <p><b>Liso en todas.</b> El dashboard está hecho de celdas y líneas, y los puntos se confunden con ellas. En J, si los puntos quedan para toda la app, «A los lados» deja limpia la columna de gráficos.</p>
       </div>
       <div>
-        <pre><span class="c-com">// Cada día se mide contra la meta, no contra un máximo</span>
-const nivelDelDia = (minutos: number, meta: number) =&gt;
-  minutos === 0 ? 0          <span class="c-com">// sin estudio</span>
-  : minutos &lt; meta / 2 ? 1  <span class="c-com">// menos de la mitad</span>
-  : minutos &lt; meta ? 2      <span class="c-com">// más de la mitad</span>
-  : 4;                      <span class="c-com">// meta cumplida: acento lleno</span>
+        <pre><span class="c-com">// J · la columna izquierda se fija mientras baja la derecha.
+// En Tailwind: lg:sticky lg:top-6 (en el celular no se fija).</span>
 
-<span class="c-com">// La racha cuenta días cumplidos. Hoy no la corta
-// mientras el día no termine.</span>
-function rachaDeMeta(dias: DiaEstudio[], meta: number) {
-  let i = dias[0].minutos &gt;= meta ? 0 : 1, racha = 0;
-  while (dias[i]?.minutos &gt;= meta) { racha++; i++; }
-  return racha;
+<span class="c-com">// La respuesta del gráfico visible se marca sola</span>
+function useSeccionVisible(ids: string[]) {
+  const [actual, setActual] = useState(ids[0]);
+  useEffect(() =&gt; {
+    const obs = new IntersectionObserver(
+      (entradas) =&gt; entradas
+        .filter((e) =&gt; e.isIntersecting)
+        .forEach((e) =&gt; setActual(e.target.id)),
+      { rootMargin: "-20% 0px -60% 0px" },
+    );
+    ids.forEach((id) =&gt; {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+    return () =&gt; obs.disconnect();
+  }, [ids]);
+  return actual;
 }
 
-<span class="c-com">/* El mapa gira con container queries y en angosto
-   esconde las semanas viejas (las marca el render). */</span>
-.mapa { container: mapa / inline-size; }
-@container mapa (max-width: 599px) {
-  .mapa-grilla .viejo { display: none; }
-}
-@container mapa (min-width: 600px) {
-  .mapa-grilla {
-    grid-auto-flow: column;
-    grid-template-rows: 1.4em repeat(7, auto);
-    grid-auto-columns: minmax(0, 1fr);
-  }
-}</pre>
+<span class="c-com">/* 5 · − y + aparecen al acercarse; en táctil, siempre */</span>
+.meta-linea .paso { opacity: 0; transition: opacity .18s; }
+.fila-hoy:is(:hover, :focus-within) .meta-linea .paso { opacity: 1; }
+@media (hover: none) { .meta-linea .paso { opacity: 1; } }</pre>
         <h4>Datos para la Fase 3</h4>
-        <p><b>La meta diaria hay que guardarla</b>, por ejemplo como <code>daily_goal_minutes</code> en <code>user_stats</code> o en el perfil, con 120 por defecto. La racha y los días cumplidos se pueden calcular en el cliente con los minutos por día que ya trae <code>get_dashboard_aggregates</code>; no hace falta otra RPC.</p>
-        <p>Para el detalle del día hace falta <b>la hora de inicio de cada sesión</b>, no solo el total por hora. La grilla de días por horas sí sale de lo que ya existe, si la RPC agrupa por día de la semana además de por hora.</p>
-        <p>Sigue en pie lo de la 1ª ronda: <code>chartConfig</code>, <code>COLORES_TORTA</code> y <code>--heatmap-0..4</code> tienen el violeta escrito a mano y tienen que pasar al acento con <code>color-mix</code>.</p>
+        <p>Sin cambios desde la 2ª ronda: guardar la meta diaria (por ejemplo, <code>daily_goal_minutes</code> en <code>user_stats</code> o en el perfil, 120 por defecto) y la hora de inicio de cada sesión para el detalle del día. La racha de días cumplidos y el ritmo de la meta se calculan en el cliente.</p>
+        <p>La meta se cambia de a 15 minutos, entre 30 min y 8 h. Conviene guardarla con un pequeño retraso (por ejemplo, 600 ms después del último toque) para no escribir en Supabase a cada «+».</p>
       </div>
     </div>
   </section>
@@ -534,7 +630,7 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
   let semilla = 20261004;
   const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
   const HOY = new Date(2026, 9, 4);             // domingo
-  let meta = 120;                                 // meta diaria, en minutos; se cambia desde la cabecera
+  let meta = 120;                                 // meta diaria, en minutos
   const N_DIAS = 371;
   const dias = [];                                // dias[i]: hace i días
   for (let i = 0; i < N_DIAS; i++) {
@@ -569,7 +665,6 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
   const racha = () => { let i = cumple(dias[0]) ? 0 : 1, r = 0; while (i < N_DIAS && cumple(dias[i])) { r++; i++; } return r; };
   const mejorRacha = () => { let m = 0, r = 0; for (let i = 364; i >= 0; i--) { r = cumple(dias[i]) ? r + 1 : 0; m = Math.max(m, r); } return m; };
   const cumplidos = (a, b) => { let n = 0; for (let i = a; i <= b; i++) if (cumple(dias[i])) n++; return n; };
-  const suma = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += dias[i].min; return s; };
   const nivelMeta = m => !m ? 0 : m < meta / 2 ? 1 : m < meta ? 2 : 4;
 
   const fmt = m => { m = Math.round(m); if (m < 60) return `${m} min`; const h = Math.floor(m / 60), r = m % 60; return r ? `${h} h ${r} min` : `${h} h`; };
@@ -598,26 +693,29 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
   const pos = h => (h - H0) / HORAS * 100;
   const eje = () => `<div class="fr-eje">${TICKS.map(h => `<span style="left:${pos(h)}%">${h}</span>`).join("")}</div>`;
   const pista = d => `<div class="fr-pista">${TICKS.map(h => `<span class="guia" style="left:${pos(h)}%"></span>`).join("")}${d.ses.map(s => `<span class="fr-bloque" style="left:${pos(s.h)}%;width:${s.m / 60 / HORAS * 100}%" data-tip="${hm(s.h)} a ${hm(s.h + s.m / 60)} · ${s.m} min"></span>`).join("")}</div>`;
-  const anillo = (frac, tam, grosor) => {
-    const r = (tam - grosor) / 2, c = 2 * Math.PI * r, f = Math.min(Math.max(frac, 0), 1), m = tam / 2;
-    return `<svg class="anillo" viewBox="0 0 ${tam} ${tam}" aria-hidden="true"><circle class="fondo-a" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}"/>${f > 0 ? `<circle class="prog" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}" stroke-linecap="round" stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${m} ${m})"/>` : ""}</svg>`;
-  };
   const tipDia = d => `${d.i === 0 ? "Hoy" : fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}${cumple(d) ? " · meta cumplida" : ""}`;
 
-  /* Cabecera de hoy, con la meta editable */
+  /* Cabecera de hoy. La forma de cambiar la meta sale del ajuste global,
+     salvo en las tarjetas de la sección «seis formas», que fijan la suya. */
+  let ctlMeta = leer("doro-dash-meta", "linea");
   const cabHoy = app => {
+    const ctl = app.dataset.ctl || ctlMeta, ed = app._editMeta;
     const d = dias[0], falta = meta - d.min, p = Math.min(d.min / meta, 1) * 100;
-    const ctl = app._editMeta
-      ? `<span class="meta-ed" role="group" aria-label="Meta diaria">
-          <button type="button" class="paso" data-meta="-15" data-k="meta-menos" aria-label="Bajar la meta 15 minutos" ${meta <= 30 ? "disabled" : ""}>${ic("i-menos")}</button>
-          <b aria-live="polite">${fmt(meta)}</b>
-          <button type="button" class="paso" data-meta="15" data-k="meta-mas" aria-label="Subir la meta 15 minutos" ${meta >= 480 ? "disabled" : ""}>${ic("i-mas")}</button>
-          <button type="button" class="btn-texto" data-editmeta data-k="meta">Listo</button></span>`
-      : `<button type="button" class="btn-texto" data-editmeta data-k="meta">Cambiar la meta</button>`;
+    const menos = `<button type="button" class="paso" data-meta="-15" data-k="meta-menos" aria-label="Bajar la meta 15 minutos" ${meta <= 30 ? "disabled" : ""}>${ic("i-menos")}</button>`;
+    const mas = `<button type="button" class="paso" data-meta="15" data-k="meta-mas" aria-label="Subir la meta 15 minutos" ${meta >= 480 ? "disabled" : ""}>${ic("i-mas")}</button>`;
+    const valor = `<b aria-live="polite">${fmt(meta)}</b>`;
+    const editor = `<span class="meta-ed" role="group" aria-label="Meta diaria">${menos}${valor}${mas}<button type="button" class="paso ok" data-editmeta data-k="meta-listo" aria-label="Listo">${ic("i-check")}</button></span>`;
+    let enFrase = "", enPie = "", enLinea = "", metaTxt = fmt(meta);
+    if (ctl === "texto") enPie = ed ? editor : `<button type="button" class="btn-texto" data-editmeta data-k="meta">Cambiar la meta</button>`;
+    if (ctl === "lapiz") { if (ed) enPie = editor; else enFrase = `<button type="button" class="meta-lapiz" data-editmeta data-k="meta" aria-label="Cambiar la meta" title="Cambiar la meta">${ic("i-lapiz")}</button>`; }
+    if (ctl === "cifra") { if (ed) enPie = editor; else metaTxt = `<button type="button" class="meta-cifra" data-editmeta data-k="meta" aria-label="Meta de ${fmt(meta)}. Cambiar" title="Cambiar la meta">${fmt(meta)}</button>`; }
+    if (ctl === "objetivo") enPie = ed ? editor : `<button type="button" class="meta-obj" data-editmeta data-k="meta" title="Cambiar la meta">${ic("i-meta")}<span>Meta ${fmt(meta)}</span></button>`;
+    if (ctl === "linea") enLinea = `<span class="meta-linea" role="group" aria-label="Meta diaria">${menos}${valor}${mas}</span>`;
+    if (ctl === "siempre") enPie = `<span class="meta-ed siempre" role="group" aria-label="Meta diaria"><span class="n">Meta</span>${menos}${valor}${mas}</span>`;
     return `<header class="hoy">
-      <h1 class="frase">Hoy llevás ${fmt(d.min)} <span>de ${fmt(meta)}.</span></h1>
-      <div class="hoy-linea" role="img" aria-label="${Math.round(p)} % de la meta de hoy"><span style="width:${p}%"></span></div>
-      <div class="hoy-pie"><p class="bajada">${falta > 0 ? `Te falta ${fmt(falta)} para la meta.` : "Cumpliste la meta de hoy."}</p>${ctl}</div>
+      <h1 class="frase">Hoy llevás ${fmt(d.min)} <span>de ${metaTxt}.</span>${enFrase}</h1>
+      <div class="hoy-fila"><div class="hoy-linea" role="img" aria-label="${Math.round(p)} % de la meta de hoy"><span style="width:${p}%"></span></div>${enLinea}</div>
+      <div class="hoy-pie"><p class="bajada">${falta > 0 ? `Te falta ${fmt(falta)} para la meta.` : "Cumpliste la meta de hoy."}</p>${enPie}</div>
     </header>`;
   };
 
@@ -629,10 +727,10 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
 
   /* ¿Soy constante? */
   const constancia = () => {
-    const r = racha(), hoyFalta = !cumple(dias[0]);
+    const r = racha(), mr = mejorRacha(), hoyFalta = !cumple(dias[0]), record = r > 1 && r >= mr;
     const frase = r > 1 ? `Cumpliste la meta ${r} días seguidos.` : r === 1 ? `Ayer cumpliste la meta.` : `Esta semana cumpliste la meta ${cumplidos(0, 6)} de 7 días.`;
-    const sub = `${hoyFalta && r > 0 ? `Hoy todavía no: sería el día ${r + 1}. ` : ""}${r >= mejorRacha() && r > 1 ? "Es tu mejor racha del año." : `Tu mejor racha del año fue de ${mejorRacha()} días.`} En total cumpliste la meta ${cumplidos(0, 364)} días.`;
-    return { frase, sub, corta: r > 1 ? `${r} días seguidos cumpliendo la meta.` : frase, cortaSub: r >= mejorRacha() && r > 1 ? "Es tu mejor racha del año." : `Tu mejor racha: ${mejorRacha()} días.` };
+    const sub = `${hoyFalta && r > 0 ? `Hoy todavía no: sería el día ${r + 1}. ` : ""}${record ? "Es tu mejor racha del año." : `Tu mejor racha del año fue de ${mr} días.`} En total cumpliste la meta ${cumplidos(0, 364)} días.`;
+    return { frase, sub, corta: r > 1 ? `${r} días seguidos cumpliendo la meta.` : frase, cortaSub: record ? "Es tu mejor racha del año." : `Tu mejor racha: ${mr} días.` };
   };
   const ley = `<div class="ley"><span><i class="celda" data-n="0"></i>Sin estudio</span><span><i class="celda" data-n="1"></i>Menos de la mitad</span><span><i class="celda" data-n="2"></i>Más de la mitad</span><span><i class="celda" data-n="4"></i>Meta cumplida</span></div>`;
   const mapa = sel => {
@@ -654,7 +752,7 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
     return `<div class="mapa"><div class="mapa-grilla">${html}</div>${ley}</div>`;
   };
 
-  /* ¿Voy mejor o peor? Acumulado del período contra el anterior */
+  /* ¿Voy mejor o peor? Acumulado del período contra el anterior y el ritmo de la meta */
   const tendencia = app => {
     const r = app._rango === "mes" ? "mes" : "semana", n = r === "semana" ? 7 : 30;
     const act = [], ant = []; let sa = 0, sb = 0;
@@ -669,7 +767,7 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
     const pts = arr => arr.map((v, k) => `${(k / (n - 1) * 100).toFixed(2)},${(100 - v / tope * 100).toFixed(2)}`).join(" ");
     const guias = Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
     const etqs = act.map((_, k) => { const d = dias[n - 1 - k]; const t = r === "semana" ? DOW_L[d.dow] : (k % 7 === 0 || k === n - 1 ? `${d.f.getDate()}` : ""); return `<span class="${k === n - 1 ? "hoy" : ""}">${t}</span>`; }).join("");
-    const cols = act.map((v, k) => { const d = dias[n - 1 - k]; return `<i data-tip="${fecha(d.f)} · ${fmt(v)} acumulado (antes ${fmt(ant[k])})"></i>`; }).join("");
+    const cols = act.map((v, k) => { const d = dias[n - 1 - k]; return `<i data-tip="${fecha(d.f)} · ${fmt(v)} acumulado (antes ${fmt(ant[k])}, la meta pide ${fmt(ritmo[k])})"></i>`; }).join("");
     const tabs = `<div class="rangos" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"]].map(([v, t]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${t}</button>`).join("")}</div>`;
     const graf = `${tabs}<div>
       <div class="graf" style="--alto:190px"><div class="graf-area">${guias}
@@ -694,11 +792,22 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
     }
     g += `<span></span>` + Array.from({ length: HORAS }, (_, k) => `<span class="h${enVentana(k + H0) ? " pico" : ""}">${(k + H0) % 3 === 0 ? k + H0 : ""}</span>`).join("");
     const graf = `<div class="dh" style="--horas:${HORAS}" role="img" aria-label="Minutos por día de la semana y hora">${g}</div>`;
-    const hist = () => { const max = Math.max(...porHora); return `<div class="fr-hist">${porHora.map((m, k) => `<i class="${enVentana(k + H0) ? "pico" : ""}" style="height:${m / max * 100}%" data-tip="${k + H0} h · ${fmt(m)} por semana"></i>`).join("")}</div>${eje()}`; };
-    return { frase, sub, graf, hist };
+    return { frase, sub, graf };
   };
 
-  /* ── Las tres estructuras ── */
+  /* Las tres preguntas, para las variantes que las listan */
+  const preguntas = app => {
+    const c = constancia(), t = tendencia(app), q = cuando(), sel = app._dia ?? 0;
+    return [
+      { id: "c", icono: "i-cal", frase: c.corta, sub: c.cortaSub, panel: `${mapa(sel)}${detalle(dias[sel])}`, completa: c },
+      { id: "t", icono: "i-tend", frase: t.frase, sub: `${fmt(t.sa)} contra ${fmt(t.sb)}.`, panel: t.graf, completa: t },
+      { id: "q", icono: "i-reloj", frase: q.frase, sub: `El ${share} % de lo que estudiás.`, panel: `${q.graf}<p class="bajada" style="margin:0">${q.sub}</p>`, completa: q },
+    ];
+  };
+  const fila = (app, p, clase, attr) => `<button type="button" class="${clase}" ${attr}="${p.id}" data-k="p-${p.id}" ${attr === "data-preg" ? `aria-pressed="${(app._preg || "c") === p.id}" aria-controls="pn-${p.id}-${app._uid}"` : ""}>${ic(p.icono)}<span class="t">${p.frase}</span>${clase === "g-fila" ? ic("i-flecha", "ir") : ""}<span class="s">${p.sub}</span></button>`;
+  const paneles = (app, ps) => `<div class="g-paneles">${ps.map(p => `<div class="g-panel${(app._preg || "c") === p.id ? " activo" : ""}" id="pn-${p.id}-${app._uid}" data-panel="${p.id}">${p.panel}</div>`).join("")}</div>`;
+
+  /* ── Las estructuras ── */
   const V = {
     f: app => {
       const sel = app._dia ?? 0, c = constancia(), t = tendencia(app), q = cuando();
@@ -714,53 +823,64 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
       </main>`;
     },
     g: app => {
-      const p = app._preg || "c", sel = app._dia ?? 0, c = constancia(), t = tendencia(app), q = cuando();
-      const fila = (id, icono, frase, sub) => `<button type="button" class="g-fila" data-preg="${id}" data-k="p-${id}" aria-pressed="${p === id}" aria-controls="g-${id}-${app._uid}">${ic(icono)}<span class="t">${frase}</span>${ic("i-flecha", "ir")}<span class="s">${sub}</span></button>`;
-      const panel = (id, html) => `<div class="g-panel${p === id ? " activo" : ""}" id="g-${id}-${app._uid}" data-panel="${id}">${html}</div>`;
+      const ps = preguntas(app);
       return `<main class="main">
         ${cabHoy(app)}
         <div class="g-cuerpo">
-          <div class="g-filas">
-            ${fila("c", "i-cal", c.corta, c.cortaSub)}
-            ${fila("t", "i-tend", t.frase, `${fmt(t.sa)} contra ${fmt(t.sb)}.`)}
-            ${fila("q", "i-reloj", q.frase, `El ${share} % de lo que estudiás.`)}
-          </div>
-          <div class="g-paneles">
-            ${panel("c", `${mapa(sel)}${detalle(dias[sel])}`)}
-            ${panel("t", t.graf)}
-            ${panel("q", `${q.graf}<p class="bajada" style="margin:0">${q.sub}</p>`)}
-          </div>
+          <div class="g-filas">${ps.map(p => fila(app, p, "g-fila", "data-preg")).join("")}</div>
+          ${paneles(app, ps)}
         </div>
       </main>`;
     },
-    h: app => {
-      const pag = app._pag ?? 0, fin = pag * 42, sel = app._dia ?? fin, c = constancia(), t = tendencia({ _rango: "semana" }), q = cuando();
-      const desde = dias[fin + 41].f, hasta = dias[fin].f;
-      let cal = DOW_L.map(l => `<span class="dow" aria-hidden="true">${l}</span>`).join("");
-      for (let i = fin + 41; i >= fin; i--) {
-        const d = dias[i], ok = cumple(d);
-        cal += `<button type="button" class="h-dia${ok ? " cumplido" : ""}${i === 0 ? " hoy" : ""}" data-dia="${i}" data-k="dia-${i}" data-tip="${tipDia(d)}" aria-label="${tipDia(d)}" aria-pressed="${sel === i}">${anillo(d.min / meta, 48, 5)}<span class="num">${d.f.getDate()}</span></button>`;
-      }
-      const maxC = Math.max(t.sa, t.sb, 1);
+    i: app => {
+      const ps = preguntas(app);
       return `<main class="main">
         ${cabHoy(app)}
-        <div class="h-cuerpo">
-          <section class="h-izq">
-            <div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
-            <div class="h-nav"><button type="button" class="flecha izq" data-pag="${pag + 1}" data-k="h-ant" aria-label="Seis semanas antes" ${pag >= 7 ? "disabled" : ""}>${ic("i-flecha")}</button>
-              <span>${desde.getDate()} ${MESES[desde.getMonth()]} al ${hasta.getDate()} ${MESES[hasta.getMonth()]}</span>
-              <button type="button" class="flecha" data-pag="${pag - 1}" data-k="h-sig" aria-label="Seis semanas después" ${pag === 0 ? "disabled" : ""}>${ic("i-flecha")}</button></div>
-            <div class="h-cal" role="group" aria-label="Días de las seis semanas">${cal}</div>
-          </section>
-          <section class="h-der">
-            ${detalle(dias[sel])}
-            <div class="bloque"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">Cumpliste la meta ${cumplidos(0, 6)} de 7 días; la semana anterior, ${cumplidos(7, 13)}.</p></div>
-              <div class="comp"><span class="n">Esta semana</span><span class="barra act" style="width:${t.sa / maxC * 100}%"></span><span>${fmt(t.sa)}</span>
-                <span class="n">La anterior</span><span class="barra" style="width:${t.sb / maxC * 100}%"></span><span>${fmt(t.sb)}</span></div></div>
-            <div class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.hist()}</div>
-          </section>
+        <div class="i-cuerpo">
+          <div class="i-tabs">${ps.map(p => fila(app, p, "i-tab", "data-preg")).join("")}</div>
+          ${paneles(app, ps)}
         </div>
       </main>`;
+    },
+    j: app => {
+      const ps = preguntas(app);
+      return `<main class="main j-main">
+        <aside class="j-izq">
+          ${cabHoy(app)}
+          <nav class="g-filas" aria-label="Las tres preguntas">${ps.map(p => fila(app, p, "g-fila", "data-salto")).join("")}</nav>
+        </aside>
+        <div class="j-der">${ps.map(p => `<section class="bloque" data-sec="${p.id}"><div><h2 class="bloque-frase">${p.completa.frase}</h2><p class="bajada">${p.completa.sub}</p></div>${p.id === "q" ? p.completa.graf : p.panel}</section>`).join("")}</div>
+      </main>`;
+    },
+    k: app => {
+      const sel = app._dia ?? 0, c = constancia(), t = tendencia(app), q = cuando();
+      return `<main class="main k-main">
+        ${cabHoy(app)}
+        <section class="bloque"><div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
+          <div class="k-const">${mapa(sel)}${detalle(dias[sel])}</div></section>
+        <div class="f-par">
+          <section class="bloque"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">${t.sub}</p></div>${t.graf}</section>
+          <section class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.graf}</section>
+        </div>
+      </main>`;
+    },
+    mini: app => cabHoy(app),
+  };
+
+  /* J: la respuesta del gráfico visible se marca sola */
+  const DESPUES = {
+    j: a => {
+      const marco = a.el.closest(".marco"); if (!marco) return;
+      marco._actualizar = () => {
+        const tope = marco.getBoundingClientRect().top + marco.clientHeight * 0.35;
+        const secs = [...a.el.querySelectorAll("[data-sec]")];
+        let act = secs[0]?.dataset.sec;
+        secs.forEach(s => { if (s.getBoundingClientRect().top <= tope) act = s.dataset.sec; });
+        if (marco.scrollTop + marco.clientHeight >= marco.scrollHeight - 4) act = secs.at(-1)?.dataset.sec;
+        a.el.querySelectorAll("[data-salto]").forEach(f => f.setAttribute("aria-current", f.dataset.salto === act));
+      };
+      if (!marco._espia) { marco._espia = true; marco.addEventListener("scroll", () => marco._actualizar(), { passive: true }); }
+      marco._actualizar();
     },
   };
 
@@ -772,37 +892,27 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
   mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
   document.body.appendChild(mando);
   let actual = null;
-  const avisar = (el, t) => { const a = el.querySelector(".aviso"); a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
   const pintar = (a, enfocar) => {
     const k = enfocar && document.activeElement?.dataset?.k;
     a.cuerpo.innerHTML = V[a.v](a.el);
-    if (k) a.el.querySelector(`[data-k="${k}"]`)?.focus();
+    DESPUES[a.v]?.(a);
+    if (k) (a.el.querySelector(`[data-k="${k}"]`) || a.el.querySelector('[data-k="meta"]'))?.focus();
   };
 
-  const opciones = [...document.querySelectorAll(".opcion")];
-  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
-
-  opciones.forEach((op, n) => {
-    const v = op.dataset.v, el = op.querySelector("[data-app]");
-    el._uid = n;
-    el.appendChild(tplTb.content.cloneNode(true));
-    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column"; el.appendChild(cuerpo);
+  const conectar = a => {
+    const el = a.el;
     el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div><div class="tip" aria-hidden="true"></div>`);
-    el.querySelector("[data-hora]").textContent = ahora();
-    const a = { v, el, cuerpo };
-    apps.push(a);
-
     const tip = el.querySelector(".tip");
     const verTip = t => {
       const r = t.getBoundingClientRect(), ra = el.getBoundingClientRect();
       tip.textContent = t.dataset.tip;
       const x = Math.min(Math.max(r.left - ra.left + r.width / 2, 90), ra.width - 90);
-      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top + el.parentElement.scrollTop * 0) + "px"; tip.classList.add("ver");
+      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top) + "px"; tip.classList.add("ver");
     };
     el.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) verTip(t); });
     el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
     el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
-
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
       const b = e.target.closest("button"); if (!b || b.disabled) return;
@@ -810,16 +920,34 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
       tip.classList.remove("ver");
       if (d.editmeta !== undefined) { el._editMeta = !el._editMeta; return pintar(a, true); }
       if (d.meta) { meta = Math.min(480, Math.max(30, meta + +d.meta)); apps.forEach(x => pintar(x, x === a)); return; }
-      if (d.preg) {                      /* G: cambia el panel sin repintar, para que se vea el fundido */
+      if (d.preg) {                      /* G e I: cambia el panel sin repintar, para que se vea el fundido */
         el._preg = d.preg;
-        el.querySelectorAll(".g-fila").forEach(f => f.setAttribute("aria-pressed", f.dataset.preg === d.preg));
+        el.querySelectorAll("[data-preg]").forEach(f => f.setAttribute("aria-pressed", f.dataset.preg === d.preg));
         el.querySelectorAll(".g-panel").forEach(p => p.classList.toggle("activo", p.dataset.panel === d.preg));
+        return;
+      }
+      if (d.salto) {                     /* J: lleva al gráfico de esa respuesta */
+        const s = el.querySelector(`[data-sec="${d.salto}"]`), marco = el.closest(".marco");
+        marco.scrollTo({ top: s.getBoundingClientRect().top - marco.getBoundingClientRect().top + marco.scrollTop - 24, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
         return;
       }
       if (d.rango) { el._rango = d.rango; return pintar(a, true); }
       if (d.dia !== undefined) { el._dia = +d.dia; return pintar(a, true); }
-      if (d.pag !== undefined) { el._pag = +d.pag; el._dia = el._pag * 42; return pintar(a, true); }
     });
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#meta">Cambiar la meta</a><a href="#cierre">Recomendación</a>`;
+
+  opciones.forEach((op, n) => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el._uid = n;
+    el.appendChild(tplTb.content.cloneNode(true));
+    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column"; el.appendChild(cuerpo);
+    el.querySelector("[data-hora]").textContent = ahora();
+    const a = { v, el, cuerpo };
+    apps.push(a);
+    conectar(a);
 
     const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
     const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
@@ -828,10 +956,39 @@ function rachaDeMeta(dias: DiaEstudio[], meta: number) {
       <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
     bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
     const medida = bm.querySelector(".medida");
-    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; marco._actualizar?.(); }).observe(marco);
     bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
     pintar(a);
   });
+
+  /* Seis formas de cambiar la meta: cada tarjeta fija la suya */
+  const FORMAS = [
+    ["texto", "Texto", "La de la ronda anterior: «Cambiar la meta» subrayado, abajo a la derecha.", "se entiende sin pensar. <b>Pierde:</b> es la que no te convence visualmente."],
+    ["lapiz", "Lápiz", "Un lápiz chico pegado a «de 2 h», en el mismo título.", "convención conocida y no suma texto. <b>Pierde:</b> un ícono suelto dentro de una frase grande."],
+    ["cifra", "La cifra se toca", "«2 h» lleva un fondo apenas marcado: es el botón.", "tocás justo lo que querés cambiar. <b>Pierde:</b> hay que descubrir que se toca."],
+    ["objetivo", "Ícono y meta", "Un botón con el ícono de objetivo y «Meta 2 h», abajo a la derecha.", "siempre visible: dice el valor y qué hace. <b>Pierde:</b> repite la meta que ya dice la frase."],
+    ["linea", "En la línea", "La meta vive al final de la línea de progreso. El − y el + aparecen al acercar el mouse; en táctil se ven siempre.", "la línea termina donde termina la meta, se explica sola y se cambia directo. <b>Pierde:</b> con mouse se descubre al pasar."],
+    ["siempre", "Siempre a mano", "«Meta − 2 h +» siempre visible, sin abrir nada.", "un toque y listo. <b>Pierde:</b> la meta se cambia poco; tener los botones siempre a la vista es ruido."],
+  ];
+  const grilla = document.getElementById("metas-grid");
+  grilla.innerHTML = FORMAS.map(([id, nombre, resumen, nota], k) => `<article class="meta-op">
+      <h3><span class="num">${k + 1}</span>${nombre}${id === "linea" ? `<span class="marca-rec">Recomendada</span>` : ""}</h3>
+      <p>${resumen}</p>
+      <div class="app mini" data-mini data-ctl="${id}"></div>
+      <p><b>Gana:</b> ${nota}</p>
+    </article>`).join("");
+  grilla.querySelectorAll("[data-mini]").forEach(el => {
+    const cuerpo = document.createElement("div"); el.appendChild(cuerpo);
+    const a = { v: "mini", el, cuerpo };
+    apps.push(a); conectar(a); pintar(a);
+  });
+
+  const grupoCtl = document.getElementById("ctlmeta");
+  pulsar(grupoCtl, ctlMeta);
+  grupoCtl.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    ctlMeta = b.dataset.v; guardar("doro-dash-meta", ctlMeta); pulsar(grupoCtl, ctlMeta);
+    apps.forEach(x => { if (x.v !== "mini") { x.el._editMeta = false; pintar(x); } });
+  }));
   setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
 
   /* ── Pantalla completa ── */

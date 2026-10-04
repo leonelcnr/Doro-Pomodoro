@@ -50,8 +50,26 @@ la meta, con «Cambiar la meta»), mismos gráficos:
 - **H · Semanas en anillos.** Calendario de 6 semanas, un anillo por día contra la meta;
   al lado el día elegido, la semana contra la anterior y una franja por hora.
 
-Puntos de fondo: liso en las tres (el dashboard ya está hecho de celdas y anillos). Si los
-puntos quedan para toda la app, en H «A los lados».
+**Opinión de Leo sobre la 2ª ronda:** F la que más gustó. G ordenaba mejor la información
+pero dejaba mucho espacio vacío abajo (quizá centrarla). H no. Le gustó mucho el gráfico
+con el ritmo de la meta (línea punteada) y poder cambiar la meta, pero no le gusta cómo se
+ve el texto subrayado «Cambiar la meta»: pidió un ícono u otra alternativa (si no aparece
+nada mejor, se vuelve al texto).
+
+**Tercera ronda (2026-10-04, esperando opinión):** F se mantiene igual como base.
+- **G · Preguntas al centro.** G con el bloque centrado en el alto libre y panel de alto fijo.
+- **I · Pestañas arriba.** Las tres respuestas en una fila; el gráfico debajo a todo el ancho.
+- **J · Índice fijo** (recomendada). Izquierda fija: meta de hoy + las tres respuestas, que
+  hacen de índice y se marcan según el gráfico visible; derecha: los tres gráficos de F.
+- **K · Tablero compacto.** F apretado: día elegido al lado del mapa, frases y gráficos más chicos.
+
+Seis formas de cambiar la meta, en una sección aparte y como ajuste global del boceto:
+1 Texto, 2 Lápiz, 3 La cifra se toca, 4 Ícono y meta, 5 En la línea (recomendada: «2 h»
+al final de la línea de progreso, − y + aparecen al acercarse; en táctil siempre),
+6 Siempre a mano. Plan B: 4.
+
+Puntos de fondo: liso en todas (el dashboard ya está hecho de celdas y anillos). Si los
+puntos quedan para toda la app, en J «A los lados».
 
 Se va del dashboard actual: la torta por categoría, los íconos de colores, la lista de
 últimas tareas terminadas (pasa a Tareas) y las tareas por tema.
@@ -68,8 +86,9 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-2ª ronda publicada (F, G, H; recomendada F), Leo todavía no la vio. **Próximo paso:**
-recoger su opinión y cerrar la estructura o armar una 3ª ronda.
+3ª ronda publicada (F base; G, I, J, K; recomendada J) y seis formas de cambiar la meta
+(recomendada 5 · En la línea). **Próximo paso:** recoger la opinión de Leo sobre estructura
+y control de la meta.
 
 ## Propuestas transversales
 
