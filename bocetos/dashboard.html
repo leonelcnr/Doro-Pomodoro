@@ -1,9 +1,10 @@
+<meta charset="utf-8">
 <title>Dashboard de Doro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Primera ronda del dashboard dentro del mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado, líneas finas, el detalle aparece al pedirlo. */
+/* Segunda ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -14,7 +15,7 @@
   --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
   --acento: oklch(0.56 0.24 293);
   --acento-fg: oklch(0.99 0 0);
-  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --acento-suave: color-mix(in oklab, var(--acento) 12%, var(--superficie));
   --trama-c: oklch(0.21 0.006 285);
   --trama-a: 8%;
   --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -53,7 +54,8 @@ code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radiu
 .pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
 @media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
 .cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
-.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 70ch; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
 
 .ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
 .ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
@@ -77,7 +79,7 @@ code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radiu
 .opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .opcion-cabeza h2 .letra { color: var(--acento); }
 .marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
-.resumen { margin: 0; color: var(--tenue); max-width: 54ch; }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
 .enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
 .enfoque b { color: var(--fg); font-weight: 500; }
 .notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
@@ -96,7 +98,7 @@ code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radiu
 .pista { margin-left: auto; font-size: 12px; }
 @media (max-width: 600px) { .pista { display: none; } }
 
-.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 700px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 760px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
 @media (max-width: 400px) { .marco { min-width: 0; } }
 
 html.en-completa, html.en-completa body { overflow: hidden; }
@@ -144,148 +146,163 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 /* ───────── Piezas compartidas del dashboard ───────── */
 .tip { position: absolute; z-index: 30; transform: translate(-50%, calc(-100% - 8px)); background: var(--fg); color: var(--bg); font-size: 12.5px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; font-variant-numeric: tabular-nums; }
 .tip.ver { opacity: 1; }
-.main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 36px; }
-@container app (min-width: 720px) { .main { padding: 48px 32px 80px; } }
-.frase { margin: 0; font-size: clamp(26px, 4.6cqi, 40px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.12; text-wrap: balance; font-variant-numeric: tabular-nums; }
-.frase span { color: var(--tenue); font-weight: 400; }
-.bajada { margin: 8px 0 0; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.subtitulo { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--tenue); }
-.btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; }
+.main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 40px; }
+@container app (min-width: 720px) { .main { padding: 40px 32px 80px; gap: 48px; } }
+.frase { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; font-variant-numeric: tabular-nums; }
+@container app (min-width: 720px) { .frase { font-size: 34px; } }
+.frase span, .bloque-frase span { color: var(--tenue); font-weight: 400; }
+.bajada { margin: 6px 0 0; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; max-width: 68ch; text-wrap: pretty; }
+.bloque { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; border-top: 1px solid var(--linea); min-width: 0; }
+.bloque-frase { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; }
 .btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
-.btn-texto svg { width: 14px; height: 14px; transition: transform .25s; }
-.btn-texto[aria-expanded="true"] svg { transform: rotate(180deg); }
 
-/* Rango de tiempo: pestañas subrayadas, en texto */
-.rangos { display: flex; gap: 22px; border-bottom: 1px solid var(--linea); overflow-x: auto; scrollbar-width: none; }
-.rangos button { flex-shrink: 0; border: 0; background: none; padding: 0 0 11px; font-size: 14.5px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+/* Hoy contra la meta: la misma cabecera en las tres variantes */
+.hoy { display: flex; flex-direction: column; gap: 14px; }
+.hoy-linea { height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
+.hoy-linea span { display: block; height: 100%; background: var(--acento); border-radius: 4px; transition: width .5s cubic-bezier(.16,1,.3,1); }
+.hoy-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
+.hoy-pie .bajada { margin: 0; }
+.meta-ed { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.meta-ed b { font-weight: 600; min-width: 4.6em; text-align: center; }
+.paso { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--linea); background: var(--superficie); display: grid; place-items: center; color: var(--fg); padding: 0; }
+.paso:hover:not(:disabled) { border-color: var(--tenue); }
+.paso:disabled { opacity: .35; cursor: default; }
+.paso svg { width: 14px; height: 14px; }
+
+/* Pestañas subrayadas, en texto */
+.rangos { display: flex; gap: 22px; border-bottom: 1px solid var(--linea); }
+.rangos button { flex-shrink: 0; border: 0; background: none; padding: 0 0 9px; font-size: 14px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .rangos button:hover { color: var(--fg); }
 .rangos button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
 
-/* Barras: una serie, un color; la de hoy en acento lleno */
-.graf { padding-left: 44px; }
-.graf.sin-guias { padding-left: 0; }
-.graf-area { position: relative; height: var(--alto, 200px); border-bottom: 1px solid var(--linea); }
-.graf-guia { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid color-mix(in oklch, var(--linea) 60%, transparent); }
-.graf-guia span { position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%); font-size: 11.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.graf-cols { position: absolute; inset: 0; display: flex; gap: var(--hueco, 6px); align-items: flex-end; }
-.graf-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
-.graf-col i { display: block; width: 100%; max-width: 40px; background: color-mix(in oklch, var(--acento) 45%, var(--superficie)); border-radius: 4px 4px 0 0; transition: background-color .15s, height .5s cubic-bezier(.16,1,.3,1); }
-.graf-col.hoy i, .graf-col:hover i { background: var(--acento); }
-.graf-etqs { display: flex; gap: var(--hueco, 6px); padding-top: 8px; }
-.graf-etqs span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--tenue); white-space: nowrap; overflow: visible; font-variant-numeric: tabular-nums; }
-.graf-etqs span.hoy { color: var(--fg); font-weight: 500; }
-
-/* Cifras en texto, sin tarjetas */
-.cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: 0; padding-top: 20px; border-top: 1px solid var(--linea); }
-@container app (min-width: 640px) { .cifras { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.cifras dt { font-size: 13px; color: var(--tenue); }
-.cifras dd { margin: 2px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-
-/* Lista por tema: línea fina proporcional */
-.temas { display: flex; flex-direction: column; }
-.tema-fila { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr) 3ch; gap: 14px; align-items: center; min-height: 36px; font-size: 14.5px; }
-.tema-fila .n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tema-fila .c { text-align: right; color: var(--tenue); font-variant-numeric: tabular-nums; font-size: 13.5px; }
-.linea-avance { display: block; height: 2px; background: var(--linea); border-radius: 2px; overflow: hidden; }
-.linea-avance span { display: block; height: 100%; background: var(--acento); }
-.dos-col { display: grid; gap: 36px; }
-@container app (min-width: 760px) { .dos-col { grid-template-columns: 1fr 1fr; gap: 56px; } }
-
-/* Mapa del año: el mismo DOM gira con container queries.
-   Cada semana es [etiqueta de mes, lun…dom]. Angosto: una fila por semana.
-   Ancho: una columna por semana, y la etiqueta queda arriba. */
-.mapa { container: mapa / inline-size; }
-.mapa-grilla { display: grid; gap: 3px; grid-auto-flow: row; grid-template-columns: 3em repeat(7, minmax(0, 26px)); justify-content: start; }
-.mapa-grilla .mes { font-size: 11.5px; color: var(--tenue); white-space: nowrap; align-self: center; line-height: 1; }
-@container mapa (min-width: 600px) {
-  .mapa-grilla { grid-auto-flow: column; grid-template-columns: none; grid-template-rows: 1.4em repeat(7, auto); grid-auto-columns: minmax(0, 1fr); justify-content: stretch; }
-  .mapa-grilla .mes { align-self: start; }
-}
+/* Celdas: sin estudio, menos de la mitad, más de la mitad, meta cumplida */
 .celda { aspect-ratio: 1; min-width: 0; border: 0; padding: 0; border-radius: 2px; background: color-mix(in oklch, var(--linea) 75%, var(--bg)); }
-.celda[data-n="1"] { background: color-mix(in oklch, var(--acento) 25%, var(--linea)); }
+.celda[data-n="1"] { background: color-mix(in oklch, var(--acento) 22%, var(--linea)); }
 .celda[data-n="2"] { background: color-mix(in oklch, var(--acento) 50%, var(--linea)); }
 .celda[data-n="3"] { background: color-mix(in oklch, var(--acento) 75%, var(--linea)); }
 .celda[data-n="4"] { background: var(--acento); }
 .celda.vacia { visibility: hidden; }
 button.celda:hover { box-shadow: 0 0 0 1.5px var(--fg); }
 button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
-.mapa-ley { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--tenue); margin-top: 12px; }
-.mapa-ley .celda { width: 11px; }
-.mapa-ley span:first-child { margin-right: 4px; } .mapa-ley span:last-child { margin-left: 4px; }
+.ley { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--tenue); }
+.ley span { display: inline-flex; align-items: center; gap: 6px; }
+.ley .celda { width: 11px; display: inline-block; }
 
-/* Anillo: el mismo trazo que el logo y el home */
-.anillo { display: block; }
-.anillo .fondo-a { stroke: var(--linea); }
-.anillo .prog { stroke: var(--acento); transition: stroke-dasharray .6s cubic-bezier(.16,1,.3,1); }
+/* Mapa del año: el mismo DOM gira con container queries.
+   Angosto: una fila por semana y solo los últimos seis meses.
+   Ancho: una columna por semana, el año entero. */
+.mapa { container: mapa / inline-size; display: flex; flex-direction: column; gap: 12px; }
+.mapa-grilla { display: grid; gap: 3px; grid-auto-flow: row; grid-template-columns: 3em repeat(7, minmax(0, 28px)); justify-content: start; }
+.mapa-grilla .mes { font-size: 11.5px; color: var(--tenue); white-space: nowrap; align-self: center; line-height: 1; }
+@container mapa (max-width: 599px) { .mapa-grilla .viejo { display: none; } }
+@container mapa (min-width: 600px) {
+  .mapa-grilla { grid-auto-flow: column; grid-template-columns: none; grid-template-rows: 1.4em repeat(7, auto); grid-auto-columns: minmax(0, 1fr); justify-content: stretch; }
+  .mapa-grilla .mes { align-self: start; }
+}
 
-/* ───────── A · Frase y barras ───────── */
-.a-cab { display: flex; flex-direction: column; gap: 20px; }
-
-/* ───────── B · Anillos ───────── */
-.b-main { align-items: center; text-align: center; gap: 40px; max-width: 760px; }
-.b-hoy { position: relative; width: min(66cqi, 280px); aspect-ratio: 1; }
-.b-hoy .anillo { width: 100%; height: 100%; }
-.b-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-.b-centro b { font-size: clamp(30px, 8cqi, 46px); font-weight: 600; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1.05; }
-.b-centro span { font-size: 13.5px; color: var(--tenue); }
-.b-semana { display: grid; grid-template-columns: repeat(7, minmax(0, 52px)); gap: 6px; justify-content: center; width: 100%; }
-.b-dia { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12.5px; color: var(--tenue); border: 0; background: none; padding: 4px 0; border-radius: 6px; }
-.b-dia .anillo { width: 100%; max-width: 40px; height: auto; aspect-ratio: 1; }
-.b-dia.hoy { color: var(--fg); font-weight: 600; }
-.b-dia:hover { background: var(--campo); }
-.b-pie { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 28px; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.b-pie b { color: var(--fg); font-weight: 600; }
-.b-ano { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 14px; }
-.b-ano[hidden] { display: none; }
-
-/* ───────── C · El año ───────── */
-.c-main { max-width: 1060px; gap: 28px; }
-.c-dia { min-height: 92px; padding-top: 18px; border-top: 1px solid var(--linea); display: flex; flex-direction: column; gap: 12px; }
-.c-dia h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
-.c-dia h2 span { color: var(--tenue); font-weight: 400; }
-
-/* ───────── D · Franjas ───────── */
-.d-nav { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.flecha { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--linea); background: transparent; display: grid; place-items: center; color: var(--fg); }
-.flecha:hover:not(:disabled) { border-color: var(--tenue); }
-.flecha:disabled { opacity: .35; cursor: default; }
-.flecha svg { width: 15px; height: 15px; }
-.flecha.izq svg { transform: rotate(180deg); }
-.franjas { display: flex; flex-direction: column; gap: 6px; }
-.fr { display: grid; grid-template-columns: 4em minmax(0, 1fr) 4.6em; gap: 0 12px; align-items: center; }
-.fr-nombre { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.fr.hoy .fr-nombre { color: var(--fg); font-weight: 600; }
-.fr-total { font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.fr-total.cero { color: var(--tenue); }
-.fr-pista { position: relative; height: 24px; border-radius: 3px; background: var(--campo); }
+/* Detalle de un día: la franja con cada sesión en su hora */
+.dia-det { display: flex; flex-direction: column; gap: 10px; min-height: 96px; }
+.dia-det h3 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.dia-det h3 span { color: var(--tenue); font-weight: 400; }
+.fr-pista { position: relative; height: 26px; border-radius: 4px; background: var(--campo); }
 .fr-pista .guia { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--linea); }
 .fr-bloque { position: absolute; top: 4px; bottom: 4px; min-width: 3px; border-radius: 2px; background: var(--acento); }
 .fr-bloque:hover { box-shadow: 0 0 0 1.5px var(--fg); }
 .fr-eje { position: relative; height: 18px; }
 .fr-eje span { position: absolute; transform: translateX(-50%); font-size: 11.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.fr-hist { position: relative; height: 56px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--linea); }
-.fr-hist i { flex: 1 1 0; background: color-mix(in oklch, var(--acento) 45%, var(--superficie)); border-radius: 2px 2px 0 0; }
-.fr-hist i.pico { background: var(--acento); }
+.ses-lista { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
 
-/* ───────── E · Una cifra por vez ───────── */
-.e-main { max-width: 640px; align-items: center; text-align: center; justify-content: center; gap: 28px; }
-.e-cifra { display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 0; }
-.e-grande { margin: 0; font-size: clamp(56px, 15cqi, 112px); font-weight: 600; letter-spacing: -0.055em; line-height: 1; font-variant-numeric: tabular-nums; }
-.e-chico { margin: 0; font-size: 17px; color: var(--tenue); max-width: 34ch; text-wrap: balance; }
-.e-chico b { color: var(--fg); font-weight: 500; }
-.e-graf { width: min(100%, 420px); text-align: left; }
-.e-marcas { display: flex; gap: 4px; justify-content: center; }
-.e-marcas i { width: 18px; height: 18px; border-radius: 3px; background: var(--linea); }
-.e-marcas i.si { background: var(--acento); }
-.e-nav { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.e-entrar { animation: entrar .45s cubic-bezier(.16,1,.3,1) both; }
-@keyframes entrar { from { opacity: 0; transform: translateY(6px); } }
+/* Tendencia: acumulado del período contra el anterior y el ritmo de la meta */
+.graf { padding-left: 46px; }
+.graf-area { position: relative; height: var(--alto, 200px); border-bottom: 1px solid var(--linea); }
+.graf-guia { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid color-mix(in oklch, var(--linea) 60%, transparent); }
+.graf-guia span { position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%); font-size: 11.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-etqs { display: flex; padding-top: 8px; }
+.graf-etqs span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-etqs span.hoy { color: var(--fg); font-weight: 500; }
+.tend-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.tend-svg polyline { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.t-act { stroke: var(--acento); stroke-width: 2.5; }
+.t-ant { stroke: color-mix(in oklch, var(--fg) 32%, var(--bg)); stroke-width: 1.5; }
+.t-meta { stroke: color-mix(in oklch, var(--fg) 30%, var(--bg)); stroke-width: 1; stroke-dasharray: 3 4; }
+.t-punto { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 2px var(--bg); transform: translate(-50%, -50%); pointer-events: none; }
+.tend-cols { position: absolute; inset: 0; display: flex; }
+.tend-cols i { flex: 1 1 0; position: relative; }
+.tend-cols i:hover::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.tend-ley { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--tenue); margin-top: 12px; }
+.tend-ley span { display: inline-flex; align-items: center; gap: 7px; }
+.tend-ley svg { width: 18px; height: 6px; overflow: visible; }
+.tend-ley line { vector-effect: non-scaling-stroke; }
+
+/* Cuándo: días por horas, con la misma celda que el mapa */
+.dh { display: grid; grid-template-columns: 2.6em repeat(var(--horas), minmax(0, 1fr)); gap: 3px; max-width: 760px; }
+.dh .d { font-size: 12px; color: var(--tenue); align-self: center; }
+.dh .h { font-size: 11.5px; color: var(--tenue); text-align: center; white-space: nowrap; overflow: visible; font-variant-numeric: tabular-nums; padding-top: 4px; }
+.dh .h.pico { color: var(--fg); font-weight: 600; }
+.dh .d.pico { color: var(--fg); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
+}
+
+/* ───────── F · Página que baja ───────── */
+.f-par { display: grid; gap: 40px; }
+@container app (min-width: 900px) { .f-par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; } }
+
+/* ───────── G · Preguntas que cambian el gráfico ───────── */
+.g-cuerpo { display: grid; gap: 28px; }
+@container app (min-width: 860px) { .g-cuerpo { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr); gap: 56px; align-items: start; } }
+.g-filas { display: flex; flex-direction: column; border-top: 1px solid var(--linea); }
+.g-fila { display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; gap: 4px 14px; align-items: start; text-align: left; border: 0; border-bottom: 1px solid var(--linea); background: none; padding: 18px 0; color: var(--tenue); transition: color .2s; }
+.g-fila:hover { color: var(--fg); }
+.g-fila > svg { width: 20px; height: 20px; margin-top: 2px; }
+.g-fila .t { font-size: 17px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.3; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.g-fila .s { grid-column: 2; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.g-fila .ir { width: 16px; height: 16px; margin-top: 4px; opacity: 0; transform: translateX(-4px); transition: opacity .2s, transform .25s cubic-bezier(.16,1,.3,1); }
+.g-fila[aria-pressed="true"] { color: var(--fg); }
+.g-fila[aria-pressed="true"] > svg:first-child { color: var(--acento); }
+.g-fila[aria-pressed="true"] .ir { opacity: 1; transform: none; }
+@container app (max-width: 859px) { .g-fila .ir { transform: rotate(90deg); } .g-fila[aria-pressed="true"] .ir { transform: rotate(90deg); } }
+.g-paneles { display: grid; min-width: 0; }
+.g-panel { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .22s ease, transform .3s cubic-bezier(.16,1,.3,1), visibility 0s linear .22s; }
+.g-panel.activo { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+
+/* ───────── H · Semanas en anillos ───────── */
+.h-cuerpo { display: grid; gap: 40px; }
+@container app (min-width: 860px) { .h-cuerpo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; } }
+.h-izq, .h-der { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.h-der { gap: 32px; }
+.h-nav { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.flecha { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--linea); background: transparent; display: grid; place-items: center; color: var(--fg); padding: 0; }
+.flecha:hover:not(:disabled) { border-color: var(--tenue); }
+.flecha:disabled { opacity: .35; cursor: default; }
+.flecha svg { width: 15px; height: 15px; }
+.flecha.izq svg { transform: rotate(180deg); }
+.h-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; max-width: 460px; }
+.h-cal .dow { font-size: 12px; color: var(--tenue); text-align: center; padding-bottom: 4px; }
+.h-dia { position: relative; border: 0; background: none; padding: 3px; border-radius: 8px; display: grid; place-items: center; color: var(--tenue); }
+.h-dia:hover { background: var(--campo); }
+.h-dia[aria-pressed="true"] { background: var(--campo); color: var(--fg); }
+.h-dia .anillo { width: 100%; max-width: 52px; height: auto; aspect-ratio: 1; }
+.h-dia .num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.h-dia.cumplido .num, .h-dia.hoy .num { color: var(--fg); font-weight: 600; }
+.anillo { display: block; }
+.anillo .fondo-a { stroke: var(--linea); }
+.anillo .prog { stroke: var(--acento); }
+.comp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.comp .n { color: var(--tenue); }
+.comp .barra { height: 6px; border-radius: 3px; background: color-mix(in oklch, var(--fg) 22%, var(--bg)); }
+.comp .barra.act { background: var(--acento); }
+.fr-hist { position: relative; height: 56px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--linea); }
+.fr-hist i { flex: 1 1 0; background: color-mix(in oklab, var(--acento) 40%, var(--superficie)); border-radius: 2px 2px 0 0; }
+.fr-hist i.pico { background: var(--acento); }
 
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
 .tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
-table { border-collapse: collapse; width: 100%; min-width: 780px; font-size: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
 th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
 th { font-size: 13px; font-weight: 600; color: var(--tenue); }
 td:first-child { font-weight: 600; white-space: nowrap; }
@@ -300,33 +317,30 @@ tr.elegida td:first-child { padding-left: 10px; }
 .recomendacion p b { color: var(--fg); font-weight: 600; }
 pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 .c-com { color: var(--tenue); }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
-}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
-  <symbol id="i-campana" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
-  <symbol id="i-tp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M4 12h3M4 17h3M10 7h10M10 12h10M10 17h6"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 14.5l2 2 4-4"/></symbol>
+  <symbol id="i-tend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-8"/><path d="M15 7h5v5"/></symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
   <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
   <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
   <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-abajo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, primera ronda</h1>
-    <p>Hoy el dashboard es una grilla de tarjetas: cuatro cifras con un ícono de color cada una, dos gráficos de barras, una torta con un color por categoría, la lista de tareas terminadas y el mapa del año. Es la pantalla con más color y más cosas a la vez de toda la app.</p>
-    <p>Los cinco bocetos siguen el idioma del home: un solo acento, que acá pinta el tiempo estudiado, nada de colores por categoría, y el detalle escondido hasta pedirlo. Comparten los mismos datos de ejemplo: un año inventado de un estudiante, con una racha de 6 días que termina hoy, domingo 4 de octubre. Pasá el mouse sobre cualquier barra, bloque o día para ver el valor.</p>
+    <h1>Dashboard, segunda ronda</h1>
+    <p>En la primera ronda ninguna variante cerró del todo. Lo que sirvió fue lo que explica: el mapa de C con la hora de cada sesión, la frase de D y las cifras de E. En A no quedaba claro qué aportaba cada cosa, y los anillos de B se veían bien pero decían poco.</p>
+    <p>Esta ronda responde <b>tres preguntas y nada más: ¿soy constante?, ¿voy mejor o peor? y ¿cuándo rindo?</b> Cada gráfico lleva arriba su respuesta en una frase. <b>La meta diaria es el centro:</b> arranca en 2 h y la racha cuenta los días en que la cumpliste. Se cambia desde «Cambiar la meta» en cualquier variante, y el cambio se ve en las tres. Probá subirla a 3 h.</p>
+    <p>Las tres usan los mismos datos de ejemplo, un año inventado. Hoy es domingo 4 de octubre: llevás 50 min y venís de 5 días seguidos cumpliendo la meta. Pasá el mouse por cualquier día, celda o punto para ver el valor. La primera ronda (A–E) queda en el historial de git.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -344,80 +358,48 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="a" data-v="a">
+  <section class="opcion" id="f" data-v="f">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">A</span><span class="nombre">Frase y barras</span></h2>
-        <p class="resumen">El dashboard de hoy, ordenado y sin tarjetas. Arriba, una frase con lo que estudiaste en el rango elegido y la comparación con el anterior. Un solo gráfico de barras, cuatro cifras en texto, las tareas terminadas por tema con líneas finas y el año plegado al final.</p>
-        <p class="enfoque">Lo primero: <b>cuánto estudiaste en el rango</b></p>
+        <h2><span class="letra">F</span><span class="nombre">Página que baja</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Un dashboard de los de siempre, pero cada bloque se explica solo. Arriba, cómo vas hoy con la meta. Debajo, la constancia sobre el mapa del año: tocás un día y ves sus sesiones con la hora. Al final, lado a lado, si vas mejor o peor y a qué hora rendís.</p>
+        <p class="enfoque">Lo primero: <b>hoy contra la meta, y la racha</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>No se pierde nada de lo que hay hoy, salvo la torta.</li><li>Es la más fácil de construir: los datos ya existen.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Es la que más se parece a cualquier dashboard.</li><li>Rango, gráfico, cifras y temas a la vez: cuatro cosas en una pantalla.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Todo a la vista, se recorre bajando, sin aprender nada.</li><li>El mapa de C, que es lo que mejor entendiste, ahora con la meta.</li><li>Cada gráfico tiene arriba la frase que lo explica.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Es la más larga: en el celular son tres pantallas de scroll.</li><li>En pantallas angostas el mapa muestra solo los últimos seis meses.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="b" data-v="b">
+  <section class="opcion" id="g" data-v="g">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">B</span><span class="nombre">Anillos</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">El anillo del home sigue acá, grande: lo que llevás hoy contra tu meta del día. Abajo, la semana en siete anillos chicos, la racha y el promedio por sesión. El año aparece solo si lo pedís.</p>
-        <p class="enfoque">Lo primero: <b>cómo vas hoy</b></p>
+        <h2><span class="letra">G</span><span class="nombre">Preguntas que cambian el gráfico</span></h2>
+        <p class="resumen">Las tres preguntas son renglones y cada uno ya trae la respuesta escrita. Al tocar un renglón, el gráfico de al lado cambia con un fundido corto, sin el salto de E. En el celular los renglones quedan arriba y el gráfico debajo.</p>
+        <p class="enfoque">Lo primero: <b>las tres respuestas, en texto</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Sigue el hilo del home: el mismo objeto, ahora con detalle.</li><li>La meta le da sentido al número: «50 min» solo no dice si es mucho.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Hace falta una meta diaria, que hoy no existe (dato nuevo).</li><li>Mes y año quedan en segundo plano.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Con leer los tres renglones ya está; el gráfico es el detalle.</li><li>Entra en una pantalla de compu, sin bajar.</li><li>Lo bueno de E (una cosa por vez) sin perder las otras de vista.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Para cruzar dos gráficos hay que ir y volver.</li><li>En el celular, los renglones empujan el gráfico hacia abajo.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="c" data-v="c">
+  <section class="opcion" id="h" data-v="h">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">C</span><span class="nombre">El año</span></h2>
-        <p class="resumen">El mapa del año es la pantalla. En una ventana ancha, cada semana es una columna. En el celular el mismo mapa gira y las semanas bajan en filas. Tocás un día y debajo aparece cuánto estudiaste y a qué hora.</p>
-        <p class="enfoque">Lo primero: <b>el hábito, día por día</b></p>
+        <h2><span class="letra">H</span><span class="nombre">Semanas en anillos</span></h2>
+        <p class="resumen">Lo que te gustó de B, con algo que decir: un calendario de seis semanas donde cada día es un anillo que se llena contra la meta. Un anillo cerrado es un día cumplido. Al lado, el día que toques con sus sesiones, y las otras dos preguntas en una frase y un gráfico chico.</p>
+        <p class="enfoque">Lo primero: <b>las últimas seis semanas, día por día</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La más visual: los huecos y las rachas se ven sin leer.</li><li>Gira con container queries, sin deslizar de costado como hoy.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Las primeras semanas de uso se ve casi vacía.</li><li>El mapa ya es una trama de puntos: choca con el fondo con puntos.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="d" data-v="d">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">D</span><span class="nombre">Franjas</span></h2>
-        <p class="resumen">La semana como una agenda. Cada día es una franja de 7 a 24 h y cada sesión es un bloque en su hora, con su largo real. Debajo, con el mismo eje, a qué hora estudiás normalmente. Las flechas pasan a semanas anteriores.</p>
-        <p class="enfoque">Lo primero: <b>cuándo estudiás</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Muestra un dato que la app ya tiene (minutos por hora) y hoy no enseña.</li><li>Cada sesión se ve; un Pomodoro deja de ser solo un total.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>No da totales de mes ni de año.</li><li>En el celular los bloques de 25 min quedan finos.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="e" data-v="e">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">E</span><span class="nombre">Una cifra por vez</span></h2>
-        <p class="resumen">Como el home: un solo objeto en pantalla. Cada cifra ocupa la pantalla con una frase que la explica y un gráfico chico. La semana, la racha, tu mejor día, tu hora y el total. Se pasa con las flechas.</p>
-        <p class="enfoque">Lo primero: <b>una cifra, con su frase</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La más calma. Cada número viene con su explicación.</li><li>Funciona igual en el celular y en la compu.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Para comparar hay que pasar de una cifra a otra.</li><li>No sirve para mirar el detalle de un día.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Sigue el anillo del home: es el mismo objeto, un día por anillo.</li><li>La constancia se ve sin leer: anillos cerrados o abiertos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El año queda detrás de las flechas, de seis semanas en seis.</li><li>Cuarenta y dos anillos chicos piden más ancho que los cuadritos del mapa.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -428,69 +410,59 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Boceto</th><th>Lo primero que se ve</th><th>Rangos</th><th>El año</th><th>Datos nuevos</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>¿Soy constante?</th><th>¿Voy mejor o peor?</th><th>¿Cuándo rindo?</th><th>Recorrido</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>A · Frase y barras</td><td>Minutos del rango + comparación</td><td>Hoy, semana, mes, año</td><td>Plegado al final</td><td>Ninguno</td><td>Genérica, cuatro cosas a la vez</td></tr>
-          <tr class="elegida"><td>B · Anillos</td><td>Hoy contra la meta</td><td>Hoy y la semana</td><td>Plegado, «Ver el año»</td><td>Meta diaria</td><td>La meta es un concepto nuevo</td></tr>
-          <tr><td>C · El año</td><td>El mapa entero</td><td>Un año</td><td>Es la pantalla</td><td>Ninguno</td><td>Vacía al empezar; choca con los puntos</td></tr>
-          <tr><td>D · Franjas</td><td>Las sesiones de la semana</td><td>Semana por semana</td><td>No está</td><td>Hora de cada sesión</td><td>Sin totales largos</td></tr>
-          <tr><td>E · Una cifra por vez</td><td>Una cifra grande</td><td>Una por cifra</td><td>Solo el total</td><td>Ninguno</td><td>Comparar cuesta toques</td></tr>
+          <tr class="elegida"><td>F · Página que baja</td><td>El mapa del año con la meta</td><td>Acumulado contra el período anterior</td><td>Días por horas</td><td>Una página con scroll</td><td>Larga en el celular</td></tr>
+          <tr><td>G · Preguntas que cambian el gráfico</td><td>El mapa del año, al tocar</td><td>El mismo gráfico, al tocar</td><td>El mismo, al tocar</td><td>Renglones y un gráfico que cambia</td><td>Comparar exige ir y volver</td></tr>
+          <tr><td>H · Semanas en anillos</td><td>Seis semanas en anillos</td><td>Dos barras: esta semana y la anterior</td><td>Una franja por hora</td><td>Calendario + columna</td><td>El año queda lejos</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría B, con las franjas de D adentro de cada día</h3>
-        <p><b>Es la única que continúa al home en vez de empezar otra pantalla.</b> En D4 el anillo ya muestra el progreso del día. Entrar al dashboard es ver ese mismo anillo de cerca, con la semana al lado. Una intención por pantalla: cómo vas hoy y esta semana. El resto se pide.</p>
-        <p><b>La meta diaria es lo que hay que decidir.</b> Sin meta, el anillo no tiene contra qué llenarse. Propongo que arranque en 2 h y se cambie tocando el anillo. Si no la querés, B se puede hacer con la mejor marca de la semana como vuelta completa, pero se lee peor.</p>
-        <p><b>Lo que le sumaría de D:</b> al tocar un día de la semana, su franja de horas (cada sesión en su hora) en lugar de un número. Es el dato que la app ya calcula y nunca mostró.</p>
-        <p><b>Plan B: A,</b> si preferís no sumar la meta. Es la más segura y con los datos de hoy alcanza. <b>C</b> sirve como la vista de «Ver el año» de B: ahí el mapa gira bien en el celular.</p>
-        <h4>Qué se va del dashboard de hoy</h4>
-        <p>La torta por categoría, porque necesita un color por categoría. En A queda como lista con líneas finas, en un solo color. La lista de «Últimas tareas completadas» pasa a la pantalla de Tareas. Los íconos de colores de las cifras también se van.</p>
+        <h3>Elegiría F</h3>
+        <p><b>Es la única que sigue pareciendo un dashboard,</b> que es lo que extrañaste en E, y es la que no te deja perdido como A: cada bloque empieza con su respuesta. Leés «Cumpliste la meta 5 días seguidos» y recién después el mapa, que pasa a ser la prueba de esa frase y deja de ser un adorno.</p>
+        <p><b>La meta ordena todo.</b> La cabecera dice cuánto falta hoy. El mapa deja de medir «más o menos minutos» y marca días cumplidos. La línea punteada del gráfico de tendencia es el ritmo que pide la meta: si tu línea va por encima, vas bien. Si mañana cambiás la meta, las tres cosas se recalculan solas.</p>
+        <p><b>G, si preferís verlo todo sin bajar.</b> Es F con los tres bloques apilados en el mismo lugar. Los dos usan los mismos gráficos y las mismas frases, así que se puede decidir después de construirlo: es cambiar el contenedor. <b>H</b> es la más linda y la que más continúa al home, pero muestra solo seis semanas: sirve más como versión del celular de la constancia que como dashboard entero.</p>
+        <h4>Qué cambió desde la primera ronda</h4>
+        <p>Se fueron las tareas por tema (era la pregunta «¿en qué se me va?», que dejaste afuera), las cifras sueltas de A y la agenda de D. La hora de cada sesión, que te gustó en C, quedó en el detalle del día. La frase de D pasó a ser la respuesta de «¿cuándo rindo?», ahora sobre una grilla de días por horas con las mismas celdas que el mapa, que se lee igual.</p>
         <h4>Fondo con puntos</h4>
-        <p><b>En B sí, con «Al centro»:</b> el anillo queda sobre liso y los puntos lo rodean, como en el home. En E, igual. <b>En C no:</b> el mapa ya es una grilla de cuadritos y con la trama de fondo no se distingue dónde termina. En A y D tampoco: son gráficos sobre el fondo y los puntos ensucian las guías.</p>
+        <p><b>En las tres, liso.</b> Todo el dashboard está hecho de celdas, anillos y guías, y los puntos se confunden con ellos. Si al final de la Fase 1 los puntos quedan para toda la app, en H se pueden dejar «A los lados»: el calendario queda limpio en el centro.</p>
       </div>
       <div>
-        <pre><span class="c-com">// El anillo: mismo componente que el home, con meta</span>
-function AnilloDia({ minutos, meta, tam = 280 }: Props) {
-  const grosor = tam * 0.075;
-  const r = (tam - grosor) / 2;
-  const largo = 2 * Math.PI * r;
-  const avance = Math.min(minutos / meta, 1);
-  return (
-    &lt;svg viewBox={`0 0 ${tam} ${tam}`} className="size-full -rotate-90"&gt;
-      &lt;circle cx="50%" cy="50%" r={r} fill="none"
-        className="stroke-border" strokeWidth={grosor} /&gt;
-      {avance &gt; 0 &amp;&amp; (
-        &lt;circle cx="50%" cy="50%" r={r} fill="none"
-          className="stroke-brand" strokeWidth={grosor}
-          strokeLinecap="round"
-          strokeDasharray={`${largo * avance} ${largo}`} /&gt;
-      )}
-    &lt;/svg&gt;
-  );
+        <pre><span class="c-com">// Cada día se mide contra la meta, no contra un máximo</span>
+const nivelDelDia = (minutos: number, meta: number) =&gt;
+  minutos === 0 ? 0          <span class="c-com">// sin estudio</span>
+  : minutos &lt; meta / 2 ? 1  <span class="c-com">// menos de la mitad</span>
+  : minutos &lt; meta ? 2      <span class="c-com">// más de la mitad</span>
+  : 4;                      <span class="c-com">// meta cumplida: acento lleno</span>
+
+<span class="c-com">// La racha cuenta días cumplidos. Hoy no la corta
+// mientras el día no termine.</span>
+function rachaDeMeta(dias: DiaEstudio[], meta: number) {
+  let i = dias[0].minutos &gt;= meta ? 0 : 1, racha = 0;
+  while (dias[i]?.minutos &gt;= meta) { racha++; i++; }
+  return racha;
 }
 
-<span class="c-com">/* El mapa del año gira con container queries:
-   cada semana es [mes, lun…dom]. Angosto, una fila
-   por semana; ancho, una columna por semana. */</span>
+<span class="c-com">/* El mapa gira con container queries y en angosto
+   esconde las semanas viejas (las marca el render). */</span>
 .mapa { container: mapa / inline-size; }
-.mapa-grilla {
-  display: grid; gap: 3px; grid-auto-flow: row;
-  grid-template-columns: 3em repeat(7, minmax(0, 26px));
+@container mapa (max-width: 599px) {
+  .mapa-grilla .viejo { display: none; }
 }
 @container mapa (min-width: 600px) {
   .mapa-grilla {
     grid-auto-flow: column;
-    grid-template-columns: none;
     grid-template-rows: 1.4em repeat(7, auto);
     grid-auto-columns: minmax(0, 1fr);
   }
 }</pre>
-        <h4>Hallazgos para la Fase 3</h4>
-        <p>Los colores del dashboard no salen de los tokens: <code>chartConfig</code> y <code>COLORES_TORTA</code> en <code>Dashboard.tsx</code> tienen el violeta escrito a mano, y <code>--heatmap-0..4</code> en <code>index.css</code> también. Con el acento elegible, todo eso tiene que pasar a <code>--brand</code> y a mezclas con <code>color-mix</code>, como en este boceto.</p>
-        <p>La RPC <code>get_dashboard_aggregates</code> ya devuelve minutos por hora y por día, que es lo que necesitan B, D y E. Para B falta guardar la meta diaria (en <code>user_stats</code> o en el perfil). Para las franjas de D hace falta la hora de cada sesión, no solo el total por hora.</p>
+        <h4>Datos para la Fase 3</h4>
+        <p><b>La meta diaria hay que guardarla</b>, por ejemplo como <code>daily_goal_minutes</code> en <code>user_stats</code> o en el perfil, con 120 por defecto. La racha y los días cumplidos se pueden calcular en el cliente con los minutos por día que ya trae <code>get_dashboard_aggregates</code>; no hace falta otra RPC.</p>
+        <p>Para el detalle del día hace falta <b>la hora de inicio de cada sesión</b>, no solo el total por hora. La grilla de días por horas sí sale de lo que ya existe, si la RPC agrupa por día de la semana además de por hora.</p>
+        <p>Sigue en pie lo de la 1ª ronda: <code>chartConfig</code>, <code>COLORES_TORTA</code> y <code>--heatmap-0..4</code> tienen el violeta escrito a mano y tienen que pasar al acento con <code>color-mix</code>.</p>
       </div>
     </div>
   </section>
@@ -514,7 +486,7 @@ function AnilloDia({ minutos, meta, tam = 280 }: Props) {
   const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
   const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
-  const ic = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
 
   /* ── Ajustes (mismas claves que los otros bocetos) ── */
   const grupos = {
@@ -561,208 +533,233 @@ function AnilloDia({ minutos, meta, tam = 280 }: Props) {
   /* ── Datos de ejemplo: un año inventado, con semilla fija ── */
   let semilla = 20261004;
   const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
-  const HOY = new Date(2026, 9, 4);           // domingo
-  const META = 120;                             // meta diaria de B, en minutos
-  const TEMAS = ["Paradigmas", "Redes", "Análisis y Diseño", "Inteligencia Artificial", "General"];
-  const PESOS = [.32, .26, .18, .14, .10];
-  const temaAzar = () => { let r = azar(), i = 0; while (i < PESOS.length - 1 && (r -= PESOS[i]) > 0) i++; return TEMAS[i]; };
+  const HOY = new Date(2026, 9, 4);             // domingo
+  let meta = 120;                                 // meta diaria, en minutos; se cambia desde la cabecera
   const N_DIAS = 371;
-  const dias = [];                              // dias[i]: hace i días
+  const dias = [];                                // dias[i]: hace i días
   for (let i = 0; i < N_DIAS; i++) {
     const f = new Date(HOY); f.setDate(f.getDate() - i);
-    dias[i] = { i, f, dow: (f.getDay() + 6) % 7, ses: [], tareas: [], min: 0 };
+    dias[i] = { i, f, dow: (f.getDay() + 6) % 7, ses: [], min: 0 };
   }
-  for (let i = N_DIAS - 1; i >= 0; i--) {
-    const d = dias[i], mes = d.f.getMonth();
-    const receso = mes === 0 || mes === 1 || (mes === 6 && d.f.getDate() > 10) ? .3 : 1;
-    let estudia = azar() < (d.dow < 5 ? .74 : .38) * receso;
-    if (i <= 5) estudia = true;                 // racha de 6 días hasta hoy
-    if (i === 6) estudia = false;
-    if (!estudia) continue;
-    let n = i === 0 ? 2 : 1 + Math.floor(azar() * 5);
-    let h = i === 0 ? 10 : azar() < .62 ? 14 + azar() * 2.5 : azar() < .5 ? 9 + azar() * 2 : 20 + azar() * 1.2;
-    h = Math.round(h * 12) / 12;
+  const PROB_DOW = [.78, .86, .7, .76, .6, .32, .4];
+  const agregar = (d, h, n) => {
     for (let k = 0; k < n && h < 23.4; k++) {
       const m = azar() < .7 ? 25 : 50;
       d.ses.push({ h, m }); d.min += m;
       h += m / 60 + (k % 4 === 3 ? 25 : 5) / 60;
     }
-    const t = azar() < .35 ? 0 : azar() < .7 ? 1 : 2;
-    for (let k = 0; k < t; k++) d.tareas.push(temaAzar());
+  };
+  for (let i = N_DIAS - 1; i >= 0; i--) {
+    const d = dias[i], mes = d.f.getMonth();
+    const receso = mes === 0 || mes === 1 || (mes === 6 && d.f.getDate() > 10) ? .3 : 1;
+    let estudia = azar() < PROB_DOW[d.dow] * receso;
+    if (i <= 5) estudia = true;
+    if (i === 6) estudia = false;
+    if (!estudia) continue;
+    if (i === 0) { d.ses = [{ h: 10, m: 25 }, { h: 10 + 30 / 60, m: 25 }]; d.min = 50; continue; }
+    const tarde = d.dow === 1 || d.dow === 3 ? .8 : .55;
+    let h = azar() < tarde ? 14 + azar() * 2.5 : azar() < .5 ? 9 + azar() * 2 : 20 + azar() * 1.2;
+    h = Math.round(h * 12) / 12;
+    agregar(d, h, 1 + Math.floor(azar() * 5));
+    if (i <= 5) while (d.min < 130) agregar(d, Math.round((d.ses.at(-1).h + d.ses.at(-1).m / 60 + 0.25) * 12) / 12 % 23, 1);
   }
-  dias[0].tareas = ["Redes"];
 
-  /* ── Cálculos ── */
-  const suma = (a, b, campo = "min") => { let s = 0; for (let i = a; i <= b; i++) s += campo === "min" ? dias[i].min : campo === "ses" ? dias[i].ses.length : dias[i].tareas.length; return s; };
+  /* ── Cálculos que dependen de la meta ── */
+  const cumple = d => d.min >= meta;
+  const racha = () => { let i = cumple(dias[0]) ? 0 : 1, r = 0; while (i < N_DIAS && cumple(dias[i])) { r++; i++; } return r; };
+  const mejorRacha = () => { let m = 0, r = 0; for (let i = 364; i >= 0; i--) { r = cumple(dias[i]) ? r + 1 : 0; m = Math.max(m, r); } return m; };
+  const cumplidos = (a, b) => { let n = 0; for (let i = a; i <= b; i++) if (cumple(dias[i])) n++; return n; };
+  const suma = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += dias[i].min; return s; };
+  const nivelMeta = m => !m ? 0 : m < meta / 2 ? 1 : m < meta ? 2 : 4;
+
   const fmt = m => { m = Math.round(m); if (m < 60) return `${m} min`; const h = Math.floor(m / 60), r = m % 60; return r ? `${h} h ${r} min` : `${h} h`; };
   const fmtEje = m => m < 60 ? `${m} min` : `${(m / 60).toLocaleString("es-AR")} h`;
+  const hm = h => { let t = Math.round(h * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
   const DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
   const DOW_L = ["L", "M", "M", "J", "V", "S", "D"];
-  const DOW_LARGO = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+  const DOW_LARGO = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábados", "domingos"];
   const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
   const fecha = f => `${DOW[(f.getDay() + 6) % 7]} ${f.getDate()} ${MESES[f.getMonth()]}`;
-  const racha = (() => { let r = 0; while (dias[r].min > 0) r++; return r; })();
-  const totalAno = suma(0, 364), diasConEstudio = dias.slice(0, 365).filter(d => d.min).length;
-  const promSesion = (a, b) => { const s = suma(a, b, "ses"); return s ? suma(a, b) / s : 0; };
-  const porDow = Array.from({ length: 7 }, (_, k) => { const ds = dias.slice(0, 364).filter(d => d.dow === k); return ds.reduce((x, d) => x + d.min, 0) / ds.length; });
-  const mejorDow = porDow.indexOf(Math.max(...porDow));
-  const H0 = 7, H1 = 24;
-  const porHora = Array.from({ length: H1 - H0 }, () => 0);
-  dias.slice(0, 90).forEach(d => d.ses.forEach(s => { const k = Math.floor(s.h) - H0; if (k >= 0 && k < porHora.length) porHora[k] += s.m; }));
-  const ventana = (() => { let mejor = 0, at = 0; for (let k = 0; k + 3 <= porHora.length; k++) { const v = porHora[k] + porHora[k + 1] + porHora[k + 2]; if (v > mejor) { mejor = v; at = k; } } return at + H0; })();
-  const totalPorHora = porHora.reduce((a, b) => a + b, 0);
-  const shareVentana = Math.round((porHora[ventana - H0] + porHora[ventana - H0 + 1] + porHora[ventana - H0 + 2]) / totalPorHora * 100);
 
-  /* Rangos de A. Cada uno da barras, etiquetas y el rango anterior para comparar */
-  const RANGOS = {
-    hoy: () => {
-      const v = Array.from({ length: H1 - H0 }, () => 0);
-      dias[0].ses.forEach(s => v[Math.floor(s.h) - H0] += s.m);
-      return { barras: v.map((m, k) => ({ m, tip: `${k + H0} h · ${fmt(m)}`, etq: (k + H0) % 3 === 0 ? `${k + H0}` : "" })), hoyIdx: -1, a: 0, b: 0, ant: [1, 1], antNombre: "ayer", titulo: "Hoy llevás", hueco: 4 };
-    },
-    semana: () => ({ barras: [6, 5, 4, 3, 2, 1, 0].map(i => ({ m: dias[i].min, tip: `${fecha(dias[i].f)} · ${fmt(dias[i].min)}`, etq: DOW_L[dias[i].dow], hoy: i === 0 })), a: 0, b: 6, ant: [7, 13], antNombre: "la semana pasada", titulo: "Esta semana estudiaste", hueco: 10 }),
-    mes: () => ({ barras: Array.from({ length: 30 }, (_, k) => { const i = 29 - k, d = dias[i]; return { m: d.min, tip: `${fecha(d.f)} · ${fmt(d.min)}`, etq: d.f.getDate() % 7 === 1 || i === 0 ? `${d.f.getDate()}` : "", hoy: i === 0 }; }), a: 0, b: 29, ant: [30, 59], antNombre: "los 30 días anteriores", titulo: "En los últimos 30 días estudiaste", hueco: 3 }),
-    ano: () => {
-      const meses = [];
-      for (let k = 11; k >= 0; k--) { const m = new Date(HOY.getFullYear(), HOY.getMonth() - k, 1); meses.push({ y: m.getFullYear(), mo: m.getMonth(), m: 0 }); }
-      dias.slice(0, 365).forEach(d => { const x = meses.find(z => z.y === d.f.getFullYear() && z.mo === d.f.getMonth()); if (x) x.m += d.min; });
-      return { barras: meses.map((x, k) => ({ m: x.m, tip: `${MESES[x.mo]} ${x.y} · ${fmt(x.m)}`, etq: MESES[x.mo], hoy: k === 11 })), a: 0, b: 364, ant: null, titulo: "En el último año estudiaste", hueco: 8 };
-    },
-  };
+  /* Cuándo: últimas 12 semanas, por día de la semana y por hora */
+  const H0 = 7, H1 = 24, HORAS = H1 - H0, SEMANAS = 12;
+  const dh = Array.from({ length: 7 }, () => Array(HORAS).fill(0));
+  dias.slice(0, SEMANAS * 7).forEach(d => d.ses.forEach(s => { const k = Math.floor(s.h) - H0; if (k >= 0 && k < HORAS) dh[d.dow][k] += s.m / SEMANAS; }));
+  const porHora = Array.from({ length: HORAS }, (_, k) => dh.reduce((x, fila) => x + fila[k], 0));
+  const porDow = dh.map(fila => fila.reduce((a, b) => a + b, 0));
+  const mejorDow = porDow.indexOf(Math.max(...porDow));
+  const ventana = (() => { let mejor = 0, at = 0; for (let k = 0; k + 3 <= HORAS; k++) { const v = porHora[k] + porHora[k + 1] + porHora[k + 2]; if (v > mejor) { mejor = v; at = k; } } return at + H0; })();
+  const totalHoras = porHora.reduce((a, b) => a + b, 0);
+  const share = Math.round((porHora[ventana - H0] + porHora[ventana - H0 + 1] + porHora[ventana - H0 + 2]) / totalHoras * 100);
+  const maxDh = Math.max(...dh.flat());
 
   /* ── Piezas ── */
-  const escalar = max => { const pasos = [15, 30, 60, 120, 180, 300, 600, 1200, 1800, 3000, 6000]; const p = pasos.find(s => max / s <= 3) || 6000; return { tope: Math.max(p, Math.ceil(max / p) * p), paso: p }; };
-  const barras = (lista, { alto = 200, hueco = 6, guias = true } = {}) => {
-    const max = Math.max(...lista.map(x => x.m), 1), { tope, paso } = escalar(max);
-    const g = guias ? Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("") : "";
-    return `<div class="graf${guias ? "" : " sin-guias"}" style="--alto:${alto}px;--hueco:${hueco}px">
-      <div class="graf-area">${g}<div class="graf-cols">${lista.map(x => `<div class="graf-col${x.hoy ? " hoy" : ""}" data-tip="${x.tip}" role="img" aria-label="${x.tip}"><i style="height:${x.m / tope * 100}%"></i></div>`).join("")}</div></div>
-      <div class="graf-etqs">${lista.map(x => `<span class="${x.hoy ? "hoy" : ""}">${x.etq || ""}</span>`).join("")}</div>
-    </div>`;
-  };
-  const linea = p => `<span class="linea-avance"><span style="width:${p}%"></span></span>`;
+  const TICKS = [8, 12, 16, 20, 24];
+  const pos = h => (h - H0) / HORAS * 100;
+  const eje = () => `<div class="fr-eje">${TICKS.map(h => `<span style="left:${pos(h)}%">${h}</span>`).join("")}</div>`;
+  const pista = d => `<div class="fr-pista">${TICKS.map(h => `<span class="guia" style="left:${pos(h)}%"></span>`).join("")}${d.ses.map(s => `<span class="fr-bloque" style="left:${pos(s.h)}%;width:${s.m / 60 / HORAS * 100}%" data-tip="${hm(s.h)} a ${hm(s.h + s.m / 60)} · ${s.m} min"></span>`).join("")}</div>`;
   const anillo = (frac, tam, grosor) => {
     const r = (tam - grosor) / 2, c = 2 * Math.PI * r, f = Math.min(Math.max(frac, 0), 1), m = tam / 2;
     return `<svg class="anillo" viewBox="0 0 ${tam} ${tam}" aria-hidden="true"><circle class="fondo-a" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}"/>${f > 0 ? `<circle class="prog" cx="${m}" cy="${m}" r="${r}" fill="none" stroke-width="${grosor}" stroke-linecap="round" stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${m} ${m})"/>` : ""}</svg>`;
   };
-  const nivel = m => !m ? 0 : m < 45 ? 1 : m < 90 ? 2 : m < 150 ? 3 : 4;
-  const mapa = (sel, tocable) => {
-    const ini = dias[364], primero = 364 + ini.dow;   // lunes de la primera semana
+  const tipDia = d => `${d.i === 0 ? "Hoy" : fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}${cumple(d) ? " · meta cumplida" : ""}`;
+
+  /* Cabecera de hoy, con la meta editable */
+  const cabHoy = app => {
+    const d = dias[0], falta = meta - d.min, p = Math.min(d.min / meta, 1) * 100;
+    const ctl = app._editMeta
+      ? `<span class="meta-ed" role="group" aria-label="Meta diaria">
+          <button type="button" class="paso" data-meta="-15" data-k="meta-menos" aria-label="Bajar la meta 15 minutos" ${meta <= 30 ? "disabled" : ""}>${ic("i-menos")}</button>
+          <b aria-live="polite">${fmt(meta)}</b>
+          <button type="button" class="paso" data-meta="15" data-k="meta-mas" aria-label="Subir la meta 15 minutos" ${meta >= 480 ? "disabled" : ""}>${ic("i-mas")}</button>
+          <button type="button" class="btn-texto" data-editmeta data-k="meta">Listo</button></span>`
+      : `<button type="button" class="btn-texto" data-editmeta data-k="meta">Cambiar la meta</button>`;
+    return `<header class="hoy">
+      <h1 class="frase">Hoy llevás ${fmt(d.min)} <span>de ${fmt(meta)}.</span></h1>
+      <div class="hoy-linea" role="img" aria-label="${Math.round(p)} % de la meta de hoy"><span style="width:${p}%"></span></div>
+      <div class="hoy-pie"><p class="bajada">${falta > 0 ? `Te falta ${fmt(falta)} para la meta.` : "Cumpliste la meta de hoy."}</p>${ctl}</div>
+    </header>`;
+  };
+
+  /* El día elegido: total, meta y cada sesión en su hora */
+  const detalle = d => `<div class="dia-det" aria-live="polite">
+    <h3>${d.i === 0 ? "Hoy" : fecha(d.f)} <span>· ${d.min ? `${fmt(d.min)} en ${d.ses.length} ${d.ses.length === 1 ? "sesión" : "sesiones"}${cumple(d) ? ", meta cumplida" : `, de ${fmt(meta)}`}` : "sin estudio"}</span></h3>
+    ${d.min ? `<div>${pista(d)}${eje()}</div><p class="ses-lista">${d.ses.map(s => `<span>${hm(s.h)} a ${hm(s.h + s.m / 60)}</span>`).join("")}</p>` : `<p class="bajada" style="margin:0">Tocá otro día para ver sus sesiones.</p>`}
+  </div>`;
+
+  /* ¿Soy constante? */
+  const constancia = () => {
+    const r = racha(), hoyFalta = !cumple(dias[0]);
+    const frase = r > 1 ? `Cumpliste la meta ${r} días seguidos.` : r === 1 ? `Ayer cumpliste la meta.` : `Esta semana cumpliste la meta ${cumplidos(0, 6)} de 7 días.`;
+    const sub = `${hoyFalta && r > 0 ? `Hoy todavía no: sería el día ${r + 1}. ` : ""}${r >= mejorRacha() && r > 1 ? "Es tu mejor racha del año." : `Tu mejor racha del año fue de ${mejorRacha()} días.`} En total cumpliste la meta ${cumplidos(0, 364)} días.`;
+    return { frase, sub, corta: r > 1 ? `${r} días seguidos cumpliendo la meta.` : frase, cortaSub: r >= mejorRacha() && r > 1 ? "Es tu mejor racha del año." : `Tu mejor racha: ${mejorRacha()} días.` };
+  };
+  const ley = `<div class="ley"><span><i class="celda" data-n="0"></i>Sin estudio</span><span><i class="celda" data-n="1"></i>Menos de la mitad</span><span><i class="celda" data-n="2"></i>Más de la mitad</span><span><i class="celda" data-n="4"></i>Meta cumplida</span></div>`;
+  const mapa = sel => {
+    const ini = dias[364], primero = 364 + ini.dow;
     let html = "", mesAnt = -1;
     for (let w = primero; w >= 0; w -= 7) {
-      const lunes = dias[Math.min(w, N_DIAS - 1)].f, enSemana = [];
+      const viejo = w >= 26 * 7 ? " viejo" : "", enSemana = [];
       for (let k = 0; k < 7; k++) enSemana.push(w - k);
       const primerDia = enSemana.map(i => i >= 0 && i <= 364 ? dias[i] : null).find(Boolean);
       const mes = primerDia ? primerDia.f.getMonth() : -1;
-      html += `<span class="mes">${mes !== mesAnt && mes >= 0 ? MESES[mes] : ""}</span>`;
+      html += `<span class="mes${viejo}">${mes !== mesAnt && mes >= 0 ? MESES[mes] : ""}</span>`;
       if (mes >= 0) mesAnt = mes;
       enSemana.forEach(i => {
-        if (i < 0 || i > 364) { html += `<span class="celda vacia"></span>`; return; }
-        const d = dias[i], tip = `${fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}`;
-        html += tocable
-          ? `<button type="button" class="celda" data-n="${nivel(d.min)}" data-dia="${i}" data-k="dia-${i}" data-tip="${tip}" aria-label="${tip}" aria-pressed="${sel === i}"></button>`
-          : `<span class="celda" data-n="${nivel(d.min)}" data-tip="${tip}"></span>`;
+        if (i < 0 || i > 364) { html += `<span class="celda vacia${viejo}"></span>`; return; }
+        const d = dias[i], tip = tipDia(d);
+        html += `<button type="button" class="celda${viejo}" data-n="${nivelMeta(d.min)}" data-dia="${i}" data-k="dia-${i}" data-tip="${tip}" aria-label="${tip}" aria-pressed="${sel === i}"></button>`;
       });
     }
-    return `<div class="mapa"><div class="mapa-grilla">${html}</div>
-      <div class="mapa-ley"><span>Menos</span>${[0, 1, 2, 3, 4].map(n => `<i class="celda" data-n="${n}"></i>`).join("")}<span>Más</span></div></div>`;
+    return `<div class="mapa"><div class="mapa-grilla">${html}</div>${ley}</div>`;
   };
-  const eje = (ticks) => `<div class="fr-eje">${ticks.map(h => `<span style="left:${(h - H0) / (H1 - H0) * 100}%">${h}</span>`).join("")}</div>`;
-  const TICKS = [8, 12, 16, 20, 24];
-  const pista = d => `<div class="fr-pista">${TICKS.map(h => `<span class="guia" style="left:${(h - H0) / (H1 - H0) * 100}%"></span>`).join("")}${d.ses.map(s => { const hh = Math.floor(s.h), mm = Math.round((s.h - hh) * 60); const tip = `${fecha(d.f)} · ${hh}:${String(mm).padStart(2, "0")} · ${s.m} min`; return `<span class="fr-bloque" style="left:${(s.h - H0) / (H1 - H0) * 100}%;width:${s.m / 60 / (H1 - H0) * 100}%" data-tip="${tip}"></span>`; }).join("")}</div>`;
-  const histHoras = () => { const max = Math.max(...porHora); return `<div class="fr-hist">${porHora.map((m, k) => `<i class="${k + H0 >= ventana && k + H0 < ventana + 3 ? "pico" : ""}" style="height:${m / max * 100}%" data-tip="${k + H0} h · ${fmt(m / 13)} por semana"></i>`).join("")}</div>`; };
 
-  /* ── Las cinco estructuras ── */
+  /* ¿Voy mejor o peor? Acumulado del período contra el anterior */
+  const tendencia = app => {
+    const r = app._rango === "mes" ? "mes" : "semana", n = r === "semana" ? 7 : 30;
+    const act = [], ant = []; let sa = 0, sb = 0;
+    for (let k = 0; k < n; k++) { sa += dias[n - 1 - k].min; sb += dias[2 * n - 1 - k].min; act.push(sa); ant.push(sb); }
+    const ritmo = act.map((_, k) => meta * (k + 1));
+    const dif = sa - sb, cA = cumplidos(0, n - 1), cB = cumplidos(n, 2 * n - 1);
+    const nombre = r === "semana" ? ["Esta semana", "la anterior"] : ["En los últimos 30 días", "los 30 anteriores"];
+    const frase = dif === 0 ? `${nombre[0]}, lo mismo que ${nombre[1]}.` : `${nombre[0]}, ${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${nombre[1]}.`;
+    const sub = `${fmt(sa)} contra ${fmt(sb)}. Cumpliste la meta ${cA} de ${n} días; ${r === "semana" ? "la semana anterior" : "antes"}, ${cB}.`;
+    const pasos = [60, 120, 180, 300, 600, 900, 1200, 1800, 3000, 6000];
+    const crudo = Math.max(sa, sb, ritmo[n - 1]), paso = pasos.find(p => crudo / p <= 4) || 6000, tope = Math.ceil(crudo / paso) * paso;
+    const pts = arr => arr.map((v, k) => `${(k / (n - 1) * 100).toFixed(2)},${(100 - v / tope * 100).toFixed(2)}`).join(" ");
+    const guias = Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
+    const etqs = act.map((_, k) => { const d = dias[n - 1 - k]; const t = r === "semana" ? DOW_L[d.dow] : (k % 7 === 0 || k === n - 1 ? `${d.f.getDate()}` : ""); return `<span class="${k === n - 1 ? "hoy" : ""}">${t}</span>`; }).join("");
+    const cols = act.map((v, k) => { const d = dias[n - 1 - k]; return `<i data-tip="${fecha(d.f)} · ${fmt(v)} acumulado (antes ${fmt(ant[k])})"></i>`; }).join("");
+    const tabs = `<div class="rangos" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"]].map(([v, t]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${t}</button>`).join("")}</div>`;
+    const graf = `${tabs}<div>
+      <div class="graf" style="--alto:190px"><div class="graf-area">${guias}
+        <svg class="tend-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline class="t-meta" points="${pts(ritmo)}"/><polyline class="t-ant" points="${pts(ant)}"/><polyline class="t-act" points="${pts(act)}"/></svg>
+        <span class="t-punto" style="left:100%;top:${100 - sa / tope * 100}%"></span>
+        <div class="tend-cols">${cols}</div></div>
+        <div class="graf-etqs">${etqs}</div></div>
+      <div class="tend-ley"><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-act" stroke-width="2.5"/></svg>${r === "semana" ? "Esta semana" : "Últimos 30 días"}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-ant" stroke-width="1.5"/></svg>${r === "semana" ? "La anterior" : "Los 30 anteriores"}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-meta" stroke-width="1"/></svg>Lo que pide la meta</span></div>
+    </div>`;
+    return { frase, sub, graf, sa, sb };
+  };
+
+  /* ¿Cuándo rindo? */
+  const cuando = () => {
+    const frase = `Rendís más los ${DOW_LARGO[mejorDow]}, entre las ${ventana} y las ${ventana + 3} h.`;
+    const sub = `Ahí arranca el ${share} % de lo que estudiás. Promedio de las últimas ${SEMANAS} semanas.`;
+    const enVentana = h => h >= ventana && h < ventana + 3;
+    let g = "";
+    for (let w = 0; w < 7; w++) {
+      g += `<span class="d${w === mejorDow ? " pico" : ""}">${DOW[w]}</span>`;
+      for (let k = 0; k < HORAS; k++) { const v = dh[w][k], n = !v ? 0 : v / maxDh < .25 ? 1 : v / maxDh < .5 ? 2 : v / maxDh < .75 ? 3 : 4; g += `<span class="celda" data-n="${n}" data-tip="${DOW_LARGO[w]} a las ${k + H0} h · ${fmt(v)} por semana"></span>`; }
+    }
+    g += `<span></span>` + Array.from({ length: HORAS }, (_, k) => `<span class="h${enVentana(k + H0) ? " pico" : ""}">${(k + H0) % 3 === 0 ? k + H0 : ""}</span>`).join("");
+    const graf = `<div class="dh" style="--horas:${HORAS}" role="img" aria-label="Minutos por día de la semana y hora">${g}</div>`;
+    const hist = () => { const max = Math.max(...porHora); return `<div class="fr-hist">${porHora.map((m, k) => `<i class="${enVentana(k + H0) ? "pico" : ""}" style="height:${m / max * 100}%" data-tip="${k + H0} h · ${fmt(m)} por semana"></i>`).join("")}</div>${eje()}`; };
+    return { frase, sub, graf, hist };
+  };
+
+  /* ── Las tres estructuras ── */
   const V = {
-    a: (app, ab) => {
-      const r = app._rango || "semana", R = RANGOS[r]();
-      const min = r === "hoy" ? dias[0].min : suma(R.a, R.b), ses = r === "hoy" ? dias[0].ses.length : suma(R.a, R.b, "ses");
-      const tareas = r === "hoy" ? dias[0].tareas.length : suma(R.a, R.b, "t");
-      let comp = "";
-      if (R.ant) { const ant = suma(R.ant[0], R.ant[1]), dif = min - ant; comp = dif === 0 ? `Lo mismo que ${R.antNombre}.` : `${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${R.antNombre}.`; }
-      const conteo = {}; (r === "hoy" ? [dias[0]] : dias.slice(R.a, R.b + 1)).forEach(d => d.tareas.forEach(t => conteo[t] = (conteo[t] || 0) + 1));
-      const filas = TEMAS.map(t => [t, conteo[t] || 0]).filter(x => x[1]).sort((x, y) => y[1] - x[1]), maxT = Math.max(1, ...filas.map(x => x[1]));
-      const abierto = ab.has("ano");
+    f: app => {
+      const sel = app._dia ?? 0, c = constancia(), t = tendencia(app), q = cuando();
       return `<main class="main">
-        <div class="a-cab">
-          <div class="rangos" role="group" aria-label="Rango">${[["hoy", "Hoy"], ["semana", "Semana"], ["mes", "Mes"], ["ano", "Año"]].map(([v, n]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${n}</button>`).join("")}</div>
-          <div><h1 class="frase">${R.titulo} <span>${fmt(min)}.</span></h1>${comp ? `<p class="bajada">${comp}</p>` : `<p class="bajada">${diasConEstudio} días con estudio.</p>`}</div>
-        </div>
-        ${barras(R.barras, { hueco: R.hueco })}
-        <dl class="cifras">
-          <div><dt>Sesiones</dt><dd>${ses}</dd></div>
-          <div><dt>Promedio por sesión</dt><dd>${fmt(ses ? min / ses : 0)}</dd></div>
-          <div><dt>Racha</dt><dd>${racha} días</dd></div>
-          <div><dt>Tareas terminadas</dt><dd>${tareas}</dd></div>
-        </dl>
-        <div class="dos-col">
-          <div><h2 class="subtitulo">Terminaste, por tema</h2>
-            <div class="temas">${filas.length ? filas.map(([t, n]) => `<div class="tema-fila"><span class="n">${t}</span>${linea(n / maxT * 100)}<span class="c">${n}</span></div>`).join("") : `<p class="bajada">Todavía nada en este rango.</p>`}</div></div>
-          <div><h2 class="subtitulo">Tu mejor día</h2><p class="bajada" style="margin:0 0 12px">Los ${DOW_LARGO[mejorDow]}, ${fmt(porDow[mejorDow])} de promedio.</p>
-            ${barras(porDow.map((m, k) => ({ m, tip: `${DOW_LARGO[k]} · ${fmt(m)} de promedio`, etq: DOW_L[k], hoy: k === mejorDow })), { alto: 90, hueco: 8, guias: false })}</div>
-        </div>
-        <button type="button" class="btn-texto" data-abrir="ano" data-k="ano" aria-expanded="${abierto}">${abierto ? "Esconder el año" : "Ver el año"}${ic("i-abajo")}</button>
-        ${abierto ? mapa(null, false) : ""}
-      </main>`;
-    },
-    b: (app, ab) => {
-      const sel = app._sel ?? 0, d = dias[sel], abierto = ab.has("ano");
-      const falta = META - d.min;
-      return `<main class="main b-main">
-        <div class="b-hoy">${anillo(d.min / META, 280, 21)}<div class="b-centro"><b>${fmt(d.min)}</b><span>${sel === 0 ? "hoy" : DOW_LARGO[d.dow]}, de ${fmt(META)}</span></div></div>
-        <p class="bajada" style="margin:-16px 0 0">${sel === 0 ? (falta > 0 ? `Te faltan ${fmt(falta)} para tu meta.` : "Llegaste a tu meta de hoy.") : `${d.ses.length} sesiones ese día.`}</p>
-        <div class="b-semana" role="group" aria-label="Esta semana">${[6, 5, 4, 3, 2, 1, 0].map(i => `<button type="button" class="b-dia${i === sel ? " hoy" : ""}" data-sel="${i}" data-k="sel-${i}" data-tip="${fecha(dias[i].f)} · ${fmt(dias[i].min)}" aria-label="${fecha(dias[i].f)}, ${fmt(dias[i].min)}" aria-pressed="${i === sel}">${anillo(dias[i].min / META, 40, 5)}${DOW_L[dias[i].dow]}</button>`).join("")}</div>
-        <div class="b-pie"><span><b>${racha} días</b> seguidos</span><span>Semana <b>${fmt(suma(0, 6))}</b></span><span>Por sesión <b>${fmt(promSesion(0, 6))}</b></span></div>
-        <button type="button" class="btn-texto" style="align-self:center" data-abrir="ano" data-k="ano" aria-expanded="${abierto}">${abierto ? "Esconder el año" : "Ver el año"}${ic("i-abajo")}</button>
-        <div class="b-ano" ${abierto ? "" : "hidden"}><p class="bajada" style="margin:0">En el último año, ${fmt(totalAno)} en ${diasConEstudio} días.</p>${abierto ? mapa(null, false) : ""}</div>
-      </main>`;
-    },
-    c: (app) => {
-      const sel = app._dia ?? 0, d = dias[sel];
-      return `<main class="main c-main">
-        <div><h1 class="frase">En el último año estudiaste ${fmt(totalAno)} <span>en ${diasConEstudio} días.</span></h1>
-          <p class="bajada">Rendís más los ${DOW_LARGO[mejorDow]} y entre las ${ventana} y las ${ventana + 3} h. Tu racha: ${racha} días.</p></div>
-        ${mapa(sel, true)}
-        <div class="c-dia" aria-live="polite">
-          <h2>${fecha(d.f)} <span>· ${d.min ? `${fmt(d.min)} en ${d.ses.length} ${d.ses.length === 1 ? "sesión" : "sesiones"}` : "sin estudio"}</span></h2>
-          ${d.min ? `<div>${pista(d)}${eje(TICKS)}</div>` : `<p class="bajada" style="margin:0">Tocá otro día del mapa.</p>`}
+        ${cabHoy(app)}
+        <section class="bloque"><div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
+          ${mapa(sel)}
+          ${detalle(dias[sel])}</section>
+        <div class="f-par">
+          <section class="bloque"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">${t.sub}</p></div>${t.graf}</section>
+          <section class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.graf}</section>
         </div>
       </main>`;
     },
-    d: (app) => {
-      const sem = app._sem ?? 0, base = sem * 7;
-      const lista = [6, 5, 4, 3, 2, 1, 0].map(i => dias[base + i]);
-      const lun = lista[0].f, dom = lista[6].f, tot = lista.reduce((x, y) => x + y.min, 0);
+    g: app => {
+      const p = app._preg || "c", sel = app._dia ?? 0, c = constancia(), t = tendencia(app), q = cuando();
+      const fila = (id, icono, frase, sub) => `<button type="button" class="g-fila" data-preg="${id}" data-k="p-${id}" aria-pressed="${p === id}" aria-controls="g-${id}-${app._uid}">${ic(icono)}<span class="t">${frase}</span>${ic("i-flecha", "ir")}<span class="s">${sub}</span></button>`;
+      const panel = (id, html) => `<div class="g-panel${p === id ? " activo" : ""}" id="g-${id}-${app._uid}" data-panel="${id}">${html}</div>`;
       return `<main class="main">
-        <div><h1 class="frase">Rendís más entre las ${ventana} y las ${ventana + 3} h. <span>Ahí arranca el ${shareVentana} % de lo que estudiás.</span></h1></div>
-        <div class="d-nav"><button type="button" class="flecha izq" data-sem="${sem + 1}" data-k="d-ant" aria-label="Semana anterior" ${sem >= 8 ? "disabled" : ""}>${ic("i-flecha")}</button>
-          <span>${sem === 0 ? "Esta semana" : `Semana del ${lun.getDate()} ${MESES[lun.getMonth()]}`} · ${fmt(tot)}</span>
-          <button type="button" class="flecha" data-sem="${sem - 1}" data-k="d-sig" aria-label="Semana siguiente" ${sem === 0 ? "disabled" : ""}>${ic("i-flecha")}</button></div>
-        <div class="franjas">
-          ${lista.map(d => `<div class="fr${d.i === 0 ? " hoy" : ""}"><span class="fr-nombre">${DOW[d.dow]} ${d.f.getDate()}</span>${pista(d)}<span class="fr-total${d.min ? "" : " cero"}">${d.min ? fmt(d.min) : "—"}</span></div>`).join("")}
-          <div class="fr"><span></span>${eje(TICKS)}<span></span></div>
+        ${cabHoy(app)}
+        <div class="g-cuerpo">
+          <div class="g-filas">
+            ${fila("c", "i-cal", c.corta, c.cortaSub)}
+            ${fila("t", "i-tend", t.frase, `${fmt(t.sa)} contra ${fmt(t.sb)}.`)}
+            ${fila("q", "i-reloj", q.frase, `El ${share} % de lo que estudiás.`)}
+          </div>
+          <div class="g-paneles">
+            ${panel("c", `${mapa(sel)}${detalle(dias[sel])}`)}
+            ${panel("t", t.graf)}
+            ${panel("q", `${q.graf}<p class="bajada" style="margin:0">${q.sub}</p>`)}
+          </div>
         </div>
-        <div><h2 class="subtitulo">Cuándo estudiás, últimos tres meses</h2>
-          <div class="fr"><span class="fr-nombre">Por hora</span>${histHoras()}<span></span></div>
-          <div class="fr"><span></span>${eje(TICKS)}<span></span></div></div>
       </main>`;
     },
-    e: (app) => {
-      const k = app._cifra ?? 0;
-      const ultimos14 = Array.from({ length: 14 }, (_, j) => dias[13 - j]);
-      const difSem = suma(0, 6) - suma(7, 13);
-      const C = [
-        { g: fmt(suma(0, 6)).replace(" min", "<span style=\"font-size:.5em;letter-spacing:-.02em\"> min</span>"), c: `esta semana, <b>${fmt(Math.abs(difSem))} ${difSem >= 0 ? "más" : "menos"}</b> que la anterior.`, graf: barras(RANGOS.semana().barras, { alto: 90, hueco: 10, guias: false }) },
-        { g: `${racha} días`, c: `seguidos estudiando. Tu mejor racha del año fue de <b>${(() => { let m = 0, r = 0; dias.slice(0, 365).forEach(d => { r = d.min ? r + 1 : 0; m = Math.max(m, r); }); return m; })()} días</b>.`, graf: `<div class="e-marcas">${ultimos14.map(d => `<i class="${d.min ? "si" : ""}" data-tip="${fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}"></i>`).join("")}</div>` },
-        { g: DOW_LARGO[mejorDow][0].toUpperCase() + DOW_LARGO[mejorDow].slice(1), c: `es tu mejor día: <b>${fmt(porDow[mejorDow])}</b> de promedio.`, graf: barras(porDow.map((m, j) => ({ m, tip: `${DOW_LARGO[j]} · ${fmt(m)}`, etq: DOW_L[j], hoy: j === mejorDow })), { alto: 90, hueco: 8, guias: false }) },
-        { g: `${ventana} h`, c: `es tu hora. Entre las ${ventana} y las ${ventana + 3} arranca <b>el ${shareVentana} %</b> de lo que estudiás.`, graf: `${histHoras()}${eje(TICKS)}` },
-        { g: fmt(totalAno).split(" ").slice(0, 2).join(" "), c: `en el último año, en <b>${diasConEstudio} días</b> de estudio.`, graf: barras(RANGOS.ano().barras, { alto: 90, hueco: 6, guias: false }) },
-      ];
-      const x = C[k], n = C.length;
-      return `<main class="main e-main">
-        <div class="e-cifra e-entrar" data-anim="${k}"><p class="e-grande">${x.g}</p><p class="e-chico">${x.c}</p></div>
-        <div class="e-graf e-entrar">${x.graf}</div>
-        <div class="e-nav"><button type="button" class="flecha izq" data-cifra="${(k - 1 + n) % n}" data-k="e-ant" aria-label="Cifra anterior">${ic("i-flecha")}</button><span>${k + 1} de ${n}</span><button type="button" class="flecha" data-cifra="${(k + 1) % n}" data-k="e-sig" aria-label="Cifra siguiente">${ic("i-flecha")}</button></div>
+    h: app => {
+      const pag = app._pag ?? 0, fin = pag * 42, sel = app._dia ?? fin, c = constancia(), t = tendencia({ _rango: "semana" }), q = cuando();
+      const desde = dias[fin + 41].f, hasta = dias[fin].f;
+      let cal = DOW_L.map(l => `<span class="dow" aria-hidden="true">${l}</span>`).join("");
+      for (let i = fin + 41; i >= fin; i--) {
+        const d = dias[i], ok = cumple(d);
+        cal += `<button type="button" class="h-dia${ok ? " cumplido" : ""}${i === 0 ? " hoy" : ""}" data-dia="${i}" data-k="dia-${i}" data-tip="${tipDia(d)}" aria-label="${tipDia(d)}" aria-pressed="${sel === i}">${anillo(d.min / meta, 48, 5)}<span class="num">${d.f.getDate()}</span></button>`;
+      }
+      const maxC = Math.max(t.sa, t.sb, 1);
+      return `<main class="main">
+        ${cabHoy(app)}
+        <div class="h-cuerpo">
+          <section class="h-izq">
+            <div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
+            <div class="h-nav"><button type="button" class="flecha izq" data-pag="${pag + 1}" data-k="h-ant" aria-label="Seis semanas antes" ${pag >= 7 ? "disabled" : ""}>${ic("i-flecha")}</button>
+              <span>${desde.getDate()} ${MESES[desde.getMonth()]} al ${hasta.getDate()} ${MESES[hasta.getMonth()]}</span>
+              <button type="button" class="flecha" data-pag="${pag - 1}" data-k="h-sig" aria-label="Seis semanas después" ${pag === 0 ? "disabled" : ""}>${ic("i-flecha")}</button></div>
+            <div class="h-cal" role="group" aria-label="Días de las seis semanas">${cal}</div>
+          </section>
+          <section class="h-der">
+            ${detalle(dias[sel])}
+            <div class="bloque"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">Cumpliste la meta ${cumplidos(0, 6)} de 7 días; la semana anterior, ${cumplidos(7, 13)}.</p></div>
+              <div class="comp"><span class="n">Esta semana</span><span class="barra act" style="width:${t.sa / maxC * 100}%"></span><span>${fmt(t.sa)}</span>
+                <span class="n">La anterior</span><span class="barra" style="width:${t.sb / maxC * 100}%"></span><span>${fmt(t.sb)}</span></div></div>
+            <div class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.hist()}</div>
+          </section>
+        </div>
       </main>`;
     },
   };
@@ -778,28 +775,29 @@ function AnilloDia({ minutos, meta, tam = 280 }: Props) {
   const avisar = (el, t) => { const a = el.querySelector(".aviso"); a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
   const pintar = (a, enfocar) => {
     const k = enfocar && document.activeElement?.dataset?.k;
-    a.cuerpo.innerHTML = V[a.v](a.el, a.abiertas);
+    a.cuerpo.innerHTML = V[a.v](a.el);
     if (k) a.el.querySelector(`[data-k="${k}"]`)?.focus();
   };
 
   const opciones = [...document.querySelectorAll(".opcion")];
   document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
 
-  opciones.forEach(op => {
+  opciones.forEach((op, n) => {
     const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el._uid = n;
     el.appendChild(tplTb.content.cloneNode(true));
     const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column"; el.appendChild(cuerpo);
     el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div><div class="tip" aria-hidden="true"></div>`);
     el.querySelector("[data-hora]").textContent = ahora();
-    const a = { v, el, cuerpo, abiertas: new Set() };
+    const a = { v, el, cuerpo };
     apps.push(a);
 
     const tip = el.querySelector(".tip");
     const verTip = t => {
       const r = t.getBoundingClientRect(), ra = el.getBoundingClientRect();
       tip.textContent = t.dataset.tip;
-      const x = Math.min(Math.max(r.left - ra.left + r.width / 2, 70), ra.width - 70);
-      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top) + "px"; tip.classList.add("ver");
+      const x = Math.min(Math.max(r.left - ra.left + r.width / 2, 90), ra.width - 90);
+      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top + el.parentElement.scrollTop * 0) + "px"; tip.classList.add("ver");
     };
     el.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) verTip(t); });
     el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
@@ -810,16 +808,21 @@ function AnilloDia({ minutos, meta, tam = 280 }: Props) {
       const b = e.target.closest("button"); if (!b || b.disabled) return;
       const d = b.dataset;
       tip.classList.remove("ver");
-      if (d.abrir) { a.abiertas.has(d.abrir) ? a.abiertas.delete(d.abrir) : a.abiertas.add(d.abrir); return pintar(a, true); }
+      if (d.editmeta !== undefined) { el._editMeta = !el._editMeta; return pintar(a, true); }
+      if (d.meta) { meta = Math.min(480, Math.max(30, meta + +d.meta)); apps.forEach(x => pintar(x, x === a)); return; }
+      if (d.preg) {                      /* G: cambia el panel sin repintar, para que se vea el fundido */
+        el._preg = d.preg;
+        el.querySelectorAll(".g-fila").forEach(f => f.setAttribute("aria-pressed", f.dataset.preg === d.preg));
+        el.querySelectorAll(".g-panel").forEach(p => p.classList.toggle("activo", p.dataset.panel === d.preg));
+        return;
+      }
       if (d.rango) { el._rango = d.rango; return pintar(a, true); }
-      if (d.sel !== undefined) { el._sel = +d.sel; return pintar(a, true); }
       if (d.dia !== undefined) { el._dia = +d.dia; return pintar(a, true); }
-      if (d.sem !== undefined) { el._sem = +d.sem; return pintar(a, true); }
-      if (d.cifra !== undefined) { el._cifra = +d.cifra; return pintar(a, true); }
+      if (d.pag !== undefined) { el._pag = +d.pag; el._dia = el._pag * 42; return pintar(a, true); }
     });
 
     const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
-    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 720]];
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
     bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
       <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
       <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
