@@ -35,23 +35,7 @@ tipografía y los tokens nuevos.
 
 ### 1.1 Home
 
-Decidido hasta ahora:
-- Base **D4 · Anillo y bandeja**: el anillo del logo es el botón de crear sala y muestra
-  el progreso del día; abajo, una bandeja con la tarea siguiente que se sube con la lista
-  completa y el alta rápida.
-- La **barra superior se desvanece** (queda logo, cantidad de tareas y avatar).
-- Nuevo: **la bandeja también se desvanece**, con el mismo mecanismo que la barra
-  (`:hover`/`:focus-within`, medio segundo de demora para irse, completa en pantallas
-  táctiles). Abierta nunca se desvanece.
-- Descartado: la barra de comando como home (no proponer de nuevo).
-
-- **Aprobado (2026-10-04): variante A · Queda el asa.** Cuando se desvanece, la bandeja
-  desaparece entera y queda solo la rayita de arrastre, un poco más marcada. (Yo había
-  recomendado B, la pastilla con la cuenta; Leo eligió A.)
-- **Contador de tareas en la barra (pedido 2026-10-04):** al lado del avatar, una
-  pastilla con la cantidad de tareas pendientes. Tocarla sube la bandeja (y la baja si
-  ya está arriba). Cuando la barra se desvanece queda solo el número, como el logo y el
-  avatar. Con esto, la cantidad se ve aunque la bandeja esté desvanecida en el asa.
+Detalle, rondas y decisiones en `docs/rediseno/home.md`.
 
 ### Decisiones que quedan para el final de la Fase 1
 
@@ -72,207 +56,15 @@ variante, F fondo, D desvanecido, T tema, Esc sale).
 
 ### 1.2 Tareas y trabajos prácticos (pantalla nueva)
 
-Hoy las tareas viven en el home (`DataTable` + `QuickAddTarea`) y en el panel de la sala
-(`PanelTareas`). El rediseño del home las saca a una bandeja, así que necesitan una
-pantalla propia.
-
-**Primera ronda descartada (2026-10-04):** Leo la sintió cargada de acentos, colores y
-texto, lejos del minimalismo del home. Lo que pidió para las siguientes:
-- Seguir el hilo del home: simple, fácil de entender, pocas opciones.
-- Sin degradados y **sin pills circulares** (chips redondeados).
-- Un solo acento, sin colores por materia ni por estado.
-- Los desvanecidos sí le gustaron.
-- **Separar por materia** (le resultó más entendible a primera vista) y **separar
-  prácticos de tareas**.
-- El detalle (puntos que faltan, entrega, aviso) queda **escondido hasta abrir**.
-- Las tareas sin materia van en un grupo **«General» al final**.
-- Todavía no sabe qué tiene que entenderse primero (avance por materia o lo pendiente):
-  los bocetos exploran los dos enfoques.
-
-**Segunda ronda (publicada en la misma URL):** seis estructuras: A · Índice, B · Columnas,
-C · Prácticos | Tareas, D · Anillos, E · Lo que falta, F · Regla. Mi recomendación es
-**F · Regla**: cada TP es una regla con un tramo por punto, los hechos en acento, y se marca
-tocando el tramo. Si hay muchas materias, se pliega como el índice de A. Segundo lugar, E.
-Puntos de fondo: no en esta pantalla (sí en D, «Al centro»). Fuente guardada en
-`bocetos/tareas-ronda2.html`.
-
-**Devolución de la 2ª ronda (2026-10-04):**
-- Separar por **materia o tema** (no siempre es una materia) le gusta más.
-- Abierto, el práctico **no** repite qué puntos faltan (la regla ya lo muestra). Cerrado,
-  sí conviene decirlo.
-- Quiere una **barra de progreso general**; por práctico, probar alternativas para no
-  sobrecargar.
-- **La regla de F para marcar puntos le gustó mucho:** se queda.
-- Pidió ideas más divergentes, al menos una con **los temas en cajas**.
-- Le gustó el título de E («Te faltan…»); quizá por tema.
-
-**Tercera ronda (misma URL):** G · Cajas, H · Pestañas con frase, I · Barra general,
-J · Carriles, K · Panel, L · Un tema por vez. Recomendación: **G**, con la frase por tema
-de H dentro de cada caja y sin la línea de cada práctico si se siente cargada. Plan B: L.
-En G los puntos de fondo funcionan bien porque las cajas los tapan (quedan entre cajas).
-Fuente guardada en `bocetos/tareas-ronda3.html`.
-
-**Devolución de la 3ª ronda (2026-10-04):**
-- **K · Panel es la favorita.** Pide que el panel se contraiga al sacar el mouse, con un
-  ícono por tema, y los íconos por tipo de ítem que tenía la ronda 2 (E).
-- **Carriles (J) le pareció muy interesante** para el calendario: está pensando en sacar
-  la pantalla de Calendario o fusionarla con Tareas, para que las tareas funcionen también
-  como calendario. Lo que no le gustó de J: prácticos y tareas en dos columnas.
-- Agregar **parciales** y cómo se anotan.
-- La mayoría de los bocetos quedaban **demasiado centrados, con márgenes de más**.
-
-**Cuarta ronda (misma URL):** todas parten de K. M · Panel con íconos, N · Panel con
-calendario (Lista | Calendario), O · Tareas es el calendario (cajón a la derecha),
-P · Panel por fecha, Q · Panel con franja de dos semanas. Panel lateral contraído a una
-columna de anillos con ícono (el arco es el avance del tema), con ajuste «Se contrae / Fijo».
-Parciales con fecha y unidades: la regla marca las unidades repasadas y, pasada la fecha, se
-anota la nota. El contenido arranca pegado al panel y usa hasta 1240 px.
-Recomendación: **N, abriendo en Lista**. Implica una decisión para 1.5 Calendario: con N,
-esa pantalla podría quedar solo para sincronizar con Google Calendar (o ser O).
-Para los datos suma `kind = 'parcial'`, una columna `grade` y una tabla `topics` (nombre +
-ícono de un set cerrado). Fuente guardada en `bocetos/tareas-ronda4.html`.
-
-**Devolución de la 4ª ronda (2026-10-04) — la idea se está cerrando:**
-- **Queda: el selector Lista / Calendario de N.** Calendario y tareas convergen.
-- **Queda: anotar la nota de un parcial que ya pasó** (le encantó).
-- **Queda: el cajón derecho de O** al tocar algo, pero algunos títulos no se leían enteros.
-- **No convence: el panel lateral izquierdo** (rompe la estética o los íconos son grandes
-  y toscos).
-
-**Quinta ronda (misma URL):** contenido fijo (N + cajón para todo lo que se toca + nota),
-calendario con bloques que se ajustan al texto (hasta 300 px) y pistas por tipo. Se
-explora solo la navegación entre temas: R · Pestañas arriba (recomendada), S · El tema en
-la frase, T · Panel liviano (íconos de 15 px, trazo fino), U · Índice de texto, V · Bandeja
-de temas (como la del home, se desvanece al asa). Fuente: `bocetos/tareas-ronda5.html`.
-
-**Devolución de la 5ª ronda (2026-10-04) — tomando camino:**
-- **Queda: el contador grande arriba de la regla** («4 de 6», con los números debajo).
-- El **índice de texto (U)** le gusta, pero que sea **desplegable, con algunos íconos**.
-- **La bandeja de V le parece increíble** y siente que escala mejor con muchas materias.
-- El **panel derecho** puede ser limitante: probar diálogo o algo que aparezca en pantalla.
-- Problemas de **espaciado**: el contenido queda pegado a la barra superior y sobra espacio
-  a la derecha cuando el panel está contraído.
-
-**Sexta ronda (misma URL):** W · Índice desplegable (U + íconos de 15 px; plegado queda la
-columna de íconos con una rayita bajo el elegido), X · Bandeja de temas (V), Y · Bandeja
-con «Todos» (4 temas + grilla completa hacia arriba). Ajuste nuevo **Detalle** (panel
-derecho / diálogo / junto al ítem / hoja abajo / en el lugar) y **Temas** (5 / 9) para
-probar escala. Espaciado: 44 px bajo la barra y contenido sin ancho máximo.
-Recomendación: **X, con el «Todos» de Y si pasan de 6 temas, y el detalle junto al ítem**
-(Popover de Radix; en el celular, Drawer). El diálogo queda para altas y ediciones.
-
-Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
-en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
-`kind` ('tarea' | 'tp') y otra `remind_at`.
-
-Lo que tiene que resolver el boceto:
-- **Trabajos prácticos con puntos.** Un TP tiene materia (chip, p. ej. `PYLP`), título
-  (`TP N°1 — Introducción`), una cantidad de puntos y cuáles están hechos. Se muestra con
-  una barra de progreso, la cuenta `9/13`, el estado (`En curso`, `Entregado`…) y en
-  texto los que faltan, agrupados en rangos: «Faltan los puntos 3 a 8, 11 y 12».
-  Referencia visual: la captura de «Trabajos prácticos» que pasó Leo el 2026-10-04.
-- **Marcar puntos de a uno**, rápido (una grilla de casilleros numerados o similar).
-- **Barra de progreso general**: cuánto llevo de todas mis cosas, por materia o total.
-- **Recordatorios en las tareas**: fecha y hora opcional en una tarea o un TP, con aviso.
-  Hay que decidir si el aviso va por notificación del navegador, por Google Calendar
-  (ya está integrado) o las dos.
-- Cómo conviven TPs y tareas sueltas: ¿un TP es un tipo de tarea, o una entidad aparte
-  que contiene puntos?
-- Qué ve de esto la bandeja del home y el panel de la sala.
-
-Esto toca la capa de datos (tablas nuevas o columnas, RLS, quizás una edge function para
-los recordatorios). El boceto define la forma; el modelo de datos se cierra en la Fase 3
-con el agente `arquitecto-features` antes de escribir nada.
+Detalle, rondas y decisiones en `docs/rediseno/tareas.md`.
 
 ### 1.3 Sala
 
-Pedido (2026-10-04): es la vista que menos rediseño necesita. Mantenerla, más minimalista,
-con las tareas desplegándose como en el home y los desvanecidos.
-
-**Primera ronda (publicada):** base común: se va el recuadro punteado, los botones pierden
-el borde, el punto del modo usa el acento (sin color por fase) y, con el reloj corriendo y
-el mouse quieto 2,5 s, queda solo el reloj (ajuste «Al correr»). Variantes de tareas:
-A · Bandeja (la del home, con pestañas Mías / De la sala; una tarea ajena pinta la rayita
-en acento), B · Al costado (columna derecha; bandeja en angosto), C · Debajo, como hoy
-(scroll, el reloj se desvanece al bajar), D · Ahora, bajo el reloj (la tarea en curso es una
-línea y la lista se despliega ahí). Recomendación: **A**; plan B, B. Puntos: sí, «Al centro»
-(liso en C). Queda por confirmar el color por fase del punto del modo. Fuente en
-`bocetos/sala.html`.
-
-**Devolución de la 1ª ronda (2026-10-04):** a Leo le encantaron. **A · Bandeja es la
-favorita.** C se trababa al bajar: era el desenfoque atado al scroll sobre toda la zona del
-reloj. Pidió no usar desenfoque donde cueste recursos, y que en C tocar el reloj vuelva a él.
-
-**Segunda ronda (misma URL):** todas sobre la bandeja de A. E · Anillo (el anillo del home
-rodea el reloj con el progreso de la fase y tocarlo da play), F · Hilo (línea de 2 px bajo
-los números, como el reloj flotante), G · La sala a la vista (quién está y con qué, bajo el
-reloj), H · Una sola fila (los seis controles abajo, play al medio). Recomendación: **A + F**;
-E si se quiere el mismo objeto que el home. C ahora se apaga sin desenfoque y el reloj se
-muda chico a la barra; tocarlo vuelve arriba. Nuevo ajuste «Desenfoque: En lo chico / Nunca».
-Al abrir la bandeja la zona del reloj sube con `transform` (antes animaba `padding`).
-
-**Devolución de la 2ª ronda (2026-10-04):** favoritas **A y F**. El achique del reloj al
-abrir la bandeja le gusta y no a la vez. El hilo de F tiene que aparecer **solo con el reloj
-corriendo** y desvanecerse en pausa (ya aplicado). Pidió una última ronda.
-
-**Tercera ronda, la última (misma URL):** todas son A + F y exploran qué hace el reloj al
-subir la bandeja, sin achicarse: I · Sube sin achicarse (bandeja hasta la mitad), J · Las
-tareas a pantalla completa (el reloj pasa a la barra), K · El reloj se muda a la bandeja
-(se apaga arriba y aparece chico en el asa con su play; el hilo pasa al borde de la
-bandeja), L · Se corre al costado (en ancho, la bandeja abre a la derecha y el reloj se
-desliza a la izquierda). Recomendación: **K**; plan B, I.
-
-**Devolución de la 3ª ronda (2026-10-04):** **I · Sube sin achicarse es la favorita, muy
-posiblemente la finalista** (no la K que yo recomendaba). La sala queda, por ahora, como
-A (bandeja) + F (hilo solo corriendo) + I (al abrir la bandeja el reloj sube sin
-achicarse y la bandeja abre hasta la mitad). El boceto queda guardado en
-`bocetos/sala.html` con estas observaciones en el cierre.
-
-**Para retomar el 2026-10-05 · Notas rápidas de sesión (idea de Leo, salió de L):**
-- Una opción para escribir notas rápidas mientras se estudia, que se despliegan como la
-  bandeja de L (al costado del reloj) y se pueden visualizar de alguna forma (a definir).
-- Duran lo que dura la sesión y después se descartan. Pueden vivir en `localStorage`; si
-  alguna toma relevancia, se guarda (¿pasa a tarea?, ¿se persiste en Supabase?).
-- Preguntas abiertas: si son personales o de la sala, cómo conviven con la bandeja de
-  tareas (I abre abajo, las notas al costado), qué significa «fin de sesión» (salir de la
-  sala, cerrar la pestaña, fin del pomodoro), y cómo se rescata una nota.
-- Próximo paso: boceto de notas sobre la base A + F + I, con el mismo formato.
+Detalle, rondas y decisiones en `docs/rediseno/sala.md`.
 
 ### 1.4 Dashboard
 
-Boceto: https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ · fuente `bocetos/dashboard.html`.
-
-Hoy el dashboard es la pantalla más cargada de la app: cuatro tarjetas con íconos de
-colores, dos gráficos de barras, una torta con un color por categoría, la lista de tareas
-terminadas y el mapa del año.
-
-**Primera ronda (2026-10-04, esperando opinión):** cinco estructuras con un solo acento,
-que pinta el tiempo estudiado:
-- **A · Frase y barras.** El de hoy ordenado: frase del rango + comparación, un gráfico,
-  cuatro cifras en texto, terminadas por tema con líneas finas, el año plegado.
-- **B · Anillos.** El anillo del home en grande, hoy contra una meta diaria; la semana en
-  siete anillos chicos, racha y «Ver el año».
-- **C · El año.** El mapa anual es la pantalla y gira en el celular (container queries).
-  Tocar un día muestra sus sesiones.
-- **D · Franjas.** La semana como agenda de 7 a 24 h, cada sesión en su hora; debajo, a
-  qué hora estudiás normalmente.
-- **E · Una cifra por vez.** Una cifra grande con su frase y un gráfico chico, con flechas.
-
-Mi recomendación: **B, con las franjas de D al tocar un día**. Plan B: A (no necesita
-datos nuevos). C sirve como la vista de «Ver el año». Puntos de fondo: sí en B y E
-(«Al centro»); no en C (el mapa ya es una trama), ni en A ni D.
-
-Se va del dashboard actual: la torta por categoría, los íconos de colores de las cifras y
-la lista de últimas tareas terminadas (pasa a Tareas).
-
-**Pregunta abierta para Leo:** ¿se suma una **meta diaria**? B depende de eso. Propuse
-que arranque en 2 h y se cambie tocando el anillo.
-
-Hallazgos para la Fase 3:
-- `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
-  tienen el violeta escrito a mano: no van a seguir el acento elegido.
-- La RPC `get_dashboard_aggregates` ya da minutos por hora y por día (B, D y E). Faltan
-  la meta diaria (en `user_stats` o el perfil) y, para D, la hora de cada sesión.
+Detalle, rondas y decisiones en `docs/rediseno/dashboard.md`.
 
 ### 1.5 a 1.9
 
@@ -282,17 +74,16 @@ layout esté firme porque es una transición entre rutas.
 
 ---
 
-### Dónde retomamos (2026-10-04, fin del día)
+### Cómo se trabaja en paralelo
 
-- **Tareas (1.2):** la 6ª ronda quedó «muy completa». Leo va a juntar referencias y
-  opiniones de usuarios para elegir entre W, X e Y y el modo de detalle. **Mañana se
-  define un boceto final de Tareas** a partir de esa ronda.
-- **Dashboard (1.4):** 1ª ronda publicada (A–E), Leo todavía no la vio. Mañana: recoger
-  su opinión, decidir si va la meta diaria y armar la 2ª ronda. Detalle en la sección 1.4.
-- Siguen abiertas para el final de la Fase 1: fondo con puntos sí/no, `--primary` violeta
-  unificado o zinc, y si Calendario (1.5) se fusiona con Tareas.
+Cada pantalla tiene su propio doc en `docs/rediseno/` y su boceto en `bocetos/`, y se
+trabaja en un chat propio que se retoma con `claude --resume`. Cada sesión toca solo sus
+archivos y la fila de su pantalla en la tabla de arriba, y commitea nombrando las rutas.
+Este archivo guarda lo común: reglas, formato, decisiones transversales y fases 2 y 3.
 
----
+Siguen abiertas para el final de la Fase 1: fondo con puntos sí/no, `--primary` violeta
+unificado o zinc, y si Calendario (1.5) se fusiona con Tareas.
+
 
 ## Fase 2 — Corregir las variables de CSS
 
@@ -354,3 +145,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-04 | Plan por fases. Home: elegido D4, se pide que la bandeja también se desvanezca. |
 | 2026-10-04 | Home aprobado con la bandeja «Queda el asa». La decisión de los puntos pasa al final de la Fase 1. Arranca el boceto de Tareas. Se confirma que el usuario va a poder elegir el color de acento; todos los bocetos traen el selector. Home: contador de tareas junto al avatar. Tareas: 1ª ronda descartada por cargada; 2ª ronda con seis estructuras minimalistas. |
 | 2026-10-04 | Dashboard: 1ª ronda con cinco estructuras (A–E), recomendada B · Anillos. Queda abierta la meta diaria. |
+| 2026-10-04 | El plan se parte en un doc por pantalla (`docs/rediseno/`) para trabajar cada una en un chat propio. |
