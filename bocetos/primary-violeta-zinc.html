@@ -1,0 +1,393 @@
+<title>Primary: violeta o zinc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Página: cromo neutro del boceto; las maquetas llevan los tokens reales de la app */
+:root {
+  --pg-bg: oklch(0.985 0.002 286);
+  --pg-fg: oklch(0.2 0.006 286);
+  --pg-muted: oklch(0.52 0.014 286);
+  --pg-line: oklch(0.9 0.004 286);
+  --pg-card: oklch(1 0 0);
+  --pg-chip: oklch(0.955 0.004 286);
+  --pg-ok: oklch(0.55 0.14 155);
+  --pg-warn: oklch(0.6 0.16 50);
+  --f-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --pg-bg: oklch(0.12 0.004 286); --pg-fg: oklch(0.96 0.002 286); --pg-muted: oklch(0.68 0.012 286);
+  --pg-line: oklch(1 0 0 / 11%); --pg-card: oklch(0.17 0.005 286); --pg-chip: oklch(0.23 0.006 286);
+  --pg-ok: oklch(0.72 0.14 155); --pg-warn: oklch(0.75 0.14 60); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --pg-bg: oklch(0.12 0.004 286); --pg-fg: oklch(0.96 0.002 286); --pg-muted: oklch(0.68 0.012 286);
+  --pg-line: oklch(1 0 0 / 11%); --pg-card: oklch(0.17 0.005 286); --pg-chip: oklch(0.23 0.006 286);
+  --pg-ok: oklch(0.72 0.14 155); --pg-warn: oklch(0.75 0.14 60); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--pg-bg); color: var(--pg-fg); font-family: var(--f-sans); font-size: 14px; line-height: 1.5; }
+.pagina { max-width: 1680px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: flex; flex-direction: column; gap: 28px; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; justify-content: space-between; }
+header.top h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+header.top p { margin: 4px 0 0; color: var(--pg-muted); max-width: 68ch; }
+code { font-family: var(--f-mono); font-size: 0.9em; background: var(--pg-chip); padding: 1px 5px; border-radius: 4px; }
+
+.controles { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; background: var(--pg-chip); border-radius: 8px; padding: 3px; gap: 2px; }
+.seg button { font: inherit; font-size: 13px; font-weight: 500; border: 0; background: transparent; color: var(--pg-muted); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--pg-card); color: var(--pg-fg); box-shadow: 0 1px 2px oklch(0 0 0 / 0.12); }
+.seg button:focus-visible, .mock button:focus-visible { outline: 2px solid var(--pg-fg); outline-offset: 2px; }
+
+.opciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 20px; }
+.opcion { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.opcion-cab { display: flex; flex-direction: column; gap: 2px; }
+.opcion-cab .etq { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pg-muted); }
+.opcion-cab h2 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+.opcion-cab p { margin: 0; color: var(--pg-muted); font-size: 13px; }
+
+/* Muestras de tono: dónde cae cada violeta en el círculo */
+.muestras { display: flex; gap: 6px; flex-wrap: wrap; }
+.muestra { display: flex; align-items: center; gap: 6px; font-size: 12px; font-family: var(--f-mono); color: var(--pg-muted); background: var(--pg-chip); border-radius: 999px; padding: 3px 9px 3px 4px; }
+.muestra i { width: 16px; height: 16px; border-radius: 999px; display: block; }
+
+.notas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+.notas h3 { margin: 0 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.notas .gana h3 { color: var(--pg-ok); }
+.notas .pierde h3 { color: var(--pg-warn); }
+.notas ul { margin: 0; padding-left: 16px; color: var(--pg-muted); display: grid; gap: 3px; }
+
+/* ---------------- Maqueta: tokens de la app por variante ---------------- */
+.mock {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0); --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0); --muted: oklch(0.967 0.001 286.375); --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375); --border: oklch(0.92 0.004 286.32); --input: oklch(0.92 0.004 286.32);
+  --sidebar: oklch(0.985 0 0); --sidebar-accent: oklch(0.967 0.001 286.375); --sidebar-border: oklch(0.92 0.004 286.32);
+  --brand: oklch(60.6% 0.25 292.717); --brand-strong: oklch(54.1% 0.281 293.009); --brand-foreground: oklch(0.985 0 0);
+}
+.mock.dark {
+  --background: oklch(0.141 0.005 285.823); --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885); --muted: oklch(0.274 0.006 286.033); --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033); --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%);
+  --sidebar: oklch(0.21 0.006 285.885); --sidebar-accent: oklch(0.274 0.006 286.033); --sidebar-border: oklch(1 0 0 / 10%);
+  --brand: oklch(70.2% 0.183 293.541);
+}
+/* A · App.css tal cual (lo que corre hoy) */
+.mock.v-hoy { --radius: 0.65rem; --primary: oklch(0.541 0.281 293.009); --primary-foreground: oklch(0.969 0.016 293.756); --ring: oklch(0.702 0.183 293.541); }
+.mock.v-hoy.dark { --primary: oklch(51.239% 0.24794 301.697); --ring: oklch(0.38 0.189 293.745); }
+/* B · Violeta, pero primary = brand-strong (mismo tono que el anillo) */
+.mock.v-violeta { --primary: var(--brand-strong); --primary-foreground: var(--brand-foreground); --ring: oklch(0.702 0.183 293.541); }
+.mock.v-violeta.dark { --ring: oklch(0.55 0.2 293.5); }
+/* C · Zinc: los valores de index.css, el violeta queda solo en --brand */
+.mock.v-zinc { --primary: oklch(0.21 0.006 285.885); --primary-foreground: oklch(0.985 0 0); --ring: oklch(0.705 0.015 286.067); }
+.mock.v-zinc.dark { --primary: oklch(0.92 0.004 286.32); --primary-foreground: oklch(0.21 0.006 285.885); --ring: oklch(0.552 0.016 285.938); }
+
+.mock {
+  container: mock / inline-size;
+  background: var(--background); color: var(--foreground);
+  border: 1px solid var(--pg-line); border-radius: 12px; overflow: hidden;
+  display: grid; grid-template-columns: 132px 1fr; min-width: 0;
+  font-size: 13px;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.06), 0 8px 24px -12px oklch(0 0 0 / 0.18);
+}
+.m-side { background: var(--sidebar); border-right: 1px solid var(--sidebar-border); padding: 12px 8px; display: flex; flex-direction: column; gap: 14px; }
+.m-logo { display: flex; align-items: center; gap: 6px; font-weight: 650; font-size: 13px; padding: 2px 4px; }
+.m-logo svg { width: 22px; height: 22px; color: var(--primary); flex-shrink: 0; }
+.m-nav { display: flex; flex-direction: column; gap: 2px; }
+.m-nav span { padding: 6px 8px; border-radius: calc(var(--radius) - 2px); color: var(--muted-foreground); font-size: 12.5px; }
+.m-nav span.act { background: var(--sidebar-accent); color: var(--foreground); font-weight: 500; }
+.m-user { margin-top: auto; display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--muted-foreground); padding: 4px; }
+.m-user b { width: 22px; height: 22px; border-radius: 999px; background: var(--muted); color: var(--foreground); display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+
+.m-main { min-width: 0; display: flex; flex-direction: column; }
+.m-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); font-weight: 500; }
+.m-head time { font-variant-numeric: tabular-nums; color: var(--muted-foreground); font-size: 12px; }
+.m-body { padding: 18px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.m-hero { display: flex; align-items: center; gap: 16px; }
+.m-anillo { position: relative; width: 76px; height: 76px; flex-shrink: 0; }
+.m-anillo svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.m-anillo .pista { stroke: var(--muted); }
+.m-anillo .arco { stroke: var(--brand); }
+.m-anillo div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+.m-anillo strong { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+.m-anillo small { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); margin-top: 3px; }
+.m-hero h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.m-hero p { margin: 2px 0 0; color: var(--muted-foreground); font-size: 12px; font-variant-numeric: tabular-nums; }
+.m-hero p b { color: var(--foreground); font-weight: 600; }
+
+.m-salas { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@container mock (width >= 520px) { .m-salas { grid-template-columns: 2fr 1fr; } }
+.m-card { background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px oklch(0 0 0 / 0.05); }
+.m-card h4 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: -0.01em; }
+.m-card p { margin: 0; color: var(--muted-foreground); font-size: 12px; flex-grow: 1; }
+.m-btn { font: inherit; font-size: 13px; font-weight: 500; border-radius: calc(var(--radius) - 2px); height: 38px; border: 1px solid transparent; cursor: pointer; transition: background-color .15s, transform .1s; }
+.m-btn:active { transform: scale(0.98); }
+.m-btn.prim { background: var(--primary); color: var(--primary-foreground); }
+.m-btn.prim:hover { background: color-mix(in oklch, var(--primary) 90%, transparent); }
+.m-btn.out { background: var(--background); border-color: var(--input); color: var(--foreground); }
+.m-btn.out:hover { background: var(--accent); }
+.m-input { font: inherit; font-size: 12.5px; height: 34px; border-radius: calc(var(--radius) - 2px); border: 1px solid var(--ring); background: transparent; color: var(--foreground); padding: 0 10px; box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent); font-family: var(--f-mono); width: 100%; min-width: 0; }
+
+.m-fila { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@container mock (width >= 520px) { .m-fila { grid-template-columns: 1fr 1fr; } }
+.m-tareas { display: flex; flex-direction: column; gap: 7px; }
+.m-tarea { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.m-check { width: 15px; height: 15px; border-radius: 4px; border: 1px solid var(--input); display: grid; place-items: center; flex-shrink: 0; cursor: pointer; padding: 0; background: transparent; }
+.m-check[aria-checked="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.m-check svg { width: 11px; height: 11px; opacity: 0; }
+.m-check[aria-checked="true"] svg { opacity: 1; }
+.m-tarea.hecha span { color: var(--muted-foreground); text-decoration: line-through; }
+
+.m-reloj { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.m-reloj .t { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+.m-reloj .modo { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); margin-bottom: 4px; }
+.m-play { width: 38px; height: 38px; border-radius: calc(var(--radius) - 2px); border: 0; background: var(--primary); color: var(--primary-foreground); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+.m-play svg { width: 16px; height: 16px; }
+.m-play[aria-pressed="true"] { background: var(--background); color: var(--foreground); border: 1px solid var(--input); }
+
+/* ---------------- Cierre ---------------- */
+.cierre { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .cierre { grid-template-columns: 1fr; } .notas { grid-template-columns: 1fr; } }
+.bloque { background: var(--pg-card); border: 1px solid var(--pg-line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.bloque h2 { margin: 0; font-size: 16px; font-weight: 650; }
+.bloque p { margin: 0; color: var(--pg-muted); max-width: 70ch; }
+.bloque p strong { color: var(--pg-fg); }
+.tabla { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 520px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--pg-line); vertical-align: top; }
+th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pg-muted); }
+td:first-child { color: var(--pg-muted); }
+tr.elegida td { background: color-mix(in oklch, var(--pg-ok) 8%, transparent); }
+pre { margin: 0; overflow-x: auto; background: var(--pg-chip); border-radius: 8px; padding: 12px 14px; font-family: var(--f-mono); font-size: 12px; line-height: 1.6; }
+.pre-c { color: var(--pg-muted); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="pagina">
+  <header class="top">
+    <div>
+      <h1>¿<code>--primary</code> violeta o zinc?</h1>
+      <p>La misma pantalla del home con tres valores de <code>--primary</code>. El anillo usa <code>--brand</code> y no cambia en ninguna. Lo que cambia es el logo de la sidebar, «Crear sala», el foco del input, los checkbox y el play del reloj. Tocá el checkbox y el play para ver los estados.</p>
+    </div>
+    <div class="controles">
+      <div class="seg" role="group" aria-label="Tema">
+        <button type="button" data-tema="light" aria-pressed="false">Claro</button>
+        <button type="button" data-tema="dark" aria-pressed="false">Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="opciones" id="opciones"></section>
+
+  <section class="cierre">
+    <div class="bloque">
+      <h2>Comparación</h2>
+      <div class="tabla">
+        <table>
+          <thead><tr><th></th><th>A · Hoy</th><th>B · Violeta unificado</th><th>C · Zinc</th></tr></thead>
+          <tbody>
+            <tr><td>Violetas que no combinan</td><td>Sí, en oscuro (301.7 vs 293)</td><td>No</td><td>No: hay un solo violeta</td></tr>
+            <tr><td>Cuánto cambia la app</td><td>Nada</td><td>Casi nada: solo el tono en oscuro</td><td>Botones, foco, checkbox, play y logo en toda la app</td></tr>
+            <tr><td>Qué tanto se destaca el anillo</td><td>Compite con el botón</td><td>Compite con el botón</td><td>Es lo único violeta: se destaca solo</td></tr>
+            <tr><td>Acción principal vs. marca</td><td>Iguales</td><td>Iguales</td><td>Separadas</td></tr>
+            <tr><td>Botón primario en oscuro</td><td>Violeta</td><td>Violeta</td><td>Blanco con texto oscuro</td></tr>
+            <tr class="elegida"><td>Recomendación</td><td></td><td>Plan B</td><td><strong>La que elegiría</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Elegiría C.</strong> El home ya está pensado para que el anillo sea lo único con color (está en el comentario de <code>HeroEnfoque.tsx</code>). Con <code>--primary</code> violeta, «Crear sala» le disputa esa atención justo al lado. Con zinc, el violeta vuelve a significar «esto es Doro». El costo es que la app se ve más sobria. En la sala, el play pasa a negro (claro) o blanco (oscuro).</p>
+      <p>Si preferís que no cambie el aspecto, <strong>B</strong> corrige lo que molesta hoy (el magenta en oscuro) apuntando <code>--primary</code> a <code>--brand-strong</code>. Así no quedan dos violetas sueltos.</p>
+    </div>
+    <div class="bloque">
+      <h2>Cómo quedaría en el código</h2>
+      <p>En los dos casos, primero se borran los bloques de tokens de <code>App.css</code> y su import en <code>App.tsx:1</code>.</p>
+<pre><span class="pre-c">/* index.css — opción C: ya están estos valores.
+   Solo hay que dejar de taparlos. */</span>
+:root { --primary: oklch(0.21 0.006 285.885); }
+.dark { --primary: oklch(0.92 0.004 286.32); }
+
+<span class="pre-c">/* index.css — opción B */</span>
+:root {
+  --primary: var(--brand-strong);
+  --primary-foreground: var(--brand-foreground);
+}
+<span class="pre-c">/* .dark hereda brand-strong (293), sin 301.7 */</span></pre>
+      <p>Aparte de este tema, en <code>index.css</code> oscuro hay un <code>--sidebar-primary</code> <strong>azul</strong> (hue 264) que hoy no se ve porque <code>App.css</code> lo tapa. Si se borra <code>App.css</code>, hay que corregirlo también, en cualquiera de las dos opciones.</p>
+    </div>
+  </section>
+</div>
+
+<template id="tpl-mock">
+  <div class="mock">
+    <aside class="m-side">
+      <div class="m-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
+        Doro
+      </div>
+      <nav class="m-nav"><span class="act">Inicio</span><span>Dashboard</span><span>Calendario</span></nav>
+      <div class="m-user"><b>LC</b>Leo</div>
+    </aside>
+    <div class="m-main">
+      <div class="m-head"><span>Inicio</span><time>18:42</time></div>
+      <div class="m-body">
+        <div class="m-hero">
+          <div class="m-anillo" role="img" aria-label="85 minutos de enfoque de una meta de 120">
+            <svg viewBox="0 0 112 112"><circle class="pista" cx="56" cy="56" r="46" fill="none" stroke-width="9"/><circle class="arco" cx="56" cy="56" r="46" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="289.03" stroke-dashoffset="84.3"/></svg>
+            <div><strong>1h 25</strong><small>de 2h</small></div>
+          </div>
+          <div>
+            <h3>Buenas tardes, Leo</h3>
+            <p><b>4</b> días seguidos · <b>3</b> tareas completadas</p>
+          </div>
+        </div>
+        <div class="m-salas">
+          <div class="m-card">
+            <h4>Nueva sala</h4>
+            <p>Iniciá una sesión de Pomodoro y compartí el enlace con quien quieras estudiar.</p>
+            <button type="button" class="m-btn prim">Crear sala</button>
+          </div>
+          <div class="m-card">
+            <h4>Unirse</h4>
+            <p>Con el código que te pasaron.</p>
+            <input class="m-input" value="0852EF11" aria-label="Código de sala" readonly>
+            <button type="button" class="m-btn out">Unirse</button>
+          </div>
+        </div>
+        <div class="m-fila">
+          <div class="m-card">
+            <h4>Tareas</h4>
+            <div class="m-tareas">
+              <div class="m-tarea hecha"><button type="button" class="m-check" role="checkbox" aria-checked="true" aria-label="Repasar parcial de Álgebra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><span>Repasar parcial de Álgebra</span></div>
+              <div class="m-tarea"><button type="button" class="m-check" role="checkbox" aria-checked="false" aria-label="Leer capítulo 4 de Redes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><span>Leer capítulo 4 de Redes</span></div>
+              <div class="m-tarea"><button type="button" class="m-check" role="checkbox" aria-checked="false" aria-label="Entregar TP de Bases de Datos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><span>Entregar TP de Bases de Datos</span></div>
+            </div>
+          </div>
+          <div class="m-card">
+            <h4>En la sala</h4>
+            <div class="m-reloj">
+              <div><div class="modo">Pomodoro</div><div class="t" data-reloj>25:00</div></div>
+              <button type="button" class="m-play" aria-pressed="false" aria-label="Iniciar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+(function () {
+  const opciones = [
+    { clase: "v-hoy", etq: "A · Hoy", nombre: "Violeta de App.css, tal cual",
+      resumen: "Lo que ves hoy en la app. En oscuro, --primary está en hue 301.7 y el anillo en 293.",
+      muestras: { light: [["primary", "oklch(0.541 0.281 293.009)", "293"], ["brand", "oklch(60.6% 0.25 292.717)", "293"]],
+                  dark:  [["primary", "oklch(51.239% 0.24794 301.697)", "301.7"], ["brand", "oklch(70.2% 0.183 293.541)", "293"]] },
+      gana: ["No hay que cambiar nada", "Es la app que ya conocés"],
+      pierde: ["En oscuro, «Crear sala» se ve magenta al lado del anillo", "Acción principal y marca son el mismo color"] },
+    { clase: "v-violeta", etq: "B · Violeta unificado", nombre: "Violeta, con un solo tono",
+      resumen: "--primary apunta a --brand-strong. Mismo look de hoy, sin el magenta.",
+      muestras: { light: [["primary", "oklch(54.1% 0.281 293.009)", "293"], ["brand", "oklch(60.6% 0.25 292.717)", "293"]],
+                  dark:  [["primary", "oklch(54.1% 0.281 293.009)", "293"], ["brand", "oklch(70.2% 0.183 293.541)", "293"]] },
+      gana: ["Corrige el magenta sin cambiar el aspecto", "Cambiar la marca toca un solo token"],
+      pierde: ["Botón y anillo siguen compitiendo", "No queda un neutro fuerte para acciones que no son de marca"] },
+    { clase: "v-zinc", etq: "C · Zinc", nombre: "Zinc, con el violeta solo para la marca",
+      resumen: "Los valores que ya tiene index.css. El violeta queda en el anillo y nada más.",
+      muestras: { light: [["primary", "oklch(0.21 0.006 285.885)", "286"], ["brand", "oklch(60.6% 0.25 292.717)", "293"]],
+                  dark:  [["primary", "oklch(0.92 0.004 286.32)", "286"], ["brand", "oklch(70.2% 0.183 293.541)", "293"]] },
+      gana: ["El anillo es lo único con color, como pide el hero", "Acción principal y marca separadas"],
+      pierde: ["Cambia el aspecto de toda la app", "La sala pierde su play violeta"] },
+  ];
+
+  const cont = document.getElementById("opciones");
+  const tpl = document.getElementById("tpl-mock");
+  const mocks = [];
+
+  opciones.forEach((o) => {
+    const art = document.createElement("article");
+    art.className = "opcion";
+    art.innerHTML =
+      '<div class="opcion-cab"><span class="etq"></span><h2></h2><p></p></div>' +
+      '<div class="muestras"></div>';
+    art.querySelector(".etq").textContent = o.etq;
+    art.querySelector("h2").textContent = o.nombre;
+    art.querySelector("p").textContent = o.resumen;
+    const mock = tpl.content.firstElementChild.cloneNode(true);
+    mock.classList.add(o.clase);
+    art.appendChild(mock);
+    const notas = document.createElement("div");
+    notas.className = "notas";
+    notas.innerHTML = '<div class="gana"><h3>Qué gana</h3><ul></ul></div><div class="pierde"><h3>Qué pierde</h3><ul></ul></div>';
+    o.gana.forEach((t) => { const li = document.createElement("li"); li.textContent = t; notas.querySelector(".gana ul").appendChild(li); });
+    o.pierde.forEach((t) => { const li = document.createElement("li"); li.textContent = t; notas.querySelector(".pierde ul").appendChild(li); });
+    art.appendChild(notas);
+    cont.appendChild(art);
+    mocks.push({ mock, muestras: art.querySelector(".muestras"), o });
+  });
+
+  // Checkbox
+  document.addEventListener("click", (e) => {
+    const c = e.target.closest(".m-check");
+    if (c) {
+      const v = c.getAttribute("aria-checked") !== "true";
+      c.setAttribute("aria-checked", String(v));
+      c.parentElement.classList.toggle("hecha", v);
+    }
+    const p = e.target.closest(".m-play");
+    if (p) {
+      const on = p.getAttribute("aria-pressed") !== "true";
+      mocks.forEach(({ mock }) => {
+        const b = mock.querySelector(".m-play");
+        b.setAttribute("aria-pressed", String(on));
+        b.setAttribute("aria-label", on ? "Pausar" : "Iniciar");
+        b.innerHTML = on
+          ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>';
+      });
+      corriendo = on;
+    }
+  });
+
+  // Reloj que corre de verdad (compartido entre las tres maquetas, como en una sala)
+  let restante = 25 * 60, corriendo = false;
+  setInterval(() => {
+    if (!corriendo) return;
+    restante = restante > 0 ? restante - 1 : 25 * 60;
+    const t = String(Math.floor(restante / 60)).padStart(2, "0") + ":" + String(restante % 60).padStart(2, "0");
+    document.querySelectorAll("[data-reloj]").forEach((el) => { el.textContent = t; });
+  }, 1000);
+
+  // Tema: sigue al sistema hasta que se elige uno
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  let elegido = null;
+  try { elegido = localStorage.getItem("tema-primary"); } catch (_) {}
+  function aplicar() {
+    const raiz = document.documentElement.getAttribute("data-theme");
+    const tema = elegido || raiz || (mq.matches ? "dark" : "light");
+    if (elegido) document.documentElement.setAttribute("data-theme", elegido);
+    document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tema === tema)));
+    mocks.forEach(({ mock, muestras, o }) => {
+      mock.classList.toggle("dark", tema === "dark");
+      muestras.innerHTML = "";
+      o.muestras[tema].forEach(([n, c, h]) => {
+        const s = document.createElement("span");
+        s.className = "muestra";
+        s.innerHTML = '<i></i>';
+        s.querySelector("i").style.background = c;
+        s.append("--" + n + " · hue " + h);
+        muestras.appendChild(s);
+      });
+    });
+  }
+  document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => {
+    elegido = b.dataset.tema;
+    try { localStorage.setItem("tema-primary", elegido); } catch (_) {}
+    aplicar();
+  }));
+  mq.addEventListener("change", aplicar);
+  new MutationObserver(aplicar).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  aplicar();
+})();
+</script>

@@ -1,0 +1,896 @@
+<title>Tareas de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Seis estructuras de la pantalla de tareas dentro del mundo del home D4: fondo neutro, un acento que solo marca avance, líneas finas, el detalle aparece al acercarse. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 70ch; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.resumen { margin: 0; color: var(--tenue); max-width: 54ch; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 700px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 6px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); white-space: nowrap; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── Piezas compartidas ───────── */
+.titulo-pantalla { margin: 0; font-size: clamp(24px, 4cqi, 30px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.bajada { margin: 4px 0 0; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.subtitulo { margin: 0; font-size: 13px; font-weight: 600; color: var(--tenue); }
+.num { font-variant-numeric: tabular-nums; color: var(--tenue); font-size: 13.5px; white-space: nowrap; }
+.num b { color: var(--fg); font-weight: 600; }
+
+/* La línea de avance: 2px, como la del home */
+.linea-avance { display: block; height: 2px; background: var(--linea); border-radius: 2px; overflow: hidden; }
+.linea-avance span { display: block; height: 100%; background: var(--acento); transition: width .5s cubic-bezier(.16,1,.3,1); }
+
+/* La regla de puntos: un tramo por punto, el acento marca lo hecho */
+.regla { display: flex; gap: 3px; align-items: center; }
+.regla i { flex: 1 1 0; max-width: 14px; min-width: 5px; height: 10px; border-radius: 1.5px; background: var(--linea); transition: background-color .2s; }
+.regla i.hecho { background: var(--acento); }
+
+/* Fila de TP: título, detalle que aparece al acercarse, cuenta */
+.tp { border-bottom: 1px solid var(--linea); }
+.tp:last-child { border-bottom: 0; }
+.tp-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 4px 16px; width: 100%; padding: 12px 0; border: 0; background: none; text-align: left; }
+.tp-titulo { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tp-fila .regla { grid-column: 1 / -1; }
+.cerca { font-size: 13px; color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 28ch; opacity: 0; transition: opacity .3s ease .5s; }
+@container app (max-width: 520px) { .cerca { display: none; } }
+@media (hover: hover) {
+  :root:not([data-tactil]) .tp:is(:hover, :focus-within) .cerca,
+  :root:not([data-tactil]) .tarea:is(:hover, :focus-within) .cerca { opacity: 1; transition-delay: 0s; }
+}
+.tp.abierto .cerca { opacity: 0 !important; }
+
+/* Abierto: los puntos se marcan acá */
+.tp-abierto { padding: 2px 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.tp-abierto[hidden] { display: none; }
+.puntos { display: flex; flex-wrap: wrap; gap: 4px; }
+.punto { width: 32px; height: 32px; border-radius: 4px; border: 1px solid var(--linea); background: transparent; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--tenue); display: grid; place-items: center; transition: background-color .15s, color .15s, border-color .15s, transform .1s; }
+.punto:hover { border-color: var(--tenue); color: var(--fg); }
+.punto:active { transform: scale(.94); }
+.punto[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--acento-fg); }
+.detalle { margin: 0; font-size: 13.5px; color: var(--tenue); display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; }
+.detalle b { color: var(--fg); font-weight: 500; }
+.btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; }
+.btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
+.btn-texto svg { width: 14px; height: 14px; }
+
+/* Fila de tarea */
+.tarea { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 44px; padding: 6px 0; border-bottom: 1px solid var(--linea); }
+.tarea:last-child { border-bottom: 0; }
+.check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid color-mix(in oklch, var(--tenue) 70%, transparent); background: transparent; padding: 0; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
+.check svg { width: 11px; height: 11px; opacity: 0; color: var(--acento-fg); }
+.tarea.hecha .check { background: var(--acento); border-color: var(--acento); }
+.tarea.hecha .check svg { opacity: 1; }
+.tarea-titulo { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tarea.hecha .tarea-titulo { color: var(--tenue); text-decoration: line-through; text-decoration-color: var(--linea); }
+.aviso-btn { border: 0; background: none; padding: 4px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--tenue); opacity: 0; transition: opacity .3s ease .5s; }
+.aviso-btn svg { width: 14px; height: 14px; }
+.aviso-btn.puesto { opacity: 1; }
+.aviso-btn:hover { color: var(--fg); }
+@media (hover: hover) { :root:not([data-tactil]) .tarea:is(:hover, :focus-within) .aviso-btn { opacity: 1; transition-delay: 0s; } }
+@media (hover: none) { .aviso-btn { opacity: 1; } }
+:root[data-tactil] .aviso-btn { opacity: 1; }
+
+/* Agregar: un renglón que aparece al pasar por la materia */
+.agregar { display: flex; align-items: center; gap: 10px; min-height: 40px; color: var(--tenue); font-size: 14px; }
+.agregar svg { width: 16px; height: 16px; flex-shrink: 0; }
+.agregar input { border: 0; background: none; flex: 1; min-width: 0; outline: none; font-size: 14.5px; padding: 6px 0; border-bottom: 1px solid transparent; }
+.agregar input:focus { border-color: var(--linea); }
+.agregar input::placeholder { color: var(--tenue); }
+.agregar { opacity: .0; transition: opacity .3s ease .5s; }
+.agregar:focus-within { opacity: 1; transition-delay: 0s; }
+@media (hover: hover) { :root:not([data-tactil]) [data-grupo]:hover .agregar { opacity: 1; transition-delay: 0s; } }
+@media (hover: none) { .agregar { opacity: 1; } }
+:root[data-tactil] .agregar { opacity: 1; }
+
+/* ───────── Ronda 3: piezas nuevas ───────── */
+.frase { margin: 0; font-size: clamp(24px, 4.4cqi, 36px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.15; text-wrap: balance; }
+.frase span { color: var(--tenue); font-weight: 400; }
+.frase.chica { font-size: clamp(20px, 3.2cqi, 26px); }
+.barra-gral { display: flex; align-items: center; gap: 12px; }
+.barra-gral .linea-avance { flex: 1; height: 4px; border-radius: 4px; }
+.barra-gral .num { min-width: 4ch; text-align: right; }
+
+/* Práctico: cerrado muestra título, cuenta y (según el boceto) línea o texto; abierto, la regla de F */
+.pr { border-bottom: 1px solid var(--linea); }
+.pr:last-child { border-bottom: 0; }
+.pr-cab { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; width: 100%; padding: 12px 0; border: 0; background: none; text-align: left; }
+.pr-titulo { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-cab .linea-avance, .pr-cab .pr-falta { grid-column: 1 / -1; }
+.pr-falta { font-size: 13px; color: var(--tenue); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-falta.al-acercarse { opacity: 0; transition: opacity .3s ease .5s; }
+@media (hover: hover) { :root:not([data-tactil]) .pr:is(:hover, :focus-within) .pr-falta.al-acercarse { opacity: 1; transition-delay: 0s; } }
+@media (hover: none) { .pr-falta.al-acercarse { opacity: 1; } }
+:root[data-tactil] .pr-falta.al-acercarse { opacity: 1; }
+.pr.abierto .pr-falta, .pr.abierto .pr-cab .linea-avance { display: none; }
+.pr-abierto { padding: 0 0 16px; display: flex; flex-direction: column; gap: 14px; }
+.pr-abierto[hidden] { display: none; }
+.pr-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--tenue); padding-top: 6px; }
+.pr-meta b { color: var(--fg); font-weight: 500; }
+.pr-meta .btn-texto { font-size: 13px; }
+
+/* La regla de F, para marcar */
+.regla-f { display: flex; gap: 3px; align-items: stretch; height: 28px; padding-bottom: 14px; box-sizing: content-box; }
+.regla-f button { flex: 1 1 0; min-width: 8px; max-width: 24px; border: 0; padding: 0; border-radius: 2px; background: var(--linea); position: relative; transition: background-color .15s, transform .1s; }
+.regla-f button:hover { background: color-mix(in oklch, var(--acento) 35%, var(--linea)); }
+.regla-f button[aria-pressed="true"] { background: var(--acento); }
+.regla-f button:active { transform: scaleY(.85); }
+.regla-f button::after { content: attr(data-n); position: absolute; left: 50%; top: calc(100% + 3px); transform: translateX(-50%); font-size: 10.5px; color: var(--tenue); font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.regla-f:hover button::after, .regla-f:focus-within button::after, .regla-f.numerada button::after { opacity: 1; }
+
+.bloque-t { display: flex; flex-direction: column; }
+.bloque-t + .bloque-t { margin-top: 18px; }
+
+/* ───────── G · Cajas ───────── */
+.g-main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 28px; }
+@container app (min-width: 720px) { .g-main { padding: 48px 32px 80px; } }
+.g-cab { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+.g-cajas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; align-items: start; }
+.g-caja { background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.g-caja > header { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+.g-caja > header .fila { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.g-caja h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.g-caja .resumen-caja { margin: 0; font-size: 13.5px; color: var(--tenue); }
+
+/* ───────── H · Pestañas con frase ───────── */
+.h-main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 32px; }
+@container app (min-width: 720px) { .h-main { padding: 40px 32px 80px; } }
+.h-pestanas { display: flex; gap: 24px; overflow-x: auto; border-bottom: 1px solid var(--linea); scrollbar-width: none; }
+.h-pestanas button { flex-shrink: 0; border: 0; background: none; padding: 0 0 12px; font-size: 14.5px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.h-pestanas button:hover { color: var(--fg); }
+.h-pestanas button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+.h-pestanas small { font-size: 12.5px; margin-left: 6px; font-variant-numeric: tabular-nums; opacity: .7; }
+.h-tema { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+.h-cuerpo { display: grid; gap: 32px; }
+@container app (min-width: 760px) { .h-cuerpo { grid-template-columns: 1.2fr 1fr; gap: 56px; } }
+.h-pie { font-size: 13px; color: var(--tenue); display: flex; align-items: center; gap: 10px; }
+.h-pie .linea-avance { width: 120px; }
+
+/* ───────── I · Barra general ───────── */
+.i-main { flex: 1; width: 100%; max-width: 860px; margin: 0 auto; padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 36px; }
+@container app (min-width: 720px) { .i-main { padding: 48px 32px 80px; } }
+.i-segmentos { display: flex; gap: 6px; align-items: flex-start; }
+.i-seg { flex-grow: var(--peso); flex-basis: 0; min-width: 44px; border: 0; background: none; padding: 0; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+.i-seg .pista-seg { position: relative; height: 12px; border-radius: 3px; background: var(--linea); overflow: hidden; transition: box-shadow .2s; }
+.i-seg .pista-seg span { position: absolute; inset: 0 auto 0 0; background: var(--acento); transition: width .5s cubic-bezier(.16,1,.3,1); }
+.i-seg .etq { font-size: 12.5px; color: var(--tenue); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.i-seg .etq b { display: block; color: var(--fg); font-weight: 500; font-size: 13px; }
+.i-seg:hover .pista-seg { box-shadow: 0 0 0 1px var(--tenue); }
+.i-seg[aria-pressed="true"] .pista-seg { box-shadow: 0 0 0 2px var(--fg); }
+.i-segmentos.con-sel .i-seg[aria-pressed="false"] { opacity: .45; }
+.i-seccion { display: flex; flex-direction: column; }
+.i-seccion > header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--fg); }
+.i-seccion h2 { margin: 0; font-size: 17px; font-weight: 500; }
+.i-secciones { display: flex; flex-direction: column; gap: 36px; }
+
+/* ───────── J · Carriles ───────── */
+.j-main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 28px; }
+@container app (min-width: 720px) { .j-main { padding: 48px 32px 80px; } }
+.j-tabla { overflow-x: auto; scrollbar-width: thin; }
+.j-grilla { min-width: 640px; display: grid; grid-template-columns: 170px minmax(0, 1fr); }
+.j-eje { grid-column: 2; position: relative; height: 26px; border-bottom: 1px solid var(--linea); }
+.j-eje span { position: absolute; bottom: 6px; font-size: 12px; color: var(--tenue); transform: translateX(-50%); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.j-eje span:first-child { transform: none; }
+.j-eje span:last-child { transform: translateX(-100%); }
+.j-carril-nombre { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 14px 16px 14px 0; border-bottom: 1px solid var(--linea); border: 0; background: none; text-align: left; border-bottom: 1px solid var(--linea); }
+.j-carril-nombre b { font-weight: 500; font-size: 14.5px; }
+.j-carril-nombre .linea-avance { width: 100%; }
+.j-carril-nombre[aria-expanded="true"] b { color: var(--acento); }
+.j-carril { position: relative; min-height: 64px; border-bottom: 1px solid var(--linea); }
+.j-sem { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.j-hoy { position: absolute; top: 0; bottom: 0; left: 0; width: 2px; background: var(--fg); opacity: .5; }
+.j-bloque { position: absolute; top: 12px; height: 40px; width: 130px; transform: translateX(-100%); border: 1px solid var(--linea); border-radius: 6px; background: var(--superficie); padding: 5px 8px; display: flex; flex-direction: column; justify-content: space-between; text-align: left; font-size: 12.5px; overflow: hidden; }
+.j-bloque:hover { border-color: var(--tenue); }
+.j-bloque .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.j-bloque .linea-avance { height: 3px; }
+.j-bloque.sin-fecha { right: 8px; left: auto; transform: none; border-style: dashed; }
+.j-tarea-marca { position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 2px; border: 1.5px solid var(--tenue); background: var(--bg); }
+.j-detalle { grid-column: 1 / -1; padding: 8px 0 20px; border-bottom: 1px solid var(--linea); display: grid; gap: 24px; }
+@container app (min-width: 760px) { .j-detalle { grid-template-columns: 1.2fr 1fr; gap: 48px; padding-left: 170px; } }
+.j-ley { font-size: 12.5px; color: var(--tenue); display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.j-ley i { display: inline-block; vertical-align: -1px; margin-right: 6px; }
+.j-ley .b { width: 16px; height: 10px; border: 1px solid var(--linea); border-radius: 3px; background: var(--superficie); }
+.j-ley .t { width: 9px; height: 9px; border: 1.5px solid var(--tenue); border-radius: 2px; }
+.j-ley .h { width: 2px; height: 12px; background: var(--fg); opacity: .5; }
+
+/* ───────── K · Panel ───────── */
+.k-main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 20px 20px 64px; display: grid; gap: 24px; align-content: start; }
+@container app (min-width: 760px) { .k-main { grid-template-columns: 240px minmax(0, 1fr); gap: 48px; padding: 40px 32px 80px; } }
+.k-lista { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+@container app (min-width: 760px) { .k-lista { flex-direction: column; overflow: visible; position: sticky; top: 16px; align-self: start; } }
+.k-item { flex-shrink: 0; min-width: 150px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; padding: 10px 12px; border: 0; border-radius: 6px; background: none; text-align: left; }
+.k-item:hover { background: var(--campo); }
+.k-item[aria-pressed="true"] { background: var(--campo); }
+.k-item .n { font-size: 14px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-item[aria-pressed="true"] .n { font-weight: 500; }
+.k-item .linea-avance { grid-column: 1 / -1; }
+.k-total { margin: 12px 12px 0; padding-top: 14px; border-top: 1px solid var(--linea); font-size: 13px; color: var(--tenue); display: none; flex-direction: column; gap: 8px; }
+@container app (min-width: 760px) { .k-total { display: flex; } }
+.k-detalle { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.k-cab { display: flex; flex-direction: column; gap: 16px; max-width: 600px; }
+
+/* ───────── L · Una por vez ───────── */
+.l-main { flex: 1; width: 100%; max-width: 680px; margin: 0 auto; padding: 24px 20px 56px; display: flex; flex-direction: column; gap: 32px; }
+@container app (min-width: 720px) { .l-main { padding: 40px 32px 64px; } }
+.l-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.l-flecha { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--linea); background: transparent; display: grid; place-items: center; color: var(--fg); }
+.l-flecha:hover { border-color: var(--tenue); }
+.l-flecha svg { width: 16px; height: 16px; }
+.l-flecha.izq svg { transform: rotate(180deg); }
+.l-tema { display: flex; flex-direction: column; gap: 14px; }
+.l-tema .nombre-tema { margin: 0; font-size: 14px; color: var(--tenue); }
+.l-tema .linea-avance { height: 6px; border-radius: 6px; }
+.l-pr { display: flex; flex-direction: column; gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+.l-pr .fila { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.l-pr .regla-f { height: 34px; }
+.l-pr .regla-f button { max-width: 32px; }
+.l-temas { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; padding-top: 8px; border-top: 1px solid var(--linea); }
+.l-temas button { border: 0; background: none; padding: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.l-temas button[aria-current="true"] { color: var(--fg); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1.5px; }
+.l-temas button:hover { color: var(--fg); }
+
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+table { border-collapse: collapse; width: 100%; min-width: 780px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 64ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-campana" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-tp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M4 12h3M4 17h3M10 7h10M10 12h10M10 17h6"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Tareas, tercera ronda</h1>
+    <p>Lo que quedó de la ronda anterior: todo separado por materia o tema, un solo acento y la regla de F para marcar puntos. Cuando el práctico está cerrado se ve qué puntos faltan. Abierto, la regla ya lo muestra y no se repite. En las seis hay una barra de progreso general a la vista.</p>
+    <p>Esta vez las estructuras se alejan más entre sí: cajas, pestañas con una frase por tema, una barra general que sirve para navegar, carriles por fecha de entrega, un panel lateral y un tema por pantalla. Las maquetas comparten los datos.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="g" data-v="g">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">G</span><span class="nombre">Cajas</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Una caja por tema, todas a la vista. Arriba, la frase de E con lo que falta de todo y la barra general. En cada caja, su línea de avance, sus prácticos cerrados con una línea fina y sus tareas.</p>
+        <p class="enfoque">Progreso: <b>general, por tema y por práctico</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La separación por tema se ve antes de leer nada: cada caja es un tema.</li><li>Todo a la vista sin elegir ni abrir.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Tres niveles de línea (general, caja, práctico): es la más cargada de las seis.</li><li>Con muchos temas, mucho scroll.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="h" data-v="h">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">H</span><span class="nombre">Pestañas con frase</span></h2>
+        <p class="resumen">Una pestaña por tema. El título es la frase de E, pero del tema elegido: «En Redes te faltan 4 puntos y una tarea». Debajo, prácticos y tareas en dos columnas. El total queda chico, a la derecha.</p>
+        <p class="enfoque">Progreso: <b>por tema, grande; general, chico</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La frase cambia con el tema y dice todo en una línea.</li><li>Un tema por vez: muy poca información en pantalla.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Lo de los otros temas no se ve sin cambiar de pestaña.</li><li>Con nombres largos, las pestañas se deslizan.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="i" data-v="i">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">I</span><span class="nombre">Barra general</span></h2>
+        <p class="resumen">La barra de progreso es la navegación. Es una sola barra, partida en un tramo por tema, y cada tramo es tan ancho como el trabajo que tiene ese tema. Tocás un tramo y abajo queda solo ese tema; lo tocás de nuevo y vuelven todos.</p>
+        <p class="enfoque">Progreso: <b>general y por tema en la misma barra</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>De un vistazo: cuánto falta de todo y de dónde viene.</li><li>Los prácticos cerrados quedan en un renglón, sin líneas extra.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un tema con poco trabajo queda con un tramo angosto.</li><li>Que la barra se pueda tocar no es obvio la primera vez.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="j" data-v="j">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">J</span><span class="nombre">Carriles</span></h2>
+        <p class="resumen">Un carril por tema y, a lo ancho, las próximas tres semanas. Cada práctico es un bloque que termina el día de su entrega, con su avance adentro. Las tareas con aviso son un cuadradito en su día. Tocás un tema y se despliegan sus prácticos y sus tareas.</p>
+        <p class="enfoque">Progreso: <b>por práctico, contra la fecha</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se ve qué entrega viene primero y si llegás.</li><li>Es la más distinta: nadie la confunde con una lista.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin fechas cargadas, los bloques se amontonan en «sin fecha».</li><li>En el celular, el eje se desliza.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="k" data-v="k">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">K</span><span class="nombre">Panel</span></h2>
+        <p class="resumen">Los temas en una columna a la izquierda, como las carpetas de un correo, cada uno con su línea. A la derecha, el tema elegido con su frase. Abajo de la columna, el total de todo.</p>
+        <p class="enfoque">Progreso: <b>todos los temas siempre a la vista</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se ven a la vez todos los temas y el detalle de uno.</li><li>Agregar temas no cambia la pantalla.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Se parece a cualquier app de tareas.</li><li>En el celular la columna pasa arriba y se desliza.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="l" data-v="l">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">L</span><span class="nombre">Un tema por vez</span></h2>
+        <p class="resumen">Como el home: un solo objeto en pantalla. Cada tema ocupa la pantalla entera, con su frase grande y sus prácticos con la regla siempre a la vista, más grande. Se pasa de un tema al otro con las flechas o con los nombres de abajo.</p>
+        <p class="enfoque">Progreso: <b>por tema, grande; los prácticos, en su regla</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La más calma y la más cercana al home.</li><li>Las reglas, siempre abiertas, se marcan sin ningún toque previo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No hay vista de todo junto, salvo la línea de abajo.</li><li>Recorrer cinco temas son cinco toques.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Boceto</th><th>Separación por tema</th><th>Barra general</th><th>Práctico cerrado</th><th>Título</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>G · Cajas</td><td>Cajas</td><td>Arriba, con la frase</td><td>Línea fina + «faltan…»</td><td>Frase de todo</td><td>Tres niveles de línea</td></tr>
+          <tr><td>H · Pestañas con frase</td><td>Pestañas</td><td>Chica, a la derecha</td><td>Solo «faltan…», sin línea</td><td>Frase por tema</td><td>Lo demás queda oculto</td></tr>
+          <tr><td>I · Barra general</td><td>Tramos de la barra</td><td>Es la navegación</td><td>Un renglón; «faltan…» al acercarse</td><td>Frase de todo</td><td>Tramos angostos</td></tr>
+          <tr><td>J · Carriles</td><td>Carriles</td><td>Arriba</td><td>Bloque con avance en su fecha</td><td>«Tareas»</td><td>Depende de las fechas</td></tr>
+          <tr><td>K · Panel</td><td>Columna lateral</td><td>Al pie de la columna</td><td>«Faltan…» visible</td><td>Frase por tema</td><td>Genérica</td></tr>
+          <tr><td>L · Un tema por vez</td><td>Una pantalla por tema</td><td>Línea de temas abajo</td><td>Regla siempre abierta</td><td>Frase por tema, grande</td><td>Cinco toques para ver todo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegiría G, con la frase por tema de H dentro de cada caja</h3>
+        <p><b>Es la que cumple todo lo que pediste a la vez.</b> Separación por tema que se entiende antes de leer, una barra general arriba, la frase de E como título y la regla de F para marcar. Las cajas son lo único que delimita: sin sombra, sin color, un borde fino.</p>
+        <p><b>Lo que le sacaría si se siente cargada:</b> la línea de cada práctico cerrado. La caja ya tiene su línea y el texto «faltan 1, 3, 11 y 12» dice lo mismo con más precisión. Con eso quedan dos niveles (general y por tema), que es lo que pediste probar.</p>
+        <p><b>Sobre el título:</b> la frase funciona en las dos escalas. Arriba de todo dice cuánto falta en total; dentro de un tema (H, K, L) dice cuánto falta de ese tema. En G probaría la frase de todo arriba y, en cada caja, una línea corta («faltan 12 puntos y una tarea») en vez del porcentaje.</p>
+        <p><b>Plan B: L.</b> Si querés que Tareas se sienta como el home, con un objeto por pantalla y las reglas siempre abiertas, L es la más fiel. <b>J</b> es la idea más nueva: vale la pena si las fechas de entrega pasan a ser centrales.</p>
+
+        <h4>Fondo con puntos</h4>
+        <p><b>En G los puntos funcionan mejor que en cualquier boceto anterior,</b> porque las cajas tienen fondo propio y tapan la trama: los puntos quedan solo en los espacios entre cajas, como en el home quedaban alrededor del anillo. Con «No» o «A los lados» se nota la diferencia. <b>En L también,</b> con «Al centro», por la misma razón que en el home. En H, I, J y K no los pondría: son renglones sobre el fondo.</p>
+      </div>
+      <div>
+        <pre><span class="c-com">// La frase, en las dos escalas</span>
+function fraseFalta({ puntos, tareas }: Pendiente, tema?: string) {
+  if (!puntos &amp;&amp; !tareas)
+    return tema ? `${tema} está al día.` : "Estás al día.";
+  const partes = [
+    puntos &amp;&amp; `${puntos} punto${puntos === 1 ? "" : "s"}`,
+    tareas &amp;&amp; `${tareas === 1 ? "una" : tareas} tarea${tareas === 1 ? "" : "s"}`,
+  ].filter(Boolean);
+  const cuerpo = `te falta${puntos + tareas === 1 ? "" : "n"} ${partes.join(" y ")}.`;
+  return tema ? `En ${tema} ${cuerpo}` : cuerpo[0].toUpperCase() + cuerpo.slice(1);
+}
+
+<span class="c-com">// Práctico cerrado: el texto de lo que falta.
+// Abierto: la regla, y el texto se va (ya lo dice la regla).</span>
+{abierto
+  ? &lt;ReglaPuntos total={tp.puntos} hechos={tp.hechos} alMarcar={marcar} /&gt;
+  : &lt;p className="text-muted-foreground text-sm"&gt;{describirFaltantes(tp)}&lt;/p&gt;}</pre>
+        <h4>Qué cambió respecto de la ronda anterior</h4>
+        <p>Abierto, el práctico ya no repite qué puntos faltan: queda la regla, la fecha de entrega y el aviso. Cerrado, sí lo dice. Todas tienen una barra general. Los puntos se marcan siempre con la regla de F; al pasar el mouse aparecen los números debajo de cada tramo.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<template id="tpl-tb">
+  <header class="tb">
+    <a class="marca" href="#" aria-label="Doro, inicio"><svg><use href="#i-logo"/></svg><span class="desv">Doro</span></a>
+    <nav class="tb-nav desv" aria-label="Secciones"><a href="#">Inicio</a><a aria-current="page" href="#">Tareas</a><a href="#">Dashboard</a><a href="#">Calendario</a></nav>
+    <div class="tb-der">
+      <span class="hora desv" data-hora></span>
+      <span class="avatar" aria-label="Tu cuenta">L</span>
+      <button type="button" class="menu desv" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ── Ajustes (mismas claves que el boceto del home) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar("doro-d4-" + id, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer("doro-d4-" + id, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── Datos de ejemplo, compartidos. «Tema» porque no siempre es una materia ── */
+  const s = a => new Set(a);
+  const TEMAS = [
+    { nombre: "Paradigmas", tps: [
+        { titulo: "TP N°1 — Introducción", puntos: 13, hechos: s([2, 4, 5, 6, 7, 8, 9, 10, 13]), entrega: "vie 10/10", dia: 6, aviso: "el día antes" },
+        { titulo: "TP N°2 — Sintaxis y Semántica", puntos: 12, hechos: s([1, 2, 9, 10]), entrega: "lun 20/10", dia: 16, aviso: null } ],
+      tareas: [ { titulo: "Leer el apunte de Haskell", hecha: false, aviso: null, dia: null } ] },
+    { nombre: "Redes", tps: [
+        { titulo: "TP N°3 — Capa de transporte", puntos: 8, hechos: s([1, 2, 3, 5]), entrega: "dom 5/10", dia: 1, aviso: null } ],
+      tareas: [ { titulo: "Leer el capítulo 4 de Kurose", hecha: false, aviso: "hoy 18:00", dia: 0 } ] },
+    { nombre: "Análisis y Diseño", tps: [
+        { titulo: "TP Integrador — Casos de uso", puntos: 6, hechos: s([]), entrega: null, dia: null, aviso: null } ],
+      tareas: [ { titulo: "Imprimir los casos de uso", hecha: false, aviso: null, dia: null } ] },
+    { nombre: "Inteligencia Artificial", tps: [],
+      tareas: [ { titulo: "Mandarle el mail al profe", hecha: false, aviso: "mañana 9:00", dia: 1 }, { titulo: "Bajar el dataset del práctico", hecha: true, aviso: null, dia: null } ] },
+    { nombre: "General", general: true, tps: [],
+      tareas: [ { titulo: "Comprar café", hecha: false, aviso: null, dia: null }, { titulo: "Renovar el carnet de la biblioteca", hecha: true, aviso: null, dia: null } ] },
+  ];
+  const AVISOS = ["hoy 18:00", "mañana 9:00", "el día antes", null];
+  const DIA_AVISO = { "hoy 18:00": 0, "mañana 9:00": 1, "el día antes": null };
+
+  const rango = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+  const unirConY = l => l.length <= 1 ? (l[0] || "") : l.slice(0, -1).join(", ") + " y " + l[l.length - 1];
+  const tramos = f => { const t = []; for (let i = 0; i < f.length;) { let j = i; while (j + 1 < f.length && f[j + 1] === f[j] + 1) j++; const a = f[i], b = f[j]; if (b - a >= 2) t.push(`${a} a ${b}`); else if (a === b) t.push(`${a}`); else t.push(`${a}`, `${b}`); i = j + 1; } return t; };
+  const queFalta = tp => { const f = rango(1, tp.puntos).filter(n => !tp.hechos.has(n)); if (!f.length) return "Están todos los puntos"; if (f.length === tp.puntos) return `Sin empezar, ${tp.puntos} puntos`; return f.length === 1 ? `Falta el punto ${f[0]}` : `Faltan los puntos ${unirConY(tramos(f))}`; };
+  const unidades = m => m.tps.reduce((x, t) => x + t.puntos, 0) + m.tareas.length;
+  const hechas = m => m.tps.reduce((x, t) => x + t.hechos.size, 0) + m.tareas.filter(t => t.hecha).length;
+  const pct = m => unidades(m) ? Math.round(hechas(m) / unidades(m) * 100) : 0;
+  const pend = m => ({ puntos: m.tps.reduce((x, t) => x + t.puntos - t.hechos.size, 0), tareas: m.tareas.filter(t => !t.hecha).length });
+  const pendTodo = () => TEMAS.reduce((a, m) => { const p = pend(m); return { puntos: a.puntos + p.puntos, tareas: a.tareas + p.tareas }; }, { puntos: 0, tareas: 0 });
+  const pctTodo = () => { const u = TEMAS.reduce((x, m) => x + unidades(m), 0), h = TEMAS.reduce((x, m) => x + hechas(m), 0); return u ? Math.round(h / u * 100) : 0; };
+  const partes = ({ puntos, tareas }) => [puntos && `${puntos} punto${puntos === 1 ? "" : "s"}`, tareas && `${tareas === 1 ? "una" : tareas} tarea${tareas === 1 ? "" : "s"}`].filter(Boolean);
+  /* «Te faltan 21 puntos y 5 tareas.» / «En Redes te faltan 4 puntos y una tarea.» */
+  const frase = (p, tema) => {
+    const l = partes(p);
+    if (!l.length) return tema ? `${esc(tema)} está al día.` : "Estás al día.";
+    const verbo = p.puntos + p.tareas === 1 ? "falta" : "faltan";
+    return tema ? `En ${esc(tema)} te ${verbo}<br><span>${unirConY(l)}.</span>` : `Te ${verbo} ${l[0]}${l[1] ? `<br><span>y ${l[1]}.</span>` : "."}`;
+  };
+  const resumenCorto = p => { const l = partes(p); return l.length ? `Faltan ${unirConY(l)}` : "Al día"; };
+
+  /* ── Piezas ── */
+  const linea = p => `<span class="linea-avance" role="img" aria-label="${p} %"><span style="width:${p}%"></span></span>`;
+  const barraGral = () => { const p = pctTodo(); return `<div class="barra-gral">${linea(p)}<span class="num">${p} %</span></div>`; };
+  const regla = (tp, mi, ti, extra = "") => `<div class="regla-f ${extra}" role="group" aria-label="Puntos de ${esc(tp.titulo)}: ${tp.hechos.size} de ${tp.puntos}">${rango(1, tp.puntos).map(n => `<button type="button" data-n="${n}" data-punto="${mi}:${ti}:${n}" data-k="p-${mi}-${ti}-${n}" aria-pressed="${tp.hechos.has(n)}" aria-label="Punto ${n}"></button>`).join("")}</div>`;
+  const meta = (tp, mi, ti) => `<div class="pr-meta">${tp.entrega ? `<span>Entrega <b>${tp.entrega}</b></span>` : `<span>Sin fecha de entrega</span>`}<button type="button" class="btn-texto" data-aviso="tp:${mi}:${ti}" data-k="av-tp-${mi}-${ti}">${ic("i-campana")}${tp.aviso ? "Aviso " + tp.aviso : "Avisarme"}</button></div>`;
+  const cuenta = tp => `<span class="num"><b>${tp.hechos.size}</b>/${tp.puntos}</span>`;
+  /* estilo: "linea" (línea + texto al acercarse), "texto" (texto visible), "renglon" (solo título y cuenta; texto al acercarse) */
+  const practico = (tp, mi, ti, ab, estilo) => {
+    const k = `tp-${mi}-${ti}`, abierto = ab.has(k);
+    const debajo = estilo === "linea" ? `${linea(Math.round(tp.hechos.size / tp.puntos * 100))}<span class="pr-falta al-acercarse">${queFalta(tp)}</span>`
+      : estilo === "texto" ? `<span class="pr-falta">${queFalta(tp)}</span>`
+      : `<span class="pr-falta al-acercarse">${queFalta(tp)}</span>`;
+    return `<div class="pr${abierto ? " abierto" : ""}">
+      <button type="button" class="pr-cab" data-abrir="${k}" data-k="${k}" aria-expanded="${abierto}"><span class="pr-titulo">${esc(tp.titulo)}</span>${cuenta(tp)}${debajo}</button>
+      <div class="pr-abierto" ${abierto ? "" : "hidden"}>${regla(tp, mi, ti)}${meta(tp, mi, ti)}</div>
+    </div>`;
+  };
+  const tarea = (t, mi, ti) => `<div class="tarea${t.hecha ? " hecha" : ""}">
+      <button type="button" class="check" data-check="${mi}:${ti}" data-k="ch-${mi}-${ti}" aria-label="${t.hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(t.titulo)}">${ic("i-check")}</button>
+      <span class="tarea-titulo">${esc(t.titulo)}</span>
+      <button type="button" class="aviso-btn${t.aviso ? " puesto" : ""}" data-aviso="t:${mi}:${ti}" data-k="av-t-${mi}-${ti}" aria-label="${t.aviso ? "Aviso " + t.aviso + ". Cambiar" : "Avisarme"}">${ic("i-campana")}${t.aviso ? esc(t.aviso) : ""}</button>
+    </div>`;
+  const agregar = (mi, id) => `<label class="agregar" for="ag-${id}-${mi}">${ic("i-mas")}<input id="ag-${id}-${mi}" data-agregar="${mi}" placeholder="Agregar tarea"></label>`;
+  const bloques = (m, mi, ab, id, estilo, titulos = true) => `${m.tps.length ? `<div class="bloque-t">${titulos ? `<h3 class="subtitulo">Prácticos</h3>` : ""}${m.tps.map((t, ti) => practico(t, mi, ti, ab, estilo)).join("")}</div>` : ""}
+      <div class="bloque-t">${titulos && !m.general && m.tps.length ? `<h3 class="subtitulo">Tareas</h3>` : ""}${m.tareas.map((t, ti) => tarea(t, mi, ti)).join("")}${agregar(mi, id)}</div>`;
+
+  /* ── Las seis estructuras ── */
+  const V = {
+    g: (app, ab) => `<main class="g-main">
+        <div class="g-cab"><h1 class="frase">${frase(pendTodo())}</h1>${barraGral()}</div>
+        <div class="g-cajas">${TEMAS.map((m, mi) => `<section class="g-caja" data-grupo>
+            <header><div class="fila"><h2>${esc(m.nombre)}</h2><span class="num">${pct(m)} %</span></div>${linea(pct(m))}<p class="resumen-caja">${resumenCorto(pend(m))}</p></header>
+            ${bloques(m, mi, ab, "g", "linea")}
+          </section>`).join("")}</div>
+      </main>`,
+    h: (app, ab) => {
+      const sel = app._sel ?? 0, m = TEMAS[sel];
+      return `<main class="h-main">
+        <div class="h-pestanas" role="group" aria-label="Temas">${TEMAS.map((x, mi) => `<button type="button" data-sel="${mi}" data-k="sel-${mi}" aria-pressed="${mi === sel}">${esc(x.nombre)}<small>${pct(x)} %</small></button>`).join("")}</div>
+        <div class="h-tema"><h1 class="frase">${frase(pend(m), m.general ? "General" : m.nombre)}</h1><div class="barra-gral">${linea(pct(m))}<span class="num">${pct(m)} %</span></div></div>
+        <div class="h-cuerpo" data-grupo>
+          ${m.tps.length ? `<div class="bloque-t"><h3 class="subtitulo">Prácticos</h3>${m.tps.map((t, ti) => practico(t, sel, ti, ab, "texto")).join("")}</div>` : `<div class="bloque-t"><h3 class="subtitulo">Prácticos</h3><p class="bajada">Este tema no tiene prácticos.</p></div>`}
+          <div class="bloque-t"><h3 class="subtitulo">Tareas</h3>${m.tareas.map((t, ti) => tarea(t, sel, ti)).join("")}${agregar(sel, "h")}</div>
+        </div>
+        <p class="h-pie">Todo: ${linea(pctTodo())}<span class="num">${pctTodo()} %</span></p>
+      </main>`;
+    },
+    i: (app, ab) => {
+      const sel = app._sel ?? null;
+      return `<main class="i-main">
+        <h1 class="frase">${frase(pendTodo())}</h1>
+        <div class="i-segmentos${sel != null ? " con-sel" : ""}" role="group" aria-label="Temas">${TEMAS.map((m, mi) => `<button type="button" class="i-seg" style="--peso:${Math.max(unidades(m), 2)}" data-sel="${mi}" data-k="sel-${mi}" aria-pressed="${sel === mi}" aria-label="${esc(m.nombre)}, ${pct(m)} %">
+            <span class="pista-seg"><span style="width:${pct(m)}%"></span></span><span class="etq"><b>${esc(m.nombre)}</b>${pct(m)} %</span></button>`).join("")}</div>
+        <div class="i-secciones">${TEMAS.map((m, mi) => sel != null && sel !== mi ? "" : `<section class="i-seccion" data-grupo>
+            <header><h2>${esc(m.nombre)}</h2><span class="num">${resumenCorto(pend(m))}</span></header>
+            ${bloques(m, mi, ab, "i", "renglon", false)}
+          </section>`).join("")}</div>
+      </main>`;
+    },
+    j: (app, ab) => {
+      const DIAS = 21, x = d => Math.min(100, Math.max(0, d / DIAS * 100));
+      const eje = [[0, "hoy"], [7, "sáb 11"], [14, "sáb 18"], [21, "sáb 25"]];
+      return `<main class="j-main">
+        <div><h1 class="titulo-pantalla">Tareas</h1></div>
+        ${barraGral()}
+        <div class="j-tabla"><div class="j-grilla">
+          <div class="j-eje">${eje.map(([d, t]) => `<span style="left:${x(d)}%">${t}</span>`).join("")}</div>
+          ${TEMAS.map((m, mi) => { const ab2 = ab.has("m-" + mi); return `
+            <button type="button" class="j-carril-nombre" data-abrir="m-${mi}" data-k="m-${mi}" aria-expanded="${ab2}"><b>${esc(m.nombre)}</b>${linea(pct(m))}</button>
+            <div class="j-carril">
+              <span class="j-sem" style="left:${x(7)}%"></span><span class="j-sem" style="left:${x(14)}%"></span><span class="j-hoy"></span>
+              ${m.tareas.filter(t => !t.hecha && t.dia != null).map(t => `<span class="j-tarea-marca" style="left:${x(t.dia) + 1}%" title="${esc(t.titulo)} · ${esc(t.aviso || "")}"></span>`).join("")}
+              ${m.tps.map((t, ti) => `<button type="button" class="j-bloque${t.dia == null ? " sin-fecha" : ""}" ${t.dia != null ? `style="left:${Math.max(x(t.dia), 18)}%"` : ""} data-abrir-tp="${mi}:${ti}" data-k="jb-${mi}-${ti}" title="${esc(t.titulo)}"><span class="t">${esc(t.titulo.split(" — ")[0])}${t.dia == null ? " · sin fecha" : ""}</span>${linea(Math.round(t.hechos.size / t.puntos * 100))}</button>`).join("")}
+            </div>
+            ${ab2 ? `<div class="j-detalle" data-grupo>${m.tps.length ? `<div class="bloque-t"><h3 class="subtitulo">Prácticos</h3>${m.tps.map((t, ti) => practico(t, mi, ti, ab, "texto")).join("")}</div>` : ""}<div class="bloque-t"><h3 class="subtitulo">Tareas</h3>${m.tareas.map((t, ti) => tarea(t, mi, ti)).join("")}${agregar(mi, "j")}</div></div>` : ""}`; }).join("")}
+        </div></div>
+        <p class="j-ley"><span><i class="b"></i>Práctico, termina el día de entrega</span><span><i class="t"></i>Tarea con aviso</span><span><i class="h"></i>Hoy</span></p>
+      </main>`;
+    },
+    k: (app, ab) => {
+      const sel = app._sel ?? 0, m = TEMAS[sel];
+      return `<main class="k-main">
+        <div>
+          <nav class="k-lista" aria-label="Temas">${TEMAS.map((x, mi) => `<button type="button" class="k-item" data-sel="${mi}" data-k="sel-${mi}" aria-pressed="${mi === sel}"><span class="n">${esc(x.nombre)}</span><span class="num">${pct(x)} %</span>${linea(pct(x))}</button>`).join("")}</nav>
+          <div class="k-total"><span>Todo · ${pctTodo()} %</span>${linea(pctTodo())}</div>
+        </div>
+        <div class="k-detalle" data-grupo>
+          <div class="k-cab"><h1 class="frase chica">${frase(pend(m), m.general ? "General" : m.nombre)}</h1>${linea(pct(m))}</div>
+          ${bloques(m, sel, ab, "k", "texto")}
+        </div>
+      </main>`;
+    },
+    l: (app, ab) => {
+      const sel = app._sel ?? 0, m = TEMAS[sel], n = TEMAS.length;
+      return `<main class="l-main">
+        <div class="l-nav"><button type="button" class="l-flecha izq" data-sel="${(sel - 1 + n) % n}" data-k="l-ant" aria-label="Tema anterior">${ic("i-flecha")}</button><span>${sel + 1} de ${n}</span><button type="button" class="l-flecha" data-sel="${(sel + 1) % n}" data-k="l-sig" aria-label="Tema siguiente">${ic("i-flecha")}</button></div>
+        <div class="l-tema"><p class="nombre-tema">${esc(m.nombre)} · ${pct(m)} %</p><h1 class="frase">${frase(pend(m), m.general ? "General" : m.nombre)}</h1>${linea(pct(m))}</div>
+        <div data-grupo>
+          ${m.tps.map((t, ti) => `<div class="l-pr"><div class="fila"><span class="pr-titulo">${esc(t.titulo)}</span>${cuenta(t)}</div>${regla(t, sel, ti)}${meta(t, sel, ti)}</div>`).join("")}
+          <div class="bloque-t" style="margin-top:18px">${m.tareas.map((t, ti) => tarea(t, sel, ti)).join("")}${agregar(sel, "l")}</div>
+        </div>
+        <nav class="l-temas" aria-label="Temas">${TEMAS.map((x, mi) => `<button type="button" data-sel="${mi}" data-k="lt-${mi}" aria-current="${mi === sel}">${esc(x.nombre)}</button>`).join("")}</nav>
+      </main>`;
+    },
+  };
+
+  /* ── Montaje ── */
+  const tplTb = document.getElementById("tpl-tb");
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
+  const pintarTodo = origen => {
+    const k = origen && document.activeElement?.dataset?.k;
+    apps.forEach(a => { a.cuerpo.innerHTML = V[a.v](a.el, a.abiertas); });
+    if (k) origen.querySelector(`[data-k="${k}"]`)?.focus();
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+
+  opciones.forEach(op => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el.appendChild(tplTb.content.cloneNode(true));
+    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column"; el.appendChild(cuerpo);
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div>`);
+    el.querySelector("[data-hora]").textContent = ahora();
+    const iniciales = { g: ["tp-0-0"], h: ["tp-0-0"], i: [], j: ["m-0"], k: ["tp-0-0"], l: [] };
+    const a = { v, el, cuerpo, abiertas: new Set(iniciales[v]) };
+    apps.push(a);
+
+    el.addEventListener("click", e => {
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
+      const b = e.target.closest("button"); if (!b) return;
+      const d = b.dataset;
+      if (d.abrir) { a.abiertas.has(d.abrir) ? a.abiertas.delete(d.abrir) : a.abiertas.add(d.abrir); return pintarTodo(el); }
+      if (d.abrirTp) { const [mi, ti] = d.abrirTp.split(":"); a.abiertas.add("m-" + mi); a.abiertas.add(`tp-${mi}-${ti}`); pintarTodo(el); el.querySelector(`[data-k="tp-${mi}-${ti}"]`)?.focus(); return; }
+      if (d.punto) {
+        const [mi, ti, n] = d.punto.split(":").map(Number), tp = TEMAS[mi].tps[ti];
+        tp.hechos.has(n) ? tp.hechos.delete(n) : tp.hechos.add(n);
+        if (tp.hechos.size === tp.puntos) avisar(el, `${tp.titulo.split(" — ")[0]} completo`);
+        return pintarTodo(el);
+      }
+      if (d.check) { const [mi, ti] = d.check.split(":").map(Number); TEMAS[mi].tareas[ti].hecha = !TEMAS[mi].tareas[ti].hecha; return pintarTodo(el); }
+      if (d.aviso) {
+        const [tipo, mi, ti] = d.aviso.split(":"), item = tipo === "tp" ? TEMAS[+mi].tps[+ti] : TEMAS[+mi].tareas[+ti];
+        item.aviso = AVISOS[(AVISOS.indexOf(item.aviso) + 1) % AVISOS.length];
+        if (tipo === "t") item.dia = item.aviso ? DIA_AVISO[item.aviso] : null;
+        avisar(el, item.aviso ? `Te aviso ${item.aviso}${item.aviso === "el día antes" ? " de la entrega" : ""} (demo)` : "Sin aviso");
+        return pintarTodo(el);
+      }
+      if (d.sel !== undefined) { const n = +d.sel; el._sel = v === "i" && el._sel === n ? null : n; return pintarTodo(el); }
+    });
+    el.addEventListener("keydown", e => {
+      const inp = e.target.closest("[data-agregar]"); if (!inp || e.key !== "Enter" || !inp.value.trim()) return;
+      TEMAS[+inp.dataset.agregar].tareas.push({ titulo: inp.value.trim(), hecha: false, aviso: null, dia: null });
+      const id = inp.id; pintarTodo(); document.getElementById(id)?.focus();
+    });
+
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 720]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+  });
+  pintarTodo();
+  setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
+
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${ic("i-x")}</button>`;
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>

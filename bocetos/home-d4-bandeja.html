@@ -1,0 +1,711 @@
+<title>Home de Doro, bandeja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Una variante por sección, maqueta redimensionable a lo ancho de la página; ajustes globales arriba, cierre con tabla. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 6px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+code { font-family: var(--f-mono); font-size: .88em; background: var(--campo); padding: 1px 5px; border-radius: 5px; }
+
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 70ch; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 56px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+.opcion { margin-bottom: 88px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.recomendada { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--acento); border: 1px solid color-mix(in oklch, var(--acento) 40%, transparent); background: var(--acento-suave); }
+.resumen { margin: 0; color: var(--tenue); max-width: 54ch; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button { border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover { color: var(--fg); }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 640px; min-width: 320px; min-height: 440px; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+/* ───────── Maqueta ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; overflow: hidden; isolation: isolate; }
+.app {
+  --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent);
+  --patron: none;
+}
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+/* Desvanecer los puntos: parejo (sin máscara), centro limpio (se apagan detrás del anillo)
+   o bordes suaves (se apagan hacia los lados) */
+:root[data-vineta="centro"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%);
+}
+:root[data-vineta="bordes"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+}
+
+/* Pantalla completa: la maqueta ocupa toda la ventana y aparece un mando abajo a la derecha */
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--fg); }
+.btn-completa:hover { border-color: var(--tenue); }
+.btn-completa svg { width: 14px; height: 14px; }
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando {
+  position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px);
+  background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; box-shadow: var(--sombra);
+  font-size: 12.5px; color: var(--tenue);
+}
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* Barra superior (la misma de la segunda ronda) */
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 8px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 8px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+
+.btn-tareas { display: inline-flex; align-items: center; border: 1px solid var(--linea); background: var(--superficie); border-radius: 999px; height: 32px; padding: 0 12px; font-size: 13px; transition: background-color .3s, border-color .3s; }
+.btn-tareas:hover { border-color: var(--tenue); }
+.btn-tareas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.btn-tareas .tb-etq { display: inline-block; overflow: hidden; white-space: nowrap; max-width: 5em; margin-right: 6px; transition: max-width .35s ease .5s, opacity .3s ease .5s, margin .35s ease .5s; }
+.btn-tareas[aria-expanded="true"] { border-color: color-mix(in oklch, var(--acento) 45%, var(--linea)); background: var(--acento-suave); }
+/* Con la barra desvanecida queda solo el número, como el logo y el avatar */
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .tb-etq { max-width: 0; opacity: 0; margin-right: 0; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .btn-tareas:not([aria-expanded="true"]) { border-color: transparent; background: var(--campo); }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .tb-etq { max-width: 5em; opacity: 1; margin-right: 6px; transition-delay: 0s; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .btn-tareas { border-color: var(--linea); background: var(--superficie); }
+}
+/* Anillo */
+.d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 32px 20px 104px; text-align: center; }
+.d-anillo { position: relative; border: 0; background: none; padding: 0; width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; max-width: 100%; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+.d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.d-anillo .pista-anillo { stroke: var(--linea); }
+.d-anillo .arco { stroke: var(--acento); transition: stroke-dashoffset .9s cubic-bezier(.16,1,.3,1); }
+.d-anillo:is(:hover, :focus-visible) .arco { stroke-dashoffset: 0 !important; }
+.d-anillo .relleno { fill: var(--superficie); transition: fill .3s; }
+.d-anillo:hover .relleno { fill: var(--acento-suave); }
+.d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.d-texto strong { font-size: clamp(20px, 3.4cqi, 26px); font-weight: 600; letter-spacing: -0.02em; }
+.d-texto span { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.d-unirse { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(100%, 360px); }
+.d-unirse label { font-size: 13.5px; color: var(--tenue); }
+.d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 40px; font-size: 15px; transition: border-color .2s; }
+.d-linea:focus { outline: none; border-color: var(--acento); }
+.d-linea::placeholder { color: var(--tenue); }
+
+/* Bandeja (D4) */
+.bandeja {
+  position: absolute; left: 50%; bottom: 0; z-index: 10;
+  width: min(calc(100% - 24px), 560px); max-height: 78%;
+  display: flex; flex-direction: column;
+  background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
+  transform: translate(-50%, calc(100% - 60px));
+  transition: transform .5s cubic-bezier(.16,1,.3,1),
+              background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s, opacity .35s ease .5s;
+}
+.bandeja.abierta { transform: translate(-50%, 0); }
+.asa { position: relative; flex-shrink: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px 20px 0; border: 0; background: none; text-align: left; font-size: 14px; border-radius: 16px 16px 0 0; }
+.asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 32px; height: 4px; border-radius: 4px; background: var(--linea); transform: translateX(-50%); transition: background-color .35s ease .5s, width .35s ease .5s; }
+.sig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sig b { font-weight: 500; }
+.tenue { color: var(--tenue); }
+.cuenta { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--tenue); font-size: 13px; font-variant-numeric: tabular-nums; }
+.cuenta svg, .pastilla svg { width: 16px; height: 16px; transition: transform .4s; }
+.abierta .cuenta svg { transform: rotate(180deg); }
+.sig, .cuenta { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.pastilla {
+  position: absolute; left: 50%; top: 16px; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px 0 14px;
+  border-radius: 999px; background: var(--campo); border: 1px solid var(--linea);
+  font-size: 13px; color: var(--fg); white-space: nowrap; font-variant-numeric: tabular-nums;
+  opacity: 0; transition: opacity .3s ease 0s; pointer-events: none;
+}
+.pastilla b { font-weight: 600; }
+.cuerpo { padding: 4px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+
+/* Lo que pasa con la bandeja cuando el puntero no está encima.
+   Solo con puntero que hace hover; en táctil queda como en D4. Abierta, nunca. */
+.bandeja:is(:hover, :focus-within, .abierta),
+.bandeja:is(:hover, :focus-within, .abierta) :is(.sig, .cuenta),
+.bandeja:is(:hover, :focus-within, .abierta) .asa::before { transition-delay: 0s; }
+
+@media (hover: hover) {
+  /* A · queda el asa */
+  :root:not([data-tactil]) .v-asa .bandeja:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .v-asa .bandeja:not(:hover, :focus-within, .abierta) :is(.sig, .cuenta) { opacity: 0; filter: blur(4px); }
+  :root:not([data-tactil]) .v-asa .bandeja:not(:hover, :focus-within, .abierta) .asa::before { background-color: color-mix(in oklch, var(--tenue) 45%, transparent); width: 44px; }
+
+  /* B · queda la cuenta */
+  :root:not([data-tactil]) .v-cuenta .bandeja:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .v-cuenta .bandeja:not(:hover, :focus-within, .abierta) :is(.sig, .cuenta) { opacity: 0; filter: blur(4px); }
+  :root:not([data-tactil]) .v-cuenta .bandeja:not(:hover, :focus-within, .abierta) .asa::before { background-color: transparent; }
+  :root:not([data-tactil]) .v-cuenta .bandeja:not(:hover, :focus-within, .abierta) .pastilla { opacity: 1; transition-delay: .6s; }
+
+  /* C · se atenúa */
+  :root:not([data-tactil]) .v-atenua .bandeja:not(:hover, :focus-within, .abierta) { opacity: .42; box-shadow: none; }
+}
+
+.alta { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); flex-shrink: 0; }
+.alta svg { width: 16px; height: 16px; flex-shrink: 0; }
+.alta input { border: 0; background: none; flex: 1; min-width: 0; font-size: 14px; outline: none; }
+.alta input::placeholder { color: var(--tenue); }
+.lista { list-style: none; margin: 0; padding: 0; }
+.tarea { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; }
+.tarea:last-child { border-bottom: 0; }
+.check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid color-mix(in oklch, var(--tenue) 60%, transparent); background: transparent; padding: 0; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
+.check svg { width: 11px; height: 11px; opacity: 0; color: var(--acento-fg); }
+.tarea.hecha .check { background: var(--acento); border-color: var(--acento); }
+.tarea.hecha .check svg { opacity: 1; }
+.tarea.hecha .titulo { color: var(--tenue); text-decoration: line-through; }
+.titulo { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cat { font-size: 12.5px; color: var(--tenue); }
+.prio { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.prio[hidden] { display: block; visibility: hidden; }
+
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); white-space: nowrap; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 12.5px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 62ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: var(--f-mono); }
+.c-com { color: var(--tenue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-arriba"viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Home de Doro: la bandeja también se desvanece</h1>
+    <p>Base D4 · Anillo y bandeja. La bandeja se desvanece igual que la barra: cuando el puntero no está encima, después de medio segundo. Al pasar el mouse o llegar con Tab, vuelve enseguida. Abierta no se desvanece nunca, y en pantallas táctiles queda completa. Arriba, al lado del avatar, un número dice cuántas tareas hay; tocarlo también sube la bandeja.</p>
+    <p>La duda es cuánto queda a la vista cuando se desvanece. Hay tres variantes. Para verlas, sacá el mouse de la maqueta y esperá medio segundo. Cada una se abre en pantalla completa: ahí ← → cambian de variante, F cambia el fondo, D cómo se desvanecen los puntos, C el color de acento, T el tema y Esc sale.</p>
+  </header>
+
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste">
+      <span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema">
+        <button type="button" data-v="light">Claro</button>
+        <button type="button" data-v="dark">Oscuro</button>
+        <button type="button" data-v="negro">Negro</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Acento</span>
+      <div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior">
+        <button type="button" data-v="completa">Completa</button>
+        <button type="button" data-v="desvanece">Se desvanece</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo">
+        <button type="button" data-v="liso">Liso</button>
+        <button type="button" data-v="puntos">Puntos</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos">
+        <button type="button" data-v="parejo">No</button>
+        <button type="button" data-v="bordes">A los lados</button>
+        <button type="button" data-v="centro">Al centro</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo">
+        <button type="button" data-v="mouse">Con mouse</button>
+        <button type="button" data-v="tactil">Táctil</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="opcion" id="asa" data-variante="v-asa">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span><span class="nombre">Queda el asa</span><span class="recomendada">Elegida</span></h2>
+        <p class="resumen">La bandeja desaparece entera y solo queda la rayita de arrastre, un poco más marcada. Es la versión más vacía: en pantalla queda el anillo y nada más.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se vuelve a la pantalla de un solo objeto de D.</li><li>La rayita es el gesto de hoja inferior que todos conocen del celular.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En escritorio, una rayita sola se descubre poco.</li><li>No dice qué hay abajo ni cuántas tareas quedan.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="cuenta" data-variante="v-cuenta">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B</span><span class="nombre">Queda la cuenta</span></h2>
+        <p class="resumen">La bandeja se encoge hasta una pastilla con la cantidad de tareas, como el número que queda en la barra cuando se desvanece. Al acercar el mouse, la pastilla vuelve a ser la bandeja.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Dice qué hay abajo («5 tareas») sin mostrar el contenido.</li><li>Combina con la barra: arriba quedan el logo y el avatar, abajo la cuenta.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La tarea siguiente deja de estar siempre a la vista, que era lo que ganaba D4.</li><li>Es un objeto más que en A, aunque chico.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="atenua" data-variante="v-atenua">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">C</span><span class="nombre">Se atenúa</span></h2>
+        <p class="resumen">La bandeja queda donde está, pero baja a menos de la mitad de opacidad y pierde la sombra. La tarea siguiente se sigue leyendo, más apagada.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Conserva lo mejor de D4: la siguiente tarea siempre se ve.</li><li>Es el cambio más chico respecto de D4.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No desaparece de verdad: compite un poco con el anillo.</li><li>El texto atenuado pierde contraste; en oscuro queda justo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Qué queda a la vista</th><th>Se ve la tarea siguiente</th><th>Se descubre en escritorio</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>A · Queda el asa</td><td>Una rayita</td><td>No</td><td>Poco</td><td>Que nadie note que hay tareas abajo</td></tr>
+          <tr><td>B · Queda la cuenta</td><td>Pastilla «5 tareas»</td><td>No, solo la cantidad</td><td>Bien</td><td>Perder la siguiente a la vista</td></tr>
+          <tr><td>C · Se atenúa</td><td>La bandeja, apagada</td><td>Sí, atenuada</td><td>Muy bien</td><td>No calma tanto la pantalla</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegida: A · Queda el asa (yo había recomendado B)</h3>
+        <p><b>Pediste que la bandeja se desvanezca como la barra, y la barra no desaparece del todo:</b> deja el logo y el avatar para que sepas que sigue ahí. B hace lo mismo abajo. La pastilla dice que hay cinco tareas y dónde están, sin ocupar más que un botón.</p>
+        <p><b>A se queda corta en escritorio.</b> La rayita funciona en el celular porque ahí se arrastra, pero con mouse no invita a nada. Igual, en el celular la bandeja no se desvanece (no hay hover), así que la rayita sola nunca aparece donde mejor funciona.</p>
+        <p><b>C es el plan B</b> si después de usarlo extrañás ver la tarea siguiente. Es el cambio más chico respecto de D4.</p>
+        <p><b>Ojo con el tiempo:</b> la pastilla aparece un poco después de que se va la bandeja, para que no se vean las dos a la vez durante la transición.</p>
+      </div>
+      <pre><span class="c-com">/* src/index.css · misma regla que la barra */</span>
+@media (hover: hover) {
+  .bandeja:not(:hover, :focus-within, [data-abierta]) {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    transition-delay: .5s;              <span class="c-com">/* tarda en irse */</span>
+  }
+  .bandeja:not(:hover, :focus-within, [data-abierta]) .bandeja-contenido {
+    opacity: 0; filter: blur(4px);
+  }
+  .bandeja:not(:hover, :focus-within, [data-abierta]) .bandeja-pastilla {
+    opacity: 1; transition-delay: .6s;  <span class="c-com">/* entra cuando la otra ya se fue */</span>
+  }
+}
+
+<span class="c-com">// src/features/home/components/BandejaTareas.tsx</span>
+&lt;aside className="bandeja" data-abierta={abierta || undefined}
+       aria-label="Tareas"&gt;
+  &lt;button className="asa" aria-expanded={abierta}
+          onClick={() =&gt; establecerAbierta(!abierta)}&gt;
+    &lt;span className="bandeja-contenido"&gt;Siguiente: {siguiente.title}&lt;/span&gt;
+    &lt;span className="bandeja-contenido"&gt;{pendientes} tareas&lt;/span&gt;
+    &lt;span className="bandeja-pastilla" aria-hidden&gt;{pendientes} tareas&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div inert={!abierta}&gt;{/* alta rápida + lista */}&lt;/div&gt;
+&lt;/aside&gt;</pre>
+    </div>
+  </section>
+</div>
+
+<template id="tpl-app">
+  <header class="tb">
+    <a class="marca" href="#" aria-label="Doro, inicio"><svg><use href="#i-logo"/></svg><span class="desv">Doro</span></a>
+    <nav class="tb-nav desv" aria-label="Secciones"><a aria-current="page" href="#">Inicio</a><a href="#">Tareas</a><a href="#">Dashboard</a><a href="#">Calendario</a></nav>
+    <div class="tb-der">
+      <span class="hora desv" data-hora></span>
+      <button type="button" class="btn-tareas" data-abrir-bandeja aria-expanded="false" aria-label="Tareas: 5 pendientes. Abrir la bandeja"><span class="tb-etq">Tareas</span><b data-n>5</b></button>
+      <span class="avatar" aria-label="Tu cuenta">L</span>
+      <button type="button" class="menu desv" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+  <main class="d-main">
+    <button type="button" class="d-anillo" data-crear aria-label="Crear sala. 45 de 120 minutos hoy">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="relleno" cx="100" cy="100" r="92"/>
+        <circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3"/>
+        <circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578.05" stroke-dashoffset="361.28"/>
+      </svg>
+      <span class="d-texto"><strong>Crear sala</strong><span>45 min de 2 h hoy</span></span>
+    </button>
+    <form class="d-unirse" data-unirse>
+      <label data-for>¿Te pasaron un link?</label>
+      <input class="d-linea" data-link placeholder="Pegalo acá y tocá Enter">
+    </form>
+  </main>
+  <aside class="bandeja" data-bandeja aria-label="Tareas">
+    <button type="button" class="asa" data-asa aria-expanded="false">
+      <span class="sig"><span class="tenue">Siguiente:</span> <b>Terminar TP Redes</b></span>
+      <span class="cuenta"><span data-n>5</span> tareas<svg><use href="#i-arriba"/></svg></span>
+      <span class="pastilla" aria-hidden="true"><b data-n>5</b> tareas<svg><use href="#i-arriba"/></svg></span>
+    </button>
+    <div class="cuerpo" data-cuerpo>
+      <label class="alta"><svg><use href="#i-mas"/></svg><input data-alta placeholder="Nueva tarea… (#uni, !alta)"></label>
+      <ul class="lista" data-tareas></ul>
+    </div>
+  </aside>
+  <div class="aviso" role="status"></div>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+
+  /* Ajustes globales */
+  const grupos = {
+    tema: v => {
+      if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; }
+      else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; }
+    },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+  };
+  const temaInicial = () => raiz.hasAttribute("data-negro") ? "negro"
+    : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "puntos", vineta: "centro", disp: "mouse" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    const poner = ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaInicial() : v); guardar("doro-d4-" + id, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => poner(b.dataset.v)));
+    const guardado = leer("doro-d4-" + id, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaInicial() : guardado);
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => pulsar(document.getElementById("tema"), temaInicial()));
+
+  /* Acento: cada uno con su versión clara y oscura (la misma paleta de la segunda ronda) */
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0];
+    const o = temaInicial() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => {
+      b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]);
+      b.setAttribute("aria-pressed", b.dataset.id === acento);
+    });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre);
+    b.addEventListener("click", () => ponerAcento(a.id));
+    contMuestras.appendChild(b);
+  });
+  new MutationObserver(aplicarAcento).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aplicarAcento);
+  aplicarAcento();
+
+  /* Tareas de ejemplo */
+  const TAREAS = [
+    { titulo: "Terminar TP Redes", cat: "Uni", alta: true, hecha: false },
+    { titulo: "Terminar TP AyD", cat: "Uni", alta: true, hecha: false },
+    { titulo: "Avanzar TP IA", cat: "Uni", alta: false, hecha: false },
+    { titulo: "Poder agrupar tareas por etiqueta", cat: "Doro", alta: false, hecha: false },
+    { titulo: "Conectar Google Calendar", cat: "Doro", alta: false, hecha: false },
+  ];
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const tpl = document.getElementById("tpl-app");
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true;
+  mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+
+  document.querySelectorAll(".opcion").forEach(op => {
+    const app = op.querySelector("[data-app]");
+    app.classList.add(op.dataset.variante);
+    app.appendChild(tpl.content.cloneNode(true));
+    const id = op.id;
+    app.querySelector("[data-link]").id = "link-" + id;
+    app.querySelector("[data-for]").setAttribute("for", "link-" + id);
+    app.querySelector("[data-alta]").id = "alta-" + id;
+    app.querySelector("[data-hora]").textContent = ahora();
+    app.addEventListener("click", e => { if (e.target.closest('a[href="#"]')) e.preventDefault(); });
+
+    const aviso = app.querySelector(".aviso");
+    const avisar = t => { aviso.textContent = t; aviso.classList.add("ver"); clearTimeout(aviso._t); aviso._t = setTimeout(() => aviso.classList.remove("ver"), 2200); };
+    app.querySelector("[data-crear]").addEventListener("click", () => avisar("Sala creada → /room/… (demo)"));
+    app.querySelector("[data-unirse]").addEventListener("submit", e => {
+      e.preventDefault();
+      const v = app.querySelector("[data-link]").value.trim();
+      avisar(/[0-9a-f]{6,}\/?$/i.test(v) ? "Entrando a la sala… (demo)" : "Ese link o código no parece válido");
+    });
+
+    /* Lista */
+    const lista = TAREAS.map(t => ({ ...t }));
+    const ul = app.querySelector("[data-tareas]");
+    const sig = app.querySelector(".sig b");
+    const pintar = () => {
+      ul.innerHTML = lista.map((t, i) => `
+        <li class="tarea${t.hecha ? " hecha" : ""}">
+          <button type="button" class="check" data-i="${i}" aria-label="${t.hecha ? "Desmarcar" : "Marcar como hecha"}: ${t.titulo}"><svg><use href="#i-check"/></svg></button>
+          <span class="titulo">${t.titulo}</span>
+          <span class="prio" ${t.alta ? 'title="Prioridad alta"' : "hidden"}></span>
+          <span class="cat">${t.cat}</span>
+        </li>`).join("");
+      const pendientes = lista.filter(t => !t.hecha);
+      app.querySelectorAll("[data-n]").forEach(n => n.textContent = pendientes.length);
+      app.querySelector("[data-abrir-bandeja]").setAttribute("aria-label", `Tareas: ${pendientes.length} pendientes. Abrir la bandeja`);
+      sig.textContent = pendientes[0] ? pendientes[0].titulo : "nada, estás al día";
+    };
+    ul.addEventListener("click", e => {
+      const b = e.target.closest(".check"); if (!b) return;
+      lista[+b.dataset.i].hecha = !lista[+b.dataset.i].hecha; pintar();
+    });
+    app.querySelector("[data-alta]").addEventListener("keydown", e => {
+      const inp = e.target;
+      if (e.key !== "Enter" || !inp.value.trim()) return;
+      const texto = inp.value.trim();
+      const cat = (texto.match(/#(\S+)/) || [])[1];
+      lista.unshift({ titulo: texto.replace(/[!#]\S+/g, "").trim() || texto, cat: cat ? cat[0].toUpperCase() + cat.slice(1) : "General", alta: /!alta/i.test(texto), hecha: false });
+      inp.value = ""; pintar();
+    });
+    pintar();
+
+    /* Bandeja */
+    const bandeja = app.querySelector("[data-bandeja]");
+    const asa = app.querySelector("[data-asa]");
+    const cuerpo = app.querySelector("[data-cuerpo]");
+    const botonTareas = app.querySelector("[data-abrir-bandeja]");
+    const abrir = a => { bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); botonTareas.setAttribute("aria-expanded", a); cuerpo.inert = !a; };
+    abrir(false);
+    asa.addEventListener("click", () => abrir(!bandeja.classList.contains("abierta")));
+    /* El número de arriba también sube la bandeja (y la baja si ya está arriba) */
+    botonTareas.addEventListener("click", () => abrir(!bandeja.classList.contains("abierta")));
+    app.addEventListener("keydown", e => { if (e.key === "Escape" && bandeja.classList.contains("abierta")) { e.stopPropagation(); abrir(false); asa.focus(); } });
+
+    /* Marco: presets y medida en vivo */
+    const barra = op.querySelector("[data-barra]");
+    const marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 760], ["Tablet", 820, 720], ["Escritorio", 1180, 680]];
+    barra.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa><svg><use href="#i-expandir"/></svg>Pantalla completa</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    barra.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => {
+      marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px";
+      marco.style.height = b.dataset.h + "px";
+    }));
+    const medida = barra.querySelector(".medida");
+    new ResizeObserver(() => {
+      const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
+      medida.textContent = t;
+      if (op === actual) mando.querySelector(".medida").textContent = t;
+    }).observe(marco);
+    barra.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+  });
+  setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa: ← → cambian de variante, F el fondo, D el desvanecido, T el tema, Esc sale ── */
+  const opciones = [...document.querySelectorAll(".opcion")];
+  const ciclar = (id, orden) => {
+    const actualV = id === "tema" ? temaInicial() : raiz.dataset[id];
+    ponerAjuste[id](orden[(orden.indexOf(actualV) + 1) % orden.length]);
+  };
+  mando.innerHTML = opciones.map(op => {
+    const letra = op.querySelector(".letra").textContent, nombre = op.querySelector(".nombre").textContent;
+    return `<button type="button" data-ir="${op.id}" title="${letra} · ${nombre}" aria-label="Variante ${letra}, ${nombre}">${letra}</button>`;
+  }).join("") + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo"><svg><use href="#i-fondo"/></svg></button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos: no, a los lados, al centro (D)" aria-label="Cambiar desvanecido de los puntos"><svg><use href="#i-vineta"/></svg></button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento"><svg><use href="#i-color"/></svg></button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema"><svg><use href="#i-tema"/></svg></button>
+    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa"><svg><use href="#i-x"/></svg></button>`;
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisarMando = id => {
+    if (!actual || id === "tema") return;
+    const a = actual.querySelector(".aviso");
+    a.textContent = NOMBRES[raiz.dataset[id]]; a.classList.add("ver");
+    clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 1600);
+  };
+  const usarCiclo = id => { ciclar(id, CICLOS[id]); avisarMando(id); };
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  const siguienteAcento = () => {
+    const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length];
+    ponerAcento(a.id);
+    if (actual) { const av = actual.querySelector(".aviso"); av.textContent = "Acento " + a.nombre.toLowerCase(); av.classList.add("ver"); clearTimeout(av._t); av._t = setTimeout(() => av.classList.remove("ver"), 1600); }
+  };
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco");
+    mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) {
+    raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op);
+    const pedido = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null;
+    if (pedido) pedido.catch(() => {}); /* sin permiso: queda ocupando la ventana */
+  }
+  function cerrarCompleta() {
+    if (!actual) return;
+    const op = actual;
+    op.classList.remove("completa"); actual = null;
+    raiz.classList.remove("en-completa"); mando.hidden = true;
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    op.scrollIntoView({ block: "start" });
+  }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    /* Con la bandeja abierta, Esc primero la cierra: la maqueta corta la propagación */
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>

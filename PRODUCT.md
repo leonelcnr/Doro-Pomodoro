@@ -35,7 +35,7 @@ las mismas tareas en vivo, y se invitan con un link.
 - Tareas: título, estado, prioridad, categoría; drag & drop; filtro por categoría.
 - Stats: minutos de hoy, racha de días, tareas completadas.
 - Toda la UI está en español rioplatense (voseo: "Iniciá", "Escribí").
-- Idea en evaluación: que cada usuario elija el color de acento de la app.
+- Cada usuario va a poder elegir el color de acento de la app (decidido 2026-10-04, ver `docs/plan-rediseno.md`).
 
 ## Brand Commitments
 - Nombre: Doro.
