@@ -189,6 +189,36 @@ bandeja: K. Para los datos, los nombres de las unidades van en el mismo `checkli
 etiqueta puede quedar vacía) y la observación es una columna de texto opcional en `tasks`.
 Fuente de la 7ª ronda: `bocetos/tareas-ronda7.html`.
 
+**Devolución de la 8ª ronda (Leo):**
+- Las tarjetas de N le parecieron espectaculares.
+- Le gustó la columna derecha de M: un recuadro por tipo con su avance, y las notas de la sala.
+- Le gustaron la animación de I y su contraste (hoja clara sobre el fondo, piezas oscuras adentro).
+- Pide combinar las tarjetas de N con la columna de M, y seguir explorando con esto.
+- En pantalla completa, la H tiene que ocultar y mostrar la barra de los bocetos.
+- Un modo de detalle nuevo: como el globo «junto al ítem», pero desplegado desde abajo a la
+  derecha, como un menú.
+
+**Novena ronda (misma URL):** letras O–U.
+- Base común: tarjetas de N adentro del tema (las tareas también, con su casilla), los
+  recuadros de M, y la animación de I (la caja se transforma en el encabezado del tema, que
+  es la misma caja más grande). Ajuste Detalle con «Desde la esquina». H oculta la barra.
+- **O · Tarjetas y resumen** (recomendada): la combinación tal cual. Tarjetas de un tipo a
+  la izquierda; a la derecha, los recuadros de M eligen el tipo, y debajo van las notas.
+- **P · La caja crece, con tarjetas**: la hoja de I con los tipos en fila arriba y el
+  contraste invertido adentro.
+- **Q · Todo en tarjetas**: todos los tipos abiertos; la columna de M queda pegada y hace
+  de índice.
+- **R · Tablero por tipo**: una columna por tipo, con el recuadro de M como cabecera.
+- **S · La caja se abre en la grilla** (se aleja): no hay pantalla del tema; la caja ocupa
+  todo el ancho de la grilla.
+- **T · Tarjetas por semana** (se aleja): columnas por vencimiento, con todos los tipos.
+- **U · Primero el tipo** (se aleja): las cajas del centro son los tipos; adentro, tarjetas
+  por tema.
+
+Recomendación: **O**, y Q si se prefiere ver el tema entero sin elegir el tipo. «Desde la
+esquina» se interpretó como la esquina de la pantalla; falta confirmar si iba anclado a la
+tarjeta. Fuente de la 8ª ronda: `bocetos/tareas-ronda8.html`.
+
 Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
 en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
 `kind` ('tarea' | 'tp') y otra `remind_at`.
@@ -217,9 +247,9 @@ con el agente `arquitecto-features` antes de escribir nada.
 
 ## Dónde retomamos
 
-La 8ª ronda (H–N) está publicada y espera la opinión de Leo. Hay que decidir:
-1. Cómo se entra a un tema: H, I, J o K (o una de las que se alejan).
-2. Si las anotaciones opcionales (qué entra y observaciones) alcanzan así.
+La 9ª ronda (O–U) está publicada y espera la opinión de Leo. Hay que decidir:
+1. O (un tipo a la vez) o Q (todos los tipos abiertos), o una de las que se alejan.
+2. Si «Desde la esquina» es lo que pidió o lo quería anclado a la tarjeta.
 3. El modo de detalle, que todavía se compara con el ajuste.
 
 **Próximo paso:** con esa devolución, armar el boceto final de Tareas.
