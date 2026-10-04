@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Octava ronda de la pantalla de tareas dentro del mundo del home D4: fondo neutro, un acento que solo marca avance, líneas finas, el detalle aparece al acercarse. */
+/* Séptima ronda de la pantalla de tareas dentro del mundo del home D4: fondo neutro, un acento que solo marca avance, líneas finas, el detalle aparece al acercarse. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -554,14 +554,13 @@ textarea { font: inherit; color: inherit; }
 
 /* B · La caja se abre en el lugar */
 .caja-abierta { grid-column: 1 / -1; min-width: 0; border: 1px solid var(--linea); border-radius: 12px; background: var(--superficie); box-shadow: var(--sombra); padding: 18px 24px 26px; display: flex; flex-direction: column; gap: 14px; }
-.ca-cab { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; }
+.ca-cab { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 4px 16px; }
 .ca-cab .ct-cab { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
-.ca-frase { font-size: 14px; color: var(--tenue); flex: 1; }
-.ca-cab .cerrar { margin-left: auto; }
+.ca-frase { font-size: 14px; color: var(--tenue); grid-column: 1 / -1; grid-row: 2; }
 .caja-abierta > .linea-avance { margin-bottom: 18px; }
 
 /* C · Tablero por tipo */
-.tablero { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(212px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; scrollbar-width: thin; align-items: start; }
+.tablero { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(188px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; scrollbar-width: thin; align-items: start; }
 .col { scroll-snap-align: start; min-width: 0; background: color-mix(in oklch, var(--campo) 55%, transparent); border: 1px solid var(--linea); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .col .bloque-cab { border-bottom: 0; padding: 2px 4px 4px; }
 .col .bloque-cab h2 { font-size: 14px; }
@@ -576,7 +575,7 @@ textarea { font: inherit; color: inherit; }
 .tj-tema { font-size: 12px; color: var(--tenue); display: flex; gap: 6px; align-items: center; }
 .tj-tema svg { width: 12px; height: 12px; }
 .tj-t { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
-.tj-m { font-size: 12.5px; color: var(--tenue); display: flex; justify-content: space-between; gap: 8px; font-variant-numeric: tabular-nums; }
+.tj-m { font-size: 12.5px; color: var(--tenue); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; font-variant-numeric: tabular-nums; }
 .tj-m svg { width: 12px; height: 12px; vertical-align: -1px; }
 .tj .regla i { height: 6px; max-width: 12px; }
 .tj-tarea { display: flex; align-items: flex-start; gap: 10px; padding: 12px; }
@@ -691,150 +690,6 @@ textarea { font: inherit; color: inherit; }
 .cal-carril.multi { height: 156px; }
 .cal-item.informe { border-left: 2px solid var(--tenue); }
 .cal-ley .i { border-left: 2px solid var(--tenue); }
-
-/* ───────── Ronda 8 ───────── */
-.cajon { z-index: 14; }
-
-/* Renglón: el avance se ve como número y barra; la observación, debajo */
-.it-fila { grid-template-columns: 20px minmax(0, 1.3fr) minmax(0, 1fr) 112px 112px; }
-.it-av { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.it-av .num { text-align: right; font-size: 13px; }
-.it-av .linea-avance { height: 3px; }
-.it-obs { grid-column: 2 / -1; grid-row: 2; font-size: 13px; color: var(--tenue); display: flex; gap: 7px; align-items: center; min-width: 0; padding-bottom: 2px; }
-.it-obs svg { width: 13px; height: 13px; flex-shrink: 0; }
-.it-obs span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@container app (max-width: 760px) {
-  .it-fila { grid-template-columns: 20px minmax(0, 1fr) auto; }
-  .it-av { grid-column: 2 / -1; grid-row: 3; flex-direction: row-reverse; align-items: center; gap: 12px; }
-  .it-av .linea-avance { flex: 1; }
-  .it-obs { grid-row: 4; }
-}
-@container caja (max-width: 600px) {
-  .it-fila { grid-template-columns: 20px minmax(0, 1fr) auto; }
-  .it-av { grid-column: 2 / -1; grid-row: 3; flex-direction: row-reverse; align-items: center; gap: 12px; }
-  .it-av .linea-avance { flex: 1; }
-  .it-obs { grid-row: 4; }
-}
-
-/* Renglones por tipo (el G de la ronda 7, con tipos en vez de temas) */
-@media (hover: hover) { :root:not([data-tactil]) .g-tema:hover .mas-tipo { opacity: 1; transition-delay: 0s; } }
-.tf-pie { display: flex; padding-top: 10px; }
-.tf-pie .mas-tipo { margin-left: 0; padding-left: 0; }
-.tf-sumar { padding: 4px 4px 0; }
-.g-cuerpo { padding: 6px 20px 18px; }
-.g-tema { scroll-margin-top: 16px; }
-
-/* Calendario general: cada tema es una fila que crece solo si hace falta */
-.a-centro.ancho { max-width: none; margin: 0 0 auto; }
-.a-centro.ancho .a-cab { align-items: stretch; text-align: left; }
-.a-centro.ancho .a-cab .linea-avance { width: 100%; }
-.a-centro.ancho .a-cab .vistas { align-self: flex-start; }
-
-/* Detalle: qué entra y observaciones, opcionales */
-.dato > span small { font-size: 12px; font-weight: 400; }
-.unidades { display: flex; flex-direction: column; }
-.unidad { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; gap: 8px; border-bottom: 1px solid var(--linea); }
-.unidad .num { font-size: 12.5px; }
-.unidad input { height: 36px; border: 0; background: none; font-size: 14.5px; outline: none; min-width: 0; padding: 0; }
-.unidad input:focus { box-shadow: inset 0 -1.5px 0 var(--acento); }
-.unidad input::placeholder { color: color-mix(in oklch, var(--tenue) 65%, transparent); }
-.nota-edit.obs-edit { min-height: 68px; font-size: 14px; }
-.nota-edit::placeholder { color: color-mix(in oklch, var(--tenue) 65%, transparent); }
-.miga span { display: inline-flex; align-items: center; gap: 7px; color: var(--fg); }
-
-/* I · La caja crece */
-.i-cascara { flex: 1; display: grid; grid-template-columns: 84px minmax(0, 1fr); min-height: 0; }
-.i-tira { display: flex; flex-direction: column; gap: 8px; padding: 44px 0 24px 24px; }
-.i-mini { position: relative; width: 52px; height: 52px; flex-shrink: 0; border: 1px solid var(--linea); border-radius: 10px; background: var(--superficie); display: grid; place-items: center; color: var(--tenue); padding: 0; transition: border-color .2s, color .2s; }
-.i-mini svg { width: 18px; height: 18px; margin-top: -4px; }
-.i-mini .linea-avance { position: absolute; left: 9px; right: 9px; bottom: 9px; }
-.i-mini:hover { border-color: color-mix(in oklch, var(--tenue) 60%, var(--linea)); color: var(--fg); }
-.i-mini[aria-current="true"] { border-color: var(--fg); color: var(--fg); }
-.i-mini.volver { background: transparent; border-style: dashed; margin-bottom: 8px; }
-.i-mini.volver svg { margin: 0; }
-@container app (min-width: 720px) { .i-cascara .contenido { padding-left: 24px; } }
-.i-hoja { view-transition-name: caja-activa; border: 1px solid var(--linea); border-radius: 16px; background: var(--superficie); padding: 24px clamp(20px, 3cqi, 36px) 30px; display: flex; flex-direction: column; gap: 14px; }
-.i-hoja .g-tema { background: var(--bg); }
-.i-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
-.i-cab .ct-cab { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-.i-cab .ct-cab svg { width: 22px; height: 22px; }
-.i-frase { margin: 0 0 12px; font-size: 15px; color: var(--tenue); }
-@container app (max-width: 640px) {
-  .i-cascara { grid-template-columns: minmax(0, 1fr); }
-  .i-tira { flex-direction: row; overflow-x: auto; padding: 14px 20px 0; scrollbar-width: none; }
-  .i-mini.volver { margin: 0 8px 0 0; }
-}
-::view-transition-group(caja-activa) { animation-duration: .5s; animation-timing-function: cubic-bezier(.16,1,.3,1); }
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: .25s; }
-
-/* J · La caja se abre encima */
-.j-fondo { position: absolute; inset: 56px 0 0; z-index: 12; display: flex; justify-content: center; align-items: stretch; padding: 12px 20px 20px; background: oklch(0.1 0.005 285 / 0.38); animation: aparecer .25s ease-out; }
-.j-hoja { width: min(100%, 1040px); height: 100%; overflow-y: auto; background: var(--bg); border: 1px solid var(--linea); border-radius: 16px; box-shadow: 0 24px 64px -24px oklch(0 0 0 / .5); padding: 22px clamp(18px, 3.5cqi, 40px) 32px; display: flex; flex-direction: column; gap: 14px; animation: subir .4s cubic-bezier(.16,1,.3,1); }
-.j-cab { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
-.j-cab .ct-cab { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; flex: 1 1 220px; }
-.j-hoja > *, .i-hoja > * { flex-shrink: 0; }
-.j-cab .ct-cab svg { width: 22px; height: 22px; }
-@media (prefers-reduced-motion: reduce) { .j-fondo, .j-hoja { animation: none; } }
-
-/* L · Índice de tipos pegado arriba */
-.l-indice { position: sticky; top: 0; z-index: 4; display: flex; gap: 8px; padding: 12px 0; margin: -12px 0 -10px; background: var(--bg); overflow-x: auto; scrollbar-width: none; }
-.l-indice button { flex: 1 0 150px; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border: 1px solid var(--linea); border-radius: 10px; background: var(--superficie); text-align: left; font-size: 13.5px; color: var(--tenue); transition: border-color .2s, color .2s; }
-.l-indice .fila { display: flex; gap: 8px; align-items: center; }
-.l-indice .fila svg { width: 15px; height: 15px; }
-.l-indice .fila .num { margin-left: auto; font-size: 12.5px; }
-.l-indice button:hover { color: var(--fg); border-color: color-mix(in oklch, var(--tenue) 60%, var(--linea)); }
-.l-indice button[aria-current="true"] { color: var(--fg); border-color: var(--fg); }
-.bento.pila { grid-template-columns: minmax(0, 1fr); }
-.bento .caja-tipo { scroll-margin-top: 96px; }
-
-/* M · La agenda del tema */
-.m-cuerpo { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(250px, 1fr); gap: 20px; align-items: start; }
-@container app (max-width: 900px) { .m-cuerpo { grid-template-columns: minmax(0, 1fr); } }
-.m-agenda { container: caja / inline-size; min-width: 0; border: 1px solid var(--linea); border-radius: 12px; background: var(--superficie); padding: 4px 20px 16px; }
-.m-grupo h3 { margin: 18px 0 0; padding-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--fg); border-bottom: 1px solid var(--fg); }
-.m-grupo .it:last-child { border-bottom: 0; }
-.m-lado { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.m-tipo { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 8px 10px; align-items: center; padding: 13px 14px; border: 1px solid var(--linea); border-radius: 10px; background: var(--superficie); text-align: left; font-size: 14.5px; transition: border-color .2s; }
-.m-tipo svg { width: 15px; height: 15px; color: var(--tenue); }
-.m-tipo .linea-avance, .m-tipo small { grid-column: 2 / -1; }
-.m-tipo small { font-size: 12.5px; color: var(--tenue); }
-.m-tipo:hover { border-color: color-mix(in oklch, var(--tenue) 60%, var(--linea)); }
-.m-tipo[aria-pressed="true"] { border-color: var(--fg); }
-.m-lado h3 { margin: 10px 0 0; font-size: 13px; font-weight: 600; color: var(--tenue); display: flex; gap: 7px; align-items: center; }
-.m-lado h3 svg { width: 14px; height: 14px; }
-.m-lado .notas-grilla { grid-template-columns: 1fr; padding-top: 4px; }
-.m-filtro { margin: 14px 0 0; font-size: 13px; color: var(--tenue); display: flex; gap: 10px; flex-wrap: wrap; }
-
-/* N · Pestañas por tipo y tarjetas */
-.n-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--linea); overflow-x: auto; scrollbar-width: none; margin-bottom: -8px; }
-.n-tabs button { flex-shrink: 0; border: 0; background: none; padding: 4px 0 12px; font-size: 14.5px; color: var(--tenue); border-bottom: 1.5px solid transparent; margin-bottom: -1px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-.n-tabs svg { width: 16px; height: 16px; }
-.n-tabs small { font-size: 12px; opacity: .75; font-variant-numeric: tabular-nums; }
-.n-tabs button:hover { color: var(--fg); }
-.n-tabs button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
-.n-tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; align-items: start; }
-.n-tj { display: flex; flex-direction: column; gap: 11px; min-width: 0; padding: 18px 18px 16px; border: 1px solid var(--linea); border-radius: 12px; background: var(--superficie); text-align: left; transition: border-color .2s, box-shadow .25s, transform .25s cubic-bezier(.16,1,.3,1); }
-.n-tj:hover { border-color: color-mix(in oklch, var(--tenue) 60%, var(--linea)); box-shadow: var(--sombra); transform: translateY(-1px); }
-.n-tj.sel { border-color: var(--fg); }
-.n-tit { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.3; overflow-wrap: anywhere; }
-.n-medio { font-size: 13.5px; color: var(--tenue); }
-.n-entra { font-size: 13px; color: var(--tenue); }
-.n-av { display: flex; justify-content: space-between; margin-top: 4px; }
-.n-pie { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.n-pie span { display: inline-flex; align-items: center; gap: 5px; }
-.n-pie svg { width: 13px; height: 13px; }
-.n-obs { padding-top: 10px; border-top: 1px solid var(--linea); }
-.n-obs span { white-space: normal; }
-.n-lista { padding-top: 4px; padding-bottom: 4px; }
-.n-nueva { align-self: flex-start; border: 1px dashed var(--linea); background: none; border-radius: 10px; padding: 10px 16px; font-size: 13.5px; color: var(--tenue); display: inline-flex; gap: 8px; align-items: center; }
-.n-nueva svg { width: 15px; height: 15px; }
-.n-nueva:hover { color: var(--fg); border-color: var(--tenue); }
-
-/* Las entradas se animan solo al abrir, no en cada repintado */
-.globo:not(.abre), .dialogo:not(.abre), .dialogo-fondo:not(.abre), .j-fondo:not(.abre), .j-hoja:not(.abre) { animation: none; }
-/* En angosto se achica el resumen, no el nombre del tipo */
-.bloque-cab h2 { flex-shrink: 0; }
-.bloque-cab .num { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -885,21 +740,17 @@ textarea { font: inherit; color: inherit; }
   <symbol id="t-dado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
   <symbol id="t-libro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7.5 4.5 4 4.5v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2v-14c-3.5 0-6 .5-8 2zM12 6.5v14"/></symbol>
 </svg>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2"/></symbol>
-</svg>
 
 <div class="pagina">
   <header class="cabecera">
-    <h1>Tareas, octava ronda</h1>
-    <p>Las cajas al centro de A ya quedan para la primera pantalla. Esta ronda resuelve qué pasa al entrar a un tema, donde te perdías.</p>
+    <h1>Tareas, séptima ronda</h1>
+    <p>De la sexta quedan el detalle (con el ajuste para abrirlo como panel, diálogo, junto al ítem, hoja o en el lugar), el calendario, la separación por tema y la bandeja de Y. También hay más margen a los costados: entre 40 y 120 px según el ancho.</p>
+    <p>Esta ronda busca dos cosas:</p>
     <ul style="margin:0 0 10px;padding-left:18px;color:var(--tenue);max-width:74ch">
-      <li><b>Adentro de un tema</b>, los renglones de G pasan a ser los tipos: Parciales, Prácticos, Informes, Tareas y Notas. Cada uno muestra lo que falta, lo próximo y su avance, y se abre hacia abajo.</li>
-      <li><b>Cada práctico, informe y parcial tiene su barra</b> al lado de la cuenta («9/13»).</li>
-      <li><b>Anotaciones opcionales:</b> en el detalle podés escribir qué temas entran en cada unidad de un parcial y una <b>observación</b> («El profe dijo que repasemos el punto 16 del práctico 7»). Si hay una, se ve debajo del renglón. Probalo en «Primer parcial» de Paradigmas.</li>
-      <li><b>Calendario general</b> (Temas → Calendario): cada tema es una fila de la misma altura que en el calendario de un tema. Solo crece si hay cosas que se pisan.</li>
+      <li><b>Que se vea qué es cada cosa.</b> Suma <b>informes</b> (como un práctico, pero con partes con nombre: «Introducción», «Desarrollo»…) y <b>notas</b>, las que vas a pegar en la sala y después ordenás acá. Cada boceto separa los cinco tipos de una manera distinta: con encabezados, en cajas, en columnas, en pestañas o en ramas.</li>
+      <li><b>Que no se complique con muchas materias.</b> Hay dos bocetos que arrancan con los temas en cajas al centro (A y B), y otros que prueban la barra lateral con buscador o un tema por renglón.</li>
     </ul>
-    <p>H, I, J y K son variantes de esa combinación. L, M y N se alejan para seguir explorando. Las letras siguen después de la G de la ronda anterior.</p>
+    <p>El ajuste <b>Temas</b> ahora llega a 15 para probar cómo escala cada uno.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -911,6 +762,8 @@ textarea { font: inherit; color: inherit; }
       <div class="segmentado" id="detalle" role="group" aria-label="Cómo se abre el detalle"><button type="button" data-v="cajon">Panel derecho</button><button type="button" data-v="dialogo">Diálogo</button><button type="button" data-v="junto">Junto al ítem</button><button type="button" data-v="hoja">Hoja abajo</button><button type="button" data-v="lugar">En el lugar</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Temas</span>
       <div class="segmentado" id="temas" role="group" aria-label="Cantidad de temas"><button type="button" data-v="5">5</button><button type="button" data-v="9">9</button><button type="button" data-v="15">15</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Índice (E)</span>
+      <div class="segmentado" id="panel" role="group" aria-label="Índice de E"><button type="button" data-v="contrae">Se pliega</button><button type="button" data-v="fijo">Fijo</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
       <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
@@ -921,112 +774,112 @@ textarea { font: inherit; color: inherit; }
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="h" data-v="h">
+  <section class="opcion" id="a" data-v="a">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">H</span><span class="nombre">Cajas y renglones</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">La combinación tal cual: arrancás en las cajas de A. Al entrar a un tema, los tipos son renglones como los de G, y se abre solo el que tiene lo más próximo. Arriba queda el camino («Temas / Paradigmas») y abajo, la bandeja de Y.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas</b>. Tocá «Temas» para volver a las cajas.</p>
+        <h2><span class="letra">A</span><span class="nombre">Cajas al centro</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Arranca con tus temas en cajas, centradas, con la frase general arriba. Cada caja tiene su avance, lo que falta y un ícono por tipo con la cuenta. Al tocar una entrás al tema, donde cada tipo vive en su propia caja. Para saltar a otro tema sin volver está la bandeja de Y.</p>
+        <p class="enfoque">Abre en: <b>los temas</b>. Tocá una caja para entrar y «Temas» arriba para volver.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Adentro se lee igual que afuera: una caja por cosa, con su avance.</li><li>Cerrado, cada tipo ya dice lo que falta y cuándo vence.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Hay un toque más para llegar a un práctico (abrir su renglón).</li><li>El paso de las cajas al tema sigue siendo un cambio de pantalla.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>La primera pantalla se entiende de un vistazo: una caja por materia.</li><li>Adentro, cada tipo tiene un borde: nunca se mezclan.</li><li>Con 15 temas, la grilla crece hacia abajo y se sigue leyendo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hay un toque más antes de llegar a un práctico.</li><li>No hay una lista de todo junto (para eso está el Calendario).</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="i" data-v="i">
+  <section class="opcion" id="b" data-v="b">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">I</span><span class="nombre">La caja crece</span></h2>
-        <p class="resumen">Para que no te pierdas: la caja que tocás crece hasta ocupar la pantalla, con una animación entre las dos pantallas (View Transitions, la que usaría la app). Las demás se achican a una columna de cajitas a la izquierda, así siempre ves dónde estás.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas</b>. Volvé con el primer cuadro y entrá a otro tema para ver la animación.</p>
+        <h2><span class="letra">B</span><span class="nombre">Cajas que se abren</span></h2>
+        <p class="resumen">Las mismas cajas, pero sin cambiar de pantalla: la que tocás se abre ahí mismo, ocupa toda la fila y muestra sus tipos con encabezados. Las demás siguen a la vista, arriba y abajo.</p>
+        <p class="enfoque">Abre en: <b>Paradigmas abierta</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La animación conecta la caja con el tema: no hay salto.</li><li>Las otras materias quedan a un toque, en el mismo orden que la grilla.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Las cajitas solas son íconos.</li><li>Con 15 temas, la columna scrollea.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Nunca perdés de vista las otras materias.</li><li>Abrir y cerrar es el mismo gesto.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La caja abierta salta a su propia fila y empuja a las de abajo.</li><li>Con 15 temas, lo abierto puede quedar lejos de arriba.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="j" data-v="j">
+  <section class="opcion" id="c" data-v="c">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">J</span><span class="nombre">La caja se abre encima</span></h2>
-        <p class="resumen">No cambiás de pantalla: el tema se abre como una hoja grande encima de las cajas, que quedan oscurecidas detrás. Cerrás con la cruz, con Esc o tocando afuera, y volvés a donde estabas.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas, sobre las cajas</b></p>
+        <h2><span class="letra">C</span><span class="nombre">Tablero por tipo</span></h2>
+        <p class="resumen">Una columna por tipo: parciales, prácticos, informes, tareas y notas. Cada cosa es una tarjeta con su regla chica, su fecha y el título entero. Con «Todo» en la bandeja, las columnas juntan las cosas de todos los temas.</p>
+        <p class="enfoque">Abre en: <b>Paradigmas</b>. Probá «Todo» en la bandeja.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Es imposible perderse: el inicio está siempre detrás.</li><li>Entrar y salir es abrir y cerrar.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Una hoja encima de otra pantalla, y el detalle encima de la hoja.</li><li>Para ir a otro tema hay que cerrar primero.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>La separación por tipo más clara de todas.</li><li>Las notas se ven como papelitos, al lado de lo demás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>A J no le jugaron a favor las columnas.</li><li>Cinco columnas no entran en el celular: se deslizan de costado.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="k" data-v="k">
+  <section class="opcion" id="d" data-v="d">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">K</span><span class="nombre">Árbol y renglones</span></h2>
-        <p class="resumen">La barra lateral de F, con buscador y ramas por tipo. El resto cambia: el contenido son los renglones por tipo, y las ramas ya no filtran. Tocar «Informes» en el árbol abre ese renglón y te lleva hasta él.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas</b>. Con 15 temas, buscá «re».</p>
+        <h2><span class="letra">D</span><span class="nombre">El tipo primero</span></h2>
+        <p class="resumen">Da vuelta el orden: arriba elegís el tipo (son cinco y no crecen) y abajo aparecen las materias que tienen algo de ese tipo, cada una en su caja. Las que no tienen nada quedan en una línea al final, con un atajo para sumarles algo.</p>
+        <p class="enfoque">Abre en: <b>Prácticos</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Siempre sabés dónde estás: el árbol lo marca.</li><li>El buscador aguanta cualquier cantidad de materias.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>No tiene las cajas al centro.</li><li>Más cromo que las demás.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Escala solo: con 15 materias, en Informes aparecen las tres que tienen uno.</li><li>Responde «¿qué tengo que entregar?» sin ir materia por materia.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No hay foto de una materia entera.</li><li>Va en contra de la separación por materia que pediste primero.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="l" data-v="l">
+  <section class="opcion" id="e" data-v="e">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">L</span><span class="nombre">Índice de tipos</span></h2>
-        <p class="resumen">Se aleja del acordeón: adentro del tema está todo abierto, cada tipo en su caja, y arriba queda pegado un índice con un recuadro por tipo y su avance. Tocar uno te lleva a su caja.</p>
+        <h2><span class="letra">E</span><span class="nombre">Índice y cajas</span></h2>
+        <p class="resumen">La barra lateral de W, que se pliega a íconos, con las cajas por tipo de A adentro. Arriba del índice queda el avance total.</p>
         <p class="enfoque">Abre en: <b>Paradigmas</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Nada escondido: bajás y ves todo.</li><li>El índice es el resumen y el atajo a la vez.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Con muchos prácticos, la página se alarga.</li><li>El índice ocupa una franja fija.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Cambiar de tema es un toque, sin pasar por la grilla.</li><li>El contenido es el mismo que en A: se comparan solo por la navegación.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Con 15 temas, la columna scrollea.</li><li>Plegada, cada tema es solo su ícono.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="m" data-v="m">
+  <section class="opcion" id="f" data-v="f">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">M</span><span class="nombre">La agenda del tema</span></h2>
-        <p class="resumen">Ordena por tiempo, no por tipo: a la izquierda va lo que viene esta semana, la que viene, más adelante y sin fecha. A la derecha, un recuadro por tipo con su avance, que filtra la agenda, y las notas de la sala.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas</b>. Tocá «Prácticos» a la derecha.</p>
+        <h2><span class="letra">F</span><span class="nombre">Árbol con buscador</span></h2>
+        <p class="resumen">Una barra lateral fija con un buscador arriba. El tema elegido se despliega y muestra sus tipos como ramas: tocar «Informes» deja solo los informes. Es la respuesta a «la barra se complica con muchas materias»: escribís dos letras y listo.</p>
+        <p class="enfoque">Abre en: <b>Paradigmas</b>. Con 15 temas, buscá «re».</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo urgente arriba, sin pensar en tipos.</li><li>Los tipos siguen a la vista como resumen.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Tipos mezclados en la agenda (solo el ícono los distingue).</li><li>Se parece un poco al calendario.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El buscador escala a cualquier cantidad de temas.</li><li>Las ramas separan los tipos y además los filtran.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Se parece a un explorador de archivos: más cromo, menos calma.</li><li>Ocupa 252 px fijos.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="n" data-v="n">
+  <section class="opcion" id="g" data-v="g">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">N</span><span class="nombre">Pestañas y tarjetas</span></h2>
-        <p class="resumen">Adentro del tema, una pestaña por tipo, y cada práctico, informe o parcial es una tarjeta grande con su barra, la fecha, lo que entra y la observación. Es la vista que más muestra de cada cosa.</p>
-        <p class="enfoque">Abre en: <b>Paradigmas, Prácticos</b>. Probá «Parciales».</p>
+        <h2><span class="letra">G</span><span class="nombre">Un renglón por tema</span></h2>
+        <p class="resumen">Cada tema es una caja de un solo renglón: nombre, lo que falta, lo próximo y el avance. Se abre hacia abajo con sus tipos separados por encabezado. Pueden quedar varias abiertas.</p>
+        <p class="enfoque">Abre en: <b>Paradigmas abierta</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La barra de cada práctico se ve grande y clara.</li><li>Las observaciones se leen enteras.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un tipo por vez: no ves el tema completo.</li><li>Las pestañas por tipo se parecen a D, que no convenció.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Con 15 temas cerrados, la lista entra en una pantalla y se lee como un resumen.</li><li>Cada tema tiene borde: se acaba lo de no saber dónde termina uno.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Con muchos abiertos vuelve la lista larga.</li><li>Es la más «tabla» de todas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1037,66 +890,63 @@ textarea { font: inherit; color: inherit; }
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Boceto</th><th>Primera pantalla</th><th>Adentro de un tema</th><th>Para no perderse</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>Cómo llegás a un tema</th><th>Cómo se separan los tipos</th><th>Con 15 temas</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>H · Cajas y renglones</td><td>Cajas al centro</td><td>Renglones por tipo</td><td>Camino arriba, bandeja abajo</td><td>Sigue siendo un salto de pantalla</td></tr>
-          <tr><td>I · La caja crece</td><td>Cajas al centro</td><td>Renglones en la caja agrandada</td><td>Animación y columna de cajitas</td><td>Cajitas solo con ícono</td></tr>
-          <tr><td>J · La caja se abre encima</td><td>Cajas al centro</td><td>Renglones en una hoja</td><td>El inicio queda detrás</td><td>Capas sobre capas</td></tr>
-          <tr><td>K · Árbol y renglones</td><td>Barra lateral</td><td>Renglones por tipo</td><td>El árbol marca dónde estás</td><td>No tiene las cajas</td></tr>
-          <tr><td>L · Índice de tipos</td><td>Cajas al centro</td><td>Todo abierto, en cajas</td><td>Índice pegado arriba</td><td>Página larga</td></tr>
-          <tr><td>M · La agenda del tema</td><td>Cajas al centro</td><td>Por fecha, con resumen por tipo</td><td>Camino arriba</td><td>Tipos mezclados</td></tr>
-          <tr><td>N · Pestañas y tarjetas</td><td>Cajas al centro</td><td>Un tipo por vez, en tarjetas</td><td>Camino arriba</td><td>No ves el tema entero</td></tr>
+          <tr class="elegida"><td>A · Cajas al centro</td><td>Grilla de cajas, y la bandeja de Y para saltar</td><td>Una caja por tipo</td><td>La grilla crece hacia abajo</td><td>Un toque más</td></tr>
+          <tr><td>B · Cajas que se abren</td><td>La caja se abre en el lugar</td><td>Encabezados</td><td>Lo abierto queda lejos</td><td>Empuja a las demás cajas</td></tr>
+          <tr><td>C · Tablero por tipo</td><td>Bandeja de Y</td><td>Columnas</td><td>Igual que Y</td><td>Columnas en el celular</td></tr>
+          <tr><td>D · El tipo primero</td><td>No elegís tema: elegís tipo</td><td>Pestañas</td><td>Muy bien</td><td>Pierde la materia entera</td></tr>
+          <tr><td>E · Índice y cajas</td><td>Barra que se pliega</td><td>Una caja por tipo</td><td>La columna scrollea</td><td>Íconos solos</td></tr>
+          <tr><td>F · Árbol con buscador</td><td>Buscador y árbol</td><td>Ramas y encabezados</td><td>Muy bien</td><td>Mucho cromo</td></tr>
+          <tr><td>G · Un renglón por tema</td><td>Abrís el renglón</td><td>Encabezados</td><td>Bien, cerrados</td><td>Vuelve la lista larga</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría H, con la animación de I al entrar y al salir</h3>
-        <p><b>H es lo que pediste</b>: A afuera y los renglones de G adentro. Cerrados, los renglones ya dicen lo que falta, lo próximo y el avance de cada tipo. Abierto, cada práctico muestra su barra.</p>
-        <p><b>Para que no te pierdas, sumaría la animación de I.</b> La caja que tocás se transforma en el encabezado del tema, y al volver se encoge a su lugar en la grilla. Ese movimiento te dice de dónde viniste mejor que el camino de arriba. No hace falta la columna de cajitas: la bandeja de Y ya cumple esa función. Si con 15 materias la bandeja no alcanza, la alternativa es K.</p>
-        <p><b>Anotaciones:</b> todas son opcionales. En un parcial, «Qué entra» deja ponerle nombre a cada unidad, y la regla sigue marcando cuáles repasaste. La observación vale para cualquier tipo y se muestra en una línea bajo el renglón. Si la dejás vacía, no aparece nada.</p>
+        <h3>Elegiría A: cajas al centro para entrar, cajas por tipo adentro y la bandeja de Y para saltar</h3>
+        <p><b>Resuelve los dos problemas que marcaste.</b> La lista era tediosa porque nada tenía borde. En A, cada materia es una caja y, adentro, cada tipo también. Con muchas materias, la grilla se ordena sola y se lee mejor que una columna de 15 nombres.</p>
+        <p><b>La bandeja de Y queda donde estaba</b>: adentro de un tema, para pasar a otro sin volver a la grilla. «Todos» abre la misma grilla en chico.</p>
+        <p><b>Si pasan de 9 temas</b>, sumaría el buscador de F arriba de la grilla, sin el árbol. <b>D</b> es el plan B si con el uso ves que pensás más en «qué tengo que entregar» que en materias. Se puede sumar más adelante como un filtro por tipo arriba de la grilla.</p>
 
-        <h4>Calendario general</h4>
-        <p>Antes cada tema tenía tres pistas fijas (parcial, práctico, tarea) aunque estuvieran vacías, y por eso salía largo. Ahora cada tema ocupa una fila de la misma altura que en el calendario de un tema, y solo suma un carril si dos cosas se pisan. Además usa todo el ancho, no la columna centrada de las cajas.</p>
+        <h4>Informes y notas</h4>
+        <p><b>Un informe es un práctico con partes que tienen nombre.</b> Entra en el mismo <code>checklist</code> (jsonb) de <code>tasks</code>: en un TP los ítems son números y en un informe, textos. Solo hace falta el valor <code>kind = 'informe'</code>. En la tarjeta dice qué falta («Faltan «Funcional» y «Lógico»»), y en el detalle las partes se marcan como casilleros.</p>
+        <p><b>Las notas no tienen fecha ni avance</b>, así que no van al calendario ni a la barra de progreso. Se ven como papelitos, con la sala de la que vinieron. El detalle permite editarlas, pasarlas a tareas o borrarlas. Mientras vivan en el <code>localStorage</code> de la sala, esta pantalla las lee de ahí. Cuando pasen a Supabase, conviene una tabla <code>notes</code> aparte, no un <code>kind</code> más de <code>tasks</code>.</p>
 
-        <h4>Datos</h4>
-        <p>Los nombres de las unidades no necesitan una tabla nueva. Van en el mismo <code>checklist</code> que los puntos del TP y las partes del informe, con la etiqueta vacía si no le pusiste nombre. La observación es una columna de texto opcional en <code>tasks</code>.</p>
+        <h4>Detalle</h4>
+        <p>Sigo con «Junto al ítem» para escritorio y la hoja de abajo para el celular. En la grilla de cajas de A no se abre nada encima (tocar es entrar), así que no compite con la bandeja.</p>
 
         <h4>Fondo con puntos</h4>
-        <p>Con «Al centro», los puntos enmarcan la grilla de cajas y quedan tapados por los renglones adentro del tema. En J suman poco, porque la hoja tapa casi todo.</p>
+        <p>En la grilla de A, «Al centro» enmarca las cajas igual que el anillo del home: es la pantalla donde más suman. Adentro de un tema las cajas tapan los puntos, así que tampoco molestan.</p>
       </div>
       <div>
-        <pre><span class="c-com">// Un renglón por tipo (el mismo componente que la caja del tema)</span>
-function RenglonTipo({ tipo, items, abierto, alAlternar }: Props) {
-  const avance = avanceDe(tipo, items);         <span class="c-com">// null en notas</span>
+        <pre><span class="c-com">// Las cajas por tipo: grilla que se acomoda sola</span>
+&lt;div className="grid items-start gap-4
+  [grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))]"&gt;
+  {tipos.map((tipo) =&gt; (
+    &lt;CajaTipo key={tipo.id} tipo={tipo} items={itemsDe(tipo)} /&gt;
+  ))}
+&lt;/div&gt;
+
+<span class="c-com">// Cada caja es un contenedor (Tailwind v4 los trae):
+// el renglón se acomoda al ancho de la caja, no al de la pantalla</span>
+function CajaTipo({ tipo, items }: Props) {
   return (
-    &lt;section className="rounded-xl border bg-card @container"&gt;
-      &lt;button onClick={alAlternar} aria-expanded={abierto}
-        className="grid w-full grid-cols-[18px_1fr_auto_14px] items-center gap-4
-          @3xl:grid-cols-[18px_170px_1fr_112px_128px_14px] px-5 py-3"&gt;
-        &lt;IconoTipo tipo={tipo} /&gt;
-        &lt;span className="font-medium"&gt;{tipo.nombre}&lt;/span&gt;
-        &lt;span className="hidden @3xl:block truncate text-muted-foreground"&gt;
-          {resumenDe(tipo, items)}
-        &lt;/span&gt;
-        …
-      &lt;/button&gt;
-      {abierto &amp;&amp; items.map((item) =&gt; &lt;RenglonItem key={item.id} item={item} /&gt;)}
+    &lt;section className="@container rounded-xl border bg-card px-5 pt-3.5"&gt;
+      &lt;EncabezadoTipo tipo={tipo} cuenta={cuentaDe(tipo, items)} /&gt;
+      {items.map((item) =&gt; (
+        &lt;div key={item.id} className="grid grid-cols-[20px_1fr_auto]
+          @xl:grid-cols-[20px_1.3fr_1fr_124px_52px]"&gt;…&lt;/div&gt;
+      ))}
     &lt;/section&gt;
   );
 }
 
-<span class="c-com">// La caja crece: View Transitions con react-router</span>
-&lt;Link to={`/tareas/${tema.id}`} viewTransition
-  style={{ viewTransitionName: `tema-${tema.id}` }}&gt;…&lt;/Link&gt;
-<span class="c-com">// y en la pantalla del tema, el encabezado lleva el mismo nombre</span>
-&lt;header style={{ viewTransitionName: `tema-${tema.id}` }}&gt;…&lt;/header&gt;
-
-<span class="c-com">// Anotaciones opcionales, en el mismo checklist</span>
+<span class="c-com">// Un informe es un práctico con partes que tienen nombre</span>
 type ItemChecklist = { etiqueta: string; hecho: boolean };
-<span class="c-com">// parcial: [{ etiqueta: "Cálculo lambda", hecho: true }, { etiqueta: "", hecho: false }]</span>
-type Tarea = { …; observaciones: string | null };</pre>
+<span class="c-com">// TP:      [{ etiqueta: "1", hecho: true }, …]
+// informe: [{ etiqueta: "Introducción", hecho: true }, …]</span></pre>
       </div>
     </div>
   </section>
@@ -1128,6 +978,7 @@ type Tarea = { …; observaciones: string | null };</pre>
   const grupos = {
     tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
     barra: v => raiz.dataset.barra = v,
+    panel: v => raiz.dataset.panel = v,
     detalle: v => { raiz.dataset.detalle = v; window.__repintar?.(); },
     temas: v => { raiz.dataset.temas = v; window.__ajustarTemas?.(); },
     fondo: v => raiz.dataset.fondo = v,
@@ -1135,7 +986,7 @@ type Tarea = { …; observaciones: string | null };</pre>
     disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
   };
   const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const defaults = { tema: null, barra: "desvanece", detalle: "junto", temas: "5", fondo: "liso", vineta: "centro", disp: "mouse" };
+  const defaults = { tema: null, barra: "desvanece", panel: "contrae", detalle: "junto", temas: "5", fondo: "liso", vineta: "centro", disp: "mouse" };
   const ponerAjuste = {};
   Object.keys(grupos).forEach(id => {
     const g = document.getElementById(id);
@@ -1173,40 +1024,40 @@ type Tarea = { …; observaciones: string | null };</pre>
   const tema = o => ({ parciales: [], tps: [], informes: [], tareas: [], notas: [], ...o });
   const TEMAS = [
     tema({ nombre: "Paradigmas", icono: "t-llaves",
-      parciales: [ { titulo: "Primer parcial", dia: 11, unidades: 4, repasadas: s([1, 2]), nombres: ["Paradigma funcional", "Cálculo lambda", "", ""], obs: "El profe dijo que repasemos el punto 16 del práctico 7", nota: null, aviso: "el día antes" } ],
+      parciales: [ { titulo: "Primer parcial", dia: 11, unidades: 4, repasadas: s([1, 2]), nota: null, aviso: "el día antes" } ],
       tps: [ { titulo: "TP N°1 — Introducción", puntos: 13, hechos: s([2, 4, 5, 6, 7, 8, 9, 10, 13]), dia: 5, aviso: "el día antes" },
-             { titulo: "TP N°2 — Sintaxis y Semántica", puntos: 12, hechos: s([1, 2, 9, 10]), dia: 15, aviso: null, obs: "Se puede entregar en grupos de tres" } ],
+             { titulo: "TP N°2 — Sintaxis y Semántica", puntos: 12, hechos: s([1, 2, 9, 10]), dia: 15, aviso: null } ],
       informes: [ { titulo: "Informe — Comparación de paradigmas", dia: 17, partes: ["Introducción", "Imperativo", "Funcional", "Lógico", "Conclusión"], hechas: s([1, 2, 5]), aviso: null } ],
       tareas: [ { titulo: "Leer el apunte de Haskell", hecha: false, aviso: null, dia: null } ],
       notas: [ { texto: "Preguntar si el TP 2 se puede hacer en Haskell o tiene que ser en Prolog", origen: "Sala «Paradigmas» · sáb 3/10" },
                { texto: "La unidad 3 entra entera en el parcial", origen: "Sala «Paradigmas» · sáb 3/10" } ] }),
     tema({ nombre: "Redes", icono: "t-red",
-      parciales: [ { titulo: "Parcial 1", dia: 3, unidades: 3, repasadas: s([1]), nombres: [], obs: "Entra hasta control de congestión", nota: null, aviso: "mañana 9:00" } ],
+      parciales: [ { titulo: "Parcial 1", dia: 3, unidades: 3, repasadas: s([1]), nota: null, aviso: "mañana 9:00" } ],
       tps: [ { titulo: "TP N°3 — Capa de transporte", puntos: 8, hechos: s([1, 2, 3, 5]), dia: 1, aviso: null } ],
       tareas: [ { titulo: "Leer el capítulo 4 de Kurose", hecha: false, aviso: "hoy 18:00", dia: 0 } ],
       notas: [ { texto: "Wireshark: filtrar con tcp.port == 443 para la captura del punto 4", origen: "Sala «Final de redes» · vie 2/10" } ] }),
     tema({ nombre: "Análisis y Diseño", icono: "t-diagrama",
-      parciales: [ { titulo: "Coloquio", dia: 26, unidades: 5, repasadas: s([]), nombres: [], nota: null, aviso: null } ],
+      parciales: [ { titulo: "Coloquio", dia: 26, unidades: 5, repasadas: s([]), nota: null, aviso: null } ],
       tps: [ { titulo: "TP Integrador — Casos de uso", puntos: 6, hechos: s([]), dia: null, aviso: null } ],
       informes: [ { titulo: "Informe de relevamiento", dia: 19, partes: ["Contexto", "Entrevistas", "Requerimientos", "Anexo"], hechas: s([1]), aviso: null } ],
       tareas: [ { titulo: "Imprimir los casos de uso", hecha: false, aviso: null, dia: null } ] }),
     tema({ nombre: "Inteligencia Artificial", icono: "t-chispa",
-      parciales: [ { titulo: "Parcial 1", dia: -11, unidades: 3, repasadas: s([1, 2, 3]), nombres: ["Búsqueda", "Lógica", "Probabilidad"], nota: 8, aviso: null } ],
-      informes: [ { titulo: "Informe del práctico de clasificación", dia: 6, partes: ["Dataset", "Modelo", "Resultados", "Conclusiones"], hechas: s([1, 2, 3]), aviso: "el día antes", obs: "Máximo seis páginas" } ],
+      parciales: [ { titulo: "Parcial 1", dia: -11, unidades: 3, repasadas: s([1, 2, 3]), nota: 8, aviso: null } ],
+      informes: [ { titulo: "Informe del práctico de clasificación", dia: 6, partes: ["Dataset", "Modelo", "Resultados", "Conclusiones"], hechas: s([1, 2, 3]), aviso: "el día antes" } ],
       tareas: [ { titulo: "Mandarle el mail al profe", hecha: false, aviso: "mañana 9:00", dia: 1 }, { titulo: "Bajar el dataset del práctico", hecha: true, aviso: null, dia: null } ],
       notas: [ { texto: "Ver el video de backpropagation antes del jueves", origen: "Sala «IA» · jue 1/10" } ] }),
     tema({ nombre: "General", icono: "t-bandeja", general: true,
       tareas: [ { titulo: "Comprar café", hecha: false, aviso: null, dia: null }, { titulo: "Renovar el carnet de la biblioteca", hecha: true, aviso: null, dia: null } ],
       notas: [ { texto: "Llevar el cargador a la biblioteca", origen: "Sala «Estudio libre» · jue 1/10" } ] }),
   ];
-  /* Temas de más, para probar cómo escala (ajuste «Temas») */
+  /* Temas de más, para probar cómo escala cada navegación (ajuste «Temas») */
   const EXTRA = [
-    tema({ nombre: "Álgebra", icono: "t-sigma", parciales: [ { titulo: "Recuperatorio", dia: 8, unidades: 5, repasadas: s([1, 2, 3]), nombres: [], nota: null, aviso: null } ], tareas: [ { titulo: "Ejercicios de autovalores", hecha: false, aviso: null, dia: null } ] }),
+    tema({ nombre: "Álgebra", icono: "t-sigma", parciales: [ { titulo: "Recuperatorio", dia: 8, unidades: 5, repasadas: s([1, 2, 3]), nota: null, aviso: null } ], tareas: [ { titulo: "Ejercicios de autovalores", hecha: false, aviso: null, dia: null } ] }),
     tema({ nombre: "Física II", icono: "t-onda", tps: [ { titulo: "Laboratorio 2 — Circuitos RC", puntos: 7, hechos: s([1, 2, 3, 4, 5]), dia: 9, aviso: null } ], informes: [ { titulo: "Informe del laboratorio 2", dia: 13, partes: ["Objetivo", "Mediciones", "Gráficos", "Conclusión"], hechas: s([]), aviso: null } ] }),
     tema({ nombre: "Inglés Técnico", icono: "t-globo", tareas: [ { titulo: "Traducir el abstract del paper", hecha: false, aviso: null, dia: null } ] }),
     tema({ nombre: "Proyecto Doro", icono: "t-codigo", tareas: [ { titulo: "Bocetos de la pantalla de tareas", hecha: true, aviso: null, dia: null }, { titulo: "Modelo de datos de los parciales", hecha: false, aviso: null, dia: null } ], notas: [ { texto: "Las notas de la sala, ¿localStorage o Supabase?", origen: "Sala «Doro» · dom 4/10" } ] }),
     tema({ nombre: "Sistemas Operativos", icono: "t-capas", tps: [ { titulo: "TP N°2 — Planificación de procesos", puntos: 10, hechos: s([1, 2, 3, 4, 5, 6]), dia: 12, aviso: null } ] }),
-    tema({ nombre: "Bases de Datos", icono: "t-base", parciales: [ { titulo: "Parcial 1", dia: 14, unidades: 4, repasadas: s([1]), nombres: [], nota: null, aviso: null } ] }),
+    tema({ nombre: "Bases de Datos", icono: "t-base", parciales: [ { titulo: "Parcial 1", dia: 14, unidades: 4, repasadas: s([1]), nota: null, aviso: null } ] }),
     tema({ nombre: "Economía", icono: "t-grafico", tareas: [ { titulo: "Resumen del capítulo 3", hecha: false, aviso: null, dia: null } ] }),
     tema({ nombre: "Legislación", icono: "t-balanza", informes: [ { titulo: "Informe sobre la ley de datos personales", dia: 21, partes: ["Resumen", "Análisis", "Opinión"], hechas: s([]), aviso: null } ] }),
     tema({ nombre: "Simulación", icono: "t-dado", tps: [ { titulo: "TP N°1 — Montecarlo", puntos: 5, hechos: s([1, 2, 3, 4, 5]), dia: -1, aviso: null } ] }),
@@ -1259,28 +1110,13 @@ type Tarea = { …; observaciones: string | null };</pre>
   ];
   const TIPO = Object.fromEntries(TIPOS.map(t => [t.id, t]));
   const objDe = k => { const [t, mi, i] = k.split("-"); const m = TEMAS[+mi]; return { t, mi: +mi, i: +i, m, o: m && TIPO[t] ? TIPO[t].lista(m)[+i] : null }; };
+  const cuentaTipo = (id, m) => id === "pa" ? `${m.parciales.length}` : id === "pr" ? `${sum(m.tps, t => t.hechos.size)} de ${sum(m.tps, t => t.puntos)} puntos` : id === "in" ? `${sum(m.informes, f => f.hechas.size)} de ${sum(m.informes, f => f.partes.length)} partes` : id === "t" ? `${m.tareas.filter(t => t.hecha).length} de ${m.tareas.length}` : `${m.notas.length}`;
   const contarTipos = m => TIPOS.map(T => [T, T.lista(m).length]).filter(([, n]) => n).map(([T, n]) => `<span title="${n} ${(n === 1 ? T.uno : T.nombre).toLowerCase()}">${ic(T.icono)}${n}</span>`).join("");
-
-  /* Resumen de un tipo dentro de un tema: lo que falta, lo próximo y el avance */
-  const pendienteFechado = (id, o) => id === "pa" ? !pasado(o) : id === "pr" ? o.dia != null && o.dia >= 0 && o.hechos.size < o.puntos : id === "in" ? o.dia != null && o.dia >= 0 && !completo(o) : id === "t" ? !o.hecha && o.dia != null : false;
-  const proximoDia = (T, m) => T.lista(m).filter(o => pendienteFechado(T.id, o)).map(o => o.dia).sort((a, b) => a - b)[0] ?? null;
-  const proximoTipo = (T, m) => { const d = proximoDia(T, m); return d == null ? "" : `${ic("i-reloj")}${relativo(d)}`; };
-  const resumenTipo = (T, m) => {
-    if (T.id === "pa") { const f = m.parciales.filter(p => !pasado(p)).length, r = m.parciales.length - f; return [f && `${f === 1 ? "Uno" : f} por rendir`, r && `${r === 1 ? "uno rendido" : r + " rendidos"}`].filter(Boolean).join(", ") || "—"; }
-    if (T.id === "pr") { const p = sum(m.tps, t => t.puntos - t.hechos.size), n = m.tps.filter(t => t.hechos.size < t.puntos).length; return p ? `Faltan ${p} punto${p === 1 ? "" : "s"} en ${n === 1 ? "un práctico" : n + " prácticos"}` : "Todos completos"; }
-    if (T.id === "in") { const p = sum(m.informes, f => f.partes.length - f.hechas.size); return p ? `Falta${p === 1 ? "" : "n"} ${p} parte${p === 1 ? "" : "s"}` : "Listos para entregar"; }
-    if (T.id === "t") { const n = m.tareas.filter(t => !t.hecha).length; return n ? `${n === 1 ? "Una pendiente" : n + " pendientes"}` : "Todas hechas"; }
-    return `${m.notas.length === 1 ? "Una nota" : m.notas.length + " notas"} de la sala`;
+  const proximo = m => {
+    const c = [...m.parciales.filter(p => !pasado(p)).map(p => [p.dia, "k-parcial"]), ...m.tps.filter(t => t.dia != null && t.dia >= 0 && t.hechos.size < t.puntos).map(t => [t.dia, "k-practico"]),
+      ...m.informes.filter(f => f.dia != null && f.dia >= 0 && !completo(f)).map(f => [f.dia, "k-informe"]), ...m.tareas.filter(t => !t.hecha && t.dia != null).map(t => [t.dia, "k-tarea"])].sort((a, b) => a[0] - b[0]);
+    return c.length ? `${ic(c[0][1])}${relativo(c[0][0])}` : "";
   };
-  const pctTipoM = (T, m) => {
-    const [h, u] = T.id === "pa" ? [sum(m.parciales.filter(p => !pasado(p)), p => p.repasadas.size), sum(m.parciales.filter(p => !pasado(p)), p => p.unidades)]
-      : T.id === "pr" ? [sum(m.tps, t => t.hechos.size), sum(m.tps, t => t.puntos)]
-      : T.id === "in" ? [sum(m.informes, f => f.hechas.size), sum(m.informes, f => f.partes.length)]
-      : T.id === "t" ? [m.tareas.filter(t => t.hecha).length, m.tareas.length] : [0, 0];
-    return u ? Math.round(h / u * 100) : null;
-  };
-  /* Al entrar a un tema se abre el tipo que tiene lo más próximo */
-  const abrirPorDefecto = m => { const c = TIPOS.map(T => [T.id, proximoDia(T, m)]).filter(x => x[1] != null).sort((a, b) => a[1] - b[1]); const t = c[0]?.[0] ?? TIPOS.find(T => T.lista(m).length)?.id; return new Set(t ? [t] : []); };
 
   window.__ajustarTemas = () => {
     for (let i = TEMAS.length - 1; i >= 0; i--) if (TEMAS[i].extra) TEMAS.splice(i, 1);
@@ -1293,37 +1129,46 @@ type Tarea = { …; observaciones: string | null };</pre>
 
   /* ── Piezas ── */
   const linea = (p, extra = "") => `<span class="linea-avance ${extra}" role="img" aria-label="${p} %"><span style="width:${p}%"></span></span>`;
-  const regla = (total, hechos, id, nombre, nombres = []) => `<div class="regla-f" role="group" aria-label="${esc(nombre)}: ${hechos.size} de ${total}">${rango(1, total).map(n => `<button type="button" data-n="${n}" data-punto="${id}:${n}" data-k="p-${id}-${n}" aria-pressed="${hechos.has(n)}" aria-label="${n}${nombres[n - 1] ? ", " + esc(nombres[n - 1]) : ""}"${nombres[n - 1] ? ` title="${esc(nombres[n - 1])}"` : ""}></button>`).join("")}</div>`;
+  const regla = (total, hechos, id, nombre) => `<div class="regla-f" role="group" aria-label="${esc(nombre)}: ${hechos.size} de ${total}">${rango(1, total).map(n => `<button type="button" data-n="${n}" data-punto="${id}:${n}" data-k="p-${id}-${n}" aria-pressed="${hechos.has(n)}" aria-label="${n}"></button>`).join("")}</div>`;
+  const reglaChica = (total, hechos) => `<span class="regla" aria-hidden="true">${rango(1, total).map(n => `<i class="${hechos.has(n) ? "hecho" : ""}"></i>`).join("")}</span>`;
   const botonAviso = (tipo, mi, i, aviso) => `<button type="button" class="aviso-btn${aviso ? " puesto" : ""}" data-aviso="${tipo}:${mi}:${i}" data-k="av-${tipo}-${mi}-${i}" aria-label="${aviso ? "Aviso " + aviso + ". Cambiar" : "Avisarme"}">${ic("i-campana")}${aviso ? esc(aviso) : ""}</button>`;
   const celdaFecha = d => d == null ? `<span class="it-fecha">sin fecha</span>` : `<span class="it-fecha"><b>${fecha(d)}</b><small>${relativo(d)}</small></span>`;
-  const avance = (h, tot) => `<span class="it-av"><span class="num"><b>${h}</b>/${tot}</span>${linea(Math.round(h / tot * 100))}</span>`;
-  const obsLinea = o => o.obs ? `<span class="it-obs">${ic("k-nota")}<span>${esc(o.obs)}</span></span>` : "";
 
   /* ── Renglones: tocarlos abre el detalle ── */
   const filaParcial = (p, mi, i, app) => {
     const k = `pa-${mi}-${i}`;
     const medio = pasado(p) ? (p.nota != null ? `Te sacaste un ${p.nota}` : "Anotá la nota") : `Repasaste ${p.repasadas.size} de ${p.unidades} unidades`;
-    const cuenta = pasado(p) ? `<span class="it-av"><span class="num">${p.nota != null ? `nota <b>${p.nota}</b>` : "—"}</span></span>` : avance(p.repasadas.size, p.unidades);
-    return `<div class="it${app._item === k ? " sel" : ""}${pasado(p) ? " pasado" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-parcial")}</span><span class="it-titulo">${esc(p.titulo)}</span><span class="it-medio">${medio}</span>${celdaFecha(p.dia)}${cuenta}${obsLinea(p)}</button>${enLugar(app, k)}</div>`;
+    const cuenta = pasado(p) ? `<span class="num it-cuenta">${p.nota != null ? `<b>${p.nota}</b>` : "—"}</span>` : `<span class="num it-cuenta"><b>${p.repasadas.size}</b>/${p.unidades}</span>`;
+    return `<div class="it${app._item === k ? " sel" : ""}${pasado(p) ? " pasado" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-parcial")}</span><span class="it-titulo">${esc(p.titulo)}</span><span class="it-medio">${medio}</span>${celdaFecha(p.dia)}${cuenta}</button>${enLugar(app, k)}</div>`;
   };
   const filaPractico = (t, mi, i, app) => {
     const k = `pr-${mi}-${i}`;
-    return `<div class="it${app._item === k ? " sel" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-practico")}</span><span class="it-titulo">${esc(t.titulo)}</span><span class="it-medio">${queFalta(t)}</span>${celdaFecha(t.dia)}${avance(t.hechos.size, t.puntos)}${obsLinea(t)}</button>${enLugar(app, k)}</div>`;
+    return `<div class="it${app._item === k ? " sel" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-practico")}</span><span class="it-titulo">${esc(t.titulo)}</span><span class="it-medio">${queFalta(t)}</span>${celdaFecha(t.dia)}<span class="num it-cuenta"><b>${t.hechos.size}</b>/${t.puntos}</span></button>${enLugar(app, k)}</div>`;
   };
   const filaInforme = (f, mi, i, app) => {
     const k = `in-${mi}-${i}`;
-    return `<div class="it${app._item === k ? " sel" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-informe")}</span><span class="it-titulo">${esc(f.titulo)}</span><span class="it-medio">${queFaltaInforme(f)}</span>${celdaFecha(f.dia)}${avance(f.hechas.size, f.partes.length)}${obsLinea(f)}</button>${enLugar(app, k)}</div>`;
+    return `<div class="it${app._item === k ? " sel" : ""}"><button type="button" class="it-fila" data-item="${k}" data-k="${k}"><span class="it-ico">${ic("k-informe")}</span><span class="it-titulo">${esc(f.titulo)}</span><span class="it-medio">${queFaltaInforme(f)}</span>${celdaFecha(f.dia)}<span class="num it-cuenta"><b>${f.hechas.size}</b>/${f.partes.length}</span></button>${enLugar(app, k)}</div>`;
   };
   const filaTarea = (t, mi, i, app) => {
     const k = `t-${mi}-${i}`;
     return `<div class="it tarea-it${t.hecha ? " hecha" : ""}${app._item === k ? " sel" : ""}"><div class="it-fila">
       <span class="check-celda"><button type="button" class="check" data-check="${mi}:${i}" data-k="ch-${mi}-${i}" aria-label="${t.hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(t.titulo)}">${ic("i-check")}</button></span>
-      <button type="button" class="it-titulo" data-item="${k}" data-k="${k}">${esc(t.titulo)}</button><span class="it-medio"></span><span class="aviso-celda">${botonAviso("t", mi, i, t.aviso)}</span><span></span>${obsLinea(t)}</div>${enLugar(app, k)}</div>`;
+      <button type="button" class="it-titulo" data-item="${k}" data-k="${k}">${esc(t.titulo)}</button><span class="it-medio"></span><span class="aviso-celda">${botonAviso("t", mi, i, t.aviso)}</span><span></span></div>${enLugar(app, k)}</div>`;
   };
   const FILA = { pa: filaParcial, pr: filaPractico, in: filaInforme, t: filaTarea };
-  const notaTj = (n, mi, i, app) => {
+  const notaTj = (n, mi, i, app, conTema) => {
     const k = `no-${mi}-${i}`;
-    return `<button type="button" class="nota-tj${app._item === k ? " sel" : ""}" data-item="${k}" data-k="${k}"><p>${esc(n.texto)}</p><small>${ic("i-sala")}${esc(n.origen)}</small></button>`;
+    return `<button type="button" class="nota-tj${app._item === k ? " sel" : ""}" data-item="${k}" data-k="${k}">${conTema ? `<span class="tj-tema">${ic(TEMAS[mi].icono)}${esc(TEMAS[mi].nombre)}</span>` : ""}<p>${esc(n.texto)}</p><small>${ic("i-sala")}${esc(n.origen)}</small></button>`;
+  };
+
+  /* Tarjeta (tablero de C) */
+  const tarjeta = (id, { o, m, mi, i }, app, conTema) => {
+    if (id === "no") return notaTj(o, mi, i, app, conTema);
+    const k = `${id}-${mi}-${i}`, sel = app._item === k ? " sel" : "", temaL = conTema ? `<span class="tj-tema">${ic(m.icono)}${esc(m.nombre)}</span>` : "";
+    if (id === "t") return `<div class="tj tj-tarea${o.hecha ? " hecha" : ""}${sel}"><button type="button" class="check" data-check="${mi}:${i}" data-k="ch-${mi}-${i}" aria-label="${o.hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(o.titulo)}">${ic("i-check")}</button><button type="button" class="tj-btn" data-item="${k}" data-k="${k}">${temaL}<span class="tj-t">${esc(o.titulo)}</span>${o.aviso ? `<span class="tj-m"><span>${ic("i-campana")} ${esc(o.aviso)}</span></span>` : ""}</button></div>`;
+    const [medio, hechos, tot] = id === "pa" ? [pasado(o) ? (o.nota != null ? `Te sacaste un ${o.nota}` : "Anotá la nota") : `${o.repasadas.size} de ${o.unidades} unidades`, o.repasadas, o.unidades]
+      : id === "pr" ? [`${o.hechos.size} de ${o.puntos} puntos`, o.hechos, o.puntos] : [`${o.hechas.size} de ${o.partes.length} partes`, o.hechas, o.partes.length];
+    return `<div class="tj${sel}${id === "pa" && pasado(o) ? " pasado" : ""}"><button type="button" class="tj-btn" data-item="${k}" data-k="${k}">${temaL}<span class="tj-t">${esc(o.titulo)}</span>${id === "pa" && pasado(o) ? "" : reglaChica(tot, hechos)}<span class="tj-m"><span>${medio}</span><span>${o.dia != null ? fecha(o.dia) : "sin fecha"}</span></span></button></div>`;
   };
 
   /* ── Alta ── */
@@ -1341,74 +1186,66 @@ type Tarea = { …; observaciones: string | null };</pre>
   };
   const agregarFila = (mi, faltan) => faltan.length ? `<div class="agregar-fila"><span class="af-t">Sumar</span>${faltan.map(T => `<button type="button" data-alta="${mi}:${T.alta}" data-k="al-${mi}-${T.id}">${ic(T.icono)}${T.uno}</button>`).join("")}</div>` : "";
 
-  const contenidoTipo = (T, m, mi, app) => {
+  /* ── Los tipos de un tema: en líneas o en cajas ── */
+  const cabTipo = (T, m, mi) => `<div class="bloque-cab">${ic(T.icono)}<h2>${T.nombre}</h2><span class="num">${cuentaTipo(T.id, m)}</span><button type="button" class="mas-tipo" data-alta="${mi}:${T.alta}" data-k="mas-${mi}-${T.id}" aria-label="Agregar ${T.uno.toLowerCase()}">${ic("i-mas")}Agregar</button></div>`;
+  const contenidoTipo = (T, m, mi, app, conTema = false) => {
     const l = T.lista(m);
     if (!l.length) return app._form?.[mi] === T.alta ? "" : `<p class="vacio">Sin ${T.nombre.toLowerCase()} todavía.</p>`;
-    return T.id === "no" ? `<div class="notas-grilla">${l.map((n, i) => notaTj(n, mi, i, app)).join("")}</div>` : l.map((o, i) => FILA[T.id](o, mi, i, app)).join("");
+    return T.id === "no" ? `<div class="notas-grilla">${l.map((n, i) => notaTj(n, mi, i, app, conTema)).join("")}</div>` : l.map((o, i) => FILA[T.id](o, mi, i, app)).join("");
+  };
+  const bloques = (m, mi, app, estilo, solo = null) => {
+    const tipos = TIPOS.filter(T => solo ? T.id === solo : T.lista(m).length || app._form?.[mi] === T.alta);
+    const faltan = solo ? [] : TIPOS.filter(T => !tipos.includes(T));
+    const cuerpoT = T => contenidoTipo(T, m, mi, app) + formAlta(mi, app, T.alta);
+    if (estilo === "cajas") return `<div class="bento" data-grupo>${tipos.map(T => `<section class="caja-tipo${T.id === "no" ? " ancha" : ""}">${cabTipo(T, m, mi)}${cuerpoT(T)}</section>`).join("")}${faltan.length ? `<div class="caja-tipo caja-sumar ancha">${agregarFila(mi, faltan)}</div>` : ""}</div>`;
+    return `<div class="bloques" data-grupo>${tipos.map(T => `<section class="bloque">${cabTipo(T, m, mi)}${cuerpoT(T)}</section>`).join("")}${agregarFila(mi, faltan)}</div>`;
   };
 
-  /* Renglones por tipo (H, I, J, K) */
-  const renglonesTipo = (m, mi, app) => {
-    const tipos = TIPOS.filter(T => T.lista(m).length || app._form?.[mi] === T.alta), faltan = TIPOS.filter(T => !tipos.includes(T));
-    return `<div class="g-lista" data-grupo>${tipos.map(T => {
-      const ab = app._abiertosT.has(T.id), p = pctTipoM(T, m);
-      return `<section class="g-tema${ab ? " abierto" : ""}" id="${app._id}-sec-${T.id}"><button type="button" class="g-cab" data-abrir-t="${T.id}" data-k="at-${T.id}" aria-expanded="${ab}">${ic(T.icono)}<span class="g-n">${T.nombre}</span><span class="g-frase">${resumenTipo(T, m)}</span><span class="g-prox">${proximoTipo(T, m)}</span><span class="g-av">${p == null ? `<span class="num">${T.lista(m).length}</span>` : `<span class="num">${p} %</span>${linea(p)}`}</span><span class="g-chev">${ic("i-flecha")}</span></button>${ab ? `<div class="g-cuerpo${app._entraT === T.id ? " entra" : ""}">${contenidoTipo(T, m, mi, app)}${formAlta(mi, app, T.alta)}<div class="tf-pie"><button type="button" class="mas-tipo" data-alta="${mi}:${T.alta}" data-k="mas-${mi}-${T.id}">${ic("i-mas")}Agregar ${T.uno.toLowerCase()}</button></div></div>` : ""}</section>`;
-    }).join("")}${faltan.length ? `<div class="tf-sumar">${agregarFila(mi, faltan)}</div>` : ""}</div>`;
+  /* C · tablero: una columna por tipo; con «Todo», junta todos los temas */
+  const tablero = app => {
+    const todos = app._sel < 0, fuentes = todos ? TEMAS.map((m, mi) => ({ m, mi })) : [{ m: TEMAS[app._sel], mi: app._sel }];
+    return `<div class="tablero" data-grupo>${TIPOS.map(T => {
+      const items = fuentes.flatMap(({ m, mi }) => T.lista(m).map((o, i) => ({ o, m, mi, i })));
+      const mas = todos ? "" : `<button type="button" class="mas-tipo" data-alta="${app._sel}:${T.alta}" data-k="mas-${app._sel}-${T.id}" aria-label="Agregar ${T.uno.toLowerCase()}">${ic("i-mas")}</button>`;
+      const lista = T.id === "no" && items.length ? `<div class="notas-grilla">${items.map(x => tarjeta(T.id, x, app, todos)).join("")}</div>` : items.map(x => tarjeta(T.id, x, app, todos)).join("");
+      return `<section class="col"><div class="bloque-cab">${ic(T.icono)}<h2>${T.nombre}</h2><span class="num">${items.length}</span>${mas}</div>${items.length ? lista : `<p class="col-vacia">Nada por acá.</p>`}${todos ? "" : formAlta(app._sel, app, T.alta)}</section>`;
+    }).join("")}</div>`;
   };
 
-  /* Cajas por tipo, apiladas (L) */
-  const cajasTipo = (m, mi, app) => {
-    const tipos = TIPOS.filter(T => T.lista(m).length || app._form?.[mi] === T.alta), faltan = TIPOS.filter(T => !tipos.includes(T));
-    return `<div class="bento pila" data-grupo>${tipos.map(T => `<section class="caja-tipo" id="${app._id}-sec-${T.id}"><div class="bloque-cab">${ic(T.icono)}<h2>${T.nombre}</h2><span class="num">${resumenTipo(T, m)}</span><button type="button" class="mas-tipo" data-alta="${mi}:${T.alta}" data-k="mas-${mi}-${T.id}" aria-label="Agregar ${T.uno.toLowerCase()}">${ic("i-mas")}Agregar</button></div>${contenidoTipo(T, m, mi, app)}${formAlta(mi, app, T.alta)}</section>`).join("")}${faltan.length ? `<div class="caja-tipo caja-sumar">${agregarFila(mi, faltan)}</div>` : ""}</div>`;
+  /* D · el tipo primero */
+  const pendTipo = id => id === "pa" ? sum(TEMAS, m => m.parciales.filter(p => !pasado(p)).length) : id === "pr" ? sum(TEMAS, m => m.tps.filter(t => t.hechos.size < t.puntos).length) : id === "in" ? sum(TEMAS, m => m.informes.filter(f => !completo(f)).length) : id === "t" ? sum(TEMAS, m => m.tareas.filter(t => !t.hecha).length) : sum(TEMAS, m => m.notas.length);
+  const fraseTipo = id => {
+    const n = pendTipo(id);
+    if (id === "pa") return n ? `Tenés ${n === 1 ? "un parcial" : n + " parciales"} por delante.` : "No tenés parciales por delante.";
+    if (id === "pr") { const p = sum(TEMAS, m => sum(m.tps, t => t.puntos - t.hechos.size)); return p ? `Te quedan ${p} puntos<br><span class="r">en ${n === 1 ? "un práctico" : n + " prácticos"}.</span>` : "Los prácticos están al día."; }
+    if (id === "in") { const p = sum(TEMAS, m => sum(m.informes, f => f.partes.length - f.hechas.size)); return n ? `Te ${n === 1 ? "queda un informe" : "quedan " + n + " informes"}<br><span class="r">con ${p} parte${p === 1 ? "" : "s"} por escribir.</span>` : "Los informes están al día."; }
+    if (id === "t") return n ? `Te ${n === 1 ? "queda una tarea" : "quedan " + n + " tareas"}.` : "No te quedan tareas.";
+    return n ? `Tenés ${n === 1 ? "una nota" : n + " notas"} de la sala<br><span class="r">para ordenar o pasar a tareas.</span>` : "No hay notas de la sala.";
+  };
+  const pctTipo = id => {
+    const [h, u] = id === "pa" ? [sum(TEMAS, m => sum(m.parciales.filter(p => !pasado(p)), p => p.repasadas.size)), sum(TEMAS, m => sum(m.parciales.filter(p => !pasado(p)), p => p.unidades))]
+      : id === "pr" ? [sum(TEMAS, m => sum(m.tps, t => t.hechos.size)), sum(TEMAS, m => sum(m.tps, t => t.puntos))]
+      : id === "in" ? [sum(TEMAS, m => sum(m.informes, f => f.hechas.size)), sum(TEMAS, m => sum(m.informes, f => f.partes.length))]
+      : id === "t" ? [sum(TEMAS, m => m.tareas.filter(t => t.hecha).length), sum(TEMAS, m => m.tareas.length)] : [0, 0];
+    return u ? Math.round(h / u * 100) : null;
+  };
+  const gruposTipo = (T, app) => {
+    const con = TEMAS.map((m, mi) => ({ m, mi })).filter(({ m, mi }) => T.lista(m).length || app._form?.[mi] === T.alta);
+    const sin = TEMAS.map((m, mi) => ({ m, mi })).filter(x => !con.includes(x) && !con.some(c => c.mi === x.mi));
+    return `<div class="d-grupos" data-grupo>${con.map(({ m, mi }) => `<section class="d-grupo${T.id === "no" ? " ancha" : ""}"><div class="bloque-cab">${ic(m.icono)}<h2>${esc(m.nombre)}</h2><span class="num">${cuentaTipo(T.id, m)}</span><button type="button" class="mas-tipo" data-alta="${mi}:${T.alta}" data-k="mas-${mi}-${T.id}" aria-label="Agregar ${T.uno.toLowerCase()} en ${esc(m.nombre)}">${ic("i-mas")}Agregar</button></div>${contenidoTipo(T, m, mi, app)}${formAlta(mi, app, T.alta)}</section>`).join("")}</div>
+      ${sin.length ? `<p class="d-sin"><span>Sin ${T.nombre.toLowerCase()}:</span>${sin.map(({ m, mi }) => `<button type="button" class="btn-texto" data-alta="${mi}:${T.alta}" data-k="dsin-${mi}" title="Agregar ${T.uno.toLowerCase()} en ${esc(m.nombre)}">${esc(m.nombre)}</button>`).join("")}</p>` : ""}`;
   };
 
-  /* M · agenda por fecha */
-  const agendaTema = (m, mi, app) => {
-    const its = [];
-    TIPOS.filter(T => T.id !== "no" && (!app._mtipo || app._mtipo === T.id)).forEach(T => T.lista(m).forEach((o, i) => { if (T.id === "t" && o.hecha) return; its.push({ T, o, i }); }));
-    const grupo = d => d == null ? "Sin fecha" : d < 0 ? "Ya pasó" : d <= 6 ? "Esta semana" : d <= 13 ? "La semana que viene" : "Más adelante";
-    its.sort((a, b) => (a.o.dia ?? 500) - (b.o.dia ?? 500));
-    const agenda = ["Esta semana", "La semana que viene", "Más adelante", "Sin fecha", "Ya pasó"].map(g => { const l = its.filter(x => grupo(x.o.dia) === g); return l.length ? `<section class="m-grupo"><h3>${g}</h3>${l.map(x => FILA[x.T.id](x.o, mi, x.i, app)).join("")}</section>` : ""; }).join("");
-    const lado = TIPOS.filter(T => T.id !== "no" && T.lista(m).length).map(T => { const p = pctTipoM(T, m); return `<button type="button" class="m-tipo" data-mtipo="${T.id}" data-k="mt-${T.id}" aria-pressed="${app._mtipo === T.id}">${ic(T.icono)}<span>${T.nombre}</span><span class="num">${p == null ? "" : p + " %"}</span>${p == null ? "" : linea(p)}<small>${resumenTipo(T, m)}</small></button>`; }).join("");
-    const notas = m.notas.length ? `<h3>${ic("k-nota")}Notas de la sala</h3><div class="notas-grilla">${m.notas.map((n, i) => notaTj(n, mi, i, app)).join("")}</div>` : "";
-    const filtro = app._mtipo ? `<p class="m-filtro">Solo ${TIPO[app._mtipo].nombre.toLowerCase()} <button type="button" class="btn-texto" data-mtipo="${app._mtipo}" data-k="mt-todo">ver todo</button></p>` : "";
-    const forma = app._form?.[mi] ? formAlta(mi, app, app._form[mi]) : "";
-    return `<div class="m-cuerpo" data-grupo><div class="m-agenda">${filtro}${agenda || `<p class="vacio">Nada por acá.</p>`}${forma}${agregarFila(mi, TIPOS)}</div><aside class="m-lado">${lado}${notas}</aside></div>`;
-  };
-
-  /* N · pestañas por tipo y tarjetas */
-  const tarjetaN = (id, o, mi, i, app) => {
-    const k = `${id}-${mi}-${i}`;
-    const [h, tot, medio] = id === "pa" ? [o.repasadas.size, o.unidades, pasado(o) ? (o.nota != null ? `Te sacaste un ${o.nota}` : "Anotá la nota") : `Repasaste ${o.repasadas.size} de ${o.unidades} unidades`]
-      : id === "pr" ? [o.hechos.size, o.puntos, queFalta(o)] : [o.hechas.size, o.partes.length, queFaltaInforme(o)];
-    const p = Math.round(h / tot * 100), nombres = (o.nombres || []).filter(Boolean);
-    return `<button type="button" class="n-tj${app._item === k ? " sel" : ""}" data-item="${k}" data-k="${k}"><span class="n-tit">${esc(o.titulo)}</span><span class="n-medio">${medio}</span>${nombres.length ? `<span class="n-entra">Entra: ${nombres.map(esc).join(" · ")}</span>` : ""}${id === "pa" && pasado(o) ? "" : `<span class="n-av"><span class="num"><b>${h}</b> de ${tot}</span><span class="num">${p} %</span></span>${linea(p, "gruesa")}`}<span class="n-pie"><span>${o.dia != null ? `${fecha(o.dia)} · ${relativo(o.dia)}` : "Sin fecha"}</span>${o.aviso ? `<span>${ic("i-campana")}${esc(o.aviso)}</span>` : ""}</span>${o.obs ? `<span class="it-obs n-obs">${ic("k-nota")}<span>${esc(o.obs)}</span></span>` : ""}</button>`;
-  };
-  const tarjetasTipo = (T, m, mi, app) => {
-    const l = T.lista(m), alta = `${formAlta(mi, app, T.alta)}${app._form?.[mi] === T.alta ? "" : `<button type="button" class="n-nueva" data-alta="${mi}:${T.alta}" data-k="nn-${T.id}">${ic("i-mas")}Agregar ${T.uno.toLowerCase()}</button>`}`;
-    if (T.id === "no") return `${l.length ? `<div class="notas-grilla">${l.map((n, i) => notaTj(n, mi, i, app)).join("")}</div>` : `<p class="vacio">Sin notas todavía.</p>`}${alta}`;
-    if (T.id === "t") return `<div class="caja-tipo n-lista">${l.length ? l.map((o, i) => filaTarea(o, mi, i, app)).join("") : `<p class="vacio">Sin tareas todavía.</p>`}</div>${alta}`;
-    return `${l.length ? `<div class="n-tarjetas">${l.map((o, i) => tarjetaN(T.id, o, mi, i, app)).join("")}</div>` : `<p class="vacio">Sin ${T.nombre.toLowerCase()} todavía.</p>`}${alta}`;
-  };
-
-  /* ── Calendario: cada fila suma carriles solo si las cosas se pisan ── */
+  /* ── Calendario ── */
   const itemsDe = (m, mi) => [
     ...m.parciales.map((p, i) => ({ tipo: "parcial", titulo: p.titulo, dia: p.dia, prog: pasado(p) ? null : Math.round(p.repasadas.size / p.unidades * 100), extra: pasado(p) ? (p.nota != null ? `nota ${p.nota}` : "sin nota") : `${p.repasadas.size}/${p.unidades}`, key: `pa-${mi}-${i}` })),
     ...m.tps.map((t, i) => ({ tipo: "practico", titulo: t.titulo, dia: t.dia, prog: Math.round(t.hechos.size / t.puntos * 100), extra: `${t.hechos.size}/${t.puntos}`, key: `pr-${mi}-${i}` })),
     ...m.informes.map((f, i) => ({ tipo: "informe", titulo: f.titulo, dia: f.dia, prog: Math.round(f.hechas.size / f.partes.length * 100), extra: `${f.hechas.size}/${f.partes.length}`, key: `in-${mi}-${i}` })),
     ...m.tareas.map((t, i) => ({ t, i })).filter(({ t }) => !t.hecha && t.dia != null).map(({ t, i }) => ({ tipo: "tarea", titulo: t.titulo, dia: t.dia, key: `t-${mi}-${i}` })),
   ];
+  const PISTA = { parcial: 8, practico: 44, informe: 80, tarea: 116 };
   const ICONO_CAL = { parcial: "k-parcial", practico: "k-practico", informe: "k-informe", tarea: "k-tarea" };
-  const VENTANA = 8; /* días que ocupa un bloque de 220 px, aproximado */
-  const empacar = (items, desde, dias) => {
-    const fin = [], visibles = items.filter(it => it.dia == null || (it.dia >= desde && it.dia < desde + dias));
-    /* Mismo corrimiento que el CSS: cerca de los bordes el bloque se corre para entrar entero */
-    const desdeDe = it => it.dia == null ? desde + dias - VENTANA : it.tipo === "practico" || it.tipo === "informe" ? Math.max(it.dia + 1, desde + VENTANA) - VENTANA : Math.min(it.dia, desde + dias - VENTANA);
-    visibles.map(it => ({ it, ini: desdeDe(it) })).sort((a, b) => a.ini - b.ini)
-      .forEach(x => { let c = fin.findIndex(f => f <= x.ini); if (c < 0) { c = fin.length; fin.push(0); } fin[c] = x.ini + VENTANA; x.it.carril = c; });
-    return { visibles, carriles: Math.max(1, fin.length) };
-  };
-  const calendario = (filas, desde, dias, selKey) => {
+  const calendario = (filas, desde, dias, selKey, multi) => {
     const x = d => (d - desde) / dias * 100;
     const ejes = [], semanas = [], findes = [];
     for (let d = desde; d < desde + dias; d++) {
@@ -1419,25 +1256,27 @@ type Tarea = { …; observaciones: string | null };</pre>
     ejes.push(`<span class="hoy" style="left:${x(0) + 50 / dias}%">hoy</span>`);
     const fondo = findes.map(d => `<span class="cal-finde" style="left:${x(d)}%;width:${200 / dias}%"></span>`).join("") + semanas.map(d => `<span class="cal-sem" style="left:${x(d)}%"></span>`).join("") + `<span class="cal-hoy" style="left:${x(0) + 50 / dias}%"></span>`;
     const bloque = it => {
-      const sinFecha = it.dia == null, top = 12 + it.carril * 40;
+      const sinFecha = it.dia == null, fin = desde + dias;
+      if (!sinFecha && (it.dia < desde || it.dia >= fin)) return "";
+      const top = multi ? PISTA[it.tipo] : 12;
       /* Práctico e informe terminan el día de entrega; el parcial y la tarea empiezan su día */
       const pos = sinFecha ? `right:8px` : it.tipo === "practico" || it.tipo === "informe" ? `right:min(calc(100% - ${x(it.dia + 1)}%), calc(100% - 220px))` : `left:min(${x(it.dia)}%, calc(100% - 220px))`;
       return `<button type="button" class="cal-item ${it.tipo}${sinFecha ? " sin-fecha" : ""}${it.dia != null && it.dia < 0 ? " pasado" : ""}" style="${pos};top:${top}px" data-item="${it.key}" data-k="ci-${it.key}" aria-pressed="${selKey === it.key}" title="${esc(it.titulo)}${it.dia != null ? " · " + fecha(it.dia) : " · sin fecha"}">${ic(ICONO_CAL[it.tipo])}<span class="t">${esc(it.titulo)}</span>${it.extra ? `<span class="p">${sinFecha ? "sin fecha · " : ""}${it.extra}</span>` : ""}${it.prog != null ? `<span class="barrita" style="width:${it.prog}%"></span>` : ""}</button>`;
     };
     return `<div class="cal"><div class="cal-grilla">
         <div class="cal-eje">${ejes.join("")}</div>
-        ${filas.map(f => { const { visibles, carriles } = empacar(f.items, desde, dias); return `<div class="cal-nombre">${ic(f.icono)}<span>${esc(f.nombre)}</span></div><div class="cal-carril" style="height:${16 + carriles * 40}px">${fondo}${visibles.map(bloque).join("")}</div>`; }).join("")}
+        ${filas.map(f => `<div class="cal-nombre">${ic(f.icono)}<span>${esc(f.nombre)}</span></div><div class="cal-carril${multi ? " multi" : ""}">${fondo}${f.items.map(bloque).join("")}</div>`).join("")}
       </div></div>
       <p class="cal-ley"><span><i class="x"></i>Parcial, empieza su día</span><span><i></i>Práctico, termina el día de entrega</span><span><i class="i"></i>Informe, termina el día de entrega</span><span><i class="t"></i>Tarea con aviso</span><span><i class="h"></i>Hoy</span></p>`;
   };
-  const vistaCal = (app, sel = app._sel) => {
-    if (sel < 0) return calendario(TEMAS.map((m, mi) => ({ nombre: m.nombre, icono: m.icono, items: itemsDe(m, mi) })).filter(f => f.items.length), -3, 28, app._item);
+  const vistaCal = (app, sel = app._sel, tipo = null) => {
+    const filtra = its => tipo ? its.filter(x => x.tipo === tipo) : its;
+    if (sel < 0) return calendario(TEMAS.map((m, mi) => ({ nombre: m.nombre, icono: m.icono, items: filtra(itemsDe(m, mi)) })).filter(f => f.items.length), -3, 28, app._item, !tipo);
     const its = itemsDe(TEMAS[sel], sel);
-    return calendario(TIPOS.filter(T => T.cal).map(T => ({ nombre: T.nombre, icono: T.icono, items: its.filter(x => x.tipo === T.cal) })), -3, 28, app._item);
+    return calendario(TIPOS.filter(T => T.cal && (!tipo || T.cal === tipo)).map(T => ({ nombre: T.nombre, icono: T.icono, items: its.filter(x => x.tipo === T.cal) })), -3, 28, app._item, false);
   };
 
   /* ── El detalle de lo que tocaste ── */
-  const EJEMPLO_OBS = { pa: "Ej.: El profe dijo que repasemos el punto 16 del práctico 7", pr: "Ej.: Se entrega impreso", in: "Ej.: Usar normas APA", t: "Ej.: Pedirle los apuntes a Juli" };
   const contenidoDetalle = app => {
     const k = app._item;
     if (!k) return null;
@@ -1447,14 +1286,12 @@ type Tarea = { …; observaciones: string | null };</pre>
     const avisos = () => `<div class="dato"><span>Aviso</span><div class="opciones-aviso">${AVISOS.map(a => `<button type="button" data-poner-aviso="${t}:${mi}:${i}:${a ?? ""}" aria-pressed="${o.aviso === a}">${a ?? "Sin aviso"}</button>`).join("")}</div></div>`;
     const temaDato = `<div class="dato"><span>Tema</span><b>${esc(m.nombre)}</b></div>`;
     const cuando = (nombre, d) => `<div class="dato"><span>${nombre}</span><b>${d != null ? `${fecha(d)} · ${relativo(d)}` : "Sin fecha"}</b></div>`;
-    const obs = `<label class="dato"><span>Observaciones <small>· opcional</small></span><textarea class="nota-edit obs-edit" data-obs="${k}" placeholder="${EJEMPLO_OBS[t]}">${esc(o.obs || "")}</textarea></label>`;
-    const queEntra = `<div class="dato"><span>Qué entra <small>· opcional</small></span><div class="unidades">${rango(1, o.unidades || 0).map(j => `<label class="unidad"><span class="num">${j}</span><input type="text" value="${esc(o.nombres?.[j - 1] || "")}" placeholder="Unidad ${j}" data-unidad="${k}:${j}" aria-label="Qué entra en la unidad ${j}"></label>`).join("")}</div></div>`;
     let cuerpo = "";
-    if (t === "pr") cuerpo = `<div class="dato"><span>Puntos hechos</span><span class="grande">${o.hechos.size}<small> de ${o.puntos}</small></span></div>${regla(o.puntos, o.hechos, k, "Puntos")}<div class="datos">${cuando("Entrega", o.dia)}${temaDato}</div>${obs}${avisos()}`;
-    else if (t === "pa" && !pasado(o)) cuerpo = `<div class="dato"><span>Unidades repasadas</span><span class="grande">${o.repasadas.size}<small> de ${o.unidades}</small></span></div>${regla(o.unidades, o.repasadas, k, "Unidades", o.nombres || [])}${queEntra}<div class="datos">${cuando("Fecha", o.dia)}${temaDato}</div>${obs}${avisos()}`;
-    else if (t === "pa") cuerpo = `<div class="dato"><span>Nota</span><label class="nota-grande"><input type="number" min="1" max="10" step="0.5" value="${o.nota ?? ""}" data-nota="${mi}:${i}" placeholder="—" aria-label="Nota del parcial"><span>de 10</span></label></div><div class="datos">${cuando("Fue el", o.dia)}<div class="dato"><span>Entraron</span><b>${(o.nombres || []).filter(Boolean).map(esc).join(", ") || `unidades 1 a ${o.unidades}`}</b></div></div>${obs}`;
-    else if (t === "in") cuerpo = `<div class="dato"><span>Partes listas</span><span class="grande">${o.hechas.size}<small> de ${o.partes.length}</small></span></div><div class="partes" role="group" aria-label="Partes del informe">${o.partes.map((p, j) => `<button type="button" data-punto="${k}:${j + 1}" data-k="p-${k}-${j + 1}" aria-pressed="${o.hechas.has(j + 1)}"><span class="caja">${ic("i-check")}</span><span class="pt">${esc(p)}</span></button>`).join("")}</div><div class="datos">${cuando("Entrega", o.dia)}${temaDato}</div>${obs}${avisos()}`;
-    else if (t === "t") cuerpo = `<div class="tarea-cajon"><button type="button" class="check" data-check="${mi}:${i}" data-k="cch-${mi}-${i}" aria-label="${o.hecha ? "Desmarcar" : "Marcar como hecha"}" style="${o.hecha ? "background:var(--acento);border-color:var(--acento)" : ""}">${o.hecha ? ic("i-check").replace("<svg", '<svg style="opacity:1"') : ic("i-check")}</button><span>${o.hecha ? "Hecha" : "Pendiente"}</span></div><div class="datos">${temaDato}${cuando("Fecha", o.dia)}</div>${obs}${avisos()}`;
+    if (t === "pr") cuerpo = `<div class="dato"><span>Puntos hechos</span><span class="grande">${o.hechos.size}<small> de ${o.puntos}</small></span></div>${regla(o.puntos, o.hechos, k, "Puntos")}<div class="datos">${cuando("Entrega", o.dia)}${temaDato}</div>${avisos()}`;
+    else if (t === "pa" && !pasado(o)) cuerpo = `<div class="dato"><span>Unidades repasadas</span><span class="grande">${o.repasadas.size}<small> de ${o.unidades}</small></span></div>${regla(o.unidades, o.repasadas, k, "Unidades")}<div class="datos">${cuando("Fecha", o.dia)}${temaDato}</div>${avisos()}`;
+    else if (t === "pa") cuerpo = `<div class="dato"><span>Nota</span><label class="nota-grande"><input type="number" min="1" max="10" step="0.5" value="${o.nota ?? ""}" data-nota="${mi}:${i}" placeholder="—" aria-label="Nota del parcial"><span>de 10</span></label></div><div class="datos">${cuando("Fue el", o.dia)}<div class="dato"><span>Entraron</span><b>unidades 1 a ${o.unidades}</b></div></div>`;
+    else if (t === "in") cuerpo = `<div class="dato"><span>Partes listas</span><span class="grande">${o.hechas.size}<small> de ${o.partes.length}</small></span></div><div class="partes" role="group" aria-label="Partes del informe">${o.partes.map((p, j) => `<button type="button" data-punto="${k}:${j + 1}" data-k="p-${k}-${j + 1}" aria-pressed="${o.hechas.has(j + 1)}"><span class="caja">${ic("i-check")}</span><span class="pt">${esc(p)}</span></button>`).join("")}</div><div class="datos">${cuando("Entrega", o.dia)}${temaDato}</div>${avisos()}`;
+    else if (t === "t") cuerpo = `<div class="tarea-cajon"><button type="button" class="check" data-check="${mi}:${i}" data-k="cch-${mi}-${i}" aria-label="${o.hecha ? "Desmarcar" : "Marcar como hecha"}" style="${o.hecha ? "background:var(--acento);border-color:var(--acento)" : ""}">${o.hecha ? ic("i-check").replace("<svg", '<svg style="opacity:1"') : ic("i-check")}</button><span>${o.hecha ? "Hecha" : "Pendiente"}</span></div><div class="datos">${temaDato}${cuando("Fecha", o.dia)}</div>${avisos()}`;
     else cuerpo = `<textarea class="nota-edit" data-nota-texto="${mi}:${i}" aria-label="Texto de la nota">${esc(o.texto)}</textarea><div class="datos"><div class="dato"><span>Vino de</span><b>${esc(o.origen)}</b></div>${temaDato}</div><div class="acciones"><button type="button" class="btn-plano acento" data-nota-a-tarea="${mi}:${i}">Pasarla a tareas</button><button type="button" class="btn-plano" data-nota-borrar="${mi}:${i}">Borrar</button></div>`;
     const titulo = t === "no" ? "Nota de la sala" : esc(o.titulo);
     return `<div class="cajon-cab"><div><p class="cajon-de">${ic(T.icono)}${T.uno} · ${esc(m.nombre)}</p><h3>${titulo}</h3></div><button type="button" class="cerrar" data-cerrar data-k="cerrar" aria-label="Cerrar">${ic("i-x")}</button></div>${cuerpo}`;
@@ -1465,69 +1302,63 @@ type Tarea = { …; observaciones: string | null };</pre>
   const detalleFlotante = app => {
     const modo = modoDetalle(), html = contenidoDetalle(app);
     if (modo === "lugar") return "";
-    const abre = app._abre ? " abre" : "";
-    if (modo === "dialogo") return html ? `<div class="dialogo-fondo${abre}" data-fondo-cerrar><div class="dialogo${abre}" role="dialog" aria-modal="true" aria-label="Detalle">${html}</div></div>` : "";
-    if (modo === "junto") return html ? `<div class="globo${abre}" role="dialog" aria-label="Detalle" data-globo>${html}</div>` : "";
+    if (modo === "dialogo") return html ? `<div class="dialogo-fondo" data-fondo-cerrar><div class="dialogo" role="dialog" aria-modal="true" aria-label="Detalle">${html}</div></div>` : "";
+    if (modo === "junto") return html ? `<div class="globo" role="dialog" aria-label="Detalle" data-globo>${html}</div>` : "";
     if (modo === "hoja") return `<div class="hoja${html ? " abierta" : ""}" role="dialog" aria-label="Detalle" ${html ? "" : "inert"}>${html ? `<span class="hoja-asa"></span>${html}` : ""}</div>`;
     return `<aside class="cajon${html ? " abierto" : ""}" aria-label="Detalle" ${html ? "" : "inert"}>${html || ""}</aside>`;
   };
   const enLugar = (app, k) => modoDetalle() === "lugar" && app._item === k ? `<div class="en-lugar">${contenidoDetalle(app)}</div>` : "";
-  /* Notas y calendario no tienen renglón: «en el lugar» abre el detalle debajo */
+  /* Tarjetas, notas y calendario no tienen renglón: «en el lugar» abre el detalle debajo */
   const conLugar = (html, app) => modoDetalle() === "lugar" && app._item && contenidoDetalle(app) && !html.includes('class="en-lugar"') ? html + `<div class="en-lugar bajo-cal">${contenidoDetalle(app)}</div>` : html;
 
   /* ── Encabezado ── */
-  const vistasSel = (app, nombre = "Lista", icono = "k-lista", campo = "_vista") => { const v = app[campo] || "lista"; return `<div class="vistas" role="group" aria-label="Vista"><button type="button" data-vista="lista" data-campo="${campo}" data-k="vi-l${campo}" aria-pressed="${v === "lista"}">${ic(icono)}${nombre}</button><button type="button" data-vista="cal" data-campo="${campo}" data-k="vi-c${campo}" aria-pressed="${v === "cal"}">${ic("k-cal")}Calendario</button></div>`; };
+  const vistasSel = (app, nombre = "Lista", icono = "k-lista") => { const v = app._vista || "lista"; return `<div class="vistas" role="group" aria-label="Vista"><button type="button" data-vista="lista" data-k="vi-l" aria-pressed="${v === "lista"}">${ic(icono)}${nombre}</button><button type="button" data-vista="cal" data-k="vi-c" aria-pressed="${v === "cal"}">${ic("k-cal")}Calendario</button></div>`; };
   const cab = (app, fraseHtml, p, vNombre, vIcono) => `<div class="cab"><div class="cab-fila"><h1 class="frase">${fraseHtml}</h1>${vistasSel(app, vNombre, vIcono)}</div>${p != null ? linea(p, "gruesa") : ""}</div>`;
-  const fraseSel = app => frase(pend(TEMAS[app._sel]), TEMAS[app._sel].nombre);
-  const pctSel = app => pct(TEMAS[app._sel]);
-  const esCal = (app, campo = "_vista") => app[campo] === "cal";
+  const fraseSel = app => app._sel < 0 ? frase(pendTodo()) : frase(pend(TEMAS[app._sel]), TEMAS[app._sel].nombre);
+  const pctSel = app => app._sel < 0 ? pctTodo() : pct(TEMAS[app._sel]);
+  const esCal = app => app._vista === "cal";
   const main = (app, html, clase = "") => `<main class="contenido ${clase}">${conLugar(html, app)}</main>`;
-  const miga = m => `<nav class="miga" aria-label="Ruta"><button type="button" data-inicio data-k="miga">${ic("t-todo")}Temas</button><span aria-hidden="true">/</span><span>${ic(m.icono)}${esc(m.nombre)}</span></nav>`;
+  const opcionesTema = () => [{ mi: -1, nombre: "Todo", icono: "t-todo", p: pctTodo() }, ...TEMAS.map((m, mi) => ({ mi, nombre: m.nombre, icono: m.icono, p: pct(m) }))];
 
   /* La bandeja de Y: cuatro temas, el elegido y «Todos» */
-  const bandejaY = app => {
-    const ops = TEMAS.map((m, mi) => ({ mi, nombre: m.nombre, icono: m.icono, p: pct(m) })), visibles = ops.slice(0, 4), sel = ops.find(o => o.mi === app._sel);
+  const bandejaY = (app, conTodo) => {
+    const ops = conTodo ? opcionesTema() : opcionesTema().slice(1), visibles = ops.slice(0, 4), sel = ops.find(o => o.mi === app._sel);
     if (sel && !visibles.includes(sel)) visibles[3] = sel;
     return `<div class="v-pie"><nav class="v-dock y-dock${app._todos ? " con-todos" : ""}" aria-label="Temas">
       <div class="y-todos" ${app._todos ? "" : "hidden"}><p class="y-tit">Todos tus temas</p><div class="y-grilla">${ops.map(o => `<button type="button" data-sel="${o.mi}" data-k="yt-${o.mi}" aria-pressed="${app._sel === o.mi}"><span class="fila">${ic(o.icono)}<span class="n">${esc(o.nombre)}</span><span class="num">${o.p} %</span></span>${linea(o.p)}</button>`).join("")}</div></div>
-      <div class="v-temas">${visibles.map(o => `<button type="button" data-sel="${o.mi}" data-k="sel-${o.mi}" aria-pressed="${app._sel === o.mi}">${ic(o.icono)}${esc(o.nombre)}<small>${o.p} %</small></button>`).join("")}<button type="button" class="y-mas" data-todos data-k="todos" aria-expanded="${!!app._todos}">${ic("t-todo")}Todos<small>${ops.length}</small></button></div>
+      <div class="v-temas">${visibles.map(o => `<button type="button" data-sel="${o.mi}" data-k="sel-${o.mi}" aria-pressed="${app._sel === o.mi}">${ic(o.icono)}${esc(o.nombre)}<small>${o.p} %</small></button>`).join("")}<button type="button" class="y-mas" data-todos data-k="todos" aria-expanded="${!!app._todos}">${ic("t-todo")}Todos<small>${ops.length - (conTodo ? 1 : 0)}</small></button></div>
     </nav></div>`;
   };
 
-  const cajaTema = (m, mi) => { const p = pct(m); return `<button type="button" class="caja-tema" data-sel="${mi}" data-k="sel-${mi}"><span class="ct-cab">${ic(m.icono)}<span class="ct-n">${esc(m.nombre)}</span><span class="num">${p} %</span></span>${linea(p)}<span class="ct-frase">${fraseCorta(m)}</span><span class="ct-tipos">${contarTipos(m)}</span></button>`; };
-  /* La primera pantalla, igual en todos menos K. En Calendario usa todo el ancho */
-  const cajasInicio = app => main(app, `<div class="a-centro${esCal(app) ? " ancho" : ""}${app._entra ? " entra" : ""}"><div class="a-cab"><h1 class="frase">${frase(pendTodo())}</h1>${linea(pctTodo(), "gruesa")}${vistasSel(app, "Temas", "t-todo")}</div>${esCal(app) ? vistaCal(app, -1) : `<div class="cajas-temas">${TEMAS.map((m, mi) => cajaTema(m, mi)).join("")}<button type="button" class="caja-tema nueva" data-k="nuevo-tema">${ic("i-mas")}Nuevo tema</button></div>`}</div>`, "a-inicio");
-  const adentro = (app, cuerpoTema) => { const m = TEMAS[app._sel]; return main(app, `${miga(m)}${cab(app, fraseSel(app), pctSel(app))}${esCal(app) ? vistaCal(app) : cuerpoTema(m, app._sel, app)}`, `v-contenido${app._entra ? " entra" : ""}`) + bandejaY(app); };
-  const cabCaja = (app, m, extra = "", campo = "_vista") => `<div class="${extra || "i-cab"}"><span class="ct-cab">${ic(m.icono)}<span class="ct-n">${esc(m.nombre)}</span></span>${vistasSel(app, "Lista", "k-lista", campo)}</div>${linea(pct(m), "gruesa")}<p class="i-frase">${fraseCorta(m)}.</p>`;
+  const cajaTema = (m, mi, abrir) => {
+    const p = pct(m), attr = abrir ? `data-abrir="${mi}" data-k="ab-${mi}" aria-expanded="false"` : `data-sel="${mi}" data-k="sel-${mi}"`;
+    return `<button type="button" class="caja-tema" ${attr}><span class="ct-cab">${ic(m.icono)}<span class="ct-n">${esc(m.nombre)}</span><span class="num">${p} %</span></span>${linea(p)}<span class="ct-frase">${fraseCorta(m)}</span><span class="ct-tipos">${contarTipos(m)}</span></button>`;
+  };
+  const cajaAbierta = (m, mi, app) => `<section class="caja-abierta${app._entra ? " entra" : ""}" aria-label="${esc(m.nombre)}"><div class="ca-cab"><span class="ct-cab">${ic(m.icono)}<span class="ct-n">${esc(m.nombre)}</span></span><span class="ca-frase">${fraseCorta(m)}</span><span class="num">${pct(m)} %</span><button type="button" class="cerrar" data-abrir="${mi}" data-k="ab-${mi}" aria-label="Cerrar ${esc(m.nombre)}" aria-expanded="true">${ic("i-x")}</button></div>${linea(pct(m))}${bloques(m, mi, app, "lineas")}</section>`;
 
   /* ── Siete maneras ── */
   const V = {
-    h: app => (app._inicio ? cajasInicio(app) : adentro(app, renglonesTipo)) + detalleFlotante(app),
-    i: app => {
-      if (app._inicio) return cajasInicio(app) + detalleFlotante(app);
+    a: app => {
+      if (app._inicio) return main(app, `<div class="a-centro${app._entra ? " entra" : ""}"><div class="a-cab"><h1 class="frase">${frase(pendTodo())}</h1>${linea(pctTodo(), "gruesa")}${vistasSel(app, "Temas", "t-todo")}</div>${esCal(app) ? vistaCal(app, -1) : `<div class="cajas-temas">${TEMAS.map((m, mi) => cajaTema(m, mi)).join("")}<button type="button" class="caja-tema nueva" data-k="nuevo-tema">${ic("i-mas")}Nuevo tema</button></div>`}</div>`, "a-inicio") + detalleFlotante(app);
       const m = TEMAS[app._sel];
-      return `<div class="i-cascara"><nav class="i-tira" aria-label="Temas"><button type="button" class="i-mini volver" data-inicio data-k="miga" title="Todos los temas" aria-label="Todos los temas">${ic("t-todo")}</button>${TEMAS.map((t, mi) => `<button type="button" class="i-mini" data-sel="${mi}" data-k="sel-${mi}" aria-current="${mi === app._sel}" title="${esc(t.nombre)} · ${pct(t)} %" aria-label="${esc(t.nombre)}">${ic(t.icono)}${linea(pct(t))}</button>`).join("")}</nav>${main(app, `<div class="i-hoja">${cabCaja(app, m)}${esCal(app) ? vistaCal(app) : renglonesTipo(m, app._sel, app)}</div>`)}</div>${detalleFlotante(app)}`;
+      return main(app, `<nav class="miga" aria-label="Ruta"><button type="button" data-inicio data-k="miga">${ic("t-todo")}Temas</button><span aria-hidden="true">/</span><span>${esc(m.nombre)}</span></nav>${cab(app, fraseSel(app), pctSel(app))}${esCal(app) ? vistaCal(app) : bloques(m, app._sel, app, "cajas")}`, `v-contenido${app._entra ? " entra" : ""}`) + bandejaY(app, false) + detalleFlotante(app);
     },
-    j: app => {
-      const hoja = app._hoja != null ? (() => { const m = TEMAS[app._hoja]; return `<div class="j-fondo${app._abreHoja ? " abre" : ""}"><div class="j-hoja${app._abreHoja ? " abre" : ""}" role="dialog" aria-modal="true" aria-label="${esc(m.nombre)}"><div class="j-cab"><span class="ct-cab">${ic(m.icono)}<span class="ct-n">${esc(m.nombre)}</span></span>${vistasSel(app, "Lista", "k-lista", "_vistaHoja")}<button type="button" class="cerrar" data-cerrar-hoja data-k="cerrar-hoja" aria-label="Cerrar ${esc(m.nombre)}">${ic("i-x")}</button></div>${linea(pct(m), "gruesa")}<p class="i-frase">${fraseCorta(m)}.</p>${esCal(app, "_vistaHoja") ? vistaCal(app, app._hoja) : renglonesTipo(m, app._hoja, app)}</div></div>`; })() : "";
-      return cajasInicio(app) + hoja + detalleFlotante(app);
+    b: app => main(app, `${cab(app, frase(pendTodo()), pctTodo(), "Temas", "t-todo")}${esCal(app) ? vistaCal(app, -1) : `<div class="cajas-temas">${TEMAS.map((m, mi) => app._abierta === mi ? cajaAbierta(m, mi, app) : cajaTema(m, mi, true)).join("")}</div>`}`) + detalleFlotante(app),
+    c: app => main(app, `${cab(app, fraseSel(app), pctSel(app))}${esCal(app) ? vistaCal(app) : tablero(app)}`, "v-contenido") + bandejaY(app, true) + detalleFlotante(app),
+    d: app => {
+      const T = TIPO[app._tipo];
+      return `<nav class="d-tipos" aria-label="Tipo">${TIPOS.map(x => `<button type="button" data-tipo="${x.id}" data-k="ti-${x.id}" aria-pressed="${x.id === app._tipo}">${ic(x.icono)}${x.nombre}<small>${pendTipo(x.id)}</small></button>`).join("")}</nav>`
+        + main(app, `${cab(app, fraseTipo(T.id), pctTipo(T.id))}${esCal(app) ? vistaCal(app, -1, T.cal) : gruposTipo(T, app)}`) + detalleFlotante(app);
     },
-    k: app => {
+    e: app => `<div class="w-cascara con-lateral"><div class="w-zona"><nav class="w-indice" aria-label="Temas"><div class="w-resumen">${ic("t-todo")}<span class="n">En total</span><span class="num">${pctTodo()} %</span></div>${TEMAS.map((m, mi) => `<button type="button" class="w-item" data-sel="${mi}" data-k="sel-${mi}" aria-pressed="${app._sel === mi}" title="${esc(m.nombre)}">${ic(m.icono)}<span class="n">${esc(m.nombre)}</span><span class="num">${pct(m)} %</span></button>`).join("")}</nav></div>${main(app, `${cab(app, fraseSel(app), pctSel(app))}${esCal(app) ? vistaCal(app) : bloques(TEMAS[app._sel], app._sel, app, "cajas")}`)}</div>${detalleFlotante(app)}`,
+    f: app => {
       const q = (app._buscar || "").trim().toLowerCase(), lista = TEMAS.map((m, mi) => ({ m, mi })).filter(({ m }) => !q || m.nombre.toLowerCase().includes(q));
-      const arbol = `<nav class="f-arbol" aria-label="Temas"><label class="f-buscar">${ic("i-buscar")}<input type="search" placeholder="Buscar tema" value="${esc(app._buscar || "")}" data-buscar data-k="buscar" aria-label="Buscar tema"></label>${lista.length ? lista.map(({ m, mi }) => { const ab = app._sel === mi; return `<div class="f-tema"><button type="button" class="f-t" data-sel="${mi}" data-k="sel-${mi}" aria-expanded="${ab}"><span class="chev">${ic("i-flecha")}</span>${ic(m.icono)}<span class="n">${esc(m.nombre)}</span><span class="num">${pct(m)} %</span></button>${ab ? `<div class="f-tipos">${TIPOS.filter(T => T.lista(m).length).map(T => `<button type="button" data-ir-tipo="${T.id}" data-k="ft-${T.id}" aria-pressed="${app._abiertosT.has(T.id)}">${ic(T.icono)}${T.nombre}<small>${T.lista(m).length}</small></button>`).join("")}</div>` : ""}</div>`; }).join("") : `<p class="f-vacio">Ningún tema se llama así.</p>`}</nav>`;
-      const m = TEMAS[app._sel];
-      return `<div class="f-cascara con-lateral">${arbol}${main(app, `${cab(app, fraseSel(app), pctSel(app))}${esCal(app) ? vistaCal(app) : renglonesTipo(m, app._sel, app)}`)}</div>${detalleFlotante(app)}`;
+      const arbol = `<nav class="f-arbol" aria-label="Temas"><label class="f-buscar">${ic("i-buscar")}<input type="search" placeholder="Buscar tema" value="${esc(app._buscar || "")}" data-buscar data-k="buscar" aria-label="Buscar tema"></label>${lista.length ? lista.map(({ m, mi }) => { const ab = app._sel === mi; return `<div class="f-tema"><button type="button" class="f-t" data-sel="${mi}" data-k="sel-${mi}" aria-expanded="${ab}"><span class="chev">${ic("i-flecha")}</span>${ic(m.icono)}<span class="n">${esc(m.nombre)}</span><span class="num">${pct(m)} %</span></button>${ab ? `<div class="f-tipos">${TIPOS.filter(T => T.lista(m).length).map(T => `<button type="button" data-ftipo="${T.id}" data-k="ft-${T.id}" aria-pressed="${app._ftipo === T.id}">${ic(T.icono)}${T.nombre}<small>${T.lista(m).length}</small></button>`).join("")}</div>` : ""}</div>`; }).join("") : `<p class="f-vacio">Ningún tema se llama así.</p>`}</nav>`;
+      const m = TEMAS[app._sel], solo = app._ftipo;
+      const filtro = solo ? `<p class="f-filtro">Solo ${TIPO[solo].nombre.toLowerCase()} <button type="button" class="btn-texto" data-ftipo="${solo}" data-k="ver-todo">ver todo ${esc(m.nombre)}</button></p>` : "";
+      return `<div class="f-cascara con-lateral">${arbol}${main(app, `${cab(app, fraseSel(app), pctSel(app))}${filtro}${esCal(app) ? vistaCal(app, app._sel, solo ? TIPO[solo].cal : null) : bloques(m, app._sel, app, "lineas", solo)}`)}</div>${detalleFlotante(app)}`;
     },
-    l: app => {
-      if (app._inicio) return cajasInicio(app) + detalleFlotante(app);
-      const m = TEMAS[app._sel], indice = `<nav class="l-indice" aria-label="Ir a">${TIPOS.filter(T => T.lista(m).length).map(T => { const p = pctTipoM(T, m); return `<button type="button" data-ir-tipo="${T.id}" data-k="li-${T.id}" aria-current="${app._lsec === T.id}"><span class="fila">${ic(T.icono)}${T.nombre}<span class="num">${p == null ? T.lista(m).length : p + " %"}</span></span>${p == null ? "" : linea(p)}</button>`; }).join("")}</nav>`;
-      return adentro(app, () => indice + cajasTipo(m, app._sel, app)) + detalleFlotante(app);
-    },
-    m: app => (app._inicio ? cajasInicio(app) : adentro(app, agendaTema)) + detalleFlotante(app),
-    n: app => {
-      if (app._inicio) return cajasInicio(app) + detalleFlotante(app);
-      return adentro(app, (m, mi) => `<nav class="n-tabs" aria-label="Tipo">${TIPOS.map(T => `<button type="button" data-ntipo="${T.id}" data-k="nt-${T.id}" aria-pressed="${app._ntipo === T.id}">${ic(T.icono)}${T.nombre}<small>${T.lista(m).length}</small></button>`).join("")}</nav>${tarjetasTipo(TIPO[app._ntipo], m, mi, app)}`) + detalleFlotante(app);
-    },
+    g: app => main(app, `${cab(app, frase(pendTodo()), pctTodo(), "Temas", "t-todo")}${esCal(app) ? vistaCal(app, -1) : `<div class="g-lista">${TEMAS.map((m, mi) => { const ab = app._abiertos.has(mi); return `<section class="g-tema${ab ? " abierto" : ""}"><button type="button" class="g-cab" data-abrir-g="${mi}" data-k="ag-${mi}" aria-expanded="${ab}">${ic(m.icono)}<span class="g-n">${esc(m.nombre)}</span><span class="g-frase">${fraseCorta(m)}</span><span class="g-prox">${proximo(m)}</span><span class="g-av"><span class="num">${pct(m)} %</span>${linea(pct(m))}</span><span class="g-chev">${ic("i-flecha")}</span></button>${ab ? `<div class="g-cuerpo${app._entraG === mi ? " entra" : ""}">${bloques(m, mi, app, "lineas")}</div>` : ""}</section>`; }).join("")}</div>`}`) + detalleFlotante(app),
   };
 
   /* ── Montaje ── */
@@ -1541,7 +1372,7 @@ type Tarea = { …; observaciones: string | null };</pre>
   const avisar = (el, t) => { const a = el.querySelector(".aviso"); a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
   const pintarTodo = origen => {
     const k = origen && document.activeElement?.dataset?.k;
-    apps.forEach(a => { a.cuerpo.innerHTML = V[a.v](a.el); a.el._entra = false; a.el._entraT = null; a.el._abre = false; a.el._abreHoja = false; ubicarGlobo(a); });
+    apps.forEach(a => { a.cuerpo.innerHTML = V[a.v](a.el); a.el._entra = false; a.el._entraG = null; ubicarGlobo(a); });
     if (k) origen.querySelector(`[data-k="${k}"]`)?.focus();
   };
   function ubicarGlobo(a) {
@@ -1562,12 +1393,6 @@ type Tarea = { …; observaciones: string | null };</pre>
     g.style.top = (abajo + alto <= ra.height - 8 ? abajo : arriba) + "px";
   }
   const diaDeFecha = v => { if (!v) return null; const [y, mo, d] = v.split("-").map(Number); return Math.round((new Date(y, mo - 1, d) - HOY) / 86400000); };
-  const conTransicion = (cambio, despues) => {
-    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) { cambio(); despues?.(); return; }
-    const t = document.startViewTransition(cambio);
-    t.updateCallbackDone.then(() => despues?.());
-    return t;
-  };
 
   const opciones = [...document.querySelectorAll(".opcion")];
   document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
@@ -1578,25 +1403,21 @@ type Tarea = { …; observaciones: string | null };</pre>
     const cuerpoEl = document.createElement("div"); cuerpoEl.className = "cuerpo-app"; el.appendChild(cuerpoEl);
     el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div>`);
     el.querySelector("[data-hora]").textContent = ahora();
-    Object.assign(el, { _id: v, _form: {}, _sel: 0, _vista: "lista", _vistaHoja: "lista", _item: null, _inicio: v === "j", _hoja: v === "j" ? 0 : null, _abiertosT: abrirPorDefecto(TEMAS[0]), _buscar: "", _ntipo: "pr", _mtipo: null, _lsec: null });
+    Object.assign(el, { _id: v, _form: {}, _sel: 0, _vista: "lista", _item: null, _inicio: v === "a", _abierta: v === "b" ? 0 : null, _abiertos: new Set([0]), _tipo: "pr", _ftipo: null, _buscar: "" });
     const a = { v, el, cuerpo: cuerpoEl };
     apps.push(a);
     const cerrarDetalle = () => { const k = el._item; el._item = null; pintarTodo(el); (el.querySelector(`[data-k="${k}"]`) || el.querySelector(`[data-k="ci-${k}"]`))?.focus(); };
-    const cerrarHoja = () => { const mi = el._hoja; el._hoja = null; el._item = null; el._form = {}; pintarTodo(el); el.querySelector(`[data-k="sel-${mi}"]`)?.focus(); };
-    const irATipo = id => { el._abiertosT.add(id); el._entraT = id; el._lsec = id; pintarTodo(el); el.querySelector(`#${v}-sec-${id}`)?.scrollIntoView({ block: "start", behavior: "smooth" }); };
 
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
       const b = e.target.closest("button");
       if (e.target.matches("[data-fondo-cerrar]")) return cerrarDetalle();
-      if (e.target.matches(".j-fondo")) return cerrarHoja();
       if (el._todos && !e.target.closest(".y-dock")) { el._todos = false; pintarTodo(el); }
       if (!b) return;
       const d = b.dataset;
       if ("todos" in d) { el._todos = !el._todos; pintarTodo(el); if (el._todos) el.querySelector(".y-todos [aria-pressed='true']")?.focus(); return; }
-      if (d.item) { el._abre = el._item !== d.item; el._item = d.item; pintarTodo(el); if (modoDetalle() !== "lugar") el.querySelector("[data-k='cerrar']")?.focus({ preventScroll: true }); return; }
+      if (d.item) { el._item = d.item; pintarTodo(el); if (modoDetalle() !== "lugar") el.querySelector("[data-k='cerrar']")?.focus({ preventScroll: true }); return; }
       if ("cerrar" in d) return cerrarDetalle();
-      if ("cerrarHoja" in d) return cerrarHoja();
       if (d.notaATarea || d.notaBorrar) {
         const [mi, i] = (d.notaATarea || d.notaBorrar).split(":").map(Number), m = TEMAS[mi], n = m.notas.splice(i, 1)[0];
         if (d.notaATarea) m.tareas.push({ titulo: n.texto.length > 72 ? n.texto.slice(0, 70) + "…" : n.texto, hecha: false, aviso: null, dia: null });
@@ -1620,35 +1441,20 @@ type Tarea = { …; observaciones: string | null };</pre>
         avisar(el, obj.aviso ? `Te aviso ${obj.aviso}${obj.aviso === "el día antes" ? (tipo === "pa" ? " del parcial" : " de la entrega") : ""} (demo)` : "Sin aviso");
         return pintarTodo(el);
       }
-      if ("inicio" in d) {
-        const mi = el._sel;
-        const tr = conTransicion(() => {
-          el._inicio = true; el._entra = !document.startViewTransition; el._item = null; el._todos = false; el._form = {}; pintarTodo(el);
-          /* La caja del tema recibe el nombre de la transición: el encabezado se encoge hasta ella */
-          if (v === "i") { const c = el.querySelector(`.caja-tema[data-sel="${mi}"]`); if (c) c.style.viewTransitionName = "caja-activa"; }
-        }, () => el.querySelector(`[data-k="sel-${mi}"]`)?.focus({ preventScroll: true }));
-        tr?.finished.then(() => { const c = el.querySelector(`.caja-tema[data-sel="${mi}"]`); if (c) c.style.viewTransitionName = ""; });
-        return;
-      }
+      if ("inicio" in d) { el._inicio = true; el._entra = true; el._item = null; el._todos = false; el._form = {}; pintarTodo(el); el.querySelector(`[data-k="sel-${el._sel}"]`)?.focus(); return; }
       if (d.sel !== undefined) {
-        const mi = +d.sel;
-        const cambio = () => {
-          el._sel = mi; el._entra = v !== "i"; el._item = null; el._todos = false; el._form = {}; el._abiertosT = abrirPorDefecto(TEMAS[mi]); el._mtipo = null; el._lsec = null;
-          if (v === "j") { el._hoja = mi; el._abreHoja = true; el._vistaHoja = "lista"; } else el._inicio = false;
-          pintarTodo(el);
-        };
-        const foco = () => (el.querySelector('[data-k="cerrar-hoja"]') || el.querySelector('[data-k="miga"]') || el.querySelector(`[data-k="sel-${mi}"]`))?.focus({ preventScroll: true });
-        /* I: la caja tocada se transforma en la hoja del tema */
-        if (v === "i") { if (!el.querySelector(".i-hoja")) b.style.viewTransitionName = "caja-activa"; conTransicion(cambio, foco); }
-        else { cambio(); foco(); }
-        return;
+        el._sel = +d.sel; el._inicio = false; el._entra = true; el._item = null; el._todos = false; el._form = {}; el._ftipo = null; pintarTodo(el);
+        (el.querySelector(`[data-k="miga"]`) || el.querySelector(`[data-k="sel-${d.sel}"]`))?.focus({ preventScroll: true }); return;
       }
-      if (d.abrirT) { const id = d.abrirT; el._abiertosT.has(id) ? el._abiertosT.delete(id) : (el._abiertosT.add(id), el._entraT = id); el._item = null; return pintarTodo(el); }
-      if (d.irTipo) return irATipo(d.irTipo);
-      if (d.mtipo) { el._mtipo = el._mtipo === d.mtipo ? null : d.mtipo; el._item = null; return pintarTodo(el); }
-      if (d.ntipo) { el._ntipo = d.ntipo; el._item = null; el._form = {}; return pintarTodo(el); }
-      if (d.vista) { el[d.campo || "_vista"] = d.vista; el._item = null; return pintarTodo(el); }
-      if (d.alta) { const [mi, tipo] = d.alta.split(":"); el._form = { [mi]: tipo }; const T = TIPOS.find(x => x.alta === tipo); if (T) el._abiertosT.add(T.id); pintarTodo(el); el.querySelector(`[data-form-alta="${mi}"] input`)?.focus(); return; }
+      if (d.abrir !== undefined) {
+        const mi = +d.abrir; el._abierta = el._abierta === mi ? null : mi; el._entra = true; el._item = null; el._form = {}; pintarTodo(el);
+        el.querySelector(`[data-k="ab-${mi}"]`)?.focus({ preventScroll: true }); el.querySelector(".caja-abierta")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); return;
+      }
+      if (d.abrirG !== undefined) { const mi = +d.abrirG; el._abiertos.has(mi) ? el._abiertos.delete(mi) : (el._abiertos.add(mi), el._entraG = mi); el._item = null; return pintarTodo(el); }
+      if (d.tipo) { el._tipo = d.tipo; el._item = null; el._form = {}; return pintarTodo(el); }
+      if (d.ftipo) { el._ftipo = el._ftipo === d.ftipo ? null : d.ftipo; el._item = null; el._form = {}; pintarTodo(el); el.querySelector(`[data-k="ft-${d.ftipo}"]`)?.focus(); return; }
+      if (d.vista) { el._vista = d.vista; el._item = null; return pintarTodo(el); }
+      if (d.alta) { const [mi, tipo] = d.alta.split(":"); el._form = { [mi]: tipo }; pintarTodo(el); el.querySelector(`[data-form-alta="${mi}"] input`)?.focus(); return; }
       if (d.cancelar !== undefined) { el._form = {}; return pintarTodo(el); }
       if (d.k === "nuevo-tema") avisar(el, "Acá se crearía un tema nuevo (demo)");
     });
@@ -1660,7 +1466,7 @@ type Tarea = { …; observaciones: string | null };</pre>
       const m = TEMAS[mi], n = Math.max(1, +datos.get("n") || 1), dia = diaDeFecha(String(datos.get("fecha") || ""));
       if (tipo === "tarea") m.tareas.push({ titulo, hecha: false, aviso: null, dia: null });
       if (tipo === "practico") m.tps.push({ titulo, puntos: n, hechos: s([]), dia, aviso: null });
-      if (tipo === "parcial") { m.parciales.push({ titulo, dia, unidades: n, repasadas: s([]), nombres: [], nota: null, aviso: null }); m.parciales.sort((x, y) => (x.dia ?? 999) - (y.dia ?? 999)); }
+      if (tipo === "parcial") { m.parciales.push({ titulo, dia, unidades: n, repasadas: s([]), nota: null, aviso: null }); m.parciales.sort((x, y) => (x.dia ?? 999) - (y.dia ?? 999)); }
       const partes = String(datos.get("partes") || "").split(",").map(x => x.trim()).filter(Boolean);
       if (tipo === "informe") m.informes.push({ titulo, dia, partes: partes.length ? partes : ["Introducción", "Desarrollo", "Conclusión"], hechas: s([]), aviso: null });
       if (tipo === "nota") m.notas.push({ texto: titulo, origen: "Escrita acá · hoy" });
@@ -1672,12 +1478,7 @@ type Tarea = { …; observaciones: string | null };</pre>
       const inp = e.target.closest("[data-nota]");
       if (inp) { const [mi, i] = inp.dataset.nota.split(":").map(Number); TEMAS[mi].parciales[i].nota = inp.value === "" ? null : +inp.value; avisar(el, inp.value ? `Nota ${inp.value} anotada` : "Nota borrada"); return pintarTodo(); }
       const txt = e.target.closest("[data-nota-texto]");
-      if (txt) { const [mi, i] = txt.dataset.notaTexto.split(":").map(Number); if (TEMAS[mi].notas[i]) TEMAS[mi].notas[i].texto = txt.value; avisar(el, "Nota guardada"); return pintarTodo(); }
-      const obs = e.target.closest("[data-obs]");
-      if (obs) { const { o } = objDe(obs.dataset.obs); if (o) { o.obs = obs.value.trim() || null; avisar(el, o.obs ? "Observación guardada" : "Observación borrada"); pintarTodo(el); } return; }
-      /* Los nombres de las unidades se guardan sin repintar, para poder pasar de una a otra con Tab */
-      const un = e.target.closest("[data-unidad]");
-      if (un) { const p = un.dataset.unidad.lastIndexOf(":"), { o } = objDe(un.dataset.unidad.slice(0, p)), j = +un.dataset.unidad.slice(p + 1); if (o) { o.nombres = o.nombres || []; o.nombres[j - 1] = un.value.trim(); } }
+      if (txt) { const [mi, i] = txt.dataset.notaTexto.split(":").map(Number); if (TEMAS[mi].notas[i]) TEMAS[mi].notas[i].texto = txt.value; avisar(el, "Nota guardada"); pintarTodo(); }
     });
     el.addEventListener("input", e => {
       const q = e.target.closest("[data-buscar]"); if (!q) return;
@@ -1687,8 +1488,7 @@ type Tarea = { …; observaciones: string | null };</pre>
     el.addEventListener("keydown", e => {
       if (e.key !== "Escape") return;
       if (el._todos) { e.stopPropagation(); el._todos = false; pintarTodo(el); el.querySelector("[data-k='todos']")?.focus(); return; }
-      if (el._item) { e.stopPropagation(); cerrarDetalle(); return; }
-      if (el._hoja != null) { e.stopPropagation(); cerrarHoja(); }
+      if (el._item) { e.stopPropagation(); cerrarDetalle(); }
     });
 
     const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
@@ -1706,7 +1506,8 @@ type Tarea = { …; observaciones: string | null };</pre>
   window.__repintar = () => {
     apps.forEach(({ el }) => {
       if (el._sel >= TEMAS.length) el._sel = 0;
-      if (el._hoja != null && el._hoja >= TEMAS.length) el._hoja = null;
+      if (el._abierta != null && el._abierta >= TEMAS.length) el._abierta = null;
+      [...el._abiertos].forEach(mi => mi >= TEMAS.length && el._abiertos.delete(mi));
       if (el._item && !objDe(el._item).o) el._item = null;
     });
     pintarTodo();

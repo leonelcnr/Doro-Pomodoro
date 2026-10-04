@@ -146,6 +146,49 @@ Cómo entran los tipos nuevos:
 
 Fuente de la 6ª ronda: `bocetos/tareas-ronda6.html`.
 
+**Devolución de la 7ª ronda (2026-10-04) — la idea se está cerrando:**
+- **A le parece perfecto como primera pantalla.** El problema es que al entrar a un tema
+  se pierde un poco.
+- Adentro de un tema encajaría la vista de **G**, pero con **los tipos como renglones**
+  (Parciales, Prácticos, Informes…) en vez de las materias.
+- Quiere **anotar cosas opcionales**: en un parcial, qué temas entran (no solo cuántos) y
+  observaciones («El profe dijo que repasemos el punto 16 del práctico 7»). Nada de eso
+  debe ser obligatorio.
+- **Una barra de progreso por práctico**: da un contexto más visible del estado.
+- Le gusta el **contraste entre las cajas y el fondo**: lo hace más entendible.
+- **El calendario general de A** (todos los temas) quedaba muy angosto y muy largo: tiene
+  que leerse como el calendario de un tema.
+- Pide la misma cantidad de bocetos, uno con **la barra lateral de F** y algunos que se
+  alejen.
+
+**Octava ronda (misma URL):** las letras siguen desde la H para no repetir las de la 7ª.
+- Base común:
+  - Renglones por tipo (el G de la 7ª con tipos): cada uno dice lo que falta, lo próximo y
+    su avance. Al entrar se abre el tipo que tiene lo más próximo.
+  - Cada práctico, informe y parcial lleva su barra al lado de la cuenta.
+  - En el detalle hay «Qué entra» (un nombre opcional por unidad del parcial) y
+    «Observaciones», opcionales y para todos los tipos. La observación se ve en una línea
+    bajo el renglón.
+  - Calendario general con una fila por tema, de la misma altura que la de un tema. Solo
+    suma carriles si dos cosas se pisan, y usa todo el ancho.
+- Variantes de la combinación:
+  - **H · Cajas y renglones** (recomendada): camino arriba y bandeja de Y abajo.
+  - **I · La caja crece**: View Transitions (la caja se transforma en la hoja del tema) y
+    una columna de cajitas con las otras materias.
+  - **J · La caja se abre encima**: hoja sobre las cajas oscurecidas.
+  - **K · Árbol y renglones**: la barra lateral de F; las ramas abren el renglón del tipo
+    en vez de filtrar.
+- Las que se alejan:
+  - **L · Índice de tipos**: todo abierto, en cajas, con un índice pegado arriba.
+  - **M · La agenda del tema**: ordenada por fecha, con un resumen por tipo que filtra.
+  - **N · Pestañas y tarjetas**: un tipo por vez, en tarjetas grandes.
+
+Recomendación: **H, con la animación de I al entrar y al salir** (sin la columna de
+cajitas: la bandeja ya cumple esa función). Plan B si muchas materias desbordan la
+bandeja: K. Para los datos, los nombres de las unidades van en el mismo `checklist` (la
+etiqueta puede quedar vacía) y la observación es una columna de texto opcional en `tasks`.
+Fuente de la 7ª ronda: `bocetos/tareas-ronda7.html`.
+
 Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
 en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
 `kind` ('tarea' | 'tp') y otra `remind_at`.
@@ -174,9 +217,9 @@ con el agente `arquitecto-features` antes de escribir nada.
 
 ## Dónde retomamos
 
-La 7ª ronda (A–G) está publicada y espera la opinión de Leo. Hay que decidir:
-1. La estructura (A a G).
-2. Si los informes y las notas quedan como están modelados.
+La 8ª ronda (H–N) está publicada y espera la opinión de Leo. Hay que decidir:
+1. Cómo se entra a un tema: H, I, J o K (o una de las que se alejan).
+2. Si las anotaciones opcionales (qué entra y observaciones) alcanzan así.
 3. El modo de detalle, que todavía se compara con el ajuste.
 
 **Próximo paso:** con esa devolución, armar el boceto final de Tareas.
