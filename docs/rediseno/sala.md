@@ -65,11 +65,32 @@ achicarse y la bandeja abre hasta la mitad). El boceto queda guardado en
   sala, cerrar la pestaña, fin del pomodoro), y cómo se rescata una nota.
 - Próximo paso: boceto de notas sobre la base A + F + I, con el mismo formato.
 
+**Definiciones para las notas (2026-10-04, antes de bocetar):**
+- **Personales**, solo en este navegador (`localStorage`, una clave por sala).
+- **Se borran al salir de la sala.** Sobreviven a recargar. Salir avisa si hay notas y
+  pide tocar otra vez.
+- En esta primera instancia solo se descartan. **Más adelante:** pasar una nota a tarea
+  persistida, y verlas en Tareas o en el home.
+- Dónde viven: explorar varias formas.
+
+**Cuarta ronda (misma URL):** todas sobre A + F + I, con la tecla N para anotar en
+cualquiera. M · Cajón al costado (la idea de L: el reloj se corre, se apagan los controles
+de la izquierda), N · Pestaña en la bandeja (tercera pestaña, Notas), O · Bajo el reloj
+(una línea para escribir y las dos últimas notas), P · En la esquina (bandeja chica abajo a
+la izquierda que se desvanece como la de tareas; en menos de 1040 px pasa al lápiz de la
+barra con el cajón de M). Recomendación: **P**, porque es la única donde el reloj no se
+mueve y notas y tareas conviven abiertas. Plan B: N. Puntos: «Al centro», como el resto
+de la sala.
+
+**Pregunta abierta:** si se cierra la pestaña sin tocar Salir, las notas quedan. Propuse
+que al volver a esa sala sigan ahí y que al entrar se descarten solas las de más de 12 h.
+
 ---
 
 ## Dónde retomamos
 
-Base A + F + I. **Próximo paso: boceto de las notas rápidas de sesión** (ver «Para retomar» arriba), resolviendo antes las preguntas abiertas.
+4ª ronda publicada (M–P), esperando la opinión de Leo. **Próximo paso:** elegir dónde
+viven las notas, confirmar el vencimiento de 12 h y, con eso, dar la sala por cerrada.
 
 ## Propuestas transversales
 

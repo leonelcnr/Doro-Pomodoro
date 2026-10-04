@@ -464,6 +464,107 @@ html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filte
   .v-l:has(.bandeja.abierta) .zona { transform: translateY(calc(-1 * min(22cqh, 160px))); }
 }
 
+/* ── Cuarta ronda: notas rápidas de la sesión, sobre A + F + I ── */
+.app { --ancho-notas: clamp(260px, 30cqi, 340px); }
+
+/* Lo común: el alta, la lista y el aviso de que se borran */
+.notas-bloque { display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
+.notas-cab { display: flex; align-items: center; gap: 8px; min-height: 28px; font-size: 13px; color: var(--tenue); }
+.notas-cab b { color: var(--fg); font-weight: 600; font-size: 14px; margin-right: auto; }
+.notas-cab button { border: 0; background: none; height: 28px; padding: 0 8px; border-radius: 7px; font-size: 12.5px; color: var(--tenue); display: inline-grid; place-items: center; }
+.notas-cab button:hover { color: var(--fg); background: var(--campo); }
+.notas-cab button svg { width: 15px; height: 15px; }
+.bandeja .notas-cab b, .esquina .notas-cab b { display: none; }
+.bandeja .notas-cab, .esquina .notas-cab { justify-content: flex-end; }
+:is(.bandeja, .esquina) .notas-cab:not(:has(button:not([hidden]))) { display: none; }
+.notas-lista { list-style: none; margin: 0; padding: 0; overflow-y: auto; min-height: 0; }
+.nota { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; line-height: 1.45; transition: opacity .2s ease, transform .25s var(--salida); }
+.nota:last-child { border-bottom: 0; }
+.nota-txt { overflow-wrap: anywhere; }
+.nota-pie { grid-column: 1; font-size: 12px; color: var(--tenue); font-variant-numeric: tabular-nums; margin-top: 1px; }
+.quitar { grid-column: 2; grid-row: 1 / span 2; align-self: center; width: 28px; height: 28px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; opacity: 0; transition: opacity .2s; }
+.quitar svg { width: 14px; height: 14px; }
+.quitar:hover { background: var(--campo); color: var(--fg); }
+.nota:is(:hover, :focus-within) .quitar { opacity: 1; }
+:root[data-tactil] .quitar { opacity: .7; }
+.nota.llega { animation: llega .7s var(--salida); }
+.nota.se-va { opacity: 0; transform: translateX(10px); }
+.notas-vacio { color: var(--tenue); font-size: 13.5px; padding: 8px 0; }
+.notas-aviso { margin: 0; font-size: 12px; color: var(--tenue); }
+.panel[data-en-notas] > :is(.alta, .lista) { display: none; }
+.panel:not([data-en-notas]) > .notas-bloque { display: none; }
+.bandeja .notas-lista { max-height: none; }
+
+/* El botón de notas en la barra (M, y P en angosto) */
+.btn-notas { display: none; }
+.app:is(.v-m, .v-p) .btn-notas { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 30px; padding: 0 9px; font-size: 13px; transition: background-color .3s, border-color .3s; }
+.btn-notas:hover { border-color: var(--tenue); }
+.btn-notas svg { width: 15px; height: 15px; color: var(--tenue); }
+.btn-notas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.btn-notas b:empty { display: none; }
+.btn-notas[aria-expanded="true"] { border-color: color-mix(in oklch, var(--acento) 45%, var(--linea)); background: var(--acento-suave); }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .btn-notas:not([aria-expanded="true"]) { border-color: transparent; background: var(--campo); }
+}
+
+/* M · Cajón al costado: abre a la derecha y el reloj se corre lo justo para quedar centrado en lo que sobra */
+.notas-cajon { position: absolute; z-index: 12; top: 64px; right: 16px; bottom: 76px; width: var(--ancho-notas); display: flex; flex-direction: column; padding: 14px 18px 16px; background: var(--superficie); border: 1px solid var(--linea); border-radius: 16px; box-shadow: var(--sombra);
+  opacity: 0; transform: translateX(16px); visibility: hidden; pointer-events: none;
+  transition: opacity .28s ease, transform .5s var(--salida), visibility 0s linear .5s; }
+.notas-cajon.abierta { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+@container app (min-width: 900px) {
+  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) .zona { transform: translateX(calc((var(--ancho-notas) + 32px) / -2)); }
+  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) :is(.ctrl.izq, [data-pip], [data-ajustes]) { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+}
+@container app (max-width: 899px) {
+  .notas-cajon { left: 12px; right: 12px; width: auto; }
+  .app:is(.v-m, .v-p):has(.notas-cajon.abierta) .zona { opacity: .1; }
+}
+
+/* N · Pestaña en la bandeja: nada nuevo en pantalla, las notas son una tercera pestaña */
+
+/* O · Bajo el reloj: una línea para escribir y las dos últimas notas, siempre ahí */
+.al-pie { grid-column: 1 / -1; justify-self: center; width: min(100%, 460px); margin-top: 34px; display: flex; flex-direction: column; transition: opacity .45s ease .5s; }
+.anotar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 6px; border-bottom: 1px solid transparent; color: var(--tenue); transition: border-color .25s; }
+.anotar:hover, .anotar:focus-within { border-bottom-color: var(--linea); }
+.anotar svg { width: 15px; height: 15px; flex-shrink: 0; }
+.anotar input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14.5px; }
+.anotar input::placeholder { color: var(--tenue); }
+.al-pie .notas-lista { max-height: min(200px, 26cqh); }
+.al-pie .nota { padding: 7px 6px; font-size: 14px; border-bottom: 0; }
+.al-pie .nota-txt { color: color-mix(in oklch, var(--fg) 80%, var(--bg)); }
+.ver-mas { align-self: flex-start; border: 0; background: none; color: var(--tenue); font-size: 12.5px; padding: 4px 6px; border-radius: 6px; }
+.ver-mas:hover { color: var(--fg); background: var(--campo); }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app.v-o[data-quieto] .al-pie { opacity: 0; }
+}
+.app.v-o:not([data-quieto]) .al-pie { transition-delay: 0s; }
+.app.v-o:has(.bandeja.abierta) .al-pie { opacity: 0; pointer-events: none; transition-delay: 0s; }
+
+/* P · En la esquina: una bandeja chica abajo a la izquierda que se desvanece como la de tareas */
+.esquina { display: none; }
+@container app (min-width: 1040px) {
+  .v-p .esquina { display: flex; flex-direction: column; position: absolute; left: 20px; bottom: 16px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); max-height: calc(100% - 92px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; box-shadow: var(--sombra); transition: background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s, opacity .45s ease .5s; }
+  .v-p .btn-notas, .v-p .notas-cajon { display: none; }
+}
+.esquina-asa { display: flex; align-items: center; gap: 8px; width: 100%; height: 44px; padding: 0 14px; border: 0; background: none; text-align: left; font-size: 13.5px; flex-shrink: 0; border-radius: 14px; }
+.esquina-asa svg { width: 15px; height: 15px; color: var(--tenue); flex-shrink: 0; }
+.esquina-asa b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--tenue); }
+.esquina-asa .flecha { margin-left: auto; transition: transform .4s, opacity .35s ease .5s, filter .35s ease .5s; }
+.esquina.abierta .esquina-asa .flecha { transform: rotate(180deg); }
+.esq-etq { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.esquina-cuerpo { display: grid; grid-template-rows: 0fr; min-height: 0; transition: grid-template-rows .5s var(--salida); }
+.esquina.abierta .esquina-cuerpo { grid-template-rows: 1fr; }
+.esquina-cuerpo > div { overflow: hidden; min-height: 0; display: flex; flex-direction: column; }
+.esquina-cuerpo .notas-bloque { padding: 0 14px 14px; }
+.esquina .notas-lista { max-height: min(280px, 38cqh); }
+.esquina:is(:hover, :focus-within, .abierta), .esquina:is(:hover, :focus-within, .abierta) :is(.esq-etq, .flecha) { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .esquina:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .esquina:not(:hover, :focus-within, .abierta) :is(.esq-etq, .flecha) { opacity: 0; filter: blur(3px); }
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .esquina:not(.abierta) { opacity: 0; }
+}
+
 .aviso { position: absolute; left: 50%; top: 66px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); white-space: nowrap; z-index: 40; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
 .aviso.ver { opacity: 1; transform: translate(-50%, 0); }
 
@@ -514,6 +615,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
   <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5c3 3.6 6 6.6 6 10a6 6 0 0 1-12 0c0-3.4 3-6.4 6-10z"/></symbol>
+  <symbol id="i-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
   <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
 </svg>
 
@@ -521,7 +623,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
     <p>La sala es la pantalla que menos cambia. Se queda lo que ya funciona: salir a la izquierda, quién está a la derecha, el reloj grande con sus dos puntos en el medio y los controles a los costados. Se va el recuadro punteado, los botones pierden el borde y el punto del modo pasa a usar el acento. <b>Con el reloj corriendo, si no movés el mouse, queda solo el reloj.</b> Moverlo trae todo de vuelta.</p>
-    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A) <b>y la tercera</b> (I a L, sobre A + F). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale.</p>
+    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A), <b>la tercera</b> (I a L, sobre A + F) <b>y la cuarta</b> (M a P, las notas rápidas sobre A + F + I). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale.</p>
   </header>
 
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
@@ -772,6 +874,71 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
+  <header class="ronda" id="ronda-4">
+    <h2>Cuarta ronda: notas rápidas de la sesión</h2>
+    <p>Todas son A + F + I. Las notas son tuyas, viven en el navegador y <b>se borran al salir de la sala</b>: sobreviven a recargar, no a irte. Cambia dónde viven y cómo se abren. En las cuatro, la tecla N abre las notas y deja el cursor listo para escribir. Probá también Salir: si tenés notas, te avisa que se borran y hay que tocarlo otra vez.</p>
+  </header>
+
+  <section class="opcion" id="m" data-v="m">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">M</span><span class="nombre">Cajón al costado</span></h2>
+        <p class="resumen">La idea tal como salió de L: un cajón a la derecha que se abre desde el botón del lápiz en la barra. El reloj se corre lo justo para quedar centrado en lo que sobra, sin achicarse; los controles de la izquierda se apagan y el play queda. En angosto, el cajón tapa el reloj.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Mucho lugar para leer y escribir.</li><li>Las notas son un lugar propio, separado de las tareas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El reloj se mueve cada vez que anotás algo.</li><li>Abrir las notas cierra las tareas, y al revés.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="n" data-v="n">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">N</span><span class="nombre">Pestaña en la bandeja</span></h2>
+        <p class="resumen">No se suma nada a la pantalla: la bandeja de tareas tiene una tercera pestaña, Notas, con la cuenta al lado. Se abre como siempre y el reloj sube como en I.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Cero piezas nuevas: es el mismo componente con otra pestaña.</li><li>Lo más simple de construir.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin teclado son dos toques para anotar: abrir y elegir la pestaña.</li><li>Las notas quedan escondidas detrás de las tareas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="o" data-v="o">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">O</span><span class="nombre">Bajo el reloj</span></h2>
+        <p class="resumen">Debajo del reloj hay una línea para escribir, sin caja, y las dos últimas notas en gris. El resto se despliega con «y 3 más». Con el reloj corriendo y el mouse quieto se va, como los controles.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más rápido: se escribe sin abrir nada.</li><li>Lo que anotaste queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma una línea fija debajo del reloj, como D.</li><li>Al abrir la bandeja las notas se apagan.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="p" data-v="p">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">P</span><span class="nombre">En la esquina</span><span class="recomendada">Recomendada</span></h2>
+        <p class="resumen">Una bandeja chica abajo a la izquierda, al lado de la de tareas. Se desvanece igual: sin el mouse encima queda el lápiz con el número. Tocarla la despliega hacia arriba. En pantallas de menos de 1040 px no entra al lado de la bandeja y pasa al lápiz de la barra, con el cajón de M.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj no se mueve nunca.</li><li>Notas y tareas pueden estar abiertas a la vez.</li><li>Es el mismo gesto de la bandeja, en chico.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos comportamientos según el ancho.</li><li>El lugar es angosto para notas largas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
   <section class="cierre" id="cierre">
     <h2>Comparación · primera ronda</h2>
     <div class="tabla-envoltura">
@@ -910,6 +1077,65 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
 .hilo { opacity: 0; transition: opacity .6s ease .3s; }
 [data-corriendo] .hilo { opacity: 1; transition-delay: 0s; }</pre>
     </div>
+
+    <h2 style="margin-top:64px">Cuarta ronda · notas rápidas</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Dónde viven</th><th>Cómo se anota</th><th>El reloj se mueve</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>M · Cajón al costado</td><td>Panel a la derecha</td><td>Lápiz de la barra o N</td><td>Sí, a la izquierda</td><td>Una cierra la otra</td><td>El reloj se mueve cada vez que anotás</td></tr>
+          <tr><td>N · Pestaña en la bandeja</td><td>Tercera pestaña</td><td>Abrir la bandeja y elegir Notas, o N</td><td>Sube, como con las tareas</td><td>Comparten el lugar</td><td>Las notas quedan escondidas</td></tr>
+          <tr><td>O · Bajo el reloj</td><td>Debajo del reloj, siempre</td><td>Escribir directo</td><td>No</td><td>Las notas se apagan</td><td>Una línea fija bajo el reloj</td></tr>
+          <tr class="elegida"><td>P · En la esquina</td><td>Bandeja chica abajo a la izquierda</td><td>Tocar la esquina o N</td><td>No (en ancho)</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Recomiendo P · En la esquina</h3>
+        <p><b>Es la única en la que no se mueve nada.</b> El reloj se queda donde está, como pediste en la tercera ronda, y las notas no compiten con las tareas por el mismo lugar: podés tener las dos abiertas.</p>
+        <p><b>Habla el mismo idioma que la sala.</b> Es la bandeja de tareas en chico: se desvanece, queda el lápiz con la cuenta, y con «Queda el reloj» se va del todo.</p>
+        <p><b>N es el plan B</b> si preferís no sumar ninguna pieza. Con la tecla N se anota igual de rápido; sin teclado, cuesta un toque más. <b>O</b> es la más rápida, pero vuelve a poner un renglón fijo bajo el reloj, que fue lo que menos te convenció de D.</p>
+        <h4>Qué pasa con las notas</h4>
+        <p><b>Se guardan por sala</b> (<code>doro-notas-&lt;id de la sala&gt;</code>), así que recargar no las borra y otra sala no las ve. <b>Salir las borra</b>, con un aviso si hay alguna.</p>
+        <p><b>Una decisión para que confirmes:</b> si cerrás la pestaña sin tocar Salir, las notas quedan. Propongo que al volver a esa sala sigan ahí, pero que al entrar se descarten solas las de más de 12 horas, para que no se junten notas de otros días.</p>
+        <p><b>Lo que queda para después:</b> «Pasar a tarea» en cada nota, y ver las guardadas en Tareas o en el home. El hook ya deja el lugar: es una acción más sobre la misma lista.</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>Igual que en el resto de la sala: «Al centro».</b> La esquina y el cajón son superficies llenas que tapan la trama; no cambia nada.</p>
+      </div>
+      <pre><span class="c-com">// src/features/room/hooks/useNotasSesion.ts</span>
+<span class="c-com">// Notas personales de la sala: solo en este navegador, se borran al salir</span>
+const VENCEN_EN = 12 * 60 * 60 * 1000;
+
+export function useNotasSesion(idSala: string) {
+  const clave = `doro-notas-${idSala}`;
+  const [notas, establecerNotas] = useState&lt;NotaSesion[]&gt;(() =&gt;
+    leerNotas(clave).filter(n =&gt;
+      Date.now() - Date.parse(n.creada) &lt; VENCEN_EN));
+
+  useEffect(() =&gt; {
+    try { localStorage.setItem(clave, JSON.stringify(notas)); }
+    catch { <span class="c-com">/* modo privado: quedan en memoria */</span> }
+  }, [clave, notas]);
+
+  const agregar = (texto: string, fase: Modo) =&gt;
+    establecerNotas(n =&gt; [{ id: crypto.randomUUID(), texto, fase,
+      creada: new Date().toISOString() }, ...n]);
+  const descartar = (id: string) =&gt;
+    establecerNotas(n =&gt; n.filter(x =&gt; x.id !== id));
+  const descartarTodas = () =&gt; establecerNotas([]);
+
+  return { notas, agregar, descartar, descartarTodas };
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx · al confirmar la salida</span>
+const salir = () =&gt; { descartarTodas(); navegar("/"); };
+
+<span class="c-com">/* P · la esquina se esconde si no entra al lado de la bandeja */</span>
+@container sala (max-width: 1039px) {
+  .notas-esquina { display: none; }   <span class="c-com">/* pasa al lápiz de la barra */</span>
+}</pre>
+    </div>
   </section>
 </div>
 
@@ -921,6 +1147,7 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
       <span class="avatares" aria-label="En la sala: vos, Ana y Tomi">
         <span class="avatar" data-nombre="Vos">L</span><span class="avatar" data-nombre="Ana">A</span><span class="avatar" data-nombre="Tomi">T</span>
       </span>
+      <button type="button" class="btn-notas" data-btn-notas aria-expanded="false" aria-label="Notas de la sesión" title="Notas de la sesión (N)"><svg><use href="#i-nota"/></svg><b data-notas-n></b></button>
       <button type="button" class="btn-tareas" data-btn-tareas aria-expanded="false"><span class="tb-etq">Tareas</span><b data-n>6</b></button>
     </div>
   </header>
@@ -1090,7 +1317,7 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     const zona = app.querySelector("[data-zona]");
 
     /* Cada variante pone las tareas en otro lugar */
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l"].includes(v)) {
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) {
       const aside = document.createElement("aside");
       aside.className = "bandeja" + (v === "b" ? " cajon" : "");
       aside.setAttribute("aria-label", "Tareas");
@@ -1135,7 +1362,7 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
       reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
       reloj.title = "Tocá para dar play o pausa";
     }
-    if (["f", "i", "j", "k", "l"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (["f", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
     if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
       <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
       <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
@@ -1154,6 +1381,30 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     if (v === "c" || v === "j") {
       const tb = app.querySelector(".tb");
       tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
+    }
+    /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
+    const conNotas = ["m", "n", "o", "p"].includes(v);
+    const notasHTML = (cerrar) => `
+      <div class="notas-bloque">
+        <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button>${cerrar ? `<button type="button" data-cerrar-notas aria-label="Cerrar las notas"><svg><use href="#i-x"/></svg></button>` : ""}</div>
+        <label class="alta"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo y Enter" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista></ul>
+        <p class="notas-aviso">Se borran al salir de la sala.</p>
+      </div>`;
+    if (conNotas) {
+      app.classList.add("v-i");
+      if (v === "m" || v === "p") app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
+      if (v === "n") {
+        app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
+        app.querySelector(".bandeja .panel").insertAdjacentHTML("beforeend", notasHTML(false));
+      }
+      if (v === "o") zona.insertAdjacentHTML("beforeend", `<div class="al-pie">
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista data-max="2"></ul>
+        <button type="button" class="ver-mas" data-notas-mas hidden></button></div>`);
+      if (v === "p") app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <button type="button" class="esquina-asa" data-esquina aria-expanded="false"><svg><use href="#i-nota"/></svg><span class="esq-etq">Notas</span><b data-notas-n></b><svg class="flecha"><use href="#i-arriba"/></svg></button>
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div></aside>`);
     }
     const $ = s => app.querySelector(s);
     const $$ = s => app.querySelectorAll(s);
@@ -1227,12 +1478,12 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     $("[data-compartir]").addEventListener("click", () => avisar("Link de invitación copiado"));
     $("[data-pip]").addEventListener("click", () => avisar("El reloj pasa a una ventana flotante (demo)"));
     $("[data-ajustes]").addEventListener("click", () => avisar("Tiempos del reloj: 25 · 5 · 15 (demo)"));
-    $("[data-salir-sala]").addEventListener("click", () => avisar("¿Salir de la sala? Se confirma en un diálogo (demo)"));
+    $("[data-salir-sala]").addEventListener("click", () => s.salir ? s.salir() : avisar("¿Salir de la sala? Se confirma en un diálogo (demo)"));
     pintarReloj();
 
     /* Quietud: con el reloj corriendo y el puntero quieto 2,5 s, queda el reloj */
     let tQuieto = null;
-    const algoAbierto = () => !!app.querySelector(".bandeja.abierta, .ahora.abierta, .pop.abierto") || app.contains(document.activeElement) && /INPUT/.test(document.activeElement.tagName);
+    const algoAbierto = () => !!app.querySelector(".bandeja.abierta, .ahora.abierta, .pop.abierto, .notas-cajon.abierta, .esquina.abierta") || app.contains(document.activeElement) && /INPUT/.test(document.activeElement.tagName);
     function evaluarQuietud() {
       clearTimeout(tQuieto); delete app.dataset.quieto; marcarGlobal();
       if (!s.corriendo) return;
@@ -1270,6 +1521,8 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     const ul = $("[data-lista]");
     const pendientes = k => datos[k].filter(t => !t.hecha);
     const pintarLista = () => {
+      $$(".panel").forEach(p => p.toggleAttribute("data-en-notas", amb === "notas"));
+      if (amb === "notas") return;
       const l = datos[amb];
       ul.innerHTML = l.length ? l.map((t, i) => `
         <li class="tarea${t.hecha ? " hecha" : ""}${t === llega ? " llega" : ""}" style="--i:${i + 2}">
@@ -1338,10 +1591,12 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     const btnT = $("[data-btn-tareas]");
     let estaAbierta = () => false;
     let alternarTareas = () => {};
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l"].includes(v)) {
+    let alAbrirTareas = () => {};
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"].includes(v)) {
       const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
       const abrir = a => {
         bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
+        if (a) alAbrirTareas();
         if (a && amb === "sala") { noVistas = 0; pintarTodo(); }
         evaluarQuietud();
       };
@@ -1389,6 +1644,100 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     btnT.addEventListener("click", alternarTareas);
     app.addEventListener("keydown", e => { if (e.key === "Escape" && pop.classList.contains("abierto")) { e.stopPropagation(); abrirPop(false); btnM.focus(); } });
     pintarTodo();
+
+    /* ── Notas rápidas: tuyas, en este navegador, se borran al salir ── */
+    if (conNotas) {
+      const clave = "doro-sala-notas-" + v;
+      const EJEMPLO = [
+        { texto: "Preguntarle a Ana cómo sacó la máscara del ejercicio 4", hora: "18:31", fase: "Pomodoro" },
+        { texto: "Ver el video de Dijkstra que pasó el profe", hora: "18:24", fase: "Descanso corto" },
+        { texto: "Pág. 47: el teorema que no entendí", hora: "18:09", fase: "Pomodoro" },
+      ];
+      let notas;
+      try { notas = JSON.parse(leer(clave, "null")); } catch (e) { notas = null; }
+      if (!Array.isArray(notas)) notas = EJEMPLO.map((n, i) => ({ ...n, id: "ej" + i }));
+      const guardarNotas = () => guardar(clave, JSON.stringify(notas));
+      let nueva = null, todas = false, salirPedido = 0;
+      const pintarNotas = () => {
+        $$("[data-notas-lista]").forEach(ul => {
+          const max = ul.dataset.max && !todas ? +ul.dataset.max : Infinity;
+          ul.innerHTML = notas.length ? notas.slice(0, max).map(n => `
+            <li class="nota${n.id === nueva ? " llega" : ""}">
+              <span class="nota-txt">${esc(n.texto)}</span>
+              <span class="nota-pie">${esc(n.hora)} · ${esc(n.fase)}</span>
+              <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
+            </li>`).join("")
+            : ul.dataset.max ? "" : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Nada de esto se guarda.</li>`;
+        });
+        nueva = null;
+        $$("[data-notas-n]").forEach(e => e.textContent = notas.length || "");
+        $$("[data-notas-borrar]").forEach(b => b.hidden = notas.length < 2);
+        const mas = $("[data-notas-mas]");
+        if (mas) { const resto = notas.length - 2; mas.hidden = resto <= 0; mas.textContent = todas ? "Ver menos" : `y ${resto} más`; }
+      };
+      app.addEventListener("keydown", e => {
+        const inp = e.target.closest("[data-notas-alta]");
+        if (!inp || e.key !== "Enter" || !inp.value.trim()) return;
+        const d = new Date();
+        const n = { id: "n" + d.getTime(), texto: inp.value.trim(), hora: `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`, fase: FASES[s.modo][0] };
+        notas.unshift(n); nueva = n.id; inp.value = ""; guardarNotas(); pintarNotas();
+      });
+      app.addEventListener("click", e => {
+        const q = e.target.closest("[data-quitar]");
+        if (q) {
+          const li = q.closest(".nota"); li.classList.add("se-va");
+          setTimeout(() => { notas = notas.filter(n => n.id !== q.dataset.quitar); guardarNotas(); pintarNotas(); }, 220);
+          return;
+        }
+        if (e.target.closest("[data-notas-borrar]")) { const k = notas.length; notas = []; guardarNotas(); pintarNotas(); avisar(`Borraste ${k} notas`); return; }
+        if (e.target.closest("[data-notas-mas]")) { todas = !todas; pintarNotas(); }
+      });
+
+      /* Abrir y cerrar según la variante; s.abrirNotas lo usa la tecla N */
+      const cajon = $(".notas-cajon"), btnN = $("[data-btn-notas]"), esquina = $(".esquina");
+      const abrirCajon = a => {
+        if (!cajon) return;
+        cajon.classList.toggle("abierta", a); btnN.setAttribute("aria-expanded", a); cajon.inert = !a;
+        if (a && estaAbierta()) alternarTareas();
+        evaluarQuietud();
+      };
+      const abrirEsquina = a => {
+        esquina.classList.toggle("abierta", a); $("[data-esquina]").setAttribute("aria-expanded", a); $("[data-esquina-cuerpo]").inert = !a;
+        evaluarQuietud();
+      };
+      if (cajon) {
+        abrirCajon(false);
+        btnN.addEventListener("click", () => abrirCajon(!cajon.classList.contains("abierta")));
+        $("[data-cerrar-notas]").addEventListener("click", () => { abrirCajon(false); btnN.focus(); });
+        alAbrirTareas = () => abrirCajon(false);
+      }
+      if (esquina) { abrirEsquina(false); $("[data-esquina]").addEventListener("click", () => abrirEsquina(!esquina.classList.contains("abierta"))); }
+      const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
+      s.abrirNotas = () => {
+        if (v === "m" || (v === "p" && app.clientWidth < 1040)) { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); }
+        else if (v === "p") { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
+        else if (v === "n") { if (!estaAbierta()) alternarTareas(); cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]"); }
+        else enfocar(".al-pie [data-notas-alta]");
+      };
+      app.addEventListener("keydown", e => {
+        if (e.key === "Escape") {
+          if (cajon?.classList.contains("abierta")) { e.stopPropagation(); abrirCajon(false); return; }
+          if (esquina?.classList.contains("abierta")) { e.stopPropagation(); abrirEsquina(false); return; }
+        }
+        if (e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.stopPropagation(); s.abrirNotas(); }
+      });
+      s.salir = () => {
+        const k = notas.length;
+        if (!k) return avisar("Saliste de la sala (demo)");
+        if (Date.now() - salirPedido < 3500) {
+          notas = []; guardarNotas(); pintarNotas(); salirPedido = 0;
+          return avisar(k === 1 ? "Saliste: se borró tu nota (demo)" : `Saliste: se borraron tus ${k} notas (demo)`, 2600);
+        }
+        salirPedido = Date.now();
+        avisar(k === 1 ? "Al salir se borra tu nota. Tocá Salir otra vez" : `Al salir se borran tus ${k} notas. Tocá Salir otra vez`, 3500);
+      };
+      pintarNotas();
+    }
 
     /* Marco: presets, medida en vivo y la tarea ajena */
     const barra = op.querySelector("[data-barra]");
@@ -1490,6 +1839,7 @@ export function useQuietud(corriendo: boolean, espera = 2500) {
     if (k === "d") return usarCiclo("vineta");
     if (k === "t") return usarCiclo("tema");
     if (k === "c") return siguienteAcento();
+    if (k === "n") { e.preventDefault(); return salas.find(x => x.op === actual)?.abrirNotas?.(); }
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
     mostrar(opciones[(i + opciones.length) % opciones.length]);
