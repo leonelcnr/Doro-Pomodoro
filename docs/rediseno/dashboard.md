@@ -89,6 +89,33 @@ con línea de referencia rotulada).
 - **P · El año arriba.** F sin scroll: mapa del año y tres gráficos abajo.
 - **Q · Días en renglones.** Barras horizontales por día con la meta y la semana anterior.
 
+**Opinión de Leo sobre la 4ª ronda:** F le sirve, pero sin scroll (solo arreglar el alto).
+M: le gustan los gráficos, pero quedan sueltos, sin centrar y sin jerarquía; quizá en
+tarjetas. O: interesante. En casi todas faltaba **alternar entre semana, mes y año**.
+
+**Quinta ronda (2026-10-04, esperando opinión):** F sin scroll y cinco tableros en
+tarjetas, todos con el selector **Semana · 30 días · Año** que cambia todos los gráficos a
+la vez (con un fundido de opacidad). En «Año», las barras son el promedio por día de cada
+mes contra la meta diaria y el acumulado va por semanas. Probado en 1180 × 760 con los tres
+períodos: ninguna se desborda.
+- **F · Sin bajar.** Los mismos bloques repartidos en el alto: el día elegido en un
+  renglón debajo del mapa (máx. 820 px) y los dos gráficos de abajo crecen hasta el borde.
+- **R · M en tarjetas** (recomendada). Los cinco gráficos de M con protagonista: arriba
+  hoy + racha, las barras del período (dos columnas) y el acumulado; abajo el mapa del año
+  con el período resaltado (lo de afuera, apagado) y las horas.
+- **S · O con período.** Cuatro tarjetas con cifra y gráfico chico (hoy, días con la meta
+  en cuadritos —semanas en el año—, contra el anterior en dos barras, horario); abajo las
+  barras y el acumulado.
+- **T · Protagonista e inspector.** Tarjeta grande con barras (pares en la semana) y
+  cuatro cifras; columna con hoy, el día que tocaste y las horas.
+- **U · Recorrer el tiempo.** R con flechas para ir a períodos anteriores (hasta 52
+  semanas, 12 meses o un año) y las barras a todo el ancho.
+- **V · Tres preguntas en columnas.** Hoy a todo el ancho y tres tarjetas iguales:
+  ¿soy constante? (barras), ¿voy mejor o peor? (acumulado), ¿cuándo rindo? (horas).
+
+Para la Fase 3: la RPC tiene que recibir período y desplazamiento y devolver también el
+período anterior; el año contra el anterior pide dos años de historia.
+
 Puntos de fondo: liso en todas (el dashboard ya está hecho de celdas y anillos). Si los
 puntos quedan para toda la app, en J «A los lados».
 
@@ -107,8 +134,9 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-4ª ronda publicada (F base; L a Q, recomendada M, plan B L). **Próximo paso:** recoger la
-opinión de Leo; sigue pendiente la forma de cambiar la meta (recomendada «En la línea»).
+5ª ronda publicada (F sin scroll; R a V en tarjetas con selector de período, recomendada
+R, plan B U). **Próximo paso:** recoger la opinión de Leo; sigue pendiente la forma de
+cambiar la meta (recomendada «En la línea»).
 
 ## Propuestas transversales
 

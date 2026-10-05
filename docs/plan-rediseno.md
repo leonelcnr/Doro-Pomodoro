@@ -23,7 +23,7 @@ aprobación se pasa a la siguiente.
 | 1.1 | Home | `/` | ✅ D4 + bandeja «Queda el asa» (aprobado 2026-10-04) | [D4](https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b) · [2ª ronda](https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD) |
 | 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | ✅ S2 · El nombre elige el tema, con cajas oscuras, tarjetas más oscuras y entrada «barra y nombre» (aprobado 2026-10-04) | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
 | 1.3 | Sala | `/room/:roomId` | 🔄 Base A + F + I. Notas: los usuarios eligieron X (a la derecha); 7ª ronda (1–7, sin dos rayitas, recomendada 1) publicada, esperando opinión | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
-| 1.4 | Dashboard | `/dashboard` | 🔄 4ª ronda publicada: F base + seis tableros de una pantalla con barras (L–Q, recomendada M); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
+| 1.4 | Dashboard | `/dashboard` | 🔄 5ª ronda publicada: F sin scroll + cinco tableros en tarjetas con Semana/30 días/Año (R–V, recomendada R); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ⏳ | — |
 | 1.7 | Invitación | `/invitacion/:code` | ⏳ | — |
