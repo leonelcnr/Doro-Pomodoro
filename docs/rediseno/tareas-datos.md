@@ -1,8 +1,9 @@
 # Tareas · modelo de datos y migraciones
 
 Diseño de la capa de datos para la pantalla de Tareas aprobada (S2, ver `tareas.md`).
-Es la Fase 3 de `docs/plan-rediseno.md`. **Todavía no se aplicó nada:** el SQL de abajo es
-un borrador para revisar antes de convertirlo en archivos de `supabase/migrations/`.
+Es la Fase 3 de `docs/plan-rediseno.md`. La Fase A ya está escrita en
+`supabase/migrations/20261005120000_tareas_temas_y_fechas.sql` (**sin aplicar**). Lo demás
+sigue como borrador.
 
 Decisiones de Leo (2026-10-04):
 - Avisos **por fases**: primero notificaciones del navegador, después Google Calendar.
@@ -12,6 +13,12 @@ Decisiones de Leo (2026-10-04):
 - **Los eventos de `calendar_events` se descartan**; no se migran.
 - Antes de la Fase C hay que arreglar cómo se guardan los tokens de Google: ver
   `docs/seguridad-google-calendar.md`.
+
+Decisiones de Leo (2026-10-05):
+- **La RPC del dashboard pasa a temas en la Fase A**, no en la limpieza.
+- **Se suma `completed_at`** para que el dashboard cuente lo completado por la fecha en que se
+  completó, no por la de creación.
+- **El `drop` de `calendar_events` va en una migración aparte**, después del deploy del front.
 
 ---
 
@@ -26,7 +33,10 @@ Decisiones de Leo (2026-10-04):
   `limit?: string`, pero esa columna no existe (corrige lo que decía `tareas.md`).
 - RLS: lo personal solo lo ve su dueño; lo de sala, cualquier miembro
   (`20260610024709_security_rls_hardening.sql`).
-- La RPC del dashboard agrupa por `type` (`dashboard_aggregates_bounded`).
+- La RPC del dashboard, `get_dashboard_aggregates`, agrupa por `type` y por `created_at`
+  (no hay fecha de completado). `type` tiene valor por defecto `'General'` y no hay filas
+  con null.
+- Base: Postgres 17. Hay 30 tareas personales, de las que salen 15 temas.
 
 **`calendar_events`**: 17 filas de 3 usuarios.
 - Columnas: `title`, `event_date date`, `type` («Examen», «Entrega», «Estudio», «Otro»),
@@ -61,77 +71,47 @@ Decisiones de Leo (2026-10-04):
    opciones de la UI («el día antes», «mañana 9:00») a una fecha y hora concretas.
 8. **`/tareas` muestra lo personal** (`room_id is null`). Las tareas de sala siguen en el
    panel de la sala, como hoy (confirmado).
-9. **`type` no se borra todavía.** Lo usan la RPC del dashboard y la tabla del home. Se migra
-   a temas y se quita en la limpieza.
+9. **`type` no se borra todavía.** Lo usa la tabla del home y queda como respaldo en la RPC.
+   Se quita en la limpieza.
+10. **`completed_at timestamptz`**, la llena un trigger cuando `status` pasa a «Completada» y
+    la vacía si deja de estarlo. Las tareas ya completadas quedan en null: no se sabe cuándo
+    se completaron, y la RPC usa `created_at` como respaldo.
 
 ---
 
-## Fase A · datos para la pantalla (una migración)
+## Fase A · datos para la pantalla
+
+**Migración 1 (escrita, sin aplicar):** `supabase/migrations/20261005120000_tareas_temas_y_fechas.sql`.
+- Tabla `topics` con RLS.
+- Columnas nuevas en `tasks`: `kind`, `topic_id`, `due_date`, `due_time`, `grade`,
+  `remind_at`, `google_event_id` y `completed_at`.
+- Trigger `tasks_marcar_completada`.
+- Pasa cada categoría personal a tema.
+- `get_dashboard_aggregates` agrupa por `coalesce(tema, type, 'Otro')` y por
+  `coalesce(completed_at, created_at)`.
+
+**Migración 2 (después del deploy del front sin Calendario):** se escribe cuando el front ya
+esté desplegado, para que nadie la aplique antes por error.
 
 ```sql
--- 1. Temas
-create table public.topics (
-  id         uuid primary key default gen_random_uuid(),
-  user_id    uuid not null references auth.users (id) on delete cascade,
-  name       text not null check (length(trim(name)) between 1 and 60),
-  icon       text not null default 'libro' check (icon in (
-               'llaves','red','diagrama','chispa','sigma','onda','globo','codigo',
-               'capas','base','grafico','balanza','dado','libro')),
-  position   integer not null default 0,
-  created_at timestamptz not null default now(),
-  unique (id, user_id)                       -- destino de la FK compuesta
-);
-create unique index topics_nombre_unico on public.topics (user_id, lower(trim(name)));
-alter table public.topics enable row level security;
-create policy topics_propios on public.topics
-  for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-
--- 2. Columnas nuevas en tasks
-alter table public.tasks
-  add column kind            text not null default 'tarea'
-                             check (kind in ('tarea','practico','informe','parcial')),
-  add column topic_id        uuid,
-  add column due_date        date,
-  add column due_time        time,
-  add column grade           numeric(4,2) check (grade between 0 and 10),
-  add column remind_at       timestamptz,
-  add column google_event_id text,
-  add constraint tasks_topic_del_dueno
-    foreign key (topic_id, user_id) references public.topics (id, user_id)
-    on delete set null (topic_id);
-alter table public.tasks
-  add constraint tasks_nota_solo_parcial check (grade is null or kind = 'parcial');
-
-create index tasks_usuario_tema on public.tasks (user_id, topic_id) where room_id is null;
-create index tasks_usuario_fecha on public.tasks (user_id, due_date) where due_date is not null;
-
--- 3. Cada categoría personal pasa a ser un tema («General» y vacías quedan sin tema)
-insert into public.topics (user_id, name)
-select distinct on (user_id, lower(trim(type))) user_id, trim(type)
-from public.tasks
-where room_id is null and type is not null
-  and trim(type) <> '' and lower(trim(type)) <> 'general'
-on conflict do nothing;
-
-update public.tasks t set topic_id = tp.id
-from public.topics tp
-where t.room_id is null and tp.user_id = t.user_id
-  and lower(trim(t.type)) = lower(tp.name);
-
--- 4. El calendario viejo se descarta (decisión de Leo): sus eventos no se migran.
---    Los que ya se habían mandado a Google quedan en el Google Calendar de cada usuario.
+-- El calendario viejo se descarta (decisión de Leo): sus eventos no se migran.
+-- Los que ya se habían mandado a Google quedan en el Google Calendar de cada usuario.
 drop table public.calendar_events;
 ```
 
-El `drop` de `calendar_events` va en la misma migración que saca `src/features/calendar/`
-del código. Antes, se despliega el front sin la pantalla, para que nadie escriba en la tabla
-mientras se borra.
+Orden:
+1. Aplicar la migración 1.
+2. Desplegar el front nuevo, sin `src/features/calendar/`.
+3. Aplicar la migración 2.
+
+`sync-calendar` deja de funcionar con el `drop` hasta la Fase C. No pasa nada, porque ya no
+hay pantalla que la llame.
 
 **Código que acompaña la Fase A** (con `dev-datos-realtime`):
 - `src/types/dominio.ts`:
   - Agregar `TipoItem = 'tarea' | 'practico' | 'informe' | 'parcial'` y la interfaz `Tema`.
   - Sumar a `Tarea` los campos `kind`, `topic_id`, `due_date`, `due_time`, `grade`,
-    `remind_at` y `google_event_id`.
+    `remind_at`, `google_event_id` y `completed_at` (de solo lectura: la llena el trigger).
   - Sacar el `limit` que no existe.
 - Un `temasService` nuevo y el `tareasService` extendido (los nombres en inglés quedan
   aislados ahí).
@@ -245,7 +225,7 @@ la nota.
 
 ## Limpieza (después de que la pantalla nueva reemplace a la tabla del home)
 
-- Pasar la RPC del dashboard de `type` a `topics.name`.
+- Sacar el respaldo a `type` de la RPC del dashboard.
 - Quitar `tasks.type`. Decidir qué pasa con `priority` y `favorite`, que el diseño nuevo no usa.
 
 ---
