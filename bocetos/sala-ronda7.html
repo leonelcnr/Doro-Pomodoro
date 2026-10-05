@@ -802,165 +802,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
-
-/* ═════ Octava ronda: la sala final y la bandeja con el sistema de tareas ═════ */
-
-/* Post-its con la línea al pie: grilla, lo más viejo arriba y lo nuevo junto a donde se escribe */
-.app.postit.al-pie-notas .gemela .notas-lista { display: grid; }
-
-/* Alguien sumó una tarea a la sala: la rayita toma el acento (regla de A) y se estira un poco */
-.app[data-nuevas] .bandeja:not(.abierta) .asa::before { width: 56px !important; }
-
-/* El asa: con foco muestra el avance en vez de la cuenta */
-.cuenta .num b { color: var(--fg); font-weight: 600; }
-.cuenta .linea-av { width: 40px; }
-
-/* Lo común de adentro de la bandeja */
-:where(.tt-panel) svg { width: 16px; height: 16px; flex-shrink: 0; }
-.tt-panel { display: flex; flex-direction: column; gap: 12px; }
-.tt-panel > .pestanas { margin-bottom: 0; position: sticky; top: -4px; z-index: 3; background: var(--superficie); padding-top: 4px; }
-.tt-vista { display: flex; flex-direction: column; gap: 10px; }
-.tt-panel .vacio { list-style: none; }
-
-.linea-av { display: block; width: 100%; height: 2px; background: var(--linea); border-radius: 2px; overflow: hidden; }
-.linea-av > span { display: block; height: 100%; background: var(--acento); transition: width .5s var(--salida); }
-.linea-av.gruesa { height: 4px; border-radius: 4px; }
-
-.tt-lista { list-style: none; margin: 0; padding: 0; }
-.tt-it { border-bottom: 1px solid var(--linea); transition: opacity .3s ease, transform .4s var(--salida); }
-.tt-it:last-child { border-bottom: 0; }
-.tt-it.llega { animation: llega .7s var(--salida); }
-.tt-it.se-va { opacity: 0; transform: translateX(10px); }
-.tt-fila { display: flex; align-items: center; gap: 12px; min-height: 48px; }
-.tt-ico { width: 18px; height: 18px; flex-shrink: 0; color: var(--tenue); display: grid; place-items: center; }
-.tt-ico svg { width: 18px; height: 18px; }
-.tt-tit { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; border: 0; background: none; padding: 8px 0; text-align: left; font-size: 14.5px; line-height: 1.35; }
-span.tt-tit { cursor: default; }
-.tt-tit .t { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tt-meta { font-size: 12.5px; color: var(--tenue); }
-.tt-it.hecho .t { color: var(--tenue); }
-.tt-it.hecho:has(.check.hecho) .t { text-decoration: line-through; }
-.tt-cuenta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; width: 56px; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.tt-cuenta b { color: var(--fg); font-weight: 600; }
-.tt-it.abierto .tt-tit .t { white-space: normal; }
-
-/* Detalle: se abre debajo del renglón */
-.tt-det { padding: 2px 0 14px 30px; display: flex; flex-direction: column; gap: 8px; animation: tt-abre .35s var(--salida); }
-@keyframes tt-abre { from { opacity: 0; transform: translateY(-4px); } }
-.regla { display: flex; gap: 3px; height: 26px; padding-bottom: 16px; box-sizing: content-box; }
-.regla button { flex: 1 1 0; min-width: 8px; max-width: 28px; border: 0; padding: 0; border-radius: 2px; background: var(--linea); position: relative; transition: background-color .15s, transform .1s; }
-.regla button:hover { background: color-mix(in oklch, var(--acento) 35%, var(--linea)); }
-.regla button[aria-pressed="true"] { background: var(--acento); }
-.regla button:active { transform: scaleY(.85); }
-.regla button::after { content: attr(data-n); position: absolute; left: 50%; top: calc(100% + 4px); transform: translateX(-50%); font-size: 10.5px; color: var(--tenue); font-variant-numeric: tabular-nums; pointer-events: none; }
-.tt-falta { margin: 0; font-size: 13px; color: var(--tenue); }
-.tt-obs { margin: 0; display: flex; gap: 8px; font-size: 13px; color: var(--tenue); }
-.tt-obs svg { width: 15px; height: 15px; margin-top: 2px; }
-.tt-partes { display: flex; flex-wrap: wrap; gap: 2px 18px; }
-.tt-parte { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; padding: 4px 0; font-size: 13.5px; }
-.tt-parte .check { width: 16px; height: 16px; }
-.tt-parte[aria-pressed="true"] { color: var(--tenue); }
-
-/* Encabezados de grupo: delimitan con una línea, sin color */
-.tt-cab { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 0 7px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--linea); }
-.tt-cab svg { color: var(--tenue); }
-.tt-cab small { margin-left: auto; font-weight: 400; color: var(--tenue); font-size: 12.5px; text-align: right; }
-.tt-grupo .tt-cab { padding-top: 6px; }
-.tt-grupo + .tt-grupo { margin-top: 8px; }
-.tt-nota-sala { margin: 0; font-size: 12px; color: var(--tenue); }
-
-/* T2 · Un tema por vez: el nombre es un menú, y los recuadros por tipo eligen qué ver */
-.tt-tema { position: relative; display: flex; align-items: center; gap: 10px; }
-.tt-tema-btn { display: inline-flex; align-items: center; gap: 8px; min-width: 0; border: 0; background: none; padding: 6px 8px; margin-left: -8px; border-radius: 8px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
-.tt-tema-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tt-tema-btn:hover { background: var(--campo); }
-.tt-tema-btn svg { width: 18px; height: 18px; color: var(--tenue); }
-.tt-tema-btn .flecha-m { width: 14px; height: 14px; transition: transform .3s var(--salida); }
-.tt-tema-btn[aria-expanded="true"] .flecha-m { transform: rotate(180deg); }
-.tt-pct { margin-left: auto; flex-shrink: 0; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.tt-menu { position: absolute; z-index: 5; top: calc(100% + 4px); left: -8px; width: min(300px, calc(100% + 8px)); list-style: none; margin: 0; padding: 6px; background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; box-shadow: var(--sombra); max-height: 260px; overflow-y: auto; animation: tt-abre .25s var(--salida); }
-.tt-menu button { width: 100%; display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 8px 10px; border-radius: 8px; font-size: 14px; text-align: left; }
-.tt-menu button:hover, .tt-menu button[aria-current="true"] { background: var(--campo); }
-.tt-menu svg { color: var(--tenue); }
-.tt-menu small { margin-left: auto; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.tt-frase { margin: 0; font-size: 13.5px; color: var(--tenue); }
-.tt-tipos { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; }
-.tt-tipo { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 6px 8px; border: 1px solid transparent; background: var(--campo); border-radius: 10px; padding: 9px 10px 10px; font-size: 13px; text-align: left; color: var(--tenue); transition: background-color .2s, border-color .2s, color .2s; }
-.tt-tipo span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tt-tipo b { font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums; }
-.tt-tipo .linea-av { grid-column: 1 / -1; }
-.tt-tipo:hover { color: var(--fg); }
-.tt-tipo[aria-pressed="true"] { background: var(--superficie); border-color: var(--linea); color: var(--fg); box-shadow: var(--sombra); }
-
-/* T3 · Lo que sigue: tramos por fecha */
-.tt-tramo { margin: 0; padding: 12px 0 4px; font-size: 11.5px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); border-bottom: 1px solid var(--linea); }
-.tt-tramo:first-child { padding-top: 2px; }
-.tt-tramo.atrasado { color: var(--fg); }
-
-/* T4 · En qué estás: el foco arriba, con su regla a mano */
-.tt-foco { background: var(--campo); border-radius: 14px; padding: 14px 16px 14px; }
-.tt-foco-cab { display: flex; align-items: flex-start; gap: 12px; }
-.tt-foco-cab .tt-ico { margin-top: 18px; }
-.tt-foco-cab > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.tt-foco-etq { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--acento); font-weight: 600; margin-bottom: 3px; }
-.tt-foco-cab b { font-weight: 600; font-size: 15px; line-height: 1.35; }
-.tt-foco-cab small { font-size: 12.5px; color: var(--tenue); }
-.tt-soltar { width: 28px; height: 28px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; flex-shrink: 0; }
-.tt-soltar:hover { background: var(--superficie); color: var(--fg); }
-.tt-soltar svg { width: 14px; height: 14px; }
-.tt-foco .tt-det { padding: 14px 0 0 30px; animation: none; }
-.tt-foco .regla { height: 32px; }
-.tt-foco-vacio { margin: 0; font-size: 13.5px; color: var(--tenue); text-align: center; padding: 8px 12px; }
-.tt-hecha-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 32px; padding: 0 12px; font-size: 13px; }
-.tt-hecha-btn svg { width: 13px; height: 13px; color: var(--acento); }
-.tt-hecha-btn:hover { border-color: var(--tenue); }
-.tt-enfocar { width: 18px; height: 18px; flex-shrink: 0; color: var(--tenue); opacity: 0; transition: opacity .2s; pointer-events: none; }
-.tt-enfocar svg { width: 18px; height: 18px; }
-.tt-it:is(:hover, :focus-within) .tt-enfocar { opacity: 1; }
-:root[data-tactil] .tt-enfocar { opacity: .6; }
-
-/* T5 · Tarjetas en fila: la bandeja se ensancha y las tarjetas se deslizan de costado */
-@container app (min-width: 900px) { .app.v-t5 .bandeja { width: min(calc(100% - 200px), 720px); } }
-.tt-filtro { align-self: flex-start; max-width: 100%; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
-.tt-filtro button { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.tt-filtro svg { width: 15px; height: 15px; }
-@container app (max-width: 560px) { .tt-filtro span { display: none; } }
-.tt-carril { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; margin-inline: -20px; padding: 2px 20px 8px; scroll-padding-inline: 20px; }
-.tt-tarjeta { flex: 0 0 196px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 10px; min-height: 156px; background: var(--campo); border-radius: 12px; padding: 12px 14px 14px; transition: flex-basis .45s var(--salida), opacity .3s ease, transform .4s var(--salida); }
-.tt-tarjeta.abierta { flex-basis: 300px; }
-.tt-tarjeta.llega { animation: llega .7s var(--salida); }
-.tt-tarjeta.se-va { opacity: 0; transform: translateY(8px); }
-.tt-tarjeta-cab { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border: 0; background: none; padding: 0; text-align: left; }
-.tt-tarjeta-tipo { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--tenue); }
-.tt-tarjeta-tipo svg { width: 15px; height: 15px; }
-.tt-tarjeta-cab b { font-weight: 600; font-size: 14px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.tt-tarjeta.abierta .tt-tarjeta-cab b { -webkit-line-clamp: unset; }
-.tt-tarjeta-cab small { font-size: 12px; color: var(--tenue); }
-.tt-tarjeta-pie { margin-top: auto; display: flex; align-items: center; gap: 10px; }
-.tt-tarjeta .tt-cuenta { width: 100%; flex-direction: row-reverse; align-items: center; gap: 10px; }
-.tt-tarjeta .tt-cuenta .linea-av { flex: 1; }
-.tt-tarjeta .tt-det { padding: 0; }
-.tt-tarjeta { min-height: 140px; }
-.tt-tarjeta-alta { flex-basis: 168px; background: none; border: 1px dashed var(--linea); cursor: text; justify-content: flex-start; }
-.tt-tarjeta-alta:focus-within { border-color: color-mix(in oklch, var(--acento) 50%, var(--linea)); }
-.tt-tarjeta-alta input { border: 0; background: none; outline: none; font-size: 14px; width: 100%; padding: 0; }
-.tt-tarjeta-alta input::placeholder { color: var(--tenue); }
-
-/* T6 · Primero el resumen: la frase, la barra y un recuadro por tipo */
-.tt-frase.grande { font-size: 17px; color: var(--fg); font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; }
-.tt-frase.grande .r { color: var(--tenue); }
-.tt-cuadros { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 4px; }
-.tt-cuadro { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 10px; background: var(--campo); border: 0; border-radius: 12px; padding: 12px 14px 14px; text-align: left; transition: background-color .2s; }
-.tt-cuadro:hover { background: color-mix(in oklch, var(--campo) 70%, var(--linea)); }
-.tt-cuadro svg { width: 18px; height: 18px; color: var(--tenue); }
-.tt-cuadro b { font-weight: 600; font-size: 14px; }
-.tt-cuadro > span { grid-column: 1 / -1; font-size: 12.5px; color: var(--tenue); }
-.tt-cuadro .linea-av { grid-column: 1 / -1; margin-top: 6px; }
-.tt-volver { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 4px 8px 4px 4px; margin-left: -4px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
-.tt-volver:hover { background: var(--campo); color: var(--fg); }
-.tt-volver svg { width: 15px; height: 15px; }
-.tt-sub { display: flex; align-items: center; gap: 8px; margin: 8px 0 0; font-size: 12.5px; font-weight: 500; color: var(--tenue); }
-.tt-sub svg { width: 15px; height: 15px; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -988,30 +829,13 @@ span.tt-tit { cursor: default; }
   <symbol id="i-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
   <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
   <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
-  <symbol id="k-parcial" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5l2 2 4-4"/></symbol>
-  <symbol id="k-practico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h2M4 12h2M4 17h2M9 7h11M9 12h11M9 17h7"/></symbol>
-  <symbol id="k-informe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></symbol>
-  <symbol id="k-tarea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
-  <symbol id="k-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6A1.5 1.5 0 0 1 6 4.5h12A1.5 1.5 0 0 1 19.5 6v8l-5.5 5.5H6A1.5 1.5 0 0 1 4.5 18z"/><path d="M19.5 14H15.5a1.5 1.5 0 0 0-1.5 1.5v4"/></symbol>
-  <symbol id="k-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h10M8 12h12M4 17h8"/></symbol>
-  <symbol id="t-todo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
-  <symbol id="t-llaves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></symbol>
-  <symbol id="t-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7 6 16M13 7l5 9M7.2 18h9.6"/></symbol>
-  <symbol id="t-diagrama" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="5" rx="1"/><rect x="13.5" y="15.5" width="7" height="5" rx="1"/><path d="M7 8.5V18h6.5"/></symbol>
-  <symbol id="t-chispa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
-  <symbol id="t-bandeja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l1.5 3h5L16 13h4"/><path d="M5.5 5h13L20 13v5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-5z"/></symbol>
-  <symbol id="t-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></symbol>
-  <symbol id="t-onda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-5 4-5 6 0s4 5 6 0 4-5 6 0"/></symbol>
-  <symbol id="t-capas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3.5 8.5 12 13l8.5-4.5z"/><path d="M3.5 12.5 12 17l8.5-4.5M3.5 16.5 12 21l8.5-4.5"/></symbol>
-  <symbol id="t-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></symbol>
-  <symbol id="i-foco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></symbol>
 </svg>
 
 <div class="pagina">
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
-    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). Falta una sola cosa: <b>qué muestra la bandeja</b> ahora que existen parciales, prácticos con puntos, informes y tareas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code>, <code>sala-ronda6.html</code> y <code>sala-ronda7.html</code>.</p>
-    <p>El reloj corre de verdad: dale play, abrí las tareas, marcá puntos en la regla, escribí una nota y probá Salir. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
+    <p>La sala ya tiene su base: la bandeja de tareas del home, el hilo que aparece con el reloj corriendo y el reloj que sube sin achicarse. Lo que queda por cerrar son las <b>notas rápidas de la sesión</b>. Arriba está <b>X</b>, la que eligieron los usuarios, y abajo la séptima ronda. Las rondas anteriores están guardadas en <code>bocetos/sala-ronda5.html</code> y <code>bocetos/sala-ronda6.html</code>.</p>
+    <p>El reloj corre de verdad: dale play, abrí las tareas y las notas, escribí algo y probá Salir. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
@@ -1070,104 +894,127 @@ span.tt-tit { cursor: default; }
         <button type="button" data-v="tactil">Táctil</button>
       </div>
     </div>
-    <div class="ajuste">
-      <span class="ajuste-nombre">Temas</span>
-      <div class="segmentado" id="temas" role="group" aria-label="Cantidad de temas">
-        <button type="button" data-v="5">5</button>
-        <button type="button" data-v="9">9</button>
-      </div>
-    </div>
   </div>
 
-  <header class="ronda" id="ronda-8">
-    <h2>Octava ronda: la bandeja con el sistema de tareas</h2>
-    <p>Todas son la sala final: lo único que cambia es lo que hay adentro de la bandeja. Los datos son los de la pantalla Tareas (S2): temas y, adentro de cada uno, parciales, prácticos con sus puntos, informes con sus partes y tareas sueltas. En todas se marca avance sin salir de la sala: los puntos del práctico en la regla, las unidades repasadas del parcial y las partes del informe. «De la sala» sigue siendo una lista simple que ven y marcan todos.</p>
+  <section class="opcion" id="x" data-v="x">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">X</span><span class="nombre">A la derecha</span><span class="recomendada">La que eligieron</span></h2>
+        <p class="resumen">La que más les gustó a los usuarios. La bandeja de notas en la esquina de abajo a la derecha: plegada, la rayita y debajo el lápiz con la cantidad y la última nota. Al tocarla sube, se ensancha y deja el cursor listo al pie; lo nuevo se apila arriba y se pliega sola al salir.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Queda a mano para quien usa el mouse con la derecha.</li><li>Deja libre el lado de Salir.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abajo quedan dos rayitas, y a algunos les molesta.</li><li>En pantalla completa comparte esquina con la barra de ajustes (escondela con la X).</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-7">
+    <h2>Séptima ronda: a la derecha, y sin dos rayitas</h2>
+    <p>A los usuarios les gustó más <b>X</b>, con las notas a la derecha. A algunos les molestaba ver dos rayitas abajo, la de tareas y la de notas. Estas buscan otras formas de estar ahí: un botón arriba (1, 2 y 7), una sola asa (3), el lápiz en vez de la rayita (4) o la rayita parada al borde (5). Dos son con post-its (6 y 7).</p>
   </header>
 
-  <section class="opcion" id="t1" data-v="t1">
+  <section class="opcion" id="n1" data-v="n1">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T1</span><span class="nombre">Por tipo</span></h2>
-        <p class="resumen">Lo tuyo agrupado como en Tareas: Parciales, Prácticos, Informes y Tareas, cada grupo con lo que le falta. El renglón dice de qué tema es y cuándo vence; al tocarlo se abre la regla para marcar puntos.</p>
+        <h2><span class="letra">1</span><span class="nombre">N y T arriba</span></h2>
+        <p class="resumen">Las notas se van a la barra de arriba, al lado de quién está: <b>N</b> con tus notas y <b>T</b> con las tareas. Desvanecidos quedan la letra y el número; con el mouse encima la letra se completa («Notas», «Tareas»). N despliega las notas colgando de la barra. Abajo queda una sola rayita, la de tareas.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se lee igual que la pantalla Tareas.</li><li>Todo a la vista, de todos los temas.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Con muchos temas, la lista se alarga.</li><li>No dice qué hacer primero.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Abajo queda una sola rayita.</li><li>Notas y tareas se leen como un par, en el mismo lugar de la barra.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La T de tareas queda al lado de la T de Tomi.</li><li>Las notas quedan lejos del reloj.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t2" data-v="t2">
+  <section class="opcion" id="n2" data-v="n2">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T2</span><span class="nombre">Un tema por vez</span></h2>
-        <p class="resumen">La caja de S2 en chico. Arriba, el nombre del tema es un menú para cambiarlo, con su avance y su frase; debajo, los recuadros por tipo eligen qué ver. Abre en el tema que tiene lo más próximo.</p>
+        <h2><span class="letra">2</span><span class="nombre">Todo arriba</span></h2>
+        <p class="resumen">N y T arriba, como 1, pero las tareas también cuelgan de la barra, igual que las notas. Abajo no queda ninguna rayita: la pantalla es solo el reloj.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Es la misma pieza que la pantalla Tareas: nada nuevo que aprender.</li><li>Escala con muchos temas: el menú los guarda.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Para ver otro tema hay que cambiarlo.</li><li>Si lo que buscás no es lo más próximo, son dos toques.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Ninguna rayita: es la vista más limpia.</li><li>Notas y tareas se abren igual y en el mismo lugar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Cambia la bandeja de tareas, que ya estaba decidida (y es la del home).</li><li>Sin la siguiente tarea a la vista.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t3" data-v="t3">
+  <section class="opcion" id="n3" data-v="n3">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T3</span><span class="nombre">Lo que sigue</span></h2>
-        <p class="resumen">Sin agrupar por tema ni por tipo: todo lo pendiente por fecha, en Hoy, Mañana, Esta semana, Más adelante y Sin fecha. El ícono dice qué es y el renglón de qué tema.</p>
+        <h2><span class="letra">3</span><span class="nombre">Una sola asa</span></h2>
+        <p class="resumen">Notas y tareas comparten la bandeja de abajo. El asa muestra la siguiente tarea, el lápiz con tus notas y la cuenta de tareas; tocar el lápiz abre directo en la pestaña Notas. Desvanecida queda una sola rayita, la de siempre.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Responde «qué hago ahora» de un vistazo.</li><li>Una sola lista, sin elegir nada.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Lo que no tiene fecha queda al fondo.</li><li>No se ve cómo va un tema.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Una sola rayita, en el lugar de siempre.</li><li>Nada nuevo que aprender: las notas son una pestaña más.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No se ven notas y tareas a la vez.</li><li>El asa carga tres cosas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t4" data-v="t4">
+  <section class="opcion" id="n4" data-v="n4">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T4</span><span class="nombre">En qué estás</span><span class="recomendada">Recomendada</span></h2>
-        <p class="resumen">Elegís en qué vas a estar durante la sesión y queda arriba, con su regla a mano para ir marcando. El asa deja de decir «Siguiente» y dice «Ahora», con el avance. Abajo, lo que sigue por fecha: tocar un renglón lo pasa al foco.</p>
+        <h2><span class="letra">4</span><span class="nombre">Queda el lápiz</span></h2>
+        <p class="resumen">X sin rayita. Plegada es chica: el lápiz con el número. Al desvanecerse no queda una rayita sino el lápiz tenue, y con el reloj corriendo y el mouse quieto se va del todo. Se abre y se escribe igual que X.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Es lo más Pomodoro: una cosa por vez, y marcás mientras avanzás.</li><li>Saber en qué estuviste le sirve después al dashboard (minutos por tema).</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un paso más: elegir el foco.</li><li>Sin foco, la caja de arriba queda vacía.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Ya no son dos rayitas: lo que queda es un lápiz, y dice qué es.</li><li>Mismo lugar y mismo despliegue que X.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin la última nota a la vista.</li><li>Un ícono suelto en la esquina puede parecer un botón perdido.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t5" data-v="t5">
+  <section class="opcion" id="n5" data-v="n5">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T5</span><span class="nombre">Tarjetas en fila</span></h2>
-        <p class="resumen">Las tarjetas de la pantalla Tareas, en un carril que se desliza de costado. Arriba se filtra por tipo. Al tocar una tarjeta se ensancha y muestra la regla.</p>
+        <h2><span class="letra">5</span><span class="nombre">Al borde</span></h2>
+        <p class="resumen">La rayita de las notas se para: vertical, pegada al borde derecho, a media altura. Con el mouse encima crece y dice cuántas notas hay; al tocarla las notas salen de costado y el reloj se corre lo justo.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Muy visual: cada cosa es un objeto.</li><li>Usa el ancho, no la altura: el reloj casi no se mueve.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Pide una bandeja más ancha (720 px).</li><li>Con el mouse, deslizar de costado es menos natural.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Las dos rayitas ya no son gemelas: una acostada abajo, otra parada al costado.</li><li>Abierta tiene toda la altura para leer.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El borde es fácil de pasar por alto.</li><li>Abierta tapa la derecha; en el celular, toda la pantalla.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t6" data-v="t6">
+  <section class="opcion" id="n6" data-v="n6">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T6</span><span class="nombre">Primero el resumen</span></h2>
-        <p class="resumen">Al abrir, la frase («Te quedan…»), la barra general y un recuadro por tipo con su avance. Tocar un recuadro entra a ese tipo, agrupado por tema; la flecha vuelve.</p>
+        <h2><span class="letra">6</span><span class="nombre">Post-its en la esquina</span></h2>
+        <p class="resumen">La bandeja de X con cada nota como un cuadrado tipo post-it: dos o tres por fila, el texto cortado a cuatro renglones y la hora abajo, todas del mismo gris. Plegada es igual que X.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El estado general se entiende sin leer listas.</li><li>Retoma la frase y los recuadros de Tareas.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Siempre hay un toque antes de la lista.</li><li>Repite algo que ya está en la pantalla Tareas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Se ven varias notas de un vistazo, como papelitos sobre la mesa.</li><li>Cada nota se siente un objeto que se puede tirar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las notas largas se cortan a cuatro renglones.</li><li>Sigue habiendo dos rayitas abajo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="n7" data-v="n7">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">7</span><span class="nombre">Post-its colgados</span></h2>
+        <p class="resumen">N y T arriba, como 1, y al tocar N las notas cuelgan de la barra como post-its. Abajo queda solo la rayita de tareas.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Una sola rayita y varias notas de un vistazo.</li><li>No tapa el reloj desde abajo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las notas largas se cortan a cuatro renglones.</li><li>Hereda la T de 1, al lado de la de Tomi.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1175,52 +1022,56 @@ span.tt-tit { cursor: default; }
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>Octava ronda · comparación</h2>
+    <h2>Séptima ronda · comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Cómo ordena</th><th>Marcar avance</th><th>Qué responde</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Dónde están las notas</th><th>Qué queda al desvanecerse</th><th>Rayitas abajo</th><th>Cómo se ven</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>T1 · Por tipo</td><td>Tipo, después fecha</td><td>Abrir el renglón</td><td>¿Qué tengo de cada cosa?</td><td>Se alarga con muchos temas</td></tr>
-          <tr><td>T2 · Un tema por vez</td><td>Tema y tipo</td><td>Abrir el renglón</td><td>¿Cómo voy en esta materia?</td><td>Cambiar de tema es un paso más</td></tr>
-          <tr><td>T3 · Lo que sigue</td><td>Fecha</td><td>Abrir el renglón</td><td>¿Qué hago ahora?</td><td>Lo que no tiene fecha queda al fondo</td></tr>
-          <tr class="elegida"><td>T4 · En qué estás</td><td>El foco arriba, la fecha abajo</td><td>Siempre a mano, en el foco</td><td>¿En qué estoy?</td><td>Pide elegir el foco</td></tr>
-          <tr><td>T5 · Tarjetas en fila</td><td>Fecha, con filtro por tipo</td><td>Abrir la tarjeta</td><td>Un vistazo visual</td><td>Bandeja más ancha</td></tr>
-          <tr><td>T6 · Primero el resumen</td><td>Tipo, después tema</td><td>Entrar al tipo</td><td>¿Cómo vengo en general?</td><td>Un toque antes de la lista</td></tr>
+          <tr><td>X · A la derecha</td><td>Abajo a la derecha</td><td>La rayita</td><td>2</td><td>Lista</td><td>Las dos rayitas</td></tr>
+          <tr class="elegida"><td>1 · N y T arriba</td><td>En la barra, cuelgan de N</td><td>N y el número</td><td>1</td><td>Lista</td><td>La T al lado de la de Tomi</td></tr>
+          <tr><td>2 · Todo arriba</td><td>En la barra, cuelgan de N</td><td>N, T y sus números</td><td>0</td><td>Lista</td><td>Rehace la bandeja de tareas</td></tr>
+          <tr><td>3 · Una sola asa</td><td>Pestaña de la bandeja de tareas</td><td>La rayita de siempre</td><td>1</td><td>Lista</td><td>No se ven las dos a la vez</td></tr>
+          <tr><td>4 · Queda el lápiz</td><td>Abajo a la derecha</td><td>El lápiz y el número, tenues</td><td>1</td><td>Lista</td><td>Un ícono suelto</td></tr>
+          <tr><td>5 · Al borde</td><td>Borde derecho</td><td>Una rayita parada</td><td>1</td><td>Lista</td><td>Que no se vea</td></tr>
+          <tr><td>6 · Post-its en la esquina</td><td>Abajo a la derecha</td><td>La rayita</td><td>2</td><td>Post-its</td><td>Dos rayitas y notas cortadas</td></tr>
+          <tr><td>7 · Post-its colgados</td><td>En la barra, cuelgan de N</td><td>N y el número</td><td>1</td><td>Post-its</td><td>Notas cortadas</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo T4 · En qué estás</h3>
-        <p><b>Una sala es para trabajar en una cosa.</b> El Pomodoro ya pide eso: elegís en qué vas a estar, queda arriba con su regla y marcás los puntos a medida que salen, sin buscar nada.</p>
-        <p><b>El asa cambia de sentido.</b> Plegada ya no dice «Siguiente», dice «Ahora: TP N°3 — Capa de transporte · 4/8». Con el reloj corriendo, es lo único que conviene ver.</p>
-        <p><b>Abajo va la lista de T3.</b> Para elegir lo que sigue, lo mejor es lo pendiente por fecha, así que T4 la usa para cambiar de foco.</p>
-        <p><b>Sirve después.</b> Si la sesión sabe en qué estuviste, el dashboard puede contar minutos por tema y por práctico sin pedirte nada.</p>
-        <p><b>T2 es el plan B</b>, si preferís que la bandeja sea la misma pieza que la pantalla Tareas: el nombre del tema como menú y los recuadros por tipo.</p>
+        <h3>Recomiendo 1 · N y T arriba</h3>
+        <p><b>Saca la segunda rayita sin inventar nada.</b> Las notas pasan a ser un botón más de la barra, con el mismo cromo que el de tareas, y se despliegan pegadas a su botón. Abajo queda solo la bandeja de tareas, como en el home.</p>
+        <p><b>Se queda a la derecha.</b> Es lo que prefirieron los usuarios en X: el botón y lo que despliega están de ese lado.</p>
+        <p><b>La T al lado de la T de Tomi es el punto a mirar.</b> Si en la prueba confunde, se arregla sin cambiar la idea: un poco más de aire entre los avatares y los botones (ya lo tiene), o el lápiz en lugar de la N y la lista en lugar de la T.</p>
+        <p><b>4 es el plan B</b> para quien quiera las notas abajo, cerca de la mano: el lugar y el despliegue de X, sin la rayita. <b>7</b> es 1 con post-its, por si gustan las cajas; las cajas se pueden poner en cualquiera.</p>
         <h4>En pantallas medianas y en el celular</h4>
-        <p><b>La bandeja mantiene sus 560 px</b> y, por debajo de 780 px, se corre a la izquierda para dejarle lugar al lápiz de las notas. La regla se angosta hasta 8 px por punto: un práctico de 13 puntos entra en el celular.</p>
+        <p><b>Por debajo de 900 px las notas abren a todo el ancho</b>, colgadas de la barra, y el reloj se apaga detrás. Arriba de eso, el reloj se corre a la izquierda lo justo para quedar centrado en lo que sobra.</p>
         <h4>Los puntos de fondo</h4>
-        <p><b>«Al centro», como en toda la sala.</b> Plegada, la bandeja no tapa nada; abierta tiene su propio fondo.</p>
+        <p><b>«Al centro», como en toda la sala.</b> En 1, 2 y 7 no hay nada abajo que tape los puntos.</p>
       </div>
-      <pre><span class="c-com">// src/features/room/components/BandejaTareas.tsx</span>
-&lt;Bandeja avisoSala={hayNuevas}&gt;       <span class="c-com">{/* la rayita toma el acento */}</span>
-  &lt;Asa
-    etiqueta={foco ? "Ahora" : "Siguiente"}
-    titulo={(foco ?? proximo).titulo}
-    avance={foco &amp;&amp; avanceDe(foco)}  <span class="c-com">{/* 4/8 */}</span>
-  /&gt;
-  &lt;Pestanas valor={ambito} alCambiar={setAmbito} /&gt;  <span class="c-com">{/* Mías | De la sala */}</span>
-  {foco &amp;&amp; (
-    &lt;TarjetaFoco item={foco}
-      alMarcarPunto={marcarPunto} alSoltar={() =&gt; setFoco(null)} /&gt;
-  )}
-  &lt;ListaPorFecha items={pendientes} alElegir={setFoco} /&gt;
-&lt;/Bandeja&gt;
+      <pre><span class="c-com">/* 1 · N y T en la barra: queda la letra; con el mouse encima se completa */</span>
+.btn-barra .resto {
+  max-width: 4em; overflow: hidden;
+  transition: max-width .5s var(--salida), opacity .3s;
+}
+.barra:not(:hover, :focus-within) .btn-barra .resto {
+  max-width: 0; opacity: 0;              <span class="c-com">/* «Notas» → «N» */</span>
+}
+<span class="c-com">/* las notas cuelgan de la barra, debajo de su botón */</span>
+.panel-notas {
+  position: absolute; top: 60px; right: 16px;
+  max-height: calc(100% - 140px);
+  opacity: 0; transform: translateY(-8px);
+}
+.panel-notas[data-abierto] { opacity: 1; transform: none; }
 
-<span class="c-com">/* la rayita, cuando alguien suma una tarea a la sala */</span>
-.bandeja[data-aviso] .asa::before {
-  background: var(--brand);
-}</pre>
+<span class="c-com">// src/pages/RoomPage.tsx</span>
+&lt;BarraSala&gt;
+  &lt;BotonBarra letra="N" resto="otas" cuenta={notas.length} alTocar={abrirNotas} /&gt;
+  &lt;BotonBarra letra="T" resto="areas" cuenta={pendientes} alTocar={abrirTareas} /&gt;
+&lt;/BarraSala&gt;
+&lt;PanelNotas abierto={notasAbiertas} notas={notas} alAnotar={agregar} alDescartar={descartar} /&gt;</pre>
     </div>
   </section>
 </div>
@@ -1234,6 +1085,7 @@ span.tt-tit { cursor: default; }
         <span class="avatar" data-nombre="Vos">L</span><span class="avatar" data-nombre="Ana">A</span><span class="avatar" data-nombre="Tomi">T</span>
       </span>
       <button type="button" class="btn-notas" data-btn-notas aria-expanded="false" aria-label="Notas de la sesión" title="Notas de la sesión (N)"><svg><use href="#i-nota"/></svg><b data-notas-n></b></button>
+      <button type="button" class="btn-tareas" data-btn-tareas aria-expanded="false"><span class="tb-etq">Tareas</span><b data-n>6</b></button>
     </div>
   </header>
   <div class="cuerpo-sala">
@@ -1350,132 +1202,40 @@ span.tt-tit { cursor: default; }
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aplicarAcento);
   aplicarAcento();
 
-  /* ── Datos: los mismos de la pantalla Tareas (S2) ── */
-  const S = a => new Set(a);
-  const tema = o => ({ parciales: [], tps: [], informes: [], tareas: [], ...o });
-  const BASE = () => [
-    tema({ nombre: "Paradigmas", icono: "t-llaves",
-      parciales: [{ titulo: "Primer parcial", dia: 11, unidades: 4, repasadas: S([1, 2]), nombres: ["Paradigma funcional", "Cálculo lambda", "", ""], obs: "El profe dijo que repasemos el punto 16 del práctico 7", nota: null }],
-      tps: [{ titulo: "TP N°1 — Introducción", puntos: 13, hechos: S([2, 4, 5, 6, 7, 8, 9, 10, 13]), dia: 5 },
-            { titulo: "TP N°2 — Sintaxis y Semántica", puntos: 12, hechos: S([1, 2, 9, 10]), dia: 15, obs: "Se puede entregar en grupos de tres" }],
-      informes: [{ titulo: "Informe — Comparación de paradigmas", dia: 17, partes: ["Introducción", "Imperativo", "Funcional", "Lógico", "Conclusión"], hechas: S([1, 2, 5]) }],
-      tareas: [{ titulo: "Leer el apunte de Haskell", hecha: false, dia: null }] }),
-    tema({ nombre: "Redes", icono: "t-red",
-      parciales: [{ titulo: "Parcial 1", dia: 3, unidades: 3, repasadas: S([1]), nombres: [], obs: "Entra hasta control de congestión", nota: null }],
-      tps: [{ titulo: "TP N°3 — Capa de transporte", puntos: 8, hechos: S([1, 2, 3, 5]), dia: 1 }],
-      tareas: [{ titulo: "Leer el capítulo 4 de Kurose", hecha: false, dia: 0 }] }),
-    tema({ nombre: "Análisis y Diseño", icono: "t-diagrama",
-      parciales: [{ titulo: "Coloquio", dia: 26, unidades: 5, repasadas: S([]), nombres: [], nota: null }],
-      tps: [{ titulo: "TP Integrador — Casos de uso", puntos: 6, hechos: S([]), dia: null }],
-      informes: [{ titulo: "Informe de relevamiento", dia: 19, partes: ["Contexto", "Entrevistas", "Requerimientos", "Anexo"], hechas: S([1]) }],
-      tareas: [{ titulo: "Imprimir los casos de uso", hecha: false, dia: null }] }),
-    tema({ nombre: "Inteligencia Artificial", icono: "t-chispa",
-      parciales: [{ titulo: "Parcial 1", dia: -11, unidades: 3, repasadas: S([1, 2, 3]), nombres: ["Búsqueda", "Lógica", "Probabilidad"], nota: 8 }],
-      informes: [{ titulo: "Informe del práctico de clasificación", dia: 6, partes: ["Dataset", "Modelo", "Resultados", "Conclusiones"], hechas: S([1, 2, 3]), obs: "Máximo seis páginas" }],
-      tareas: [{ titulo: "Mandarle el mail al profe", hecha: false, dia: 1 }, { titulo: "Bajar el dataset del práctico", hecha: true, dia: null }] }),
-    tema({ nombre: "General", icono: "t-bandeja", general: true,
-      tareas: [{ titulo: "Comprar café", hecha: false, dia: null }, { titulo: "Renovar el carnet de la biblioteca", hecha: true, dia: null }] }),
+  /* ── Datos de ejemplo ── */
+  const MIAS = [
+    { titulo: "Terminar TP Redes", meta: "Uni", alta: true },
+    { titulo: "Repasar la unidad 3 de AyD", meta: "Uni", alta: true },
+    { titulo: "Avanzar TP IA", meta: "Uni" },
+    { titulo: "Poder agrupar tareas por etiqueta", meta: "Doro" },
   ];
-  /* Temas de más, para probar cómo escala (ajuste «Temas») */
-  const EXTRA = () => [
-    tema({ nombre: "Álgebra", icono: "t-sigma", parciales: [{ titulo: "Recuperatorio", dia: 8, unidades: 5, repasadas: S([1, 2, 3]), nombres: [], nota: null }], tareas: [{ titulo: "Ejercicios de autovalores", hecha: false, dia: null }] }),
-    tema({ nombre: "Física II", icono: "t-onda", tps: [{ titulo: "Laboratorio 2 — Circuitos RC", puntos: 7, hechos: S([1, 2, 3, 4, 5]), dia: 9 }], informes: [{ titulo: "Informe del laboratorio 2", dia: 13, partes: ["Objetivo", "Mediciones", "Gráficos", "Conclusión"], hechas: S([]) }] }),
-    tema({ nombre: "Sistemas Operativos", icono: "t-capas", tps: [{ titulo: "TP N°2 — Planificación de procesos", puntos: 10, hechos: S([1, 2, 3, 4, 5, 6]), dia: 12 }] }),
-    tema({ nombre: "Bases de Datos", icono: "t-base", parciales: [{ titulo: "Parcial 1", dia: 14, unidades: 4, repasadas: S([1]), nombres: [], nota: null }] }),
-  ];
-  const crearTemas = n => { const l = BASE(); if (n === "9") l.splice(l.length - 1, 0, ...EXTRA()); return l; };
   const SALA = [
-    { titulo: "Resolver el ejercicio 4 de la guía", quien: "Ana" },
-    { titulo: "Armar el resumen de la unidad 2", quien: "Vos" },
+    { titulo: "Resolver el ejercicio 4 de la guía", meta: "Ana" },
+    { titulo: "Armar el resumen de la unidad 2", meta: "Vos" },
   ];
   const AJENAS = [
-    { titulo: "Traer las preguntas del parcial", quien: "Tomi" },
-    { titulo: "Pasar en limpio el ejercicio 6", quien: "Ana" },
-    { titulo: "Buscar el apunte de subredes", quien: "Tomi" },
+    { titulo: "Traer las preguntas del parcial", meta: "Tomi" },
+    { titulo: "Pasar en limpio el ejercicio 6", meta: "Ana" },
+    { titulo: "Buscar el apunte de subredes", meta: "Tomi" },
   ];
   const FASES = { pomodoro: ["Pomodoro", 25 * 60], shortBreak: ["Descanso corto", 5 * 60], longBreak: ["Descanso largo", 15 * 60], stopwatch: ["Cronómetro", 0] };
   const SIGUIENTE_FASE = { pomodoro: "shortBreak", shortBreak: "longBreak", longBreak: "pomodoro" };
 
-  /* ── Los cuatro tipos con avance (las notas son de la sala) ── */
-  const TIPOS = [
-    { id: "pa", nombre: "Parciales", uno: "Parcial", icono: "k-parcial", lista: m => m.parciales },
-    { id: "pr", nombre: "Prácticos", uno: "Práctico", icono: "k-practico", lista: m => m.tps },
-    { id: "in", nombre: "Informes", uno: "Informe", icono: "k-informe", lista: m => m.informes },
-    { id: "t", nombre: "Tareas", uno: "Tarea", icono: "k-tarea", lista: m => m.tareas },
-  ];
-  const TIPO = Object.fromEntries(TIPOS.map(T => [T.id, T]));
-  const ORDEN_T = { pa: 0, pr: 1, in: 2, t: 3 };
-
-  const HOY = new Date(2026, 9, 4);
-  const DIAS_S = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
-  const fecha = d => { const f = new Date(HOY.getFullYear(), HOY.getMonth(), HOY.getDate() + d); return `${DIAS_S[f.getDay()]} ${f.getDate()}/${f.getMonth() + 1}`; };
-  const relativo = d => d === 0 ? "hoy" : d === 1 ? "mañana" : d === -1 ? "ayer" : d > 1 ? `en ${d} días` : `hace ${-d} días`;
-  const rango = (a, b) => Array.from({ length: Math.max(0, b - a + 1) }, (_, i) => a + i);
-  const sum = (l, f) => l.reduce((x, o) => x + f(o), 0);
-  const unirConY = l => l.length <= 1 ? (l[0] || "") : l.slice(0, -1).join(", ") + " y " + l[l.length - 1];
-  const tramos = f => { const t = []; for (let i = 0; i < f.length;) { let j = i; while (j + 1 < f.length && f[j + 1] === f[j] + 1) j++; const a = f[i], b = f[j]; if (b - a >= 2) t.push(`${a} a ${b}`); else if (a === b) t.push(`${a}`); else t.push(`${a}`, `${b}`); i = j + 1; } return t; };
-  const queFalta = tp => { const f = rango(1, tp.puntos).filter(n => !tp.hechos.has(n)); if (!f.length) return "Están todos los puntos"; if (f.length === tp.puntos) return `Sin empezar, ${tp.puntos} puntos`; return f.length === 1 ? `Falta el punto ${f[0]}` : `Faltan los puntos ${unirConY(tramos(f))}`; };
-  const queFaltaInforme = inf => { const f = inf.partes.filter((_, j) => !inf.hechas.has(j + 1)); if (!f.length) return "Listo para entregar"; if (f.length === inf.partes.length) return `Sin empezar, ${inf.partes.length} partes`; if (f.length <= 2) return `Falta${f.length === 1 ? "" : "n"} ${unirConY(f.map(x => `«${esc(x)}»`))}`; return `Faltan ${f.length} de ${inf.partes.length} partes`; };
-  const pasado = o => o.dia != null && o.dia < 0;
-  const norm = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-  /* Todo lo de todos los temas como una sola lista de ítems */
-  const listar = temas => temas.flatMap((m, mi) => TIPOS.flatMap(T => T.lista(m).map((o, i) => ({ k: `${T.id}-${mi}-${i}`, t: T.id, T, m, mi, o }))));
-  const progreso = it => it.t === "pa" ? (pasado(it.o) ? null : [it.o.repasadas.size, it.o.unidades]) : it.t === "pr" ? [it.o.hechos.size, it.o.puntos] : it.t === "in" ? [it.o.hechas.size, it.o.partes.length] : null;
-  const pendiente = it => it.t === "pa" ? !pasado(it.o) : it.t === "t" ? !it.o.hecha : (p => p[0] < p[1])(progreso(it));
-  const ordenar = l => [...l].sort((a, b) => (a.o.dia ?? 999) - (b.o.dia ?? 999) || ORDEN_T[a.t] - ORDEN_T[b.t]);
-  const pendientesPrimero = l => [...ordenar(l.filter(pendiente)), ...l.filter(it => !pendiente(it))];
-  const pctDe = l => { let h = 0, n = 0; l.forEach(it => { const p = progreso(it); if (p) { h += p[0]; n += p[1]; } else if (it.t === "t") { n++; if (it.o.hecha) h++; } }); return n ? Math.round(h / n * 100) : 100; };
-  const pendDe = l => ({ parciales: l.filter(it => it.t === "pa" && pendiente(it)).length, puntos: sum(l.filter(it => it.t === "pr"), it => it.o.puntos - it.o.hechos.size), informes: l.filter(it => it.t === "in" && pendiente(it)).length, tareas: l.filter(it => it.t === "t" && pendiente(it)).length });
-  const total = p => p.parciales + p.puntos + p.informes + p.tareas;
-  const partesFrase = p => [p.parciales && (p.parciales === 1 ? "un parcial" : `${p.parciales} parciales`), p.puntos && `${p.puntos} punto${p.puntos === 1 ? "" : "s"}`, p.informes && (p.informes === 1 ? "un informe" : `${p.informes} informes`), p.tareas && `${p.tareas === 1 ? "una" : p.tareas} tarea${p.tareas === 1 ? "" : "s"}`].filter(Boolean);
-  const fraseCorta = l => { const p = pendDe(l), x = partesFrase(p); return x.length ? `Te ${total(p) === 1 ? "queda" : "quedan"} ${unirConY(x)}.` : "Al día."; };
-  const fraseGlobal = l => { const p = pendDe(l), x = partesFrase(p); if (!x.length) return "Estás al día."; const resto = x.slice(1); return `Te ${total(p) === 1 ? "queda" : "quedan"} ${x[0]}${resto.length ? `<br><span class="r">${resto.length === 1 ? "y " + resto[0] : unirConY(resto)}.</span>` : "."}`; };
-  const resumenTipo = (id, x) => {
-    if (id === "pa") { const f = x.filter(pendiente).length, r = x.length - f; return [f && `${f === 1 ? "Uno" : f} por rendir`, r && (r === 1 ? "uno rendido" : `${r} rendidos`)].filter(Boolean).join(", "); }
-    if (id === "pr") { const p = sum(x, it => it.o.puntos - it.o.hechos.size), n = x.filter(pendiente).length; return p ? `Faltan ${p} punto${p === 1 ? "" : "s"} en ${n === 1 ? "un práctico" : n + " prácticos"}` : "Todos completos"; }
-    if (id === "in") { const p = sum(x, it => it.o.partes.length - it.o.hechas.size); return p ? `Falta${p === 1 ? "" : "n"} ${p} parte${p === 1 ? "" : "s"}` : "Listos para entregar"; }
-    const n = x.filter(pendiente).length; return n ? (n === 1 ? "Una pendiente" : `${n} pendientes`) : "Todas hechas";
-  };
-
-  /* ── Piezas que comparten todas las bandejas ── */
-  const ic = id => `<svg><use href="#${id}"/></svg>`;
-  const linea = (p, extra = "") => `<span class="linea-av ${extra}" role="img" aria-label="${p} %"><span style="width:${p}%"></span></span>`;
-  const metaHTML = (it, o = {}) => {
-    const d = it.o.dia;
-    const cuando = it.t === "pa" && pasado(it.o) ? "rendido" : d == null ? "" : (o.fechaAbs && d >= 2 ? fecha(d) : relativo(d));
-    return [o.conTema && esc(it.m.nombre), cuando].filter(Boolean).join(" · ");
-  };
-  const cuentaHTML = it => {
-    if (it.t === "pa" && pasado(it.o)) return `<span class="tt-cuenta"><span class="num">${it.o.nota != null ? `nota <b>${it.o.nota}</b>` : "sin nota"}</span></span>`;
-    const p = progreso(it); if (!p) return "";
-    return `<span class="tt-cuenta"><span class="num"><b>${p[0]}</b>/${p[1]}</span>${linea(Math.round(p[0] / p[1] * 100))}</span>`;
-  };
-  const regla = (n, set, k, nombres = []) => `<div class="regla" role="group" aria-label="${set.size} de ${n}">${rango(1, n).map(i => `<button type="button" data-punto="${k}:${i}" data-n="${i}" aria-pressed="${set.has(i)}" aria-label="${i}${nombres[i - 1] ? ", " + esc(nombres[i - 1]) : ""}"${nombres[i - 1] ? ` title="${esc(nombres[i - 1])}"` : ""}></button>`).join("")}</div>`;
-  const detalle = it => {
-    const o = it.o; let c = "";
-    if (it.t === "pr") c = regla(o.puntos, o.hechos, it.k) + `<p class="tt-falta">${queFalta(o)}</p>`;
-    if (it.t === "pa") c = pasado(o) ? `<p class="tt-falta">${o.nota != null ? `Te sacaste un ${o.nota}.` : "Ya lo rendiste: la nota se anota en Tareas."}</p>`
-      : regla(o.unidades, o.repasadas, it.k, o.nombres) + `<p class="tt-falta">Repasaste ${o.repasadas.size} de ${o.unidades} unidades${o.dia != null ? ` · ${fecha(o.dia)}` : ""}</p>`;
-    if (it.t === "in") c = `<div class="tt-partes">${o.partes.map((p, j) => `<button type="button" class="tt-parte" data-parte="${it.k}:${j + 1}" aria-pressed="${o.hechas.has(j + 1)}"><span class="check${o.hechas.has(j + 1) ? " hecho" : ""}">${ic("i-check")}</span>${esc(p)}</button>`).join("")}</div><p class="tt-falta">${queFaltaInforme(o)}</p>`;
-    return `<div class="tt-det">${c}${o.obs ? `<p class="tt-obs">${ic("k-nota")}<span>${esc(o.obs)}</span></p>` : ""}</div>`;
-  };
-  const checkHTML = (k, hecha, titulo) => `<button type="button" class="check${hecha ? " hecho" : ""}" data-check="${k}" aria-label="${hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(titulo)}">${ic("i-check")}</button>`;
-
-  const asaHTML = `
-    <button type="button" class="asa" data-asa aria-expanded="false">
-      <span class="sig" data-sig></span>
-      <span class="cuenta"><span data-cuenta></span><svg><use href="#i-arriba"/></svg></span>
-    </button>`;
-  const notasHTML = `
-    <div class="notas-bloque">
-      <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button></div>
-      <label class="alta"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo y Enter" aria-label="Nueva nota"></label>
-      <ul class="notas-lista" data-notas-lista></ul>
-      <p class="notas-aviso">Se borran al salir de la sala.</p>
+  const panelHTML = () => `
+    <div class="panel">
+      <div class="pestanas" role="tablist" aria-label="Qué tareas ver" style="--i:0">
+        <button type="button" role="tab" data-amb="mias" aria-selected="true">Mías <span class="n" data-n-mias></span></button>
+        <button type="button" role="tab" data-amb="sala" aria-selected="false">De la sala <span class="n" data-n-sala></span></button>
+      </div>
+      <label class="alta" style="--i:1"><svg><use href="#i-mas"/></svg><input data-alta placeholder="Nueva tarea… (#uni, !alta)" aria-label="Nueva tarea"></label>
+      <ul class="lista" data-lista></ul>
     </div>`;
+  const asaHTML = () => `
+    <button type="button" class="asa" data-asa aria-expanded="false">
+      <span class="sig"><span class="tenue">Siguiente:</span> <b data-sig></b></span>
+      <span class="cuenta"><span data-n></span> tareas<svg><use href="#i-arriba"/></svg></span>
+    </button>`;
 
-  let nTemas = leer("doro-sala-temas", "5");
   const tpl = document.getElementById("tpl-sala");
   const mando = document.createElement("div");
   mando.className = "mando"; mando.hidden = true;
@@ -1487,19 +1247,132 @@ span.tt-tit { cursor: default; }
   document.querySelectorAll(".opcion").forEach(op => {
     const v = op.dataset.v;
     const app = op.querySelector("[data-app]");
-    /* La sala final: A + F + I, con las notas de 4 (queda el lápiz) en post-its a la derecha */
-    app.classList.add("v-" + v, "v-i", "v-n4", "gem", "gem-ancha", "derecha", "al-pie-notas", "compacta", "postit");
+    app.classList.add("v-" + v);
     app.appendChild(tpl.content.cloneNode(true));
+    const cuerpoSala = app.querySelector(".cuerpo-sala");
     const main = app.querySelector(".s-main");
     const zona = app.querySelector("[data-zona]");
-    app.querySelector("[data-reloj]").insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
-    app.insertAdjacentHTML("beforeend", `<aside class="bandeja tt" aria-label="Tareas">${asaHTML}<div class="cuerpo" data-cuerpo></div></aside>`);
-    app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
-      <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b></button>
-      <div class="cuerpo" data-gemela-cuerpo>${notasHTML}</div></aside>`);
 
-    const $ = sel => app.querySelector(sel);
-    const $$ = sel => app.querySelectorAll(sel);
+    /* Cada variante pone las tareas en otro lugar */
+    const r7 = /^n\d$/.test(v);
+    if (r7 || ["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
+      const aside = document.createElement("aside");
+      aside.className = "bandeja" + (v === "b" ? " cajon" : "");
+      aside.setAttribute("aria-label", "Tareas");
+      aside.innerHTML = asaHTML() + `<div class="cuerpo" data-cuerpo>${panelHTML()}</div>`;
+      if (v === "b") {
+        cuerpoSala.appendChild(aside);
+        const r = document.createElement("button");
+        r.type = "button"; r.className = "rayita-lat"; r.dataset.rayita = "";
+        r.setAttribute("aria-label", "Abrir las tareas");
+        r.innerHTML = `<span class="rotulo">Tareas</span>`;
+        cuerpoSala.appendChild(r);
+      } else app.appendChild(aside);
+    } else if (v === "c") {
+      const asomo = document.createElement("div");
+      asomo.className = "asomo";
+      asomo.innerHTML = `<button type="button" data-asomo>Tareas · <span data-n></span><svg><use href="#i-abajo"/></svg></button>`;
+      cuerpoSala.after(asomo);
+      const sec = document.createElement("section");
+      sec.className = "debajo"; sec.setAttribute("aria-label", "Tareas");
+      sec.innerHTML = `<h2>Tareas</h2>${panelHTML()}`;
+      asomo.after(sec);
+      cuerpoSala.style.flex = "none";
+    } else if (v === "d") {
+      const ah = document.createElement("div");
+      ah.className = "ahora";
+      ah.innerHTML = `
+        <div class="ahora-fila">
+          <button type="button" class="check" data-check-ahora aria-label="Marcar como hecha"><svg><use href="#i-check"/></svg></button>
+          <button type="button" class="ahora-tit" data-ahora aria-expanded="false">
+            <span class="txt"><span class="tenue">Ahora:</span> <b data-sig></b></span>
+            <span class="cuenta"><span data-n></span> tareas<svg><use href="#i-arriba"/></svg></span>
+          </button>
+        </div>
+        <div class="despliegue"><div data-cuerpo>${panelHTML()}</div></div>`;
+      zona.appendChild(ah);
+    }
+
+
+    /* Agregados de la segunda ronda */
+    const reloj = app.querySelector("[data-reloj]");
+    if (v === "e") {
+      reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
+      reloj.title = "Tocá para dar play o pausa";
+    }
+    if (r7 || ["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
+      <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
+      <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
+      <li><span class="avatar">T</span><span class="quien">Tomi</span><span class="que">en descanso</span></li></ul>`);
+    if (v === "h") {
+      const fila = document.createElement("div"); fila.className = "fila-ctrl";
+      const medio = document.createElement("div"); medio.className = "ctrl medio";
+      const izq = zona.querySelector(".ctrl.izq"), der = zona.querySelector(".ctrl.der");
+      medio.appendChild(der.querySelector("[data-play]"));
+      fila.append(izq, medio, der); zona.appendChild(fila);
+    }
+    if (v === "k") {
+      const b = app.querySelector(".bandeja");
+      b.insertAdjacentHTML("afterbegin", `<span class="hilo-bandeja" aria-hidden="true"><i data-hilo2></i></span><div class="asa-reloj"><button type="button" class="ic play mini-play" data-play2 aria-label="Play o pausa"><svg class="i-play"><use href="#i-play"/></svg><svg class="i-pausa"><use href="#i-pausa"/></svg></button><span data-mini-t>25:00</span></div>`);
+    }
+    if (v === "c" || v === "j") {
+      const tb = app.querySelector(".tb");
+      tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
+    }
+    /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
+    const conNotas = r7 || ["m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v);
+    const conEsquina = ["p", "q", "r", "s", "t"].includes(v);
+    const notasHTML = (cerrar) => `
+      <div class="notas-bloque">
+        <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button>${cerrar ? `<button type="button" data-cerrar-notas aria-label="Cerrar las notas"><svg><use href="#i-x"/></svg></button>` : ""}</div>
+        <label class="alta"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo y Enter" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista></ul>
+        <p class="notas-aviso">Se borran al salir de la sala.</p>
+      </div>`;
+    if (conNotas) {
+      app.classList.add("v-i");
+      if (conEsquina) app.classList.add("con-esquina");
+      /* Séptima ronda: qué piezas usa cada una */
+      const CLASES = { x: "gem gem-ancha derecha al-pie-notas", n1: "letras colgado con-cajon", n2: "letras colgado con-cajon", n3: "", n4: "gem gem-ancha derecha al-pie-notas compacta", n5: "con-cajon", n6: "gem gem-ancha derecha postit", n7: "letras colgado con-cajon postit" };
+      if (["u", "v", "w", "y", "z"].includes(v)) app.classList.add("gem");
+      if (["v", "w", "y", "z"].includes(v)) app.classList.add("gem-ancha");
+      (CLASES[v] || "").split(" ").filter(Boolean).forEach(c => app.classList.add(c));
+      if (app.classList.contains("letras")) {
+        app.querySelector(".btn-notas").innerHTML = `<span class="tb-letra">N</span><span class="tb-etq">otas</span><b data-notas-n></b>`;
+        app.querySelector(".btn-tareas .tb-etq").outerHTML = `<span class="tb-letra">T</span><span class="tb-etq">areas</span>`;
+        app.querySelector(".btn-notas").title = "Notas (N)";
+      }
+      if (v === "n5") app.insertAdjacentHTML("beforeend", `<button type="button" class="borde-notas" data-borde-notas aria-label="Abrir las notas de la sesión"><span class="borde-rotulo"><svg><use href="#i-nota"/></svg>Notas <b data-notas-n></b></span></button>`);
+      if (v === "m" || conEsquina || app.classList.contains("con-cajon")) app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
+      if (v === "n" || v === "n3") {
+        app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
+        app.querySelector(".bandeja .panel").insertAdjacentHTML("beforeend", notasHTML(false));
+      }
+      if (v === "o") zona.insertAdjacentHTML("beforeend", `<div class="al-pie">
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista data-max="2"></ul>
+        <button type="button" class="ver-mas" data-notas-mas hidden></button></div>`);
+      if (["p", "q", "s"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <button type="button" class="esquina-asa" data-esquina aria-expanded="false"><svg><use href="#i-nota"/></svg><span class="esq-etq">Notas</span><span class="esq-ult" data-notas-ultima></span><b data-notas-n></b><svg class="flecha"><use href="#i-arriba"/></svg></button>
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div></aside>`);
+      if (v === "r") app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div>
+        <label class="esquina-asa esq-escribir"><svg><use href="#i-nota"/></svg><input data-notas-alta data-esquina-input placeholder="Anotá algo… (N)" aria-label="Nueva nota"><b data-notas-n></b></label></aside>`);
+      if (v === "t") app.insertAdjacentHTML("beforeend", `<aside class="suelta" aria-label="Notas de la sesión">
+        <button type="button" class="ver-mas" data-notas-mas hidden></button>
+        <ul class="notas-lista" data-notas-lista data-max="3"></ul>
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label></aside>`);
+      if (v === "n3") app.querySelector(".bandeja .cuenta").insertAdjacentHTML("beforebegin", `<span class="cuenta-notas" data-asa-notas title="Notas de la sesión (N)"><svg><use href="#i-nota"/></svg><b data-notas-n></b></span>`);
+      if (app.classList.contains("gem")) app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
+        <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b><span class="gem-ult" data-notas-ultima></span></button>
+        <div class="cuerpo" data-gemela-cuerpo>${notasHTML(false)}</div></aside>`);
+    }
+    const $ = s => app.querySelector(s);
+    const $$ = s => app.querySelectorAll(s);
+    $("[data-alta]").id = "alta-" + v;
+    app.addEventListener("click", e => { if (e.target.closest('a[href="#"]')) e.preventDefault(); });
+
     const aviso = $(".aviso");
     const avisar = (t, ms = 2200) => { aviso.textContent = t; aviso.classList.add("ver"); clearTimeout(aviso._t); aviso._t = setTimeout(() => aviso.classList.remove("ver"), ms); };
 
@@ -1604,289 +1477,256 @@ span.tt-tit { cursor: default; }
       if (ok) { btnM.dataset.suena = ""; inp.value = ""; }
     }));
 
-    /* ── Tareas: el sistema de la pantalla Tareas, adentro de la bandeja ── */
-    const st = { amb: "mias", abierto: null, tema: 0, tipo: null, menu: false, filtro: "todo", foco: null, noVistas: 0, ajena: 0, llega: null };
-    let temas, sala;
-    const buscar = k => listar(temas).find(it => it.k === k);
-    const tipoPorDefecto = mi => { const l = listar(temas).filter(it => it.mi === mi); return (ordenar(l.filter(pendiente))[0] || l[0])?.t ?? "t"; };
-    const reiniciar = () => {
-      temas = crearTemas(nTemas);
-      sala = SALA.map(t => ({ ...t, hecha: false }));
-      const l = listar(temas), prox = ordenar(l.filter(pendiente))[0];
-      st.tema = prox ? prox.mi : 0;
-      st.tipo = v === "t6" ? null : tipoPorDefecto(st.tema);
-      st.foco = v === "t4" ? (ordenar(l.filter(it => it.t === "pr" && pendiente(it)))[0]?.k ?? null) : null;
-      st.abierto = null; st.menu = false; st.filtro = "todo";
+    /* ── Tareas ── */
+    const datos = { mias: MIAS.map(t => ({ ...t, hecha: false })), sala: SALA.map(t => ({ ...t, hecha: false })) };
+    let amb = "mias", noVistas = 0, ajena = 0, llega = null;
+    const ul = $("[data-lista]");
+    const pendientes = k => datos[k].filter(t => !t.hecha);
+    const pintarLista = () => {
+      $$(".panel").forEach(p => p.toggleAttribute("data-en-notas", amb === "notas"));
+      if (amb === "notas") return;
+      const l = datos[amb];
+      ul.innerHTML = l.length ? l.map((t, i) => `
+        <li class="tarea${t.hecha ? " hecha" : ""}${t === llega ? " llega" : ""}" style="--i:${i + 2}">
+          <button type="button" class="check" data-i="${i}" aria-label="${t.hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(t.titulo)}"><svg><use href="#i-check"/></svg></button>
+          <span class="titulo">${esc(t.titulo)}</span>
+          <span class="prio" ${t.alta ? 'title="Prioridad alta"' : "hidden"}></span>
+          <span class="meta">${esc(t.meta)}</span>
+          <button type="button" class="mover" data-mover="${i}" title="${amb === "mias" ? "Pasar a la sala" : "Pasar a mías"}" aria-label="${amb === "mias" ? "Pasar a la sala" : "Pasar a mías"}: ${esc(t.titulo)}"><svg><use href="#i-mover"/></svg></button>
+        </li>`).join("") : `<li class="vacio">${amb === "mias" ? "No tenés tareas. Escribí una arriba." : "La sala todavía no tiene tareas."}</li>`;
+      llega = null;
     };
-
-    /* Un renglón: el ícono dice qué es; tocarlo abre la regla (o lo pasa al foco, en T4) */
-    const fila = (it, o = {}) => {
-      const abierto = st.abierto === it.k;
-      const izq = it.t === "t" ? checkHTML(it.k, it.o.hecha, it.o.titulo) : `<span class="tt-ico" title="${it.T.uno}">${ic(it.T.icono)}</span>`;
-      const accion = o.enfocar ? `data-enfocar="${it.k}" title="Estar en esto"` : it.t === "t" ? "" : `data-abrir="${it.k}" aria-expanded="${abierto}"`;
-      const etiqueta = accion ? "button" : "span";
-      const meta = metaHTML(it, o);
-      return `<li class="tt-it${pendiente(it) ? "" : " hecho"}${abierto ? " abierto" : ""}${it.k === st.llega ? " llega" : ""}">
-        <div class="tt-fila">${izq}
-          <${etiqueta} ${etiqueta === "button" ? 'type="button" ' : ""}class="tt-tit" ${accion}><span class="t">${esc(it.o.titulo)}</span>${meta ? `<span class="tt-meta">${meta}</span>` : ""}</${etiqueta}>
-          ${cuentaHTML(it)}${o.enfocar ? `<span class="tt-enfocar" aria-hidden="true">${ic("i-foco")}</span>` : ""}
-        </div>
-        ${abierto ? detalle(it) : ""}
-      </li>`;
+    const pintarTodo = () => {
+      pintarLista();
+      const nm = pendientes("mias").length, ns = pendientes("sala").length;
+      $("[data-n-mias]").textContent = nm; $("[data-n-sala]").textContent = ns;
+      $$("[data-n]").forEach(n => n.textContent = nm + ns);
+      $("[data-btn-tareas]").setAttribute("aria-label", `Tareas: ${nm + ns} pendientes`);
+      const sig = pendientes("mias")[0] || pendientes("sala")[0];
+      $$("[data-sig]").forEach(b => {
+        const txt = sig ? sig.titulo : "nada, estás al día";
+        if (b.textContent && b.textContent !== txt && v === "d") {
+          b.classList.add("cambia"); setTimeout(() => { b.textContent = txt; b.classList.remove("cambia"); }, 280);
+        } else b.textContent = txt;
+      });
+      $$("[data-amb]").forEach(b => b.setAttribute("aria-selected", b.dataset.amb === amb));
+      const vos = app.querySelector("[data-vos]"); if (vos) vos.innerHTML = sig ? `<b>${esc(sig.titulo)}</b>` : "al día";
+      $('[data-amb="sala"]').classList.toggle("nuevas", noVistas > 0);
+      noVistas > 0 ? app.dataset.nuevas = "" : delete app.dataset.nuevas;
     };
-    const tarjeta = it => {
-      const abierta = st.abierto === it.k;
-      const cab = `<span class="tt-tarjeta-tipo">${ic(it.T.icono)}${it.T.uno}</span><b>${esc(it.o.titulo)}</b><small>${metaHTML(it, { conTema: true })}</small>`;
-      return `<article class="tt-tarjeta${abierta ? " abierta" : ""}${it.k === st.llega ? " llega" : ""}">
-        ${it.t === "t" ? `<div class="tt-tarjeta-cab">${cab}</div>` : `<button type="button" class="tt-tarjeta-cab" data-abrir="${it.k}" aria-expanded="${abierta}">${cab}</button>`}
-        ${abierta ? detalle(it) : ""}
-        <div class="tt-tarjeta-pie">${it.t === "t" ? `${checkHTML(it.k, it.o.hecha, it.o.titulo)}<span class="tt-meta">Marcar como hecha</span>` : cuentaHTML(it)}</div>
-      </article>`;
+    const cambiarAmb = a => {
+      if (a === amb) return;
+      amb = a; if (a === "sala") noVistas = 0;
+      ul.classList.add("cambia");
+      setTimeout(() => { pintarTodo(); ul.classList.remove("cambia"); }, 160);
     };
-
-    /* Lo que muestra «Mías» en cada variante */
-    const VISTAS = {
-      t1: () => {
-        const l = listar(temas);
-        return TIPOS.map(T => {
-          const x = l.filter(it => it.t === T.id);
-          return x.length ? `<section class="tt-grupo"><h4 class="tt-cab">${ic(T.icono)}<span>${T.nombre}</span><small>${resumenTipo(T.id, x)}</small></h4><ul class="tt-lista">${pendientesPrimero(x).map(it => fila(it, { conTema: true })).join("")}</ul></section>` : "";
-        }).join("");
-      },
-      t2: () => {
-        const m = temas[st.tema], todo = listar(temas), l = todo.filter(it => it.mi === st.tema);
-        const tipos = TIPOS.filter(T => T.lista(m).length);
-        if (!tipos.some(T => T.id === st.tipo)) st.tipo = tipos[0]?.id;
-        const x = l.filter(it => it.t === st.tipo);
-        return `<div class="tt-tema">
-            <button type="button" class="tt-tema-btn" data-tema-menu aria-haspopup="true" aria-expanded="${st.menu}">${ic(m.icono)}<span>${esc(m.nombre)}</span><svg class="flecha-m"><use href="#i-abajo"/></svg></button>
-            <span class="tt-pct">${pctDe(l)} %</span>
-            ${st.menu ? `<ul class="tt-menu" role="menu">${temas.map((t, i) => `<li><button type="button" role="menuitem" data-tema="${i}" aria-current="${i === st.tema}">${ic(t.icono)}<span>${esc(t.nombre)}</span><small>${pctDe(todo.filter(it => it.mi === i))} %</small></button></li>`).join("")}</ul>` : ""}
-          </div>
-          ${linea(pctDe(l), "gruesa")}
-          <p class="tt-frase">${fraseCorta(l)}</p>
-          <div class="tt-tipos" role="group" aria-label="Qué ver">${tipos.map(T => { const y = l.filter(it => it.t === T.id); return `<button type="button" class="tt-tipo" data-tipo="${T.id}" aria-pressed="${st.tipo === T.id}" title="${T.nombre}">${ic(T.icono)}<span>${T.nombre}</span><b>${y.filter(pendiente).length}</b>${linea(pctDe(y))}</button>`; }).join("")}</div>
-          <ul class="tt-lista">${pendientesPrimero(x).map(it => fila(it)).join("") || `<li class="vacio">Nada por acá.</li>`}</ul>`;
-      },
-      t3: () => {
-        const l = ordenar(listar(temas).filter(pendiente));
-        const TRAMOS = [["Atrasado", d => d != null && d < 0], ["Hoy", d => d === 0], ["Mañana", d => d === 1], ["Esta semana", d => d >= 2 && d <= 7], ["Más adelante", d => d > 7], ["Sin fecha", d => d == null]];
-        return TRAMOS.map(([n, f]) => { const x = l.filter(it => f(it.o.dia ?? null)); return x.length ? `<div><h4 class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}">${n}</h4><ul class="tt-lista">${x.map(it => fila(it, { conTema: true, fechaAbs: true })).join("")}</ul></div>` : ""; }).join("") || `<p class="vacio">Estás al día.</p>`;
-      },
-      t4: () => {
-        const l = listar(temas), f = st.foco && l.find(it => it.k === st.foco);
-        const resto = ordenar(l.filter(it => pendiente(it) && it.k !== st.foco));
-        const caja = f ? `<div class="tt-foco">
-            <div class="tt-foco-cab"><span class="tt-ico">${ic(f.T.icono)}</span><div><span class="tt-foco-etq">Ahora</span><b>${esc(f.o.titulo)}</b><small>${metaHTML(f, { conTema: true })}</small></div>
-              <button type="button" class="tt-soltar" data-soltar aria-label="Soltar: ya no estoy en esto" title="Soltar">${ic("i-x")}</button></div>
-            ${f.t === "t" ? `<div class="tt-det"><button type="button" class="tt-hecha-btn" data-check="${f.k}">${ic("i-check")}Marcar como hecha</button></div>` : detalle(f)}
-          </div>`
-          : `<div class="tt-foco"><p class="tt-foco-vacio">¿En qué vas a estar? Tocá algo de la lista y queda acá, con su regla a mano.</p></div>`;
-        return caja + altaHTML() + `<div><h4 class="tt-cab">${ic("k-cal")}<span>Lo que sigue</span><small>Tocá uno para estar en eso</small></h4><ul class="tt-lista">${resto.map(it => fila(it, { conTema: true, enfocar: true })).join("")}</ul></div>`;
-      },
-      t5: () => {
-        const l = ordenar(listar(temas).filter(it => pendiente(it) && (st.filtro === "todo" || it.t === st.filtro)));
-        const filtros = [["todo", "Todo", "t-todo"], ...TIPOS.map(T => [T.id, T.nombre, T.icono])];
-        return `<div class="segmentado tt-filtro" role="group" aria-label="Filtrar por tipo">${filtros.map(([id, n, icono]) => `<button type="button" data-filtro="${id}" aria-pressed="${st.filtro === id}" title="${n}">${ic(icono)}<span>${n}</span></button>`).join("")}</div>
-          <div class="tt-carril"><label class="tt-tarjeta tt-tarjeta-alta"><span class="tt-tarjeta-tipo">${ic("i-mas")}Nueva tarea</span><input data-alta placeholder="Escribí y Enter (#redes)" aria-label="Nueva tarea"></label>${l.map(tarjeta).join("")}</div>`;
-      },
-      t6: () => {
-        const l = listar(temas);
-        if (!st.tipo) return `<p class="tt-frase grande">${fraseGlobal(l)}</p>${linea(pctDe(l), "gruesa")}
-          <div class="tt-cuadros">${TIPOS.map(T => { const x = l.filter(it => it.t === T.id); return x.length ? `<button type="button" class="tt-cuadro" data-ir-tipo="${T.id}">${ic(T.icono)}<b>${T.nombre}</b><span>${resumenTipo(T.id, x)}</span>${linea(pctDe(x))}</button>` : ""; }).join("")}</div>${altaHTML()}`;
-        const T = TIPO[st.tipo], x = l.filter(it => it.t === T.id);
-        return `<button type="button" class="tt-volver" data-volver>${ic("i-izq")}Todo</button>
-          <div><h4 class="tt-cab">${ic(T.icono)}<span>${T.nombre}</span><small>${resumenTipo(T.id, x)}</small></h4>
-          ${temas.map((m, mi) => { const y = x.filter(it => it.mi === mi); return y.length ? `<h5 class="tt-sub">${ic(m.icono)}${esc(m.nombre)}</h5><ul class="tt-lista">${pendientesPrimero(y).map(it => fila(it)).join("")}</ul>` : ""; }).join("")}</div>`;
-      },
-    };
-
-    const cuerpo = $("[data-cuerpo]");
-    const altaHTML = () => `<label class="alta"><svg><use href="#i-mas"/></svg><input data-alta placeholder="${v === "t2" ? `Nueva tarea en ${esc(temas[st.tema].nombre)}…` : "Nueva tarea… (#redes)"}" aria-label="Nueva tarea"></label>`;
-    const ALTA_EN_LA_VISTA = { t4: true, t5: true, t6: true };
-    const vistaSala = () => `<label class="alta"><svg><use href="#i-mas"/></svg><input data-alta-sala placeholder="Nueva tarea para la sala…" aria-label="Nueva tarea para la sala"></label>
-      <ul class="tt-lista">${sala.map((t, i) => `<li class="tt-it${t.hecha ? " hecho" : ""}${st.llega === "s-" + i ? " llega" : ""}"><div class="tt-fila">${checkHTML("s-" + i, t.hecha, t.titulo)}<span class="tt-tit"><span class="t">${esc(t.titulo)}</span><span class="tt-meta">${esc(t.quien)}</span></span></div></li>`).join("") || `<li class="vacio">La sala todavía no tiene tareas.</li>`}</ul>
-      <p class="tt-nota-sala">Las ven y las marcan todos los de la sala.</p>`;
-    const pintarAsa = (l, n) => {
-      const f = v === "t4" && st.foco && l.find(it => it.k === st.foco);
-      const prox = f || ordenar(l.filter(pendiente))[0];
-      $("[data-sig]").innerHTML = prox
-        ? `<span class="tenue">${f ? "Ahora:" : "Siguiente:"}</span> <b>${esc(prox.o.titulo)}</b>${!f && prox.o.dia != null ? `<span class="tenue"> · ${relativo(prox.o.dia)}</span>` : ""}`
-        : `<span class="tenue">Siguiente:</span> <b>nada, estás al día</b>`;
-      const p = f && progreso(f);
-      $("[data-cuenta]").innerHTML = p ? `<span class="num"><b>${p[0]}</b>/${p[1]}</span>` : `${n} pendiente${n === 1 ? "" : "s"}`;
-      $(".cuenta .linea-av")?.remove();
-      if (p) $("[data-cuenta]").insertAdjacentHTML("afterend", linea(Math.round(p[0] / p[1] * 100)));
-    };
-    const pintar = enfocarAlta => {
-      const l = listar(temas), nm = l.filter(pendiente).length, ns = sala.filter(t => !t.hecha).length;
-      const arriba = cuerpo.scrollTop;
-      cuerpo.innerHTML = `<div class="tt-panel">
-        <div class="pestanas" role="tablist" aria-label="Qué tareas ver">
-          <button type="button" role="tab" data-amb="mias" aria-selected="${st.amb === "mias"}">Mías <span class="n">${nm}</span></button>
-          <button type="button" role="tab" data-amb="sala" aria-selected="${st.amb === "sala"}"${st.noVistas ? ' class="nuevas"' : ""}>De la sala <span class="n">${ns}</span></button>
-        </div>
-        ${st.amb === "mias"
-          ? `${ALTA_EN_LA_VISTA[v] ? "" : altaHTML()}<div class="tt-vista">${VISTAS[v]()}</div>`
-          : vistaSala()}
-      </div>`;
-      cuerpo.scrollTop = arriba;
-      st.llega = null;
-      pintarAsa(l, nm + ns);
-      st.noVistas ? app.dataset.nuevas = "" : delete app.dataset.nuevas;
-      if (enfocarAlta) cuerpo.querySelector(enfocarAlta)?.focus({ preventScroll: true });
-    };
-
-    /* Marcar: en las listas que muestran solo lo pendiente, lo hecho se va con una salida corta */
-    const marcar = (k, b) => {
-      if (k.startsWith("s-")) { const t = sala[+k.slice(2)]; t.hecha = !t.hecha; return pintar(); }
-      const it = buscar(k); it.o.hecha = !it.o.hecha;
-      if (st.foco === k && it.o.hecha) { st.foco = null; avisar("Hecha. Elegí lo que sigue"); }
-      if (it.o.hecha && ["t3", "t4", "t5"].includes(v)) {
-        b.classList.add("hecho"); b.closest(".tt-it, .tt-tarjeta")?.classList.add("se-va");
-        setTimeout(pintar, 380);
-      } else pintar();
-    };
-    const alternarEn = (set, n) => set.has(n) ? set.delete(n) : set.add(n);
-    cuerpo.addEventListener("click", e => {
-      const el = sel => e.target.closest(sel);
-      let b;
-      if ((b = el("[data-amb]"))) { if (st.amb !== b.dataset.amb) { st.amb = b.dataset.amb; if (st.amb === "sala") st.noVistas = 0; pintar(); } return; }
-      if ((b = el("[data-punto]"))) {
-        const [k, n] = b.dataset.punto.split(":"), it = buscar(k);
-        alternarEn(it.t === "pa" ? it.o.repasadas : it.o.hechos, +n); pintar();
-        const p = progreso(it);
-        if (p && p[0] === p[1] && b.getAttribute("aria-pressed") === "false") avisar(it.t === "pa" ? "Repasaste todas las unidades" : `${it.o.titulo.split(" — ")[0]}: están todos los puntos`);
-        return;
+    $$("[data-amb]").forEach(b => b.addEventListener("click", () => cambiarAmb(b.dataset.amb)));
+    ul.addEventListener("click", e => {
+      const c = e.target.closest(".check");
+      if (c) { const t = datos[amb][+c.dataset.i]; t.hecha = !t.hecha; pintarTodo(); return; }
+      const m = e.target.closest("[data-mover]");
+      if (m) {
+        const [t] = datos[amb].splice(+m.dataset.mover, 1);
+        const destino = amb === "mias" ? "sala" : "mias";
+        t.meta = destino === "sala" ? "Vos" : (t.meta === "Vos" ? "General" : t.meta);
+        datos[destino].unshift(t); pintarTodo();
+        avisar(destino === "sala" ? "La pasaste a la sala: la ven todos" : "La pasaste a tus tareas");
       }
-      if ((b = el("[data-parte]"))) {
-        const [k, n] = b.dataset.parte.split(":"), it = buscar(k);
-        alternarEn(it.o.hechas, +n); pintar();
-        if (it.o.hechas.size === it.o.partes.length && b.getAttribute("aria-pressed") === "false") avisar("Informe listo para entregar");
-        return;
-      }
-      if ((b = el("[data-check]"))) return marcar(b.dataset.check, b);
-      if ((b = el("[data-abrir]"))) { st.abierto = st.abierto === b.dataset.abrir ? null : b.dataset.abrir; return pintar(); }
-      if ((b = el("[data-enfocar]"))) { st.foco = b.dataset.enfocar; pintar(); cuerpo.scrollTo({ top: 0, behavior: "smooth" }); return; }
-      if (el("[data-soltar]")) { st.foco = null; return pintar(); }
-      if (el("[data-tema-menu]")) { st.menu = !st.menu; return pintar(); }
-      if ((b = el("[data-tema]"))) { st.tema = +b.dataset.tema; st.menu = false; st.tipo = tipoPorDefecto(st.tema); st.abierto = null; return pintar(); }
-      if ((b = el("[data-tipo]"))) { st.tipo = b.dataset.tipo; st.abierto = null; return pintar(); }
-      if ((b = el("[data-filtro]"))) { st.filtro = b.dataset.filtro; st.abierto = null; return pintar(); }
-      if ((b = el("[data-ir-tipo]"))) { st.tipo = b.dataset.irTipo; st.abierto = null; pintar(); cuerpo.scrollTop = 0; return; }
-      if (el("[data-volver]")) { st.tipo = null; st.abierto = null; return pintar(); }
-      if (st.menu && !el(".tt-menu")) { st.menu = false; pintar(); }
     });
-    /* Alta rápida: #tema la manda a ese tema (#redes, #ia); sin etiqueta va a General (en T2, al tema abierto) */
-    cuerpo.addEventListener("keydown", e => {
-      if (e.key !== "Enter") return;
-      const inp = e.target.closest("[data-alta], [data-alta-sala]");
-      if (!inp || !inp.value.trim()) return;
+    $("[data-alta]").addEventListener("keydown", e => {
+      const inp = e.target;
+      if (e.key !== "Enter" || !inp.value.trim()) return;
       const texto = inp.value.trim();
-      if (inp.matches("[data-alta-sala]")) { sala.unshift({ titulo: texto, quien: "Vos", hecha: false }); st.llega = "s-0"; return pintar("[data-alta-sala]"); }
-      const etq = (texto.match(/#(\S+)/) || [])[1];
-      let mi = v === "t2" ? st.tema : temas.findIndex(m => m.general);
-      if (etq) { const j = temas.findIndex(m => norm(m.nombre).startsWith(norm(etq)) || norm(m.nombre).split(" ").map(w => w[0]).join("") === norm(etq)); if (j >= 0) mi = j; }
-      const m = temas[mi];
-      m.tareas.push({ titulo: texto.replace(/#\S+/g, "").trim() || texto, hecha: false, dia: null });
-      st.llega = `t-${mi}-${m.tareas.length - 1}`;
-      if (v === "t2") st.tipo = "t";
-      if (v === "t5") st.filtro = st.filtro === "t" ? "t" : "todo";
-      if (v === "t6" && st.tipo) st.tipo = "t";
-      pintar("[data-alta]"); avisar(`Sumada a ${m.nombre}`);
+      const cat = (texto.match(/#(\S+)/) || [])[1];
+      const t = { titulo: texto.replace(/[!#]\S+/g, "").trim() || texto, meta: amb === "sala" ? "Vos" : (cat ? cat[0].toUpperCase() + cat.slice(1) : "General"), alta: /!alta/i.test(texto), hecha: false };
+      datos[amb].unshift(t); llega = t; inp.value = ""; pintarTodo();
     });
-
-    const bandeja = $(".bandeja"), asa = $("[data-asa]");
-    const estaAbierta = () => bandeja.classList.contains("abierta");
-    let alAbrirTareas = () => {};
-    const abrirTareas = a => {
-      bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); cuerpo.inert = !a;
-      if (a) { alAbrirTareas(); if (st.amb === "sala" && st.noVistas) { st.noVistas = 0; pintar(); } }
-      else if (st.menu) { st.menu = false; pintar(); }
-      evaluarQuietud();
-    };
-    asa.addEventListener("click", () => abrirTareas(!estaAbierta()));
-    app.addEventListener("keydown", e => {
-      if (e.key !== "Escape" || !estaAbierta()) return;
-      e.stopPropagation();
-      if (st.menu) { st.menu = false; pintar(); } else abrirTareas(false);
-    });
-    /* Alguien suma una tarea a la sala: si no la estás viendo, la rayita toma el acento */
     s.sumarAjena = () => {
-      const t = { ...AJENAS[st.ajena++ % AJENAS.length], hecha: false };
-      sala.unshift(t);
-      if (st.amb === "sala" && estaAbierta()) st.llega = "s-0"; else st.noVistas++;
-      pintar(); avisar(`${t.quien} sumó una tarea a la sala`);
+      const t = { ...AJENAS[ajena++ % AJENAS.length], hecha: false };
+      datos.sala.unshift(t);
+      if (amb !== "sala" || !estaAbierta()) noVistas++;
+      if (amb === "sala") llega = t;
+      pintarTodo(); avisar(`${t.meta} sumó una tarea a la sala`);
     };
-    s.reiniciarTareas = () => { reiniciar(); pintar(); };
-    reiniciar();
-    abrirTareas(false);
-    pintar();
 
-    /* ── Notas de la sesión: post-its en la esquina derecha; plegadas queda el lápiz ── */
-    {
-      const clave = "doro-sala-notas-final";
+    /* Abrir y cerrar, según la variante */
+    const btnT = $("[data-btn-tareas]");
+    let estaAbierta = () => false;
+    let alternarTareas = () => {};
+    let alAbrirTareas = () => {};
+    if (r7 || ["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
+      const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
+      const abrir = a => {
+        bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
+        if (a) alAbrirTareas();
+        if (a && amb === "sala") { noVistas = 0; pintarTodo(); }
+        evaluarQuietud();
+      };
+      estaAbierta = () => bandeja.classList.contains("abierta");
+      alternarTareas = () => abrir(!estaAbierta());
+      abrir(false);
+      asa.addEventListener("click", alternarTareas);
+      if (v === "j") $("[data-mini]").addEventListener("click", () => abrir(false));
+      if (v === "b") $("[data-rayita]").addEventListener("click", () => abrir(true));
+      app.addEventListener("keydown", e => { if (e.key === "Escape" && estaAbierta()) { e.stopPropagation(); abrir(false); } });
+    } else if (v === "c") {
+      const sec = $(".debajo");
+      const bajar = () => { op.querySelector(".marco").scrollTo({ top: sec.offsetTop - 56, behavior: "smooth" }); btnT.setAttribute("aria-expanded", "true"); };
+      alternarTareas = bajar;
+      $("[data-asomo]").addEventListener("click", bajar);
+      const marcoC = op.querySelector(".marco");
+      const arriba = () => marcoC.scrollTo({ top: 0, behavior: "smooth" });
+      marcoC.addEventListener("scroll", () => {
+        const abajo = marcoC.scrollTop > 200;
+        if (abajo !== app.hasAttribute("data-abajo")) abajo ? app.dataset.abajo = "" : delete app.dataset.abajo;
+        if (marcoC.scrollTop < 40) btnT.setAttribute("aria-expanded", "false");
+      }, { passive: true });
+      $("[data-mini]").addEventListener("click", arriba);
+      main.addEventListener("click", e => { if (app.hasAttribute("data-abajo") && !e.target.closest("button, input, .pop")) arriba(); });
+      estaAbierta = () => op.querySelector(".marco").scrollTop > 120;
+    } else if (v === "d") {
+      const ah = $(".ahora"), tit = $("[data-ahora]"), cuerpo = $("[data-cuerpo]");
+      const abrir = a => {
+        ah.classList.toggle("abierta", a); tit.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
+        if (a && amb === "sala") { noVistas = 0; pintarTodo(); }
+        evaluarQuietud();
+      };
+      estaAbierta = () => ah.classList.contains("abierta");
+      alternarTareas = () => abrir(!estaAbierta());
+      abrir(false);
+      tit.addEventListener("click", alternarTareas);
+      $("[data-check-ahora]").addEventListener("click", e => {
+        const t = pendientes("mias")[0] || pendientes("sala")[0];
+        if (!t) return;
+        const c = e.currentTarget; c.classList.add("hecho");
+        setTimeout(() => { t.hecha = true; c.classList.remove("hecho"); pintarTodo(); }, 420);
+      });
+      app.addEventListener("keydown", e => { if (e.key === "Escape" && estaAbierta()) { e.stopPropagation(); abrir(false); } });
+    }
+    btnT.addEventListener("click", alternarTareas);
+    app.addEventListener("keydown", e => { if (e.key === "Escape" && pop.classList.contains("abierto")) { e.stopPropagation(); abrirPop(false); btnM.focus(); } });
+    pintarTodo();
+
+    /* ── Notas rápidas: tuyas, en este navegador, se borran al salir ── */
+    if (conNotas) {
+      const clave = "doro-sala-notas-" + v;
       const EJEMPLO = [
         { texto: "Preguntarle a Ana cómo sacó la máscara del ejercicio 4", hora: "18:31", fase: "Pomodoro" },
         { texto: "Ver el video de Dijkstra que pasó el profe", hora: "18:24", fase: "Descanso corto" },
         { texto: "Pág. 47: el teorema que no entendí", hora: "18:09", fase: "Pomodoro" },
       ];
       let notas;
-      try { notas = JSON.parse(leer(clave + "-" + v, "null")); } catch (e) { notas = null; }
+      try { notas = JSON.parse(leer(clave, "null")); } catch (e) { notas = null; }
       if (!Array.isArray(notas)) notas = EJEMPLO.map((n, i) => ({ ...n, id: "ej" + i }));
-      const guardarNotas = () => guardar(clave + "-" + v, JSON.stringify(notas));
-      let nueva = null, salirPedido = 0;
-      const gemela = $(".gemela");
+      const guardarNotas = () => guardar(clave, JSON.stringify(notas));
+      let nueva = null, todas = false, salirPedido = 0;
       const pintarNotas = () => {
-        /* Lo más viejo arriba y lo nuevo abajo, junto a la línea donde se escribe */
-        $("[data-notas-lista]").innerHTML = notas.length ? [...notas].reverse().map(n => `
-          <li class="nota${n.id === nueva ? " llega" : ""}">
-            <span class="nota-txt">${esc(n.texto)}</span>
-            <span class="nota-pie">${esc(n.hora)} · ${esc(n.fase)}</span>
-            <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
-          </li>`).join("") : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Nada de esto se guarda.</li>`;
+        $$("[data-notas-lista]").forEach(ul => {
+          const max = ul.dataset.max && !todas ? +ul.dataset.max : Infinity;
+          ul.innerHTML = notas.length ? notas.slice(0, max).map(n => `
+            <li class="nota${n.id === nueva ? " llega" : ""}">
+              <span class="nota-txt">${esc(n.texto)}</span>
+              <span class="nota-pie">${esc(n.hora)} · ${esc(n.fase)}</span>
+              <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
+            </li>`).join("")
+            : ul.dataset.max ? "" : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Nada de esto se guarda.</li>`;
+        });
         nueva = null;
-        $$("[data-notas-n]").forEach(x => x.textContent = notas.length || "");
-        $$("[data-notas-borrar]").forEach(x => x.hidden = notas.length < 2);
+        $$("[data-notas-n]").forEach(e => e.textContent = notas.length || "");
+        $$("[data-notas-borrar]").forEach(b => b.hidden = notas.length < 2);
+        $$("[data-notas-ultima]").forEach(e => e.textContent = notas[0] ? notas[0].texto : "Anotá algo (N)");
+        $(".suelta")?.classList.toggle("todas", todas);
+        const mas = $("[data-notas-mas]"), corta = $("[data-notas-lista][data-max]");
+        if (mas) { const resto = notas.length - +corta.dataset.max; mas.hidden = resto <= 0; mas.textContent = todas ? "Ver menos" : `y ${resto} más`; }
       };
-      gemela.addEventListener("keydown", e => {
+      app.addEventListener("keydown", e => {
         const inp = e.target.closest("[data-notas-alta]");
         if (!inp || e.key !== "Enter" || !inp.value.trim()) return;
         const d = new Date();
         const n = { id: "n" + d.getTime(), texto: inp.value.trim(), hora: `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`, fase: FASES[s.modo][0] };
         notas.unshift(n); nueva = n.id; inp.value = ""; guardarNotas(); pintarNotas();
       });
-      gemela.addEventListener("click", e => {
+      app.addEventListener("click", e => {
         const q = e.target.closest("[data-quitar]");
         if (q) {
-          q.closest(".nota").classList.add("se-va");
+          const li = q.closest(".nota"); li.classList.add("se-va");
           setTimeout(() => { notas = notas.filter(n => n.id !== q.dataset.quitar); guardarNotas(); pintarNotas(); }, 220);
           return;
         }
-        if (e.target.closest("[data-notas-borrar]")) { const k = notas.length; notas = []; guardarNotas(); pintarNotas(); avisar(`Borraste ${k} notas`); }
+        if (e.target.closest("[data-notas-borrar]")) { const k = notas.length; notas = []; guardarNotas(); pintarNotas(); avisar(`Borraste ${k} notas`); return; }
+        if (e.target.closest("[data-notas-mas]")) { todas = !todas; pintarNotas(); }
       });
-      /* Donde no entran al costado, abrir una cierra la otra */
-      const anchoCostado = v === "t5" ? 1480 : 1160;
-      const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
-      const abrirGemela = a => {
-        gemela.classList.toggle("abierta", a); $("[data-gemela]").setAttribute("aria-expanded", a); $("[data-gemela-cuerpo]").inert = !a;
-        if (a && estaAbierta() && app.clientWidth < anchoCostado) abrirTareas(false);
+
+      /* Abrir y cerrar según la variante; s.abrirNotas lo usa la tecla N */
+      const cajon = $(".notas-cajon"), btnN = $("[data-btn-notas]"), esquina = $(".esquina"), gemela = $(".gemela");
+      const umbral = v === "s" ? 720 : 1040;
+      const abrirCajon = a => {
+        if (!cajon) return;
+        cajon.classList.toggle("abierta", a); btnN.setAttribute("aria-expanded", a); cajon.inert = !a;
+        if (a && estaAbierta()) alternarTareas();
         evaluarQuietud();
       };
-      abrirGemela(false);
-      $("[data-gemela]").addEventListener("click", () => {
-        const a = !gemela.classList.contains("abierta");
-        abrirGemela(a);
-        if (a) enfocar(".gemela [data-notas-alta]");
+      const abrirEsquina = a => {
+        esquina.classList.toggle("abierta", a); $("[data-esquina]")?.setAttribute("aria-expanded", a); $("[data-esquina-cuerpo]").inert = !a;
+        evaluarQuietud();
+      };
+      if (cajon) {
+        abrirCajon(false);
+        btnN.addEventListener("click", () => abrirCajon(!cajon.classList.contains("abierta")));
+        $("[data-cerrar-notas]").addEventListener("click", () => { abrirCajon(false); btnN.focus(); });
+        alAbrirTareas = () => abrirCajon(false);
+      }
+      if (esquina) { abrirEsquina(false); $("[data-esquina]")?.addEventListener("click", () => abrirEsquina(!esquina.classList.contains("abierta"))); }
+      /* R · se abre al escribir y se pliega sola cuando el foco sale de la esquina */
+      if (v === "r") {
+        esquina.addEventListener("focusin", () => abrirEsquina(true));
+        esquina.addEventListener("focusout", e => { if (!esquina.contains(e.relatedTarget)) setTimeout(() => { if (!esquina.contains(document.activeElement)) abrirEsquina(false); }, 150); });
+      }
+      /* U · la segunda bandeja; donde no entra al costado, una cierra la otra */
+      const anchoCostado = app.classList.contains("gem-ancha") ? 1160 : 1120;
+      const abrirGemela = a => {
+        if (!gemela) return;
+        gemela.classList.toggle("abierta", a); $("[data-gemela]").setAttribute("aria-expanded", a); $("[data-gemela-cuerpo]").inert = !a;
+        if (a && estaAbierta() && app.clientWidth < anchoCostado) alternarTareas();
+        evaluarQuietud();
+      };
+      if (gemela) {
+        abrirGemela(false);
+        const alPie = v === "w" || app.classList.contains("al-pie-notas");
+        $("[data-gemela]").addEventListener("click", () => {
+          const a = !gemela.classList.contains("abierta");
+          abrirGemela(a);
+          if (a && alPie) enfocar(".gemela [data-notas-alta]");
+        });
+        /* W y X · como R: se pliega sola cuando el foco sale de la bandeja */
+        if (alPie) gemela.addEventListener("focusout", e => {
+          if (!gemela.contains(e.relatedTarget)) setTimeout(() => { if (!gemela.contains(document.activeElement)) abrirGemela(false); }, 150);
+        });
+        alAbrirTareas = () => { if (app.clientWidth < anchoCostado) abrirGemela(false); };
+      }
+      $("[data-borde-notas]")?.addEventListener("click", () => { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); });
+      $("[data-asa-notas]")?.addEventListener("click", e => {
+        e.stopPropagation();
+        if (!estaAbierta()) alternarTareas();
+        else if (amb === "notas") return alternarTareas();
+        cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]");
       });
-      /* Se pliega sola cuando el foco sale de la bandeja de notas */
-      gemela.addEventListener("focusout", e => {
-        if (!gemela.contains(e.relatedTarget)) setTimeout(() => { if (!gemela.contains(document.activeElement)) abrirGemela(false); }, 150);
-      });
-      alAbrirTareas = () => { if (app.clientWidth < anchoCostado) abrirGemela(false); };
-      s.abrirNotas = () => { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); };
+      const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
+      s.abrirNotas = () => {
+        if (v === "m" || app.classList.contains("con-cajon") || (conEsquina && app.clientWidth < umbral)) { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); }
+        else if (v === "t") enfocar(".suelta [data-notas-alta]");
+        else if (v === "r") enfocar("[data-esquina-input]");
+        else if (conEsquina) { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
+        else if (gemela) { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); }
+        else if (v === "n" || v === "n3") { if (!estaAbierta()) alternarTareas(); cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]"); }
+        else enfocar(".al-pie [data-notas-alta]");
+      };
       app.addEventListener("keydown", e => {
-        if (e.key === "Escape" && gemela.classList.contains("abierta")) { e.stopPropagation(); abrirGemela(false); return; }
+        if (e.key === "Escape") {
+          if (cajon?.classList.contains("abierta")) { e.stopPropagation(); abrirCajon(false); return; }
+          if (esquina?.classList.contains("abierta")) { e.stopPropagation(); if (v === "r") document.activeElement.blur(); abrirEsquina(false); return; }
+          if (gemela?.classList.contains("abierta")) { e.stopPropagation(); abrirGemela(false); return; }
+        }
         if (e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.stopPropagation(); s.abrirNotas(); }
       });
       s.salir = () => {
@@ -1924,14 +1764,6 @@ span.tt-tit { cursor: default; }
     barra.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
     s.op = op;
   });
-
-  /* Ajuste «Temas»: 5 o 9, para ver cómo escala la bandeja */
-  const gTemas = document.getElementById("temas");
-  pulsar(gTemas, nTemas);
-  gTemas.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-    nTemas = b.dataset.v; guardar("doro-sala-temas", nTemas); pulsar(gTemas, nTemas);
-    salas.forEach(x => x.reiniciarTareas());
-  }));
 
   /* Un solo latido mueve todos los relojes */
   const latir = t => { salas.forEach(s => s.tic(t)); requestAnimationFrame(latir); };
@@ -2031,5 +1863,4 @@ span.tt-tit { cursor: default; }
     mostrar(opciones[(i + opciones.length) % opciones.length]);
   });
 })();
-
 </script>

@@ -144,14 +144,43 @@ notas como post-its). Por debajo de 900 px las notas abren a todo el ancho colga
 barra. Recomendación: **1**; plan B, 4; 7 si gustan los post-its. Punto a mirar en 1: la T
 de tareas al lado de la T de Tomi (se puede pasar a íconos: lápiz y lista).
 
+**Diseño final de la sala (Leo, 2026-10-04):** **4 · Queda el lápiz**, con las notas como
+post-its (las cajas de 6). Sin el botón de tareas en la barra: las tareas viven solo en la
+bandeja de abajo. Cuando alguien suma una tarea a la sala, la rayita de la bandeja toma el
+color del acento (y se estira a 56 px) hasta que se mira «De la sala». La 7ª ronda quedó en
+`bocetos/sala-ronda7.html`.
+
+**Octava ronda (misma URL): la bandeja con el sistema de tareas.** Todas son la sala final;
+cambia solo lo que hay adentro de la bandeja. Usa los datos y las piezas de Tareas (S2):
+temas con parciales, prácticos con puntos, informes con partes y tareas sueltas; la regla
+para marcar puntos y unidades repasadas, y casilleros para las partes del informe. «De la
+sala» sigue siendo una lista simple compartida. Ajuste nuevo **Temas** (5 / 9).
+- **T1 · Por tipo**: grupos Parciales, Prácticos, Informes, Tareas; el renglón dice tema y
+  fecha y se abre en la regla.
+- **T2 · Un tema por vez**: la caja de S2 en chico (el nombre del tema es un menú, frase,
+  barra y recuadros por tipo que eligen qué ver). Abre en el tema de lo más próximo.
+- **T3 · Lo que sigue**: todo lo pendiente por fecha (Hoy, Mañana, Esta semana, Más
+  adelante, Sin fecha).
+- **T4 · En qué estás** (recomendada): se elige un foco para la sesión, que queda arriba con
+  su regla; el asa dice «Ahora: … 4/8» en vez de «Siguiente». Abajo, la lista de T3; tocar un
+  renglón lo pasa al foco.
+- **T5 · Tarjetas en fila**: carril horizontal de tarjetas con filtro por tipo; bandeja de
+  720 px; el alta es la primera tarjeta.
+- **T6 · Primero el resumen**: frase, barra general y un recuadro por tipo; tocarlo entra
+  al tipo, agrupado por tema.
+Recomendación: **T4**; plan B, T2 (misma pieza que la pantalla Tareas). Para la Fase 3:
+guardar el foco en la sesión de enfoque (p. ej. un `task_id` opcional) permitiría al
+dashboard contar minutos por tema y por práctico.
+
 ---
 
 ## Dónde retomamos
 
-7ª ronda publicada (X arriba + 1–7, recomendada 1), esperando opinión de Leo.
-**Próximo paso:** elegir entre las de la 7ª ronda, confirmar el vencimiento de 12 h y dar la
-sala por cerrada.
+8ª ronda publicada (T1–T6, recomendada T4), esperando la elección de Leo. **Próximo paso:**
+con la bandeja elegida, cerrar la sala (falta confirmar el vencimiento de 12 h de las notas).
 
 ## Propuestas transversales
 
-Ninguna por ahora.
+- **La bandeja del home** muestra las mismas tareas: si se elige una bandeja nueva para la
+  sala, conviene que la del home sea la misma pieza (sin «De la sala»). Se decide al cierre
+  de la Fase 1.
