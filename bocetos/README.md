@@ -7,7 +7,8 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `auditoria-home.html` | Grupo 2 de la auditoría del home: hero, crear/unirse a sala y filtro por categoría. | https://claude.ai/code/artifact/16457cd4-3932-4eb4-90d4-7e1d50f5ad8f |
 | `rediseno-home.html` | Layouts del home: primera ronda (A–F) y segunda ronda (B2, B3, D2, D3, D4, BD). Elegida **D4 · Anillo y bandeja**. | https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD |
 | `home-d4-bandeja.html` | D4 con la bandeja que se desvanece como la barra: tres variantes de qué queda a la vista. | https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b |
-| `tareas.html` | Pantalla de tareas, ronda vigente (9ª, O–U): tarjetas de N con el resumen de M, la animación de I y el detalle desde la esquina. | https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA |
+| `tareas.html` | Pantalla de tareas, **aprobada: S2** (10ª ronda: O, O2–O4, S, S2–S4): notas abajo, detalle desde la esquina, tonos de cajas y tarjetas, entrada más corta. | https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA |
+| `tareas-ronda9.html` | Ronda 9 de tareas (O–U, tarjetas de N con el resumen de M). | — |
 | `tareas-ronda8.html` | Ronda 8 de tareas (H–N, renglones por tipo dentro del tema). | — |
 | `tareas-ronda7.html` | Ronda 7 de tareas (A–G, cajas por tipo, con informes y notas). | — |
 | `tareas-ronda6.html` | Ronda 6 de tareas (W–Y, índice desplegable o bandeja de temas). | — |

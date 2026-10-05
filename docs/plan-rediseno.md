@@ -21,10 +21,10 @@ aprobación se pasa a la siguiente.
 | # | Pantalla | Ruta | Estado | Boceto |
 |---|---|---|---|---|
 | 1.1 | Home | `/` | ✅ D4 + bandeja «Queda el asa» (aprobado 2026-10-04) | [D4](https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b) · [2ª ronda](https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD) |
-| 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | 🔄 9ª ronda publicada (O–U: tarjetas de N + resumen de M, animación de I, detalle desde la esquina), esperando opinión | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
+| 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | ✅ S2 · El nombre elige el tema, con cajas oscuras, tarjetas más oscuras y entrada «barra y nombre» (aprobado 2026-10-04) | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
 | 1.3 | Sala | `/room/:roomId` | 🔄 Base A + F + I. Notas: los usuarios eligieron X (a la derecha); 7ª ronda (1–7, sin dos rayitas, recomendada 1) publicada, esperando opinión | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
 | 1.4 | Dashboard | `/dashboard` | 🔄 4ª ronda publicada: F base + seis tableros de una pantalla con barras (L–Q, recomendada M); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
-| 1.5 | Calendario | `/calendar` | ⏳ ¿se fusiona con Tareas? (ver 1.2) | — |
+| 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ⏳ | — |
 | 1.7 | Invitación | `/invitacion/:code` | ⏳ | — |
 | 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ⏳ | — |
@@ -146,3 +146,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-04 | Home aprobado con la bandeja «Queda el asa». La decisión de los puntos pasa al final de la Fase 1. Arranca el boceto de Tareas. Se confirma que el usuario va a poder elegir el color de acento; todos los bocetos traen el selector. Home: contador de tareas junto al avatar. Tareas: 1ª ronda descartada por cargada; 2ª ronda con seis estructuras minimalistas. |
 | 2026-10-04 | Dashboard: 1ª ronda con cinco estructuras (A–E), recomendada B · Anillos. Queda abierta la meta diaria. |
 | 2026-10-04 | El plan se parte en un doc por pantalla (`docs/rediseno/`) para trabajar cada una en un chat propio. |
+| 2026-10-04 | Tareas aprobada tras diez rondas: S2 · El nombre elige el tema (detalle desde la esquina, cajas oscuras, tarjetas más oscuras, entrada «barra y nombre»). |

@@ -219,6 +219,41 @@ Recomendación: **O**, y Q si se prefiere ver el tema entero sin elegir el tipo.
 esquina» se interpretó como la esquina de la pantalla; falta confirmar si iba anclado a la
 tarjeta. Fuente de la 8ª ronda: `bocetos/tareas-ronda8.html`.
 
+**Devolución de la 9ª ronda (Leo):**
+- **O** le gusta, salvo las notas a la derecha: mejor abajo.
+- **El detalle queda fijo «Desde la esquina»** (se despliega desde abajo a la derecha, como un
+  menú, con el efecto de la 9ª ronda). Se sacan las otras formas y el ajuste. Aclarado después
+  de publicar la 10ª: no era el panel derecho.
+- Le gustan **las notas de P** (papelitos en fila, del color del fondo dentro de la hoja).
+- **S** también le gusta, pero sin las otras materias debajo de la caja abierta. **La frase de
+  arriba y «Temas | Calendario» suman mucho**: se quedan.
+- Quiere comparar **fondos de las tarjetas más oscuros o más claros**.
+- Animación: **la vuelta a las cajas le parece espectacular**. La entrada (la barra que se
+  incorpora al encabezado) también, pero el texto de la caja tarda en irse y se ve enorme:
+  que desaparezca antes o que solo viaje la barra.
+
+**Décima ronda (misma URL):** solo O y S, con tres variantes cada uno. El detalle, siempre
+desde la esquina.
+- **O · Notas abajo** (recomendada): el O de la 9ª con las notas a todo el ancho debajo.
+- **O2 · En una hoja**: O dentro de la hoja de P (contraste invertido adentro).
+- **O3 · Resumen en fila**: los recuadros de M arriba, tarjetas a todo el ancho.
+- **O4 · Los tipos en el encabezado**: el resumen de M es una fila dentro del encabezado.
+- **S · La caja, sola**: abierta queda sola debajo de la frase y de «Temas | Calendario»;
+  con Calendario muestra el del tema adentro de la caja. Se cambia de tema cerrando.
+- **S2 · El nombre elige el tema** (recomendada entre las S): el nombre es un menú.
+- **S3 · Anterior y siguiente**: flechas y «2 de 5».
+- **S4 · Con la bandeja**: la bandeja de Y abajo.
+- Ajustes nuevos: **Cajas** y **Tarjetas** (cinco tonos: dos más oscuros que el fondo, el
+  fondo y dos más claros; Tarjetas suma «Auto» = claras afuera, del color del fondo dentro de
+  una hoja) y **Al entrar** (caja, barra y nombre / barra y nombre / solo la barra). Arriba
+  de los bocetos hay un muestrario con los cinco tonos. Se fue el ajuste Detalle.
+- Animación al entrar: la caja vieja se desvanece en 0,12 s (ya no se estira con el texto)
+  y la barra y el nombre viajan por separado al encabezado. La vuelta no cambió.
+
+Recomendación: **O**; si se prefiere no salir de las cajas, **S2**. Fondos: en claro, Cajas
+«Claras» + Tarjetas «Auto»; si se ve plano, Tarjetas «Oscuras». En oscuro, «Más claras».
+Fuente de la 9ª ronda: `bocetos/tareas-ronda9.html`.
+
 Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
 en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
 `kind` ('tarea' | 'tp') y otra `remind_at`.
@@ -245,15 +280,34 @@ con el agente `arquitecto-features` antes de escribir nada.
 
 ---
 
-## Dónde retomamos
+## Diseño final (aprobado por Leo, 2026-10-04)
 
-La 9ª ronda (O–U) está publicada y espera la opinión de Leo. Hay que decidir:
-1. O (un tipo a la vez) o Q (todos los tipos abiertos), o una de las que se alejan.
-2. Si «Desde la esquina» es lo que pidió o lo quería anclado a la tarjeta.
-3. El modo de detalle, que todavía se compara con el ajuste.
+**S2 · El nombre elige el tema**, de la 10ª ronda:
+- Primera pantalla: la frase («Te quedan…»), la barra general y «Temas | Calendario», y debajo
+  las cajas de los temas.
+- Al tocar una caja, se abre sola en su lugar (las demás desaparecen). Arriba siguen la frase,
+  la barra y «Temas | Calendario»; con «Calendario» se ve el calendario de ese tema adentro de
+  la caja.
+- En la caja: encabezado con el nombre del tema como **menú de temas** (con su avance) para
+  cambiar sin cerrar, el porcentaje y la X para volver a la grilla. Debajo, la barra y la frase
+  del tema, los recuadros por tipo en fila (eligen el tipo), las tarjetas del tipo elegido y
+  las **notas de la sala abajo**, en fila.
+- **Detalle «Desde la esquina»**: se despliega desde abajo a la derecha, como un menú.
+- **Fondos:** Cajas «Oscuras» y Tarjetas «Más oscuras» (en claro, `oklch(0.955 0.004 285)` y
+  `oklch(0.925 0.005 285)` sobre el fondo `0.985`; en oscuro, `0.13` y `0.105` sobre `0.155`).
+- **Al entrar:** «Barra y nombre». La caja vieja se desvanece y la barra y el nombre viajan al
+  encabezado. Al cerrar, la caja abierta se encoge hasta su lugar en la grilla.
 
-**Próximo paso:** con esa devolución, armar el boceto final de Tareas.
+Fuente: `bocetos/tareas.html` (S2). **Próximo paso** (plan general, Fase 3): el modelo de datos
+de tareas, prácticos, informes, parciales, notas y recordatorios, con `arquitecto-features`,
+antes de escribir la pantalla. Decisiones de Leo para esa fase (2026-10-04):
+- **Avisos por fases:** primero notificaciones del navegador; Google Calendar después, en
+  una fase aparte.
+- **La pantalla de Calendario se va.** Su lugar lo ocupa la vista «Calendario» de Tareas.
 
 ## Propuestas transversales
 
-Ninguna por ahora.
+- **Tonos de superficie más oscuros que el fondo.** Tareas eligió cajas y tarjetas *más
+  oscuras* que el fondo (hundidas), no más claras. Si se adopta en todas las pantallas, la
+  Fase 2 necesita dos tokens nuevos (p. ej. `--hundido` y `--hundido-2`) además de `--card`.
+  Se decide al cierre de la Fase 1.
