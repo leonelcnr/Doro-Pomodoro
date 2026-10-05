@@ -198,6 +198,25 @@ blanco) y **Título** (nombre o pregunta: «¿Cuándo rendís más?»). Estudio 
 Recomendación: **2**, con el resaltado en acento solo para el dato que responde y el
 título como pregunta. La 7ª ronda quedó en `bocetos/dashboard-ronda7.html`.
 
+**Opinión de Leo sobre la 8ª ronda (2026-10-05):** la línea que se llena **apura y da
+ansiedad**. Los segmentos de arriba **sobrecargan** la pantalla. El índice al costado le
+gusta, pero **descentra** la cifra: propone contraerlo a íconos. En todas, los cuadrados de
+las entregas quedaban corridos.
+
+**Novena ronda (publicada 2026-10-05, esperando opinión).** El tiempo corre sin mostrarse:
+la cifra pasa cada 9 s, sin barra, y se frena con el puntero sobre el número o el índice. El
+ajuste **Avance** («Sola, sin aviso» / «A mano») deja todo quieto hasta que toques. Los
+cuadrados de las entregas quedan centrados. «Lo que se viene» tiene ícono propio (flecha) y
+Constancia el suyo (cuadritos), para que ningún ícono del índice se repita.
+- **1 · Íconos al costado, se abren al pasar** (recomendada). Columna de nueve íconos,
+  absoluta, que no empuja la cifra (queda centrada en todo el ancho); al pasar el puntero o
+  con foco se abre y muestra los nombres por encima.
+- **2 · Íconos abajo, al centro.** Fila de íconos bajo la cifra; el actual en acento con un
+  punto; el nombre, en el tooltip.
+- **3 · Sin índice, flechas a los lados.** Aparecen al acercar el puntero y dicen qué cifra traen.
+
+La 8ª ronda quedó en `bocetos/dashboard-ronda8.html`.
+
 Hallazgos para la Fase 3:
 - `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
   tienen el violeta escrito a mano: no van a seguir el acento elegido.
@@ -210,10 +229,9 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-8ª ronda publicada: el Resumen como D sin fondo, en tres formas de índice (1 a 3,
-recomendada 2 · Segmentos con nombre), con ajustes de resaltado y de título. **Próximo
-paso:** recoger la opinión de Leo; siguen pendientes la meta («En la línea») y el tono de
-las tarjetas de Estudio y Tareas.
+9ª ronda publicada: el Resumen con índice de íconos y sin cuenta regresiva (1 a 3,
+recomendada 1 · Íconos al costado). **Próximo paso:** recoger la opinión de Leo; siguen
+pendientes la meta («En la línea») y el tono de las tarjetas de Estudio y Tareas.
 
 ## Propuestas transversales
 

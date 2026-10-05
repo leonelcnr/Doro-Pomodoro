@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Novena ronda del dashboard (la 3, con el Resumen como D sin fondo e índice de íconos). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Octava ronda del dashboard (la 3, con el Resumen como D sin fondo). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -580,49 +580,6 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 @container app (min-width: 1000px) { .solo.con-lado { grid-template-columns: 180px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 32px; } }
 @container app (max-width: 999px) { .lado { flex-direction: row; flex-wrap: wrap; gap: 2px 16px; } .lado .seg-l { height: 16px; } }
 
-/* ───────── Novena ronda: índice de íconos, sin cuenta regresiva ───────── */
-/* Entregas centradas en el escenario */
-.puntos.centrados { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-.puntos.centrados .celda { width: 30px; flex: none; }
-/* El tiempo corre sin mostrarse: un elemento invisible marca cuándo pasar */
-.esc-reloj { position: absolute; width: 0; height: 0; overflow: hidden; animation: avanzar 9s linear both; }
-.solo:has(.esc-in:hover, .riel:hover, .flecha-lado:hover, :focus-visible) .esc-reloj { animation-play-state: paused; }
-.solo { position: relative; }
-.solo.r9 { grid-template-rows: minmax(0, 1fr); }
-.solo.r9.con-abajo { grid-template-rows: minmax(0, 1fr) auto; }
-/* Botón de una cifra en el riel: ícono y nombre que aparece al abrirse */
-.rb { position: relative; display: flex; align-items: center; gap: 12px; height: 38px; padding: 0 10px; border: 0; background: none; border-radius: 8px; color: var(--tenue); font-size: 14px; white-space: nowrap; transition: color .15s, background-color .15s; }
-.rb svg { width: 18px; height: 18px; flex-shrink: 0; }
-.rb:hover { color: var(--fg); }
-.rb.act { color: var(--fg); background: var(--campo); }
-.rb.act svg { color: var(--acento); }
-/* 1 · Riel a la izquierda, fuera del flujo: la cifra queda centrada en todo el ancho */
-.riel { position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 3; display: flex; flex-direction: column; gap: 2px; padding: 6px; border-radius: 12px; border: 1px solid transparent; transition: background-color .2s, border-color .2s, box-shadow .2s; }
-.rb-t { max-width: 0; opacity: 0; overflow: hidden; transition: max-width .25s cubic-bezier(.16,1,.3,1), opacity .2s; }
-.riel:is(:hover, :focus-within) { background: var(--superficie); border-color: var(--linea); box-shadow: var(--sombra); }
-.riel:is(:hover, :focus-within) .rb-t { max-width: 150px; opacity: 1; }
-/* 2 · Íconos abajo, al centro: el actual lleva un punto */
-.riel.abajo { position: static; transform: none; flex-direction: row; justify-content: center; gap: 4px; padding: 0; border: 0; background: none !important; box-shadow: none !important; }
-.riel.abajo .rb { padding: 0 9px; }
-.riel.abajo .rb.act { background: none; }
-.riel.abajo .rb.act::after { content: ""; position: absolute; left: 50%; bottom: 1px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--acento); }
-.riel.abajo .rb-t { display: none; }
-/* 3 · Sin índice: flechas a los lados que aparecen al acercarse */
-.flecha-lado { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: var(--superficie); color: var(--fg); display: grid; place-items: center; padding: 0; opacity: 0; transition: opacity .2s, border-color .15s; }
-.flecha-lado svg { width: 18px; height: 18px; }
-.flecha-lado.izq { left: 0; } .flecha-lado.izq svg { transform: rotate(180deg); }
-.flecha-lado.der { right: 0; }
-.flecha-lado:hover { border-color: var(--tenue); }
-.solo:hover .flecha-lado, .flecha-lado:focus-visible, :root[data-tactil] .flecha-lado { opacity: 1; }
-@media (hover: none) { .flecha-lado { opacity: 1; } }
-/* Angosto: el riel pasa abajo, en fila, solo íconos */
-@container app (max-width: 699px) {
-  .riel { position: static; transform: none; flex-direction: row; flex-wrap: wrap; justify-content: center; background: none !important; border: 0 !important; box-shadow: none !important; padding: 0; }
-  .riel .rb-t { display: none; }
-  .solo.r9.con-riel { grid-template-rows: minmax(0, 1fr) auto; }
-  .flecha-lado { width: 36px; height: 36px; }
-}
-
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
@@ -671,8 +628,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-tend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-8"/><path d="M15 7h5v5"/></symbol>
   <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
   <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
-  <symbol id="i-prox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></symbol>
-  <symbol id="i-cuadros" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
   <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
@@ -681,10 +636,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, novena ronda</h1>
-    <p>De la octava: <b>la línea que se llena apuraba</b>, los segmentos de arriba cargaban la pantalla, y el índice al costado gustó pero corría la cifra del centro. Esta ronda parte de ese índice <b>contraído a íconos</b>, y la cifra queda centrada en todo el ancho.</p>
-    <p><b>El tiempo ya no se muestra.</b> La cifra sigue pasando sola, más despacio (cada 9 segundos), pero nada cuenta para atrás. Se frena con el puntero sobre el número o sobre el índice. El ajuste <b>«Avance»</b> prueba «A mano», para que solo cambie cuando tocás. También quedaron <b>centrados los cuadrados de las entregas</b>, y «Lo que se viene» tiene ícono propio (antes repetía el de constancia).</p>
-    <p>Siguen los ajustes «Resaltado» y «Título». Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La octava ronda quedó guardada aparte.</p>
+    <h1>Dashboard, octava ronda</h1>
+    <p>De la séptima: <b>D fue la que más te gustó</b>, y de C, que no tuviera fondo. Las tarjetas de abajo repetían lo que ya decía la cifra. En esta ronda <b>el Resumen es solo el escenario</b>, sin tarjeta alrededor y sin tarjetas abajo, y las cifras siguen pasando solas cada 7 segundos. Las tres propuestas cambian en cómo sabés qué cifra viene y cómo saltar a otra.</p>
+    <p>Lo que pediste está en todas. <b>Cada cifra tiene un título</b> grande arriba del número, para que se entienda de qué se trata («Tu horario», «Parciales»). Las palabras clave van resaltadas: los viernes, Redes, lo que falta. El ajuste <b>«Resaltado»</b> prueba el acento o el blanco, y <b>«Título»</b> cambia el nombre por una pregunta («¿Cuándo rendís más?»). «Lo que se viene» queda como estaba. Estudio y Tareas no cambian.</p>
+    <p>La cifra se frena con el puntero encima del número. Con «reducir movimiento» activado no avanza sola. Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La séptima ronda quedó guardada aparte.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -692,8 +647,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Meta</span>
       <div class="segmentado" id="ctlmeta" role="group" aria-label="Forma de cambiar la meta"><button type="button" data-v="texto">Texto</button><button type="button" data-v="lapiz">Lápiz</button><button type="button" data-v="cifra">Cifra</button><button type="button" data-v="objetivo">Ícono y meta</button><button type="button" data-v="linea">En la línea</button><button type="button" data-v="siempre">Siempre a mano</button></div></div>
-    <div class="ajuste"><span class="ajuste-nombre">Avance</span>
-      <div class="segmentado" id="avance" role="group" aria-label="Cómo pasan las cifras"><button type="button" data-v="sola">Sola, sin aviso</button><button type="button" data-v="mano">A mano</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Resaltado</span>
       <div class="segmentado" id="resalte" role="group" aria-label="Color de las palabras clave"><button type="button" data-v="acento">Acento</button><button type="button" data-v="blanco">Blanco</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Título</span>
@@ -712,48 +665,48 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="r1" data-v="r1">
+  <section class="opcion" id="s1" data-v="s1">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">1</span><span class="nombre">Íconos al costado, se abren al pasar</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">La 3 contraída: a la izquierda, <b>una columna de nueve íconos</b>, uno por cifra; el de ahora va en acento sobre un fondo apenas marcado. <b>Al pasar el puntero, la columna se abre</b> y muestra los nombres, por encima de la pantalla y sin mover nada. La columna no ocupa lugar: la cifra queda centrada en todo el ancho.</p>
-        <p class="enfoque">Lo primero: <b>la cifra, centrada</b></p>
+        <h2><span class="letra">1</span><span class="nombre">D sin fondo</span></h2>
+        <p class="resumen">La D tal cual, sin tarjeta: el título, la cifra, la frase y su gráfico en el centro del Resumen. Abajo, <b>una línea fina</b> que se llena en 7 segundos y las flechas con «3 de 9».</p>
+        <p class="enfoque">Lo primero: <b>la cifra</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo que te gustó de 3, sin correr la cifra.</li><li>Nueve íconos chicos pesan poco; los nombres aparecen cuando los buscás.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Hay que aprender qué ícono es cada cifra, o pasar el puntero.</li><li>En el celular la columna pasa abajo, en fila.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Lo más despojado: nada compite con la cifra.</li><li>Las flechas permiten ir y volver sin esperar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No se sabe qué cifra viene ni cuántas faltan para la que te interesa.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="r2" data-v="r2">
+  <section class="opcion" id="s2" data-v="s2">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">2</span><span class="nombre">Íconos abajo, al centro</span></h2>
-        <p class="resumen">Los mismos nueve íconos, <b>en una fila debajo de la cifra</b>, como los puntos de un carrusel pero con dibujo. El de ahora va en acento con un puntito abajo. Al pasar el puntero, cada ícono dice su nombre.</p>
-        <p class="enfoque">Lo primero: <b>la cifra; los íconos, como pie</b></p>
+        <h2><span class="letra">2</span><span class="nombre">Segmentos con nombre</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Arriba, <b>nueve segmentos con su nombre</b> (Período, Hoy, Constancia… Lo que viene), como las historias de Instagram. El de ahora se llena en acento, los que ya pasaron quedan en gris y los que vienen, vacíos. Tocar un nombre salta a esa cifra.</p>
+        <p class="enfoque">Lo primero: <b>la cifra; el índice, arriba y callado</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Todo sobre el mismo eje: lo más ordenado.</li><li>Funciona igual en la compu y en el celular.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Una fila más en la pantalla, aunque liviana.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Se sabe qué viene y cuánto falta, sin repetir ningún dato.</li><li>Saltar a una cifra es un toque, sin pasar por las otras.</li><li>Es un patrón conocido: no hay que explicarlo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Nueve nombres en una fila: en el celular solo quedan las rayitas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="r3" data-v="r3">
+  <section class="opcion" id="s3" data-v="s3">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">3</span><span class="nombre">Sin índice, flechas a los lados</span></h2>
-        <p class="resumen">Nada más que la cifra. <b>Al acercar el puntero aparecen dos flechas</b> a los costados, y cada una dice qué cifra trae («Horario»). En el celular las flechas quedan siempre.</p>
-        <p class="enfoque">Lo primero: <b>solo la cifra</b></p>
+        <h2><span class="letra">3</span><span class="nombre">Índice al costado</span></h2>
+        <p class="resumen">A la izquierda, <b>la lista de las nueve cifras</b>, con una rayita vertical que se llena en la que está pasando. A la derecha, el escenario. Es como el índice de un libro: todo a la vista y la cifra al lado.</p>
+        <p class="enfoque">Lo primero: <b>la cifra; la lista, a un costado</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo más limpio: cuando no la tocás, no hay nada más que la cifra.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>No se ve qué cifras hay: para llegar a una, hay que pasar por las otras.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El índice se lee entero, de arriba abajo.</li><li>Deja el centro igual de despejado que 1.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Le quita unos 200 px de ancho al escenario.</li><li>La lista y la cifra compiten un poco por la mirada.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -764,49 +717,49 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Resumen</th><th>Dónde está el índice</th><th>Cómo saltás a otra cifra</th><th>Cifra centrada</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Resumen</th><th>Cómo sabés qué viene</th><th>Cómo saltás a otra cifra</th><th>Espacio para la cifra</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>1 · Íconos al costado</td><td>Columna a la izquierda; se abre al pasar</td><td>Un toque en el ícono</td><td>Sí, en todo el ancho</td><td>Fila de íconos abajo</td><td>Aprender los íconos</td></tr>
-          <tr><td>2 · Íconos abajo</td><td>Fila debajo de la cifra</td><td>Un toque en el ícono</td><td>Sí</td><td>Igual</td><td>Una fila más</td></tr>
-          <tr><td>3 · Flechas</td><td>No hay</td><td>Flechas, de a una</td><td>Sí</td><td>Flechas siempre visibles</td><td>No se ve qué hay</td></tr>
+          <tr><td>1 · D sin fondo</td><td>«3 de 9» y una línea</td><td>Flechas, de a una</td><td>Todo</td><td>Igual</td><td>A ciegas</td></tr>
+          <tr class="elegida"><td>2 · Segmentos</td><td>Nueve nombres arriba</td><td>Un toque en el nombre</td><td>Casi todo</td><td>Solo las rayitas</td><td>Fila de nombres apretada</td></tr>
+          <tr><td>3 · Índice al costado</td><td>La lista entera</td><td>Un toque en la lista</td><td>Unos 200 px menos</td><td>La lista pasa arriba</td><td>Dos cosas para mirar</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría 1</h3>
-        <p><b>Es la 3 que te gustó, corregida.</b> La columna sale del flujo y queda encima de la pantalla, así que la cifra se centra en el ancho completo. Contraída son nueve íconos tenues, y los nombres aparecen solo cuando acercás el puntero. Como abrirla también frena la cifra, mirar el índice no hace que la cifra se te escape.</p>
-        <p><b>2</b> si preferís que todo quede en el mismo eje vertical. <b>3</b> es la más limpia, pero vuelve al problema de no saber qué viene.</p>
-        <h4>Sin cuenta regresiva</h4>
-        <p>La cifra cambia cada 9 segundos sin barra ni aviso, y se frena con el puntero encima. Si aun así se siente apurado, «A mano» deja todo quieto hasta que toques un ícono. En ese caso, el Resumen arrancaría siempre en el período.</p>
+        <h3>Elegiría 2</h3>
+        <p><b>Las tarjetas de abajo de D daban el índice, pero repitiendo los datos.</b> Los segmentos dan el mismo índice con una palabra por cifra: sabés qué viene, cuánto falta y podés saltar. Arriba y en gris no le quitan protagonismo a la cifra. <b>3</b> hace lo mismo con más lugar para los nombres, pero le roba ancho al escenario. <b>1</b> es la más limpia, pero obliga a recorrer a ciegas.</p>
+        <h4>Resaltado y título</h4>
+        <p><b>Resaltado en acento</b> para el dato que responde la pregunta: el día, la materia, lo que falta. Las cifras secundarias («59 %», «2 h») van en blanco. Así hay un solo acento por frase y no compite con el número grande. <b>Título:</b> «Nombre» se lee más rápido. «Pregunta» explica mejor la primera vez y retoma las tres preguntas con las que arrancó el dashboard. Elegiría pregunta.</p>
         <h4>Sigue pendiente</h4>
         <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas de Estudio y Tareas (claras u oscuras).</p>
       </div>
       <div>
-        <pre><span class="c-com">// 1 · la columna flota encima: no empuja la cifra</span>
-&lt;section className="relative grid h-full place-items-center"&gt;
-  &lt;Cifra cifra={actual} /&gt;
-  &lt;nav className="riel absolute left-0 top-1/2 -translate-y-1/2"&gt;
-    {CIFRAS.map((c) =&gt; (
-      &lt;button key={c} aria-current={c === actual} onClick={() =&gt; setActual(c)}&gt;
-        &lt;Icono cifra={c} /&gt;
-        &lt;span className="riel-nombre"&gt;{NOMBRES[c]}&lt;/span&gt;
-      &lt;/button&gt;
-    ))}
-  &lt;/nav&gt;
-&lt;/section&gt;
+        <pre><span class="c-com">// 2 · un segmento por cifra; el actual se llena en 7 s</span>
+const CIFRAS = ["periodo", "hoy", "constancia", "horario", "hechas",
+  "entregas", "pendiente", "parciales", "prox"] as const;
+type Cifra = (typeof CIFRAS)[number];
 
-<span class="c-com">/* Los nombres aparecen al pasar el puntero */</span>
-.riel-nombre { max-width: 0; opacity: 0; overflow: hidden; }
-.riel:is(:hover, :focus-within) .riel-nombre { max-width: 150px; opacity: 1; }
+const [actual, setActual] = useState&lt;Cifra&gt;("periodo");
+const pasar = () =&gt; setActual((c) =&gt;
+  CIFRAS[(CIFRAS.indexOf(c) + 1) % CIFRAS.length]);
 
-<span class="c-com">// El tiempo corre sin mostrarse y se frena al mirar</span>
-useEffect(() =&gt; {
-  if (pausado || reducirMovimiento) return;
-  const t = setTimeout(pasar, 9000);
-  return () =&gt; clearTimeout(t);
-}, [actual, pausado]);</pre>
+&lt;nav className="grid grid-cols-9 gap-1.5"&gt;
+  {CIFRAS.map((c, i) =&gt; (
+    &lt;Segmento key={c} nombre={NOMBRES[c]}
+      estado={i &lt; CIFRAS.indexOf(actual) ? "hecho" : c === actual ? "actual" : "falta"}
+      onAnimationEnd={c === actual ? pasar : undefined}
+      onClick={() =&gt; setActual(c)} /&gt;
+  ))}
+&lt;/nav&gt;
+
+<span class="c-com">/* La animación marca el tiempo y se frena sola */</span>
+.segmento[data-estado="actual"] i { animation: avanzar 7s linear both; }
+.resumen:has(.cifra:hover) .segmento i { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .segmento i { animation: none; }
+}</pre>
       </div>
     </div>
   </section>
@@ -841,11 +794,10 @@ useEffect(() =&gt; {
     disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
     tjtono: v => raiz.dataset.tarjetas = v,
     resalte: v => raiz.dataset.resalte = v,
-    avance: v => raiz.dataset.avance = v,
     titulo: v => raiz.dataset.titulo = v,
   };
   const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", tjtono: "claras", resalte: "acento", titulo: "nombre", avance: "sola" };
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", tjtono: "claras", resalte: "acento", titulo: "nombre" };
   const ponerAjuste = {};
   Object.keys(grupos).forEach(id => {
     const g = document.getElementById(id);
@@ -1195,7 +1147,7 @@ useEffect(() =&gt; {
   const kParc = t => t.rend.length ? kpi(nota(t.rend.reduce((s, e) => s + e.nota, 0) / t.rend.length), `de promedio en ${t.rend.length} ${t.rend.length === 1 ? "parcial" : "parciales"}`, `${t.T.antCap}, ${t.prom === null ? "ninguno" : nota(t.prom)}.`)
     : t.prox && !t.off ? kpi(enDias(t.prox.dia), `el ${t.prox.t.toLowerCase()} de ${TEMAS[t.prox.tema][0]}`, `Repasaste ${t.prox.h} de ${t.prox.tot} unidades.`) : kpi("Ninguno", `parcial ${t.T.en}`);
   /* Mini gráficos de las tarjetas de tareas */
-  const miniEntregas = (t, centrados = false) => t.ent.length ? `<div class="puntos${centrados ? " centrados" : ""}" style="--cols:${Math.max(7, Math.min(14, t.ent.length))}">${t.ent.slice().reverse().map(e => `<span class="celda" data-n="${e.aTiempo ? 4 : 1}" data-tip="${TIPOS[e.k].uno} de ${TEMAS[e.tema][0]} · ${fechaCorta(dias[e.i].f)} · ${e.aTiempo ? "a tiempo" : "tarde"}"></span>`).join("")}</div>` : `<p class="vacio">Sin entregas en este período.</p>`;
+  const miniEntregas = t => t.ent.length ? `<div class="puntos" style="--cols:${Math.max(7, Math.min(14, t.ent.length))}">${t.ent.slice().reverse().map(e => `<span class="celda" data-n="${e.aTiempo ? 4 : 1}" data-tip="${TIPOS[e.k].uno} de ${TEMAS[e.tema][0]} · ${fechaCorta(dias[e.i].f)} · ${e.aTiempo ? "a tiempo" : "tarde"}"></span>`).join("")}</div>` : `<p class="vacio">Sin entregas en este período.</p>`;
   const miniGeneral = t => t.off ? barras(listaHechas(t.per, t.off), { mini: true, cuenta: true, hueco: t.per === "mes" ? 2 : 5 }) : `<div><div class="pbar" role="img" aria-label="Avance general ${Math.round(t.gen * 100)} %"><i style="width:${t.gen * 100}%"></i></div><p class="kpi-s">Avance general: ${Math.round(t.gen * 100)} % de todo lo anotado.</p></div>`;
   const miniParc = t => t.rend.length ? barras(t.rend.slice().reverse().map(e => ({ v: e.nota, etq: "", tip: `${e.t} de ${TEMAS[e.tema][0]} · ${nota(e.nota)}` })), { mini: true, cuenta: true, techo: 10, hueco: 6 })
     : t.prox && !t.off ? `<div class="pbar"><i style="width:${t.prox.h / t.prox.tot * 100}%"></i></div>` : "";
@@ -1275,10 +1227,10 @@ useEffect(() =&gt; {
       case "hoy": return off
         ? { ic: "i-meta", et: "Promedio", g: fmtCorto(k.prom), c: `por día ${T.en}. ${T.antCap}, ${fmt(k.antes / k.n)}.`, graf: puntosPer(per, off) }
         : { ic: "i-meta", et: "Hoy", g: fmtCorto(d0.min), c: `llevás hoy, de una meta de <b>${fmt(meta)}</b>. ${meta > d0.min ? `Te falta <em>${fmt(meta - d0.min)}</em>.` : "<em>Ya la cumpliste.</em>"}`, graf: d0.min ? `<div>${pista(d0)}${eje()}</div>` : "" };
-      case "constancia": return { ic: "i-cuadros", et: "Constancia", g: `${k.c} de ${k.n}`, c: `días con la meta ${T.en}. ${T.antCap}, ${k.cAnt}.${off ? "" : ` Llevás <em>${racha()} ${racha() === 1 ? "día" : "días"} seguidos</em>.`}`, graf: puntosPer(per, off) };
+      case "constancia": return { ic: "i-cal", et: "Constancia", g: `${k.c} de ${k.n}`, c: `días con la meta ${T.en}. ${T.antCap}, ${k.cAnt}.${off ? "" : ` Llevás <em>${racha()} ${racha() === 1 ? "día" : "días"} seguidos</em>.`}`, graf: puntosPer(per, off) };
       case "horario": return { ic: "i-reloj", et: "Tu horario", g: `${h.ventana} a ${h.ventana + 3} h`, c: `los <em>${DOW_LARGO[h.mejorDow]}</em>, cuando más rendís. Ahí arranca el <b>${h.share} %</b> de lo que estudiás.`, graf: histHoras(h) };
       case "hechas": return { ic: "k-tarea", et: "Lo que hiciste", g: `${t.tot}`, c: `cosas hechas ${T.en}, ${dif(t.tot - t.totAnt, String)} ${T.ant}. ${cap(desglose(t.por))}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) };
-      case "entregas": return { ic: "i-check", et: "Entregas", g: t.ent.length ? `${t.aT} de ${t.ent.length}` : "Ninguna", c: t.ent.length ? `entregas <em>a tiempo</em> ${T.en}. ${T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.` : `entrega ${T.en}.`, graf: miniEntregas(t, true) };
+      case "entregas": return { ic: "i-check", et: "Entregas", g: t.ent.length ? `${t.aT} de ${t.ent.length}` : "Ninguna", c: t.ent.length ? `entregas <em>a tiempo</em> ${T.en}. ${T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.` : `entrega ${T.en}.`, graf: miniEntregas(t) };
       case "pendiente": return off
         ? { ic: "k-lista", et: "Ritmo", g: nota(t.tot / LARGO[per]), c: `cosas hechas por día ${T.en}. ${T.antCap}, ${nota(t.totAnt / LARGO[per])}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) }
         : { ic: "k-lista", et: "Pendiente", g: `${t.pend.length}`, c: `cosas pendientes; <em>${t.venc7} vencen</em> en los próximos 7 días.`, graf: miniGeneral(t) };
@@ -1288,9 +1240,9 @@ useEffect(() =&gt; {
         return { ic: "k-parcial", et: "Parciales", g: "Ninguno", c: `parcial ${T.en}.`, graf: "" };
       }
       case "prox": {
-        if (off) return { ic: "i-prox", et: "Entregas de ese período", g: `${t.ent.length}`, c: `entregas ${T.en}.`, graf: proximas(t, 3) };
+        if (off) return { ic: "i-cal", et: "Entregas de ese período", g: `${t.ent.length}`, c: `entregas ${T.en}.`, graf: proximas(t, 3) };
         const l = PEND.filter(y => y.dia !== null && y.h < y.tot).sort((y, z) => y.dia - z.dia), p = l[0];
-        return { ic: "i-prox", et: "Lo que se viene", g: enDias(p.dia), c: `<b>${p.t}</b>, de <em>${TEMAS[p.tema][0]}</em>. Vas ${p.h} de ${p.tot} ${TIPOS[p.k].u[p.tot === 1 ? 0 : 1]}.`, graf: `<div class="prox">${l.slice(1, 4).map(y => `<div class="prox-f">${ic(TIPOS[y.k].ic)}<span class="t">${y.t}</span><span class="c">${enDias(y.dia)}</span><span class="m">${TEMAS[y.tema][0]} · ${y.h} de ${y.tot}</span></div>`).join("")}</div>` };
+        return { ic: "i-cal", et: "Lo que se viene", g: enDias(p.dia), c: `<b>${p.t}</b>, de <em>${TEMAS[p.tema][0]}</em>. Vas ${p.h} de ${p.tot} ${TIPOS[p.k].u[p.tot === 1 ? 0 : 1]}.`, graf: `<div class="prox">${l.slice(1, 4).map(y => `<div class="prox-f">${ic(TIPOS[y.k].ic)}<span class="t">${y.t}</span><span class="c">${enDias(y.dia)}</span><span class="m">${TEMAS[y.tema][0]} · ${y.h} de ${y.tot}</span></div>`).join("")}</div>` };
       }
     }
   };
@@ -1344,25 +1296,6 @@ useEffect(() =&gt; {
   RESUMEN.segs = (app, x) => escSolo(app, x, "segs");
   RESUMEN.lado = (app, x) => escSolo(app, x, "lado");
 
-  /* ── Novena ronda: índice de íconos; el tiempo corre sin mostrarse ── */
-  const ICONO = { periodo: "i-tend", hoy: "i-meta", constancia: "i-cuadros", horario: "i-reloj", hechas: "k-tarea", entregas: "i-check", pendiente: "k-lista", parciales: "k-parcial", prox: "i-prox" };
-  const escR9 = (app, x, modo) => {
-    const id = app._esc || "periodo", i = ESC.indexOf(id), e = escena(app, x, id), nueva = app._escNueva ? " nueva" : "";
-    app._escNueva = false;
-    const tit = raiz.dataset.titulo === "pregunta" ? pregunta(id, x) : e.et;
-    const reloj = raiz.dataset.avance !== "mano" && !reducido.matches ? `<span class="esc-reloj" aria-hidden="true"></span>` : "";
-    const nom = c => raiz.dataset.titulo === "pregunta" ? pregunta(c, x) : CORTO[c];
-    const riel = cls => `<nav class="riel${cls}" aria-label="Cifras">${ESC.map(c => `<button type="button" class="rb${c === id ? " act" : ""}" data-escir="${c}" data-k="ir-${c}" aria-current="${c === id}" aria-label="${nom(c)}"${cls ? ` data-tip="${nom(c)}"` : ""}>${ic(ICONO[c])}<span class="rb-t">${CORTO[c]}</span></button>`).join("")}</nav>`;
-    const centro = `<div class="solo-c"><div class="esc-in${nueva}" aria-live="polite"><p class="esc-tit">${ic(e.ic)}${tit}</p><p class="esc-grande">${e.g}</p><p class="esc-chico">${e.c}</p>${e.graf ? `<div class="esc-graf">${e.graf}</div>` : ""}</div></div>`;
-    if (modo === "riel") return `<section class="solo r9 con-riel">${centro}${riel("")}${reloj}</section>`;
-    if (modo === "abajo") return `<section class="solo r9 con-abajo">${centro}${riel(" abajo")}${reloj}</section>`;
-    const sig = ESC[(i + 1) % ESC.length], ant = ESC[(i + ESC.length - 1) % ESC.length];
-    return `<section class="solo r9">${centro}<button type="button" class="flecha-lado izq" data-escpaso="-1" data-k="esc-ant" aria-label="Anterior: ${nom(ant)}" data-tip="${nom(ant)}">${ic("i-flecha")}</button><button type="button" class="flecha-lado der" data-escpaso="1" data-k="esc-sig" aria-label="Siguiente: ${nom(sig)}" data-tip="${nom(sig)}">${ic("i-flecha")}</button>${reloj}</section>`;
-  };
-  RESUMEN.riel = (app, x) => escR9(app, x, "riel");
-  RESUMEN.abajo = (app, x) => escR9(app, x, "abajo");
-  RESUMEN.flechas = (app, x) => escR9(app, x, "flechas");
-
   /* ── Las estructuras: todas son la 3; cambia solo el Resumen ── */
   const VISTAS3 = [["resumen", "Resumen", "i-barras"], ["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
   const tres = modo => app => {
@@ -1373,7 +1306,7 @@ useEffect(() =&gt; {
     else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
     return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
   };
-  const V = { r1: tres("riel"), r2: tres("abajo"), r3: tres("flechas") };
+  const V = { s1: tres("solo"), s2: tres("segs"), s3: tres("lado") };
   const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
   const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
@@ -1411,7 +1344,7 @@ useEffect(() =&gt; {
     el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
     const elegirEsc = c => { el._esc = c.dataset.esc === el._esc ? "periodo" : c.dataset.esc; el._escNueva = true; pintar(a); el.querySelector(`[data-esc="${c.dataset.esc}"]`)?.focus(); };
     el.addEventListener("keydown", e => { const c = e.target.closest?.("[data-esc]"); if (c && e.target === c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); elegirEsc(c); } });
-    el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i, .seg.act .seg-l i, .esc-reloj")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
+    el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i, .seg.act .seg-l i")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
       const tjE = e.target.closest("[data-esc]");
@@ -1464,7 +1397,7 @@ useEffect(() =&gt; {
     ctlMeta = b.dataset.v; guardar("doro-dash-meta", ctlMeta); pulsar(grupoCtl, ctlMeta);
     apps.forEach(x => { { x.el._editMeta = false; pintar(x); } });
   }));
-  ["titulo", "avance"].forEach(g => document.getElementById(g).addEventListener("click", () => apps.forEach(x => pintar(x))));
+  document.getElementById("titulo").addEventListener("click", () => apps.forEach(x => pintar(x)));
   setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
 
   /* ── Pantalla completa ── */

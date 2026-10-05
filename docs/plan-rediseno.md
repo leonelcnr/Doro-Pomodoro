@@ -23,7 +23,7 @@ aprobación se pasa a la siguiente.
 | 1.1 | Home | `/` | ✅ D4 + bandeja «Queda el asa» (aprobado 2026-10-04) | [D4](https://claude.ai/artifact/1EgK2haUm4Eoy9ixL5u23b) · [2ª ronda](https://claude.ai/artifact/L5haqwfMiszNPtpAgpRQyD) |
 | 1.2 | Tareas y trabajos prácticos | `/tareas` (nueva) | ✅ S2 · El nombre elige el tema, con cajas oscuras, tarjetas más oscuras y entrada «barra y nombre» (aprobado 2026-10-04) | [Tareas](https://claude.ai/artifact/PNEsHtT8q21QhxXtyqpUyA) |
 | 1.3 | Sala | `/room/:roomId` | 🔄 Final: 4 · Queda el lápiz con notas en post-it, sin T arriba, rayita en acento con tareas nuevas. 8ª ronda de la bandeja de tareas (T1–T6, recomendada T4) publicada, esperando elección | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
-| 1.4 | Dashboard | `/dashboard` | 🔄 Base elegida: 3 · Resumen, Estudio y Tareas. 8ª ronda publicada: Resumen como D sin fondo, sin tarjetas (1–3, recomendada 2 · Segmentos con nombre); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
+| 1.4 | Dashboard | `/dashboard` | 🔄 Base elegida: 3 · Resumen, Estudio y Tareas. 9ª ronda publicada: Resumen como D sin fondo, índice de íconos y sin cuenta regresiva (1–3, recomendada 1 · Íconos al costado); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ⏳ Entrar directo como anónimo y loguearse después; SEO (ver «Anotado por Leo») | — |
 | 1.7 | Invitación | `/invitacion/:code` | ⏳ | — |
