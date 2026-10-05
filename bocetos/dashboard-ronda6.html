@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Séptima ronda del dashboard (la 3, con el Resumen como E). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Sexta ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -457,11 +457,8 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
   .m2 { grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; }
   .m3 { grid-template-rows: auto minmax(0, 1fr); gap: 14px; }
   .c-res { grid-template-rows: auto auto minmax(0, 1fr); }
-  /* Tareas: abajo, la altura justa de las listas; lo que sobra se lo llevan los gráficos de arriba */
-  .c-tar { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
-  /* Estudio en doce columnas: el acumulado toma 5 de 12 y deja de ser una columna angosta y alta */
-  .m3 .g-est { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas: "sem sem sem sem sem sem sem tend tend tend tend tend" "mapa mapa mapa mapa mapa mapa mapa mapa mapa cuando cuando cuando"; }
+  .c-tar { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  .m3 .g-est { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "sem sem sem tend" "mapa mapa mapa cuando"; }
   .m3 .g-est > :nth-child(1) { grid-area: sem; } .m3 .g-est > :nth-child(2) { grid-area: tend; } .m3 .g-est > :nth-child(3) { grid-area: mapa; } .m3 .g-est > :nth-child(4) { grid-area: cuando; }
   .m4 { grid-template-rows: auto minmax(0, 1fr); gap: 14px; }
   .m4-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 1.05fr); }
@@ -487,56 +484,6 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 @container app (max-width: 699px) { .prox-h .prox { grid-template-columns: 1fr; } .prox-h .prox-f:nth-child(-n+3) { border-top: 1px solid var(--linea); } .prox-h .prox-f:first-child { border-top: 0; } }
 .tcol { display: flex; flex-direction: column; gap: 8px; }
 .tcol .tj-et b { margin-left: auto; color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
-
-/* ───────── Séptima ronda: el Resumen como E · Una cifra por vez ───────── */
-/* Las cinco tarjetas que marcaste: hoy, constancia, entregas, pendiente y parciales */
-.g5 { display: grid; gap: 14px; min-height: 0; }
-@container app (min-width: 600px) and (max-width: 999px) { .g5 { grid-template-columns: 1fr 1fr; } .g5 > :first-child { grid-column: 1 / -1; } }
-@container app (min-width: 1000px) { .g5 { grid-template-columns: minmax(0, 1.45fr) repeat(4, minmax(0, 1fr)); } }
-/* Tarjeta que elige la cifra del escenario (A y D) */
-.tj[data-esc] { cursor: pointer; transition: border-color .15s; }
-.tj[data-esc]:hover { border-color: color-mix(in oklch, var(--fg) 24%, var(--linea)); }
-.tj[data-esc][aria-current="true"] { border-color: color-mix(in oklch, var(--fg) 45%, var(--linea)); }
-/* Hoy: abajo, las sesiones de hoy en su hora, para que la tarjeta no quede con un hueco */
-.hoy-ses { margin-top: auto; }
-
-/* El escenario: una cifra grande, su frase y un gráfico chico, centrados como en E */
-.esc { gap: 8px; }
-.esc-c { align-items: center; text-align: center; }
-.esc-in { display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(100%, 520px); }
-.esc-in.nueva { animation: fundido .35s ease both; }
-.esc-grande { margin: 0; font-size: clamp(44px, 6.2cqi, 80px); font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
-.esc-chico { margin: 0; font-size: 16px; color: var(--tenue); max-width: 40ch; text-wrap: balance; font-variant-numeric: tabular-nums; }
-.esc-chico b { color: var(--fg); font-weight: 500; }
-.esc-graf { width: min(100%, 440px); text-align: left; margin-top: 6px; }
-.esc-graf .br.mini .br-area { height: 80px; }
-.esc-graf .puntos { max-width: 300px; margin-inline: auto; }
-.esc-graf .kpi-s { text-align: center; }
-.esc-nav { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.esc-nav span { min-width: 3.6em; text-align: center; }
-.esc-nav svg.izq { transform: rotate(180deg); }
-/* D: la cifra pasa sola; la línea muestra cuánto falta y se frena con el puntero encima */
-.esc-prog { height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; flex-shrink: 0; }
-.esc-prog i { display: block; height: 100%; width: 100%; background: var(--acento); transform-origin: left; animation: avanzar 7s linear both; }
-.esc:is(:hover, :focus-within) .esc-prog i { animation-play-state: paused; }
-@keyframes avanzar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-
-/* C: el resumen escrito, como una carta */
-.carta-env { display: flex; align-items: center; justify-content: center; min-height: 0; padding: 4px 0; }
-.carta { margin: 0; font-size: clamp(20px, 2.5cqi, 29px); font-weight: 500; letter-spacing: -0.025em; line-height: 1.35; color: var(--tenue); text-wrap: pretty; max-width: 46ch; text-align: center; font-variant-numeric: tabular-nums; }
-.carta b { color: var(--fg); font-weight: 600; }
-
-@container app (min-width: 1000px) {
-  .r-a { grid-template-rows: auto minmax(0, 1fr); }
-  .r-a2 { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
-  .r-b { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
-  .r-b-tj { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); }
-  .r-b-tj > :first-child { grid-column: 1 / -1; }
-  .r-c { grid-template-rows: minmax(0, 1fr) auto auto; }
-  .r-d { grid-template-rows: minmax(0, 1fr) auto; }
-}
-.r-b-tj { display: grid; gap: 14px; min-height: 0; }
-@container app (min-width: 600px) and (max-width: 999px) { .r-b-tj { grid-template-columns: 1fr 1fr; } .r-b-tj > :first-child { grid-column: 1 / -1; } }
 
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
@@ -594,10 +541,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, séptima ronda</h1>
-    <p>Elegiste <b>la 3 · Resumen, Estudio y Tareas</b>. Esta ronda la deja como base y se concentra en lo que pediste. <b>En Estudio</b>, el acumulado ya no es una columna angosta y alta: toma casi la mitad del ancho y la curva se lee de costado, como corresponde a algo que avanza en el tiempo. <b>En Tareas</b>, las tarjetas de abajo (avance por tipo y lo que se viene) miden lo que mide su lista, y el resto del alto se lo llevan los gráficos de arriba.</p>
-    <p><b>El Resumen</b> vuelve a la E de la primera ronda, la que te pareció «más resumen que dashboard»: una cifra grande, la frase que la explica y un gráfico chico. Ahora es una pieza adentro del Resumen y no la pantalla entera. Está con las cinco tarjetas que marcaste: <b>hoy, constancia, entregas, pendiente y parciales</b>. Las cuatro propuestas (A a D) cambian solo el Resumen; Estudio y Tareas son iguales en todas. Lo que te pareció tosco de la E era el salto entre cifras: acá cambian con un fundido de opacidad.</p>
-    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La sexta ronda quedó guardada aparte.</p>
+    <h1>Dashboard, sexta ronda</h1>
+    <p>De la quinta ronda: <b>la distribución de R</b> fue la que más te gustó, pero no la tarjeta de hoy, tan alta y con un hueco en el medio. <b>Las tarjetas de arriba de S</b> te gustaron más. De <b>U</b>, poder ir para atrás y comparar semanas. Y las tarjetas ayudan a entender la información.</p>
+    <p>Las cinco propuestas de esta ronda (1 a 5) parten de eso: <b>arriba, las cuatro tarjetas de S</b>, que reemplazan la tarjeta alta; debajo, los gráficos de R, y en todas, <b>las flechas de U</b>. Además suman <b>lo de Tareas</b>: lo que completaste por día, las entregas a tiempo, el avance de prácticos, informes, parciales y tareas, las notas de los parciales y lo que se viene. Cada propuesta resuelve de otra manera dónde va todo eso: en pestañas, en una franja, en una columna o comparando dos períodos.</p>
+    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. El ajuste nuevo <b>«Tarjetas»</b> prueba las tarjetas oscuras que quedaron en Tareas. La quinta ronda quedó guardada aparte.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -619,64 +566,80 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="ra" data-v="ra">
+  <section class="opcion" id="d1" data-v="d1">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">A</span><span class="nombre">Las tarjetas eligen la cifra</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Arriba, las cinco tarjetas. Debajo, el <b>escenario de E</b>, que arranca con el resumen del período («15 h, 8 h 45 min más que la semana anterior»), y al lado lo que se viene. <b>Tocar una tarjeta la abre en grande</b> en el escenario, con su frase completa y un gráfico más rico: hoy muestra tus sesiones en su hora; constancia, la racha. Las flechas recorren también lo que no tiene tarjeta: tu horario y lo que hiciste. Tocarla otra vez vuelve al período.</p>
-        <p class="enfoque">Lo primero: <b>las cinco tarjetas; el período, en grande</b></p>
+        <h2><span class="letra">1</span><span class="nombre">Estudio y Tareas en pestañas</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Arriba, el período con sus flechas, el selector y dos pestañas: <b>Estudio</b> y <b>Tareas</b>. Estudio es S con la distribución de R: cuatro tarjetas (hoy, constancia, contra el anterior y horario) y, debajo, las barras del período y el acumulado. La tarjeta de las barras tiene una segunda vista, <b>«Año»</b>, que muestra el mapa con el período resaltado. Tareas repite la forma: cuatro tarjetas (lo que hiciste, entregas a tiempo, lo pendiente y los parciales) y, debajo, lo completado por día, el avance por tipo y lo que se viene.</p>
+        <p class="enfoque">Lo primero: <b>las cuatro tarjetas de la pestaña abierta</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Las tarjetas son el índice: no hay que adivinar qué hay detrás de las flechas.</li><li>Lo que se viene queda siempre a la vista.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Cada cifra está dos veces: chica en la tarjeta y grande en el escenario.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Las dos pestañas se leen igual: tarjetas arriba y detalle abajo.</li><li>Cada pestaña tiene espacio de sobra, sin achicar nada.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Estudio y Tareas no se ven juntos.</li><li>El mapa del año queda escondido detrás de «Año».</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="rb" data-v="rb">
+  <section class="opcion" id="d2" data-v="d2">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">B</span><span class="nombre">Una cifra por vez, al costado</span></h2>
-        <p class="resumen">La E casi como era: <b>el escenario ocupa todo el alto de la izquierda</b> y se recorre con las flechas (nueve cifras: el período, hoy, constancia, horario, lo que hiciste, entregas, pendiente, parciales y lo que se viene). A la derecha, las cinco tarjetas en dos columnas, con hoy a lo ancho.</p>
-        <p class="enfoque">Lo primero: <b>la cifra del escenario</b></p>
+        <h2><span class="letra">2</span><span class="nombre">Dos franjas, sin pestañas</span></h2>
+        <p class="resumen">Todo en una pantalla, en dos franjas con nombre. <b>Estudio</b> tiene las cuatro tarjetas de S, las barras del período y el acumulado. <b>Tareas</b> es una fila de cuatro tarjetas chicas: lo que hiciste, prácticos, informes y parciales, cada una con su cifra y su barra de avance.</p>
+        <p class="enfoque">Lo primero: <b>el estudio; las tareas, como resumen abajo</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El escenario tiene más aire: es lo más parecido a la E.</li><li>Las tarjetas se leen sin tocar nada.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El escenario y las tarjetas no se hablan: tocar una tarjeta no la abre.</li><li>Lo que se viene queda adentro de las flechas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Se ve todo sin tocar nada.</li><li>Las tareas suman contexto sin robarle lugar al estudio.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las tareas quedan como resumen: no está lo que se viene ni lo completado por día.</li><li>Las barras quedan más bajas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="rc" data-v="rc">
+  <section class="opcion" id="d3" data-v="d3">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">C</span><span class="nombre">El resumen, escrito</span></h2>
-        <p class="resumen">En vez de pasar cifras, <b>el resumen se escribe</b>: un párrafo centrado con lo importante en negrita («Esta semana estudiaste 15 h, 8 h 45 min más que la semana anterior, y cumpliste la meta 5 de 7 días…»). Es lo que gustó de la frase de D, llevado a todo el período. Debajo, las cinco tarjetas y una fila con lo que se viene.</p>
-        <p class="enfoque">Lo primero: <b>el párrafo</b></p>
+        <h2><span class="letra">3</span><span class="nombre">Resumen, Estudio y Tareas</span></h2>
+        <p class="resumen">Tres pestañas. <b>Resumen</b> junta ocho tarjetas (cuatro de estudio y cuatro de tareas) y, debajo, las barras del período al lado de lo que se viene. <b>Estudio</b> es R completo, sin la tarjeta de hoy: barras, acumulado, mapa del año y horas. <b>Tareas</b> tiene lo completado por día, las notas de los parciales, el avance por tipo y lo que se viene.</p>
+        <p class="enfoque">Lo primero: <b>las ocho cifras del resumen</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Nada que tocar: se lee de arriba abajo en diez segundos.</li><li>Sin animaciones ni saltos: lo más calmo.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El texto no tiene gráficos: el detalle está en las tarjetas.</li><li>Si los números cambian mucho, la frase puede quedar larga.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El resumen contesta todo de un vistazo; el detalle está a una pestaña.</li><li>Vuelve R entero, con el mapa del año a la vista.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Una pestaña más.</li><li>Algunas cifras se repiten entre el resumen y las otras pestañas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="rd" data-v="rd">
+  <section class="opcion" id="d4" data-v="d4">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">D</span><span class="nombre">La cifra pasa sola</span></h2>
-        <p class="resumen">El escenario arriba, a todo el ancho, y <b>las cifras pasan solas cada 7 segundos</b>, con una línea fina abajo que muestra cuánto falta. Se frena al poner el puntero encima. Debajo, las cinco tarjetas: la que está en el escenario queda marcada y tocar otra la trae. Con «reducir movimiento» activado no avanza sola.</p>
-        <p class="enfoque">Lo primero: <b>la cifra que está pasando</b></p>
+        <h2><span class="letra">4</span><span class="nombre">Tareas al costado</span></h2>
+        <p class="resumen">Sin pestañas. A la izquierda, el estudio: tres tarjetas de S (hoy, constancia y contra el anterior) y, debajo, las barras y el acumulado. A la derecha, <b>una columna alta de Tareas</b>: lo que hiciste en el período, el avance por tipo y lo que se viene.</p>
+        <p class="enfoque">Lo primero: <b>hoy y la semana; las tareas siempre a mano</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se mira como un resumen, sin tocar nada.</li><li>Las tarjetas muestran en qué cifra va.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Lo que se mueve solo distrae, y en un tablero puede cansar.</li><li>Si querés una cifra puntual, hay que esperarla o tocarla.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Lo que se viene está siempre a la vista, como una agenda.</li><li>Una sola pantalla, sin elegir nada.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Se va el horario y el estudio queda más apretado.</li><li>Sin las notas de los parciales ni lo completado por día.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="d5" data-v="d5">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">5</span><span class="nombre">Comparar dos períodos</span></h2>
+        <p class="resumen">La idea de U llevada más lejos: en vez de comparar siempre con el período anterior, <b>elegís los dos</b>. Por ejemplo, esta semana contra la del parcial. Cada uno tiene sus flechas. Las tarjetas muestran los dos valores con dos barras; las barras del medio van de a pares, día por día, y el acumulado tiene una línea por período.</p>
+        <p class="enfoque">Lo primero: <b>cuánto cambió entre los dos períodos</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Responde «¿estudio más que la semana antes del parcial?».</li><li>Mezcla estudio y tareas en la misma comparación.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos juegos de flechas: es la más compleja de usar.</li><li>Sin lo que se viene ni el avance actual: es para mirar hacia atrás.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -687,52 +650,55 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Resumen</th><th>Dónde está la E</th><th>Cómo se cambia de cifra</th><th>Tarjetas</th><th>Lo que se viene</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>Estudio y Tareas</th><th>Tareas que muestra</th><th>Mapa del año</th><th>Comparar</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>A · Las tarjetas eligen</td><td>Abajo, al lado de lo que se viene</td><td>Tocando una tarjeta, o con flechas</td><td>Arriba, en fila; la elegida, marcada</td><td>Siempre a la vista</td><td>Cifras repetidas</td></tr>
-          <tr><td>B · Al costado</td><td>A la izquierda, todo el alto</td><td>Flechas</td><td>A la derecha, en dos columnas</td><td>Dentro de las flechas</td><td>Escenario y tarjetas sueltos</td></tr>
-          <tr><td>C · Escrito</td><td>Como párrafo, arriba</td><td>No se cambia: se lee</td><td>En fila, al medio</td><td>Una fila abajo</td><td>Sin gráficos en el resumen</td></tr>
-          <tr><td>D · Pasa sola</td><td>Arriba, a todo el ancho</td><td>Sola cada 7 s, o tocando</td><td>Abajo, marcan la que pasa</td><td>Dentro de la rotación</td><td>El movimiento distrae</td></tr>
+          <tr class="elegida"><td>1 · Pestañas</td><td>Dos pestañas con la misma forma</td><td>Todo: por día, a tiempo, por tipo, parciales, lo que se viene</td><td>Vista «Año» de las barras</td><td>Con el anterior, con flechas</td><td>No se ven juntos</td></tr>
+          <tr><td>2 · Dos franjas</td><td>Una pantalla, dos franjas</td><td>Resumen por tipo</td><td>No</td><td>Con el anterior, con flechas</td><td>Tareas solo como resumen</td></tr>
+          <tr><td>3 · Resumen y detalle</td><td>Tres pestañas</td><td>Todo, y en el resumen</td><td>Sí, en Estudio</td><td>Con el anterior, con flechas</td><td>Una pestaña más</td></tr>
+          <tr><td>4 · Al costado</td><td>Una pantalla, columna derecha</td><td>Por tipo y lo que se viene</td><td>No</td><td>Con el anterior, con flechas</td><td>Estudio apretado</td></tr>
+          <tr><td>5 · Dos períodos</td><td>Una pantalla, todo comparado</td><td>Hechas y entregas</td><td>No</td><td>Dos períodos a elección</td><td>La más compleja</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría A</h3>
-        <p><b>A resuelve lo tosco de la E.</b> En la E el problema no era la cifra grande sino no saber qué venía después, y pasar de una a otra a ciegas. En A, las tarjetas son el índice: ves las cinco cifras de un vistazo y tocás la que querés entender. El escenario la explica con más espacio. Si no tocás nada, el escenario cuenta el período, que es la pregunta del Resumen.</p>
-        <p><b>C, si preferís que el Resumen no tenga nada que tocar.</b> Es la más calma y la que más se acerca a «resumen y no dashboard». <b>B</b> es la E más pura, pero las tarjetas y el escenario quedan sin relación. <b>D</b> la dejaría afuera: en una pantalla de datos, que algo cambie solo obliga a esperar.</p>
-        <h4>Los dos arreglos</h4>
-        <p><b>Acumulado:</b> en Estudio la grilla pasa a doce columnas. Arriba, las barras toman 7 y el acumulado 5; abajo, el mapa 9 y el horario 3. En 1180 px el gráfico queda unos 420 px de ancho por 200 de alto, más ancho que alto. <b>Tareas:</b> la fila de abajo pasa a <code>auto</code>, así que mide lo que miden sus listas.</p>
-        <h4>Sigue pendiente</h4>
-        <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas (claras u oscuras como Tareas).</p>
+        <h3>Elegiría 1, y le sumaría la comparación de 5 más adelante</h3>
+        <p><b>1 junta lo que marcaste:</b> las tarjetas de S arriba, la distribución de R abajo y las flechas de U. Separar Estudio y Tareas en pestañas evita lo que pasaría si todo entrara en una pantalla, que cada gráfico se achique. Y como las dos pestañas tienen la misma forma (cuatro cifras arriba y el detalle debajo), cambiar de una a otra no obliga a leer de nuevo. El período y las flechas son los mismos en las dos.</p>
+        <p><b>2, si preferís no tocar nada para ver las tareas.</b> Es la que más se parece a la 5ª ronda, con una franja de tareas abajo. <b>3</b> es 1 con un resumen adelante; conviene si en el uso real se mira casi siempre lo mismo.</p>
+        <p><b>Comparar dos períodos (5)</b> puede ser una función de 1: en lugar de una variante aparte, un «Comparar con…» en la cabecera que cambie las barras a pares. Lo dejaría para después de tener lo básico.</p>
+        <h4>Datos que faltan para las tareas</h4>
+        <p>Para lo completado por día y las entregas a tiempo hay que saber <b>cuándo</b> se hizo cada cosa, y hoy no se guarda. Hace falta un <code>completed_at</code> en <code>tasks</code> y un <code>hecho_en</code> en cada ítem del <code>checklist</code> (cada punto de un práctico, cada parte de un informe). La nota de los parciales ya está en el modelo (<code>grade</code>). El borrador está en <code>docs/rediseno/tareas-datos.md</code>.</p>
+        <h4>Fondo, tarjetas y meta</h4>
+        <p><b>Fondo liso.</b> Las tarjetas ya separan y los puntos competirían con las celdas. <b>Tarjetas:</b> probá «Oscuras», las mismas de Tareas; si quedan bien acá, es un argumento para usarlas en toda la app. La forma de cambiar la meta sigue pendiente (está puesta «En la línea»).</p>
       </div>
       <div>
-        <pre><span class="c-com">// A · la tarjeta elegida abre su cifra en el escenario</span>
-type Cifra = "periodo" | "hoy" | "constancia" | "horario" | "hechas"
-  | "entregas" | "pendiente" | "parciales" | "prox";
-const [cifra, setCifra] = useState&lt;Cifra&gt;("periodo");
-const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo" : c));
+        <pre><span class="c-com">// 1 · un estado para el período y otro para la pestaña</span>
+type Vista = "estudio" | "tareas";
+const [vista, setVista] = useState&lt;Vista&gt;("estudio");
+const [periodo, setPeriodo] = useState&lt;Periodo&gt;("semana");
+const [desplazamiento, setDesplazamiento] = useState(0);
 
-&lt;div className="grid gap-3.5 @[1000px]:grid-cols-[1.45fr_repeat(4,1fr)]"&gt;
-  {TARJETAS.map((t) =&gt; (
-    &lt;TarjetaResumen key={t.id} {...t}
-      elegida={cifra === t.id} onElegir={() =&gt; elegir(t.id)} /&gt;
-  ))}
-&lt;/div&gt;
-&lt;AnimatePresence mode="wait"&gt;
-  &lt;motion.div key={cifra} initial={{ opacity: 0.25 }} animate={{ opacity: 1 }}&gt;
-    &lt;Escenario cifra={cifra} periodo={periodo} desplazamiento={desplazamiento} /&gt;
-  &lt;/motion.div&gt;
-&lt;/AnimatePresence&gt;
+&lt;Tabs value={vista} onValueChange={(v) =&gt; setVista(v as Vista)}&gt;
+  &lt;TabsList&gt;
+    &lt;TabsTrigger value="estudio"&gt;Estudio&lt;/TabsTrigger&gt;
+    &lt;TabsTrigger value="tareas"&gt;Tareas&lt;/TabsTrigger&gt;
+  &lt;/TabsList&gt;
+  &lt;TabsContent value="estudio"&gt;
+    &lt;TableroEstudio periodo={periodo} desplazamiento={desplazamiento} /&gt;
+  &lt;/TabsContent&gt;
+  &lt;TabsContent value="tareas"&gt;
+    &lt;TableroTareas periodo={periodo} desplazamiento={desplazamiento} /&gt;
+  &lt;/TabsContent&gt;
+&lt;/Tabs&gt;
 
-<span class="c-com">/* Estudio: el acumulado deja de ser una columna alta */</span>
-.estudio {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-areas:
-    "barras barras barras barras barras barras barras acum acum acum acum acum"
-    "mapa mapa mapa mapa mapa mapa mapa mapa mapa hora hora hora";
-}</pre>
+<span class="c-com">/* La misma grilla en las dos pestañas */</span>
+.tablero {
+  display: grid; gap: .875rem;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.tablero-cifras  { grid-template-columns: 1.3fr repeat(3, 1fr); }
+.tablero-detalle { grid-template-columns: 1.35fr 1fr 1fr; }</pre>
       </div>
     </div>
   </section>
@@ -1188,77 +1154,67 @@ const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo
   };
   const tjTend = x => { const t = tendencia(x.per, x.off, { flex: true }); return `<section class="tj">${et("i-tend", "Acumulado")}<div><h2 class="p-frase">${t.frase}</h2><p class="p-sub">${t.sub}</p></div>${t.graf}</section>`; };
 
-  /* ── El Resumen: una cifra por vez (E), con las cinco tarjetas que marcaste ── */
-  const ESC = ["periodo", "hoy", "constancia", "horario", "hechas", "entregas", "pendiente", "parciales", "prox"];
-  const escena = (app, x, id) => {
-    const { per, off, T, k, h, t } = x, d0 = dias[0];
-    const dif = (n, f) => n === 0 ? "lo mismo que" : `<b>${f(Math.abs(n))} ${n > 0 ? "más" : "menos"}</b> que`;
-    switch (id) {
-      case "periodo": return { ic: "i-tend", et: off ? T.titulo : "El período", g: fmtCorto(k.total), c: `estudiaste ${T.en}, ${dif(k.dif, fmt)} ${T.ant}.`, graf: barras(listaPer(per, off), { mini: true, hueco: HUECO[per] }) };
-      case "hoy": return off
-        ? { ic: "i-meta", et: "Promedio", g: fmtCorto(k.prom), c: `por día ${T.en}. ${T.antCap}, ${fmt(k.antes / k.n)}.`, graf: puntosPer(per, off) }
-        : { ic: "i-meta", et: "Hoy", g: fmtCorto(d0.min), c: `llevás hoy, de una meta de <b>${fmt(meta)}</b>. ${meta > d0.min ? `Te falta ${fmt(meta - d0.min)}.` : "Ya la cumpliste."}`, graf: d0.min ? `<div>${pista(d0)}${eje()}</div>` : "" };
-      case "constancia": return { ic: "i-cal", et: "Constancia", g: `${k.c} de ${k.n}`, c: `días con la meta ${T.en}. ${T.antCap}, ${k.cAnt}.${off ? "" : ` Llevás <b>${racha()} ${racha() === 1 ? "día" : "días"} seguidos</b>.`}`, graf: puntosPer(per, off) };
-      case "horario": return { ic: "i-reloj", et: "Tu horario", g: `${h.ventana} a ${h.ventana + 3} h`, c: `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís. Ahí arranca el ${h.share} % de lo que estudiás.`, graf: histHoras(h) };
-      case "hechas": return { ic: "k-tarea", et: "Lo que hiciste", g: `${t.tot}`, c: `cosas hechas ${T.en}, ${dif(t.tot - t.totAnt, String)} ${T.ant}. ${cap(desglose(t.por))}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) };
-      case "entregas": return { ic: "i-check", et: "Entregas", g: t.ent.length ? `${t.aT} de ${t.ent.length}` : "Ninguna", c: t.ent.length ? `entregas a tiempo ${T.en}. ${T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.` : `entrega ${T.en}.`, graf: miniEntregas(t) };
-      case "pendiente": return off
-        ? { ic: "k-lista", et: "Ritmo", g: nota(t.tot / LARGO[per]), c: `cosas hechas por día ${T.en}. ${T.antCap}, ${nota(t.totAnt / LARGO[per])}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) }
-        : { ic: "k-lista", et: "Pendiente", g: `${t.pend.length}`, c: `cosas pendientes; <b>${t.venc7}</b> vencen en los próximos 7 días.`, graf: miniGeneral(t) };
-      case "parciales": {
-        if (t.rend.length) { const p = t.rend.reduce((s, e) => s + e.nota, 0) / t.rend.length; return { ic: "k-parcial", et: "Parciales", g: nota(p), c: `de promedio en ${t.rend.length} ${t.rend.length === 1 ? "parcial" : "parciales"} ${T.en}.`, graf: miniParc(t) }; }
-        if (t.prox && !off) return { ic: "k-parcial", et: "Parciales", g: enDias(t.prox.dia), c: `el <b>${t.prox.t.toLowerCase()} de ${TEMAS[t.prox.tema][0]}</b>. Repasaste ${t.prox.h} de ${t.prox.tot} unidades.`, graf: miniParc(t) };
-        return { ic: "k-parcial", et: "Parciales", g: "Ninguno", c: `parcial ${T.en}.`, graf: "" };
-      }
-      case "prox": {
-        if (off) return { ic: "i-cal", et: "Entregas de ese período", g: `${t.ent.length}`, c: `entregas ${T.en}.`, graf: proximas(t, 3) };
-        const l = PEND.filter(y => y.dia !== null && y.h < y.tot).sort((y, z) => y.dia - z.dia), p = l[0];
-        return { ic: "i-cal", et: "Lo que se viene", g: enDias(p.dia), c: `<b>${p.t}</b>, de ${TEMAS[p.tema][0]}. Vas ${p.h} de ${p.tot} ${TIPOS[p.k].u[1]}.`, graf: `<div class="prox">${l.slice(1, 4).map(y => `<div class="prox-f">${ic(TIPOS[y.k].ic)}<span class="t">${y.t}</span><span class="c">${enDias(y.dia)}</span><span class="m">${TEMAS[y.tema][0]} · ${y.h} de ${y.tot}</span></div>`).join("")}</div>` };
-      }
-    }
-  };
-  const reducido = matchMedia("(prefers-reduced-motion: reduce)");
-  const escHTML = (app, x, { prog = false } = {}) => {
-    const id = app._esc || "periodo", i = ESC.indexOf(id), e = escena(app, x, id), nueva = app._escNueva ? " nueva" : "";
-    app._escNueva = false;
-    return `<section class="tj esc"><div class="tj-cab">${et(e.ic, e.et)}<span class="esc-nav"><button type="button" class="paso" data-escpaso="-1" data-k="esc-ant" aria-label="Cifra anterior">${ic("i-flecha", "izq")}</button><span>${i + 1} de ${ESC.length}</span><button type="button" class="paso" data-escpaso="1" data-k="esc-sig" aria-label="Cifra siguiente">${ic("i-flecha")}</button></span></div>
-      <div class="centro esc-c"><div class="esc-in${nueva}" aria-live="polite"><p class="esc-grande">${e.g}</p><p class="esc-chico">${e.c}</p>${e.graf ? `<div class="esc-graf">${e.graf}</div>` : ""}</div></div>${prog && !reducido.matches ? `<div class="esc-prog"><i></i></div>` : ""}</section>`;
-  };
-  /* Las cinco tarjetas. elige: si tocarlas cambia el escenario */
-  const cincoTj = (app, x, elige = false) => {
-    const { per, off, k, t } = x, act = app._esc || "periodo";
-    const s = (id, html) => `<section class="tj"${elige ? ` data-esc="${id}" tabindex="0" aria-current="${act === id}"` : ""}>${html}</section>`;
-    return [
-      s("hoy", off ? `${et("i-meta", "Promedio")}${k.kProm}${puntosPer(per, off)}` : `${cabHoy(app)}${dias[0].min ? `<div class="hoy-ses">${pista(dias[0])}${eje()}</div>` : ""}`),
-      s("constancia", `${et("i-cal", "Constancia")}${k.kCumpl}${puntosPer(per, off)}`),
-      s("entregas", `${et("i-check", "Entregas")}${kEntregas(t)}${miniEntregas(t)}`),
-      s("pendiente", `${et("k-lista", off ? "Ritmo" : "Pendiente")}${kPend(t)}${miniGeneral(t)}`),
-      s("parciales", `${et("k-parcial", "Parciales")}${kParc(t)}${miniParc(t)}`),
-    ].join("");
-  };
-  /* C: lo mismo, escrito */
-  const carta = x => {
-    const { T, k, t, h, off } = x, d = k.dif;
-    return `<p class="carta">${cap(T.en)} estudiaste <b>${fmt(k.total)}</b>, ${d === 0 ? "lo mismo que" : `<b>${fmt(Math.abs(d))} ${d > 0 ? "más" : "menos"}</b> que`} ${T.ant}, y cumpliste la meta <b>${k.c} de ${k.n} días</b>. Rendís más los <b>${DOW_LARGO[h.mejorDow]}, de ${h.ventana} a ${h.ventana + 3} h</b>. ${t.ent.length ? `Entregaste <b>${t.aT} de ${t.ent.length}</b> a tiempo` : "No hubo entregas"}${!off && t.prox ? ` y el <b>${t.prox.t.toLowerCase()} de ${TEMAS[t.prox.tema][0]}</b> es ${enDias(t.prox.dia).toLowerCase()}.` : "."}</p>`;
-  };
-  const RESUMEN = {
-    a: (app, x) => `<div class="c3 r-a"><div class="g5">${cincoTj(app, x, true)}</div><div class="g2 r-a2">${escHTML(app, x)}${tjProx(x.t, 5)}</div></div>`,
-    b: (app, x) => `<div class="c3 r-b">${escHTML(app, x)}<div class="r-b-tj">${cincoTj(app, x)}</div></div>`,
-    c: (app, x) => `<div class="c3 r-c"><div class="carta-env">${carta(x)}</div><div class="g5">${cincoTj(app, x)}</div><section class="tj">${et("i-cal", x.off ? "Entregas de ese período" : "Lo que se viene")}<div class="prox-h">${proximas(x.t, 3)}</div></section></div>`,
-    d: (app, x) => `<div class="c3 r-d">${escHTML(app, x, { prog: true })}<div class="g5">${cincoTj(app, x, true)}</div></div>`,
-  };
-
-  /* ── Las estructuras: todas son la 3; cambia solo el Resumen ── */
+  /* ── Las estructuras ── */
+  const VISTAS2 = [["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
   const VISTAS3 = [["resumen", "Resumen", "i-barras"], ["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
-  const tres = modo => app => {
-    const x = base(app), vista = app._vista || "resumen";
-    let cuerpo;
-    if (vista === "resumen") cuerpo = RESUMEN[modo](app, x);
-    else if (vista === "estudio") cuerpo = `<div class="c3 g-est">${tjBarras(app, x)}${tjTend(x)}<section class="tj">${et("i-cal", "Constancia")}<h2 class="p-frase">${fraseMapa(x)}</h2><div class="centro">${mapaPer(x)}</div></section><section class="tj">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${x.h.ventana} y las ${x.h.ventana + 3} h <span>· los ${DOW_LARGO[x.h.mejorDow]}</span></h2>${histHoras(x.h, "crece")}</section></div>`;
-    else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
-    return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
+  const V = {
+    d1: app => {
+      const x = base(app), vista = app._vista || "estudio";
+      const cuerpo = vista === "estudio"
+        ? `<div class="g4">${filaEstudio(app, x)}</div><div class="g2">${tjBarras(app, x, { conAno: true })}${tjTend(x)}</div>`
+        : `<div class="g4">${filaTareas(x.t)}</div><div class="g2 g3">${tjHechas(x.t, x.sel, { heroe: true })}${tjTipos(x.t)}${tjProx(x.t)}</div>`;
+      return `<main class="main una-main m1">${perCab(app, { vistas: VISTAS2 })}${cuerpo}</main>`;
+    },
+    d2: app => {
+      const x = base(app);
+      return `<main class="main una-main m2">${perCab(app)}
+        <div class="g4">${filaEstudio(app, x)}</div>
+        <div class="g2">${tjBarras(app, x)}${tjTend(x)}</div>
+        <section class="tj"><div class="franja">${ic("k-tarea")}Tareas <span style="font-weight:400">· ${x.t.tot} cosas hechas ${x.T.en}, ${x.t.pend.length} pendientes</span></div><div class="cifras tcols">${ORDEN.map(k => tipoCol(x.t, k)).join("")}</div></section>
+      </main>`;
+    },
+    d3: app => {
+      const x = base(app), vista = app._vista || "resumen";
+      let cuerpo;
+      if (vista === "resumen") cuerpo = `<div class="c3 c-res"><div class="g4">${filaEstudio(app, x)}</div><div class="g4">${filaTareas(x.t)}</div><section class="tj">${et("i-cal", "Lo que se viene")}<div class="prox-h">${proximas(x.t, 6)}</div></section></div>`;
+      else if (vista === "estudio") cuerpo = `<div class="c3 g-est">${tjBarras(app, x)}${tjTend(x)}<section class="tj">${et("i-cal", "Constancia")}<h2 class="p-frase">${fraseMapa(x)}</h2><div class="centro">${mapaPer(x)}</div></section><section class="tj">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${x.h.ventana} y las ${x.h.ventana + 3} h <span>· los ${DOW_LARGO[x.h.mejorDow]}</span></h2>${histHoras(x.h, "crece")}</section></div>`;
+      else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
+      return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
+    },
+    d4: app => {
+      const x = base(app), t = x.t;
+      return `<main class="main una-main m4">${perCab(app)}
+        <div class="m4-grid">
+          <div class="m4-izq"><div class="g4">${filaEstudio(app, x, { tres: true })}</div><div class="g2">${tjBarras(app, x)}${tjTend(x)}</div></div>
+          <section class="tj m4-der">${et("k-tarea", "Tareas")}${kHechas(t)}${tipos(t)}<p class="tj-et" style="margin-top:6px">${ic("i-cal")}${t.off ? "Entregas de ese período" : "Lo que se viene"}</p>${proximas(t, 4)}</section>
+        </div>
+      </main>`;
+    },
+    d5: app => {
+      const per = app._per || "semana", off = app._off || 0, offB = app._offB ?? off + 1;
+      const [a, b] = rango(per, off), [a2, b2] = rango(per, offB);
+      const nomA = nombrePer(per, off), nomB = nombrePer(per, offB), artB = articuloPer(per, offB);
+      const A = cifrasPer(per, off), B = cifrasPer(per, offB), tA = tareasPer(per, off), tB = tareasPer(per, offB);
+      const dos = (titulo, icono, vA, vB, fmtX, sub) => { const max = Math.max(vA, vB, 1), d = vA - vB; return `<section class="tj">${et(icono, titulo)}${kpi(fmtX === "min" ? signo(d) : signoN(d), `que ${artB}`, sub)}<div class="dos"><span>A</span><span class="cmp-p"><i class="act" style="width:${vA / max * 100}%"></i></span><b>${fmtX === "min" ? fmtCorto(vA) : vA}</b><span>B</span><span class="cmp-p"><i style="width:${vB / max * 100}%"></i></span><b>${fmtX === "min" ? fmtCorto(vB) : vB}</b></div></section>`; };
+      const lA = listaPer(per, off), lB = listaPer(per, offB);
+      const lista = lA.map((x, k) => ({ ...x, ant: lB[k] ? lB[k].v : 0, tip: `${x.tip.split(" (")[0]} · contra ${lB[k] ? fmt(lB[k].v) : "nada"}` }));
+      const t = tendencia(per, off, { flex: true, offAnt: offB, nombres: [nomA, nomB] });
+      const chip = (cl, nom, o, attr) => `<span class="chip-per ${cl}"><i></i>${nom}${flechasPer(per, o, attr, cl === "a" ? "Período A" : "Período B")}</span>`;
+      return `<main class="main una-main m5">
+        <div class="per-cab"><div class="per-izq" style="flex-wrap:wrap">${chip("a", nomA, off, "off")}<span class="contra">contra</span>${chip("b", nomB, offB, "offb")}</div>${selPer(per)}</div>
+        <div class="g4 parejo">
+          ${dos("Estudiaste", "i-reloj", A.total, B.total, "min", `Días con la meta: ${A.c} contra ${B.c}.`)}
+          ${dos("Días con la meta", "i-cal", A.c, B.c, "n", `De ${A.n} días cada uno.`)}
+          ${dos("Cosas hechas", "k-tarea", tA.tot, tB.tot, "n", `${desglose(tA.por)}.`)}
+          ${dos("Entregas a tiempo", "i-check", tA.aT, tB.aT, "n", `De ${tA.ent.length} y ${tB.ent.length} entregas.`)}
+        </div>
+        <div class="g2">
+          <section class="tj heroe"><div class="tj-cab">${et("i-barras", "Día por día")}<span class="ley-par"><span><i></i>A</span><span><i class="ant"></i>B</span><span><i class="meta"></i>Meta</span></span></div><h2 class="p-frase">${fmt(A.total)} contra ${fmt(B.total)} <span>· ${per === "ano" ? "promedio por día de cada mes" : "día por día"}</span></h2><div class="crece">${barras(lista, { sel: app._dia ?? 0, pares: true, valores: per === "semana", hueco: per === "semana" ? 14 : HUECO[per] })}</div></section>
+          <section class="tj">${et("i-tend", "Acumulado")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+        </div>
+      </main>`;
+    },
   };
-  const V = { ra: tres("a"), rb: tres("b"), rc: tres("c"), rd: tres("d") };
   const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
   const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
@@ -1274,7 +1230,7 @@ const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo
   let actual = null;
   const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
   const pintar = (a, enfocar, fundir) => {
-    const k = enfocar && a.el.contains(document.activeElement) && document.activeElement.dataset?.k;
+    const k = enfocar && document.activeElement?.dataset?.k;
     if (fundir) { a.cuerpo.classList.add("fundir"); clearTimeout(a._fundir); a._fundir = setTimeout(() => a.cuerpo.classList.remove("fundir"), 400); }
     a.cuerpo.innerHTML = V[a.v](a.el);
     DESPUES[a.v]?.(a);
@@ -1294,13 +1250,8 @@ const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo
     el.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) verTip(t); });
     el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
     el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
-    const elegirEsc = c => { el._esc = c.dataset.esc === el._esc ? "periodo" : c.dataset.esc; el._escNueva = true; pintar(a); el.querySelector(`[data-esc="${c.dataset.esc}"]`)?.focus(); };
-    el.addEventListener("keydown", e => { const c = e.target.closest?.("[data-esc]"); if (c && e.target === c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); elegirEsc(c); } });
-    el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
-      const tjE = e.target.closest("[data-esc]");
-      if (tjE && !e.target.closest("button")) return elegirEsc(tjE);
       const b = e.target.closest("button"); if (!b || b.disabled) return;
       const d = b.dataset;
       tip.classList.remove("ver");
@@ -1309,7 +1260,6 @@ const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo
       if (d.per) { el._per = d.per; el._off = 0; el._offB = undefined; el._dia = undefined; return pintar(a, true, true); }
       if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); el._dia = undefined; return pintar(a, true, true); }
       if (d.offb) { const per = el._per || "semana"; el._offB = Math.min(OFF_MAX[per], Math.max(0, (el._offB ?? (el._off || 0) + 1) + +d.offb)); return pintar(a, true, true); }
-      if (d.escpaso) { const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + +d.escpaso + ESC.length) % ESC.length]; el._escNueva = true; return pintar(a, true); }
       if (d.vista) { el._vista = d.vista; return pintar(a, true, true); }
       if (d.hero) { el._hero = d.hero; return pintar(a, true, true); }
       if (d.rango) { el._rango = d.rango; return pintar(a, true); }
@@ -1346,7 +1296,7 @@ const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo
   pulsar(grupoCtl, ctlMeta);
   grupoCtl.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
     ctlMeta = b.dataset.v; guardar("doro-dash-meta", ctlMeta); pulsar(grupoCtl, ctlMeta);
-    apps.forEach(x => { { x.el._editMeta = false; pintar(x); } });
+    apps.forEach(x => { if (x.v !== "mini") { x.el._editMeta = false; pintar(x); } });
   }));
   setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
 

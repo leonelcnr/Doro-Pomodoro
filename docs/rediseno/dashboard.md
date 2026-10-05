@@ -150,6 +150,34 @@ Datos que pide la 6ª ronda: lo completado por día y las entregas a tiempo nece
 ya está en el borrador de `docs/rediseno/tareas-datos.md`. Esto cambia lo de arriba: las
 tareas terminadas **vuelven** al dashboard, como estadística y no como lista.
 
+**Opinión de Leo sobre la 6ª ronda (2026-10-05):** la **3 · Resumen, Estudio y Tareas** es
+la mejor de todas. Pidió tres cosas: (1) en Estudio, el acumulado quedaba muy vertical y
+eso engaña al leer la pendiente; (2) en Tareas, las tarjetas de abajo (avance por tipo y
+lo que se viene) tenían espacio sobrante; (3) en el Resumen, algo como la **E · Una cifra
+por vez** de la 1ª ronda («resumen, no dashboard»), junto con las tarjetas de hoy,
+constancia, entregas, pendiente y parciales, que le parecen muy relevantes.
+
+**Séptima ronda (publicada 2026-10-05, esperando opinión).** Todas son la 3; Estudio y
+Tareas son iguales en las cuatro, y solo cambia el Resumen. Arreglos: en Estudio la grilla
+pasa a 12 columnas (arriba barras 7 + acumulado 5, abajo mapa 9 + horario 3), y el
+acumulado queda en unos 370 × 140 px a 1180 × 760. En Tareas la fila de abajo pasa a
+`auto` y mide lo que miden sus listas. Escenario E: cifra grande, frase y gráfico chico, con
+nueve cifras (período, hoy, constancia, horario, lo que hiciste, entregas, pendiente,
+parciales, lo que se viene) y un fundido de opacidad entre una y otra. La tarjeta de hoy suma
+la franja con las sesiones del día, para no dejar un hueco abajo.
+- **A · Las tarjetas eligen la cifra** (recomendada). Cinco tarjetas arriba; abajo el
+  escenario (arranca en el período) y lo que se viene. Tocar una tarjeta la abre en grande;
+  tocarla otra vez vuelve al período.
+- **B · Una cifra por vez, al costado.** El escenario ocupa todo el alto de la izquierda,
+  con flechas; las tarjetas en dos columnas a la derecha, sin relación con el escenario.
+- **C · El resumen, escrito.** Un párrafo con lo importante en negrita, las cinco tarjetas
+  y una fila con lo que se viene. Nada que tocar.
+- **D · La cifra pasa sola.** El escenario arriba avanza cada 7 s, con una línea de
+  progreso que se frena con el puntero encima; no avanza con «reducir movimiento».
+
+Recomendación: **A**; plan B **C**. D la dejaría afuera. La 6ª ronda quedó en
+`bocetos/dashboard-ronda6.html`.
+
 Hallazgos para la Fase 3:
 - `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
   tienen el violeta escrito a mano: no van a seguir el acento elegido.
@@ -162,9 +190,9 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-6ª ronda publicada (1 a 5, Estudio y Tareas; recomendada 1, plan B 2). **Próximo paso:**
-recoger la opinión de Leo; sigue pendiente la forma de cambiar la meta (recomendada «En la
-línea») y si las tarjetas quedan claras u oscuras.
+7ª ronda publicada: la 3 con el Resumen en cuatro formas (A a D, recomendada A · Las
+tarjetas eligen la cifra, plan B C). **Próximo paso:** recoger la opinión de Leo; siguen
+pendientes la forma de cambiar la meta («En la línea») y si las tarjetas van claras u oscuras.
 
 ## Propuestas transversales
 
