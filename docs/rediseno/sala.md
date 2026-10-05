@@ -172,12 +172,38 @@ Recomendación: **T4**; plan B, T2 (misma pieza que la pantalla Tareas). Para la
 guardar el foco en la sesión de enfoque (p. ej. un `task_id` opcional) permitiría al
 dashboard contar minutos por tema y por práctico.
 
+**Decisión (Leo, 2026-10-05):** la bandeja es **T4 · En qué estás**, pero en T4 cuesta
+encontrar una tarea puntual porque «Lo que sigue» mezcla todo por fecha. Pidió algo como las
+pestañas de T5 o los recuadros de T6. **Notas:** quedan en `localStorage` y **no se borran**
+(ni al salir ni a las 12 h); se descartan a mano. Además, el panel de notas daba un «choque y
+rebote» arriba al abrirse.
+
+**Novena ronda (misma URL, la 8ª quedó en `bocetos/sala-ronda8.html`).** Las cuatro son T4;
+cambia el filtro de debajo del foco, que queda fijo bajo «Mías / De la sala» al bajar.
+- **T7 · Pestañas por tipo**: el segmentado de T5 (Todo, Parciales, Prácticos, Informes,
+  Tareas).
+- **T8 · Recuadros que filtran**: los recuadros de T6 (cuánto falta y avance) filtran ahí
+  mismo; tocar de nuevo vuelve a todo.
+- **T9 · Un ícono por tema** (recomendada): fila de íconos de tema con su línea de avance;
+  elegido uno, la lista es solo ese tema y el alta va a ese tema.
+- **T10 · Buscar o sumar**: un campo que filtra por título, tema o tipo; Enter suma.
+Recomendación: **T9** (se busca por materia); plan B, T9 con el campo de T10.
+
+**El rebote de las notas:** el cuerpo de la bandeja tomaba el ancho animado (64 → 300 px), los
+post-its pasaban por una sola columna y la bandeja subía hasta su máximo (74 %) para después
+bajar a su altura real (medido: 502 px → 425 px). Arreglo: el cuerpo mide desde el principio
+lo que la bandeja abierta (`--ancho-postits`) y la bandeja solo lo recorta.
+
+**Notas persistentes:** en el boceto, una sola clave (`doro-notas`), la misma en todas las
+variantes. Sin «Salir borra». Para la app: clave por usuario (`doro-notas-<usuarioId>`).
+
 ---
 
 ## Dónde retomamos
 
-8ª ronda publicada (T1–T6, recomendada T4), esperando la elección de Leo. **Próximo paso:**
-con la bandeja elegida, cerrar la sala (falta confirmar el vencimiento de 12 h de las notas).
+9ª ronda publicada (T7–T10, recomendada T9), esperando la elección de Leo. **Quedan abiertas:**
+si las notas son por sala o las mismas en todas, y si llevan un tope (p. ej. 50). Con eso se
+cierra la sala.
 
 ## Propuestas transversales
 
