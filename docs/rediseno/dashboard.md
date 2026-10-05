@@ -122,6 +122,34 @@ puntos quedan para toda la app, en J «A los lados».
 Se va del dashboard actual: la torta por categoría, los íconos de colores, la lista de
 últimas tareas terminadas (pasa a Tareas) y las tareas por tema.
 
+**Sexta ronda (publicada 2026-10-05, esperando opinión).** De la 5ª: gustó la distribución de
+R, pero no su tarjeta de hoy (alta y con un hueco); gustaron más las tarjetas de arriba de S
+y, de U, poder ir para atrás y comparar. Las cinco propuestas llevan arriba las cuatro
+tarjetas de S, debajo los gráficos de R y en todas las flechas de U. Además **suman Tareas**:
+lo completado por día, las entregas a tiempo, el avance de prácticos, informes, parciales y
+tareas, las notas de los parciales y lo que se viene. Nuevo ajuste «Tarjetas» (claras u
+oscuras, como las aprobadas en Tareas). La 5ª ronda quedó en `bocetos/dashboard-ronda5.html`.
+- **1 · Estudio y Tareas en pestañas** (recomendada). Dos pestañas con la misma forma:
+  cuatro tarjetas arriba y el detalle debajo. Estudio es S con la distribución de R (las
+  barras tienen una vista «Año» con el mapa); Tareas, lo hecho, entregas a tiempo, pendiente
+  y parciales, y debajo lo completado por día, el avance por tipo y lo que se viene.
+- **2 · Dos franjas, sin pestañas.** Todo en una pantalla: Estudio arriba y una fila de
+  cuatro tarjetas chicas de Tareas abajo (hecho, prácticos, informes, parciales).
+- **3 · Resumen, Estudio y Tareas.** Tres pestañas; Resumen junta ocho cifras y las barras
+  al lado de lo que se viene.
+- **4 · Tareas al costado.** Estudio a la izquierda y una columna alta de Tareas a la derecha.
+- **5 · Comparar dos períodos.** Elegís los dos períodos, cada uno con sus flechas; tarjetas
+  con dos valores, barras de a pares y un acumulado por período.
+
+Recomendación: **1**; plan B **2** (sin tocar nada para ver las tareas). La comparación de 5
+puede volver más adelante como un «Comparar con…» dentro de 1. Fondo liso; probar
+tarjetas «Oscuras». La forma de cambiar la meta sigue pendiente («En la línea»).
+
+Datos que pide la 6ª ronda: lo completado por día y las entregas a tiempo necesitan
+`completed_at` en `tasks` y la fecha de cada ítem del checklist; la nota de los parciales
+ya está en el borrador de `docs/rediseno/tareas-datos.md`. Esto cambia lo de arriba: las
+tareas terminadas **vuelven** al dashboard, como estadística y no como lista.
+
 Hallazgos para la Fase 3:
 - `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
   tienen el violeta escrito a mano: no van a seguir el acento elegido.
@@ -134,10 +162,14 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-5ª ronda publicada (F sin scroll; R a V en tarjetas con selector de período, recomendada
-R, plan B U). **Próximo paso:** recoger la opinión de Leo; sigue pendiente la forma de
-cambiar la meta (recomendada «En la línea»).
+6ª ronda publicada (1 a 5, Estudio y Tareas; recomendada 1, plan B 2). **Próximo paso:**
+recoger la opinión de Leo; sigue pendiente la forma de cambiar la meta (recomendada «En la
+línea») y si las tarjetas quedan claras u oscuras.
 
 ## Propuestas transversales
 
-Ninguna por ahora.
+- **Para `tareas-datos.md`:** sumar `completed_at timestamptz` a `tasks` y la fecha de
+  cumplido en cada ítem de `checklist`. Sin eso, la pestaña Tareas del dashboard no puede
+  mostrar lo completado por día ni las entregas a tiempo.
+- **Tarjetas oscuras en toda la app** (Fase 2): si en el dashboard también quedan bien,
+  suman argumento para que el tono «hundido» de Tareas sea un token común.

@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Sexta ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Quinta ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -350,6 +350,31 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 .tend.flex .graf-area { flex: 1; height: auto !important; min-height: 100px; }
 @container app (min-width: 1000px) { .tend.flex .graf { min-height: 0; } }
 
+/* ───────── F sin scroll: lo mismo, repartido en el alto ───────── */
+@container app (min-width: 1000px) {
+  .f-main { grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; padding-block: 16px 20px; }
+  .f-main .bloque { padding-top: 14px; gap: 10px; }
+  .f-main .bloque-frase { font-size: 17px; }
+  .f-main .bajada { font-size: 13px; margin-top: 2px; }
+  .f-main .f-par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; min-height: 0; }
+  .f-main .mapa { gap: 8px; }
+  /* El mapa no pasa de 820 px: con celdas más chicas le deja alto a los gráficos de abajo */
+  .f-main .mapa-grilla { max-width: 820px; }
+  .f-main .f-par > .bloque { min-height: 0; overflow: hidden; }
+  .f-main .f-par .panel-cab { flex-wrap: nowrap; align-items: flex-start; }
+  .f-main .f-par .panel-cab > div { flex: 1; min-width: 0; }
+  .f-main .f-par .rangos { flex-shrink: 0; }
+  .f-main .tend.flex .graf-area { min-height: 60px; }
+  /* El día elegido en un renglón: título a la izquierda, franja a la derecha */
+  .f-main .dia-det { min-height: 0; display: grid; grid-template-columns: minmax(0, 17em) minmax(0, 1fr); gap: 4px 24px; align-items: start; }
+  .f-main .dia-det .ses-lista { display: none; }
+}
+/* Días por horas que llena el alto que le toca */
+@container app (min-width: 1000px) {
+  .dh.llena { flex: 1; min-height: 0; max-width: none; grid-template-rows: repeat(7, minmax(0, 1fr)) auto; }
+  .dh.llena .celda { aspect-ratio: auto; min-height: 5px; }
+}
+
 /* ───────── Quinta ronda: tarjetas y período ───────── */
 .tj { background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
 .tj-et { display: flex; align-items: center; gap: 7px; margin: 0; font-size: 12.5px; font-weight: 500; color: var(--tenue); }
@@ -390,100 +415,57 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 /* Angosto: todo se apila con su alto natural y se baja */
 @container app (max-width: 999px) { .tj, .t-der > *, .cifras { flex-shrink: 0; } }
 
-/* ───────── Sexta ronda: Estudio y Tareas ───────── */
-/* Tono de las tarjetas (ajuste «Tarjetas»): claras, como en la 5ª, u oscuras, como las aprobadas en Tareas */
-:root[data-tarjetas="oscuras"] .tj { background: oklch(0.955 0.004 285); border-color: transparent; }
-:root[data-tarjetas="oscuras"][data-theme="dark"] .tj { background: oklch(0.13 0.004 285); }
-:root[data-tarjetas="oscuras"][data-theme="dark"][data-negro] .tj { background: oklch(0.095 0.003 285); }
-@media (prefers-color-scheme: dark) { :root[data-tarjetas="oscuras"]:not([data-theme="light"]) .tj { background: oklch(0.13 0.004 285); } }
-
-/* Pestañas de vista (Estudio, Tareas…): texto subrayado, para no confundirse con el período */
-.vistas { display: flex; gap: 22px; align-self: stretch; align-items: flex-end; }
-.vistas button { border: 0; background: none; padding: 0 0 7px; font-size: 14.5px; color: var(--tenue); border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 7px; }
-.vistas button svg { width: 16px; height: 16px; }
-.vistas button:hover { color: var(--fg); }
-.vistas button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); font-weight: 500; }
-.per-der { display: flex; align-items: center; gap: 12px 28px; flex-wrap: wrap; }
-.tj-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; }
-.tj-cab .tj-et { min-width: 0; }
-
-/* Filas por tipo: ícono, nombre, avance y cifra */
-.tipos { display: flex; flex-direction: column; gap: 2px; }
-.tipo { display: grid; grid-template-columns: 18px minmax(0, 7em) minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 7px 0; border-top: 1px solid var(--linea); font-size: 13.5px; }
-.tipo:first-child { border-top: 0; }
-.tipo svg { width: 17px; height: 17px; color: var(--tenue); }
-.tipo .nom { font-weight: 500; }
-.tipo .cif { font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
-.tipo .cif b { color: var(--fg); font-weight: 600; }
-.pbar { height: 6px; border-radius: 3px; background: var(--linea); overflow: hidden; }
-.pbar i { display: block; height: 100%; border-radius: 3px; background: var(--acento); }
-.tipo .sub { grid-column: 2 / -1; font-size: 12px; color: var(--tenue); margin-top: -2px; font-variant-numeric: tabular-nums; }
-
-/* Próximas entregas */
-.prox { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-.prox-f { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 1px 10px; align-items: center; padding: 7px 0; border-top: 1px solid var(--linea); }
-.prox-f:first-child { border-top: 0; }
-.prox-f svg { width: 17px; height: 17px; color: var(--tenue); grid-row: span 2; }
-.prox-f .t { font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.prox-f .c { font-size: 12.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
-.prox-f .c.pronto { color: var(--fg); font-weight: 600; }
-.prox-f .m { font-size: 12px; color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.prox-f .pbar { height: 4px; width: 56px; justify-self: end; }
-.vacio { margin: 0; font-size: 13px; color: var(--tenue); }
-
-/* Notas de los parciales: una barra por parcial, sobre 10 */
-.notas-g { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.notas-g .br { padding-right: 70px; }
-
-/* Cifra doble para comparar dos períodos */
-.dos { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.dos b { font-weight: 600; color: var(--fg); font-size: 13.5px; }
-.chip-per { display: inline-flex; align-items: center; gap: 6px; padding: 3px 4px 3px 10px; border: 1px solid var(--linea); border-radius: 8px; background: var(--superficie); font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.chip-per i { width: 10px; height: 10px; border-radius: 2px; background: var(--acento); flex-shrink: 0; }
-.chip-per.b i { background: color-mix(in oklch, var(--fg) 16%, var(--bg)); }
-.chip-per .paso { width: 26px; height: 26px; border-color: transparent; }
-.contra { font-size: 13px; color: var(--tenue); }
-
-/* Grillas de la sexta ronda */
-.g4 { display: grid; gap: 14px; min-height: 0; }
-.g2 { display: grid; gap: 14px; min-height: 0; }
-@container app (min-width: 600px) and (max-width: 999px) { .g4 { grid-template-columns: 1fr 1fr; } }
+/* ───────── R · M en tarjetas ───────── */
+.r-grid { display: grid; gap: 14px; min-height: 0; }
+@container app (min-width: 600px) and (max-width: 999px) { .r-grid { grid-template-columns: 1fr 1fr; } .r-sem, .r-mapa { grid-column: 1 / -1; } }
 @container app (min-width: 1000px) {
-  .g4 { grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); }
-  .g4.parejo { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .g2 { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
-  .g3 { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); }
-  .m1 { grid-template-rows: auto auto minmax(0, 1fr); gap: 14px; }
-  .m2 { grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; }
-  .m3 { grid-template-rows: auto minmax(0, 1fr); gap: 14px; }
-  .c-res { grid-template-rows: auto auto minmax(0, 1fr); }
-  .c-tar { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
-  .m3 .g-est { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "sem sem sem tend" "mapa mapa mapa cuando"; }
-  .m3 .g-est > :nth-child(1) { grid-area: sem; } .m3 .g-est > :nth-child(2) { grid-area: tend; } .m3 .g-est > :nth-child(3) { grid-area: mapa; } .m3 .g-est > :nth-child(4) { grid-area: cuando; }
-  .m4 { grid-template-rows: auto minmax(0, 1fr); gap: 14px; }
-  .m4-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 1.05fr); }
-  .m4-izq { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 14px; min-height: 0; }
-  .m4-izq .g4 { grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 1fr)); }
-  .m5 { grid-template-rows: auto auto minmax(0, 1fr); gap: 14px; }
+  .r-main { grid-template-rows: auto minmax(0, 1fr); gap: 16px; }
+  .r-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "hoy sem sem tend" "mapa mapa mapa cuando"; }
+  .r-hoy { grid-area: hoy; } .r-sem { grid-area: sem; } .r-tend { grid-area: tend; } .r-mapa { grid-area: mapa; } .r-cuando { grid-area: cuando; }
+  .r-hoy { justify-content: space-between; }
 }
-.g3, .c3 { display: grid; gap: 14px; min-height: 0; }
-.m4-grid { display: grid; gap: 14px; min-height: 0; }
-.m4-izq { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
-.m4-der { gap: 10px; }
-.m4-izq > .g2 { flex: 1; }
-/* Separador con nombre entre la franja de estudio y la de tareas (2) */
-.franja { display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 500; color: var(--tenue); }
-.franja::after { content: ""; flex: 1; height: 1px; background: var(--linea); }
-.franja svg { width: 15px; height: 15px; }
-.tcols { border-top: 0; padding-top: 0; }
-.m2 .tj .p-sub, .m4-der .tipo .sub { display: none; }
-/* Lo que se viene, en tres columnas (3 · Resumen) */
-.prox-h .prox { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; }
-.prox-h .prox-f { padding: 5px 0; }
-.prox-h .prox-f:nth-child(-n+3) { border-top: 0; }
-@container app (max-width: 699px) { .prox-h .prox { grid-template-columns: 1fr; } .prox-h .prox-f:nth-child(-n+3) { border-top: 1px solid var(--linea); } .prox-h .prox-f:first-child { border-top: 0; } }
-.tcol { display: flex; flex-direction: column; gap: 8px; }
-.tcol .tj-et b { margin-left: auto; color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ───────── S · O con período ───────── */
+.s-top, .s-abajo { display: grid; gap: 14px; min-height: 0; }
+@container app (min-width: 600px) and (max-width: 999px) { .s-top { grid-template-columns: 1fr 1fr; } }
+@container app (min-width: 1000px) {
+  .s-main { grid-template-rows: auto auto minmax(0, 1fr); gap: 14px; }
+  .s-top { grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); }
+  .s-abajo { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+}
+
+/* ───────── T · Protagonista e inspector ───────── */
+.t-grid { display: grid; gap: 14px; min-height: 0; }
+.t-der { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+@container app (min-width: 1000px) {
+  .t-main { grid-template-rows: auto minmax(0, 1fr); gap: 16px; }
+  .t-grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); }
+  .t-der > :last-child { flex: 1; }
+}
+
+/* ───────── U · Recorrer el tiempo ───────── */
+.u-abajo { display: grid; gap: 14px; min-height: 0; }
+.u-cifras { border-top: 0; padding-top: 0; align-items: start; }
+.u-cifras .hoy .frase { font-size: 19px; }
+@container app (min-width: 1000px) {
+  .u-main { grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; }
+  .u-abajo { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); }
+  .u-main .br-area { min-height: 80px; }
+  .u-main .tj-et { display: none; }
+}
+
+/* ───────── V · Tres preguntas en columnas ───────── */
+.v-top { display: grid; gap: 14px 40px; }
+.v-per { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.v-per .p-sub { margin: 0; }
+.v-cols { display: grid; gap: 14px; min-height: 0; }
+@container app (max-width: 999px) { .v-per { align-items: flex-start; } }
+@container app (min-width: 600px) and (max-width: 999px) { .v-cols { grid-template-columns: 1fr 1fr; } }
+@container app (min-width: 1000px) {
+  .v-main { grid-template-rows: auto minmax(0, 1fr); gap: 18px; }
+  .v-top { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+  .v-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
@@ -516,19 +498,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-barras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 19v-7M10.5 19V6M15 19v-9M19.5 19v-5"/><path d="M3.5 19h17"/></symbol>
-  <symbol id="t-llaves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></symbol>
-  <symbol id="t-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7 6 16M13 7l5 9M7.2 18h9.6"/></symbol>
-  <symbol id="t-diagrama" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="5" rx="1"/><rect x="13.5" y="15.5" width="7" height="5" rx="1"/><path d="M7 8.5V18h6.5"/></symbol>
-  <symbol id="t-chispa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
-  <symbol id="k-practico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h2M4 12h2M4 17h2M9 7h11M9 12h11M9 17h7"/></symbol>
-  <symbol id="k-parcial" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5l2 2 4-4"/></symbol>
-  <symbol id="k-tarea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
-  <symbol id="t-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></symbol>
-  <symbol id="t-onda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-5 4-5 6 0s4 5 6 0 4-5 6 0"/></symbol>
-  <symbol id="k-informe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></symbol>
-  <symbol id="t-capas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3.5 8.5 12 13l8.5-4.5z"/><path d="M3.5 12.5 12 17l8.5-4.5M3.5 16.5 12 21l8.5-4.5"/></symbol>
-  <symbol id="t-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></symbol>
-  <symbol id="k-lista" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 14.5l2 2 4-4"/></symbol>
   <symbol id="i-tend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-8"/><path d="M15 7h5v5"/></symbol>
   <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
@@ -541,10 +510,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, sexta ronda</h1>
-    <p>De la quinta ronda: <b>la distribución de R</b> fue la que más te gustó, pero no la tarjeta de hoy, tan alta y con un hueco en el medio. <b>Las tarjetas de arriba de S</b> te gustaron más. De <b>U</b>, poder ir para atrás y comparar semanas. Y las tarjetas ayudan a entender la información.</p>
-    <p>Las cinco propuestas de esta ronda (1 a 5) parten de eso: <b>arriba, las cuatro tarjetas de S</b>, que reemplazan la tarjeta alta; debajo, los gráficos de R, y en todas, <b>las flechas de U</b>. Además suman <b>lo de Tareas</b>: lo que completaste por día, las entregas a tiempo, el avance de prácticos, informes, parciales y tareas, las notas de los parciales y lo que se viene. Cada propuesta resuelve de otra manera dónde va todo eso: en pestañas, en una franja, en una columna o comparando dos períodos.</p>
-    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. El ajuste nuevo <b>«Tarjetas»</b> prueba las tarjetas oscuras que quedaron en Tareas. La quinta ronda quedó guardada aparte.</p>
+    <h1>Dashboard, quinta ronda</h1>
+    <p>De la cuarta ronda: <b>F queda igual pero sin scroll</b>. De M te gustaron los gráficos, pero quedaban sueltos y sin jerarquía. O te pareció interesante. Y en casi todas faltaba <b>poder elegir entre la semana, el mes o el año entero</b>.</p>
+    <p>Esta ronda arregla las dos cosas. Las cinco propuestas nuevas (R a V) van en <b>tarjetas</b>, con un orden de lectura claro: primero el período, después lo más grande y al final el detalle. Todas tienen el selector <b>Semana · 30 días · Año</b>, que cambia todos los gráficos a la vez. U, además, deja ir para atrás (la semana pasada, el mes anterior).</p>
+    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. En «Móvil» se apilan y se baja. El ajuste «Meta» cambia la forma de cambiar la meta en todas las maquetas.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -552,8 +521,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Meta</span>
       <div class="segmentado" id="ctlmeta" role="group" aria-label="Forma de cambiar la meta"><button type="button" data-v="texto">Texto</button><button type="button" data-v="lapiz">Lápiz</button><button type="button" data-v="cifra">Cifra</button><button type="button" data-v="objetivo">Ícono y meta</button><button type="button" data-v="linea">En la línea</button><button type="button" data-v="siempre">Siempre a mano</button></div></div>
-    <div class="ajuste"><span class="ajuste-nombre">Tarjetas</span>
-      <div class="segmentado" id="tjtono" role="group" aria-label="Tono de las tarjetas"><button type="button" data-v="claras">Claras</button><button type="button" data-v="oscuras">Oscuras, como Tareas</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Barra</span>
       <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
@@ -566,80 +533,96 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="d1" data-v="d1">
+  <section class="opcion" id="f" data-v="f">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">1</span><span class="nombre">Estudio y Tareas en pestañas</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Arriba, el período con sus flechas, el selector y dos pestañas: <b>Estudio</b> y <b>Tareas</b>. Estudio es S con la distribución de R: cuatro tarjetas (hoy, constancia, contra el anterior y horario) y, debajo, las barras del período y el acumulado. La tarjeta de las barras tiene una segunda vista, <b>«Año»</b>, que muestra el mapa con el período resaltado. Tareas repite la forma: cuatro tarjetas (lo que hiciste, entregas a tiempo, lo pendiente y los parciales) y, debajo, lo completado por día, el avance por tipo y lo que se viene.</p>
-        <p class="enfoque">Lo primero: <b>las cuatro tarjetas de la pestaña abierta</b></p>
+        <h2><span class="letra">F</span><span class="nombre">Página que baja, sin bajar</span><span class="marca-base">La base, con el alto arreglado</span></h2>
+        <p class="resumen">Los mismos bloques y en el mismo orden: hoy contra la meta, la constancia en el mapa del año y, abajo, si vas mejor o peor y a qué hora rendís. Ahora se reparten el alto de la pantalla en vez de estirarla. El día que tocás queda en un renglón debajo del mapa, y los dos gráficos de abajo crecen hasta el borde.</p>
+        <p class="enfoque">Lo primero: <b>hoy contra la meta, y la racha</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Las dos pestañas se leen igual: tarjetas arriba y detalle abajo.</li><li>Cada pestaña tiene espacio de sobra, sin achicar nada.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Estudio y Tareas no se ven juntos.</li><li>El mapa del año queda escondido detrás de «Año».</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Es la que ya te gustaba, ahora entera en una pantalla.</li><li>El mapa del año sigue ocupando todo el ancho.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Los dos gráficos de abajo quedan bajos (unos 130 px en 760 de alto).</li><li>Sigue sin barras ni selector de período, salvo semana o 30 días en el acumulado.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="d2" data-v="d2">
+  <section class="opcion" id="r" data-v="r">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">2</span><span class="nombre">Dos franjas, sin pestañas</span></h2>
-        <p class="resumen">Todo en una pantalla, en dos franjas con nombre. <b>Estudio</b> tiene las cuatro tarjetas de S, las barras del período y el acumulado. <b>Tareas</b> es una fila de cuatro tarjetas chicas: lo que hiciste, prácticos, informes y parciales, cada una con su cifra y su barra de avance.</p>
-        <p class="enfoque">Lo primero: <b>el estudio; las tareas, como resumen abajo</b></p>
+        <h2><span class="letra">R</span><span class="nombre">M en tarjetas</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Los cinco gráficos de M, ahora en tarjetas y con un orden. Arriba están el período y su selector. En la primera fila, hoy y la racha a la izquierda, <b>las barras del período en el centro (la tarjeta más grande)</b> y el acumulado a la derecha. Abajo, el mapa del año con el período resaltado y a qué hora rendís. Cada tarjeta tiene un ícono y un nombre corto arriba de su frase.</p>
+        <p class="enfoque">Lo primero: <b>cada día del período contra la meta</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se ve todo sin tocar nada.</li><li>Las tareas suman contexto sin robarle lugar al estudio.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Las tareas quedan como resumen: no está lo que se viene ni lo completado por día.</li><li>Las barras quedan más bajas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Son los gráficos de M, pero con un protagonista y un orden de lectura.</li><li>El mapa del año siempre está y marca qué parte estás mirando.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El acumulado queda angosto (un cuarto del ancho).</li><li>No muestra las sesiones de un día.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="d3" data-v="d3">
+  <section class="opcion" id="s" data-v="s">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">3</span><span class="nombre">Resumen, Estudio y Tareas</span></h2>
-        <p class="resumen">Tres pestañas. <b>Resumen</b> junta ocho tarjetas (cuatro de estudio y cuatro de tareas) y, debajo, las barras del período al lado de lo que se viene. <b>Estudio</b> es R completo, sin la tarjeta de hoy: barras, acumulado, mapa del año y horas. <b>Tareas</b> tiene lo completado por día, las notas de los parciales, el avance por tipo y lo que se viene.</p>
-        <p class="enfoque">Lo primero: <b>las ocho cifras del resumen</b></p>
+        <h2><span class="letra">S</span><span class="nombre">O con período</span></h2>
+        <p class="resumen">El orden de O (cifras arriba y tendencias abajo), en tarjetas y con el selector. Arriba hay cuatro tarjetas con una cifra y un gráfico chico: hoy, los días con la meta (un cuadrito por día, o por semana en el año), el período contra el anterior en dos barras y tu horario. Abajo, grandes, las barras del período y el acumulado.</p>
+        <p class="enfoque">Lo primero: <b>cuatro respuestas, y después el detalle</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El resumen contesta todo de un vistazo; el detalle está a una pestaña.</li><li>Vuelve R entero, con el mapa del año a la vista.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Una pestaña más.</li><li>Algunas cifras se repiten entre el resumen y las otras pestañas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>La primera fila contesta todo; lo de abajo es para mirar con tiempo.</li><li>Con «Año», los cuadritos pasan a ser semanas y el gráfico sigue siendo legible.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año.</li><li>Cuatro tarjetas chicas arriba compiten un poco entre sí.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="d4" data-v="d4">
+  <section class="opcion" id="t" data-v="t">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">4</span><span class="nombre">Tareas al costado</span></h2>
-        <p class="resumen">Sin pestañas. A la izquierda, el estudio: tres tarjetas de S (hoy, constancia y contra el anterior) y, debajo, las barras y el acumulado. A la derecha, <b>una columna alta de Tareas</b>: lo que hiciste en el período, el avance por tipo y lo que se viene.</p>
-        <p class="enfoque">Lo primero: <b>hoy y la semana; las tareas siempre a mano</b></p>
+        <h2><span class="letra">T</span><span class="nombre">Protagonista e inspector</span></h2>
+        <p class="resumen">Una tarjeta grande con las barras del período (en la semana, cada día al lado del mismo día de la anterior) y, debajo, cuatro cifras separadas por líneas. A la derecha, una columna con hoy, <b>el día que tocaste con sus sesiones</b> y a qué hora rendís.</p>
+        <p class="enfoque">Lo primero: <b>las barras, y tocar un día para verlo</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo que se viene está siempre a la vista, como una agenda.</li><li>Una sola pantalla, sin elegir nada.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Se va el horario y el estudio queda más apretado.</li><li>Sin las notas de los parciales ni lo completado por día.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>La jerarquía más clara: una tarjeta grande y tres chicas.</li><li>Recupera las sesiones de un día, que M no tenía.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año ni el acumulado.</li><li>En «Año» las barras son meses y no se pueden tocar.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="d5" data-v="d5">
+  <section class="opcion" id="u" data-v="u">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">5</span><span class="nombre">Comparar dos períodos</span></h2>
-        <p class="resumen">La idea de U llevada más lejos: en vez de comparar siempre con el período anterior, <b>elegís los dos</b>. Por ejemplo, esta semana contra la del parcial. Cada uno tiene sus flechas. Las tarjetas muestran los dos valores con dos barras; las barras del medio van de a pares, día por día, y el acumulado tiene una línea por período.</p>
-        <p class="enfoque">Lo primero: <b>cuánto cambió entre los dos períodos</b></p>
+        <h2><span class="letra">U</span><span class="nombre">Recorrer el tiempo</span></h2>
+        <p class="resumen">Como R, pero el título es el período y tiene flechas para ir para atrás: la semana pasada, los 30 días anteriores, el año anterior. Debajo del título hay una fila de cifras sin tarjeta. Después, las barras del período a todo el ancho y, abajo, el mapa del año (con el período resaltado) junto al acumulado.</p>
+        <p class="enfoque">Lo primero: <b>qué período estás mirando</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Responde «¿estudio más que la semana antes del parcial?».</li><li>Mezcla estudio y tareas en la misma comparación.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Dos juegos de flechas: es la más compleja de usar.</li><li>Sin lo que se viene ni el avance actual: es para mirar hacia atrás.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Responde «¿cómo me fue el mes pasado?», que ninguna otra puede.</li><li>Las barras a todo el ancho hacen legibles los 30 días.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las flechas suman un control más.</li><li>Lo de hoy queda chico, en la fila de cifras.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="v" data-v="v">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">V</span><span class="nombre">Tres preguntas en columnas</span></h2>
+        <p class="resumen">Arriba, hoy contra la meta a todo el ancho, con el selector a la derecha. Debajo, tres tarjetas iguales, una por pregunta: <b>¿soy constante?</b> (las barras del período contra la meta), <b>¿voy mejor o peor?</b> (el acumulado) y <b>¿cuándo rindo?</b> (las horas). Cada una abre con su cifra.</p>
+        <p class="enfoque">Lo primero: <b>hoy, y después las tres respuestas</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El orden sale de las tres preguntas que decidimos.</li><li>Tres columnas iguales se comparan de un vistazo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año.</li><li>Las barras de 30 días quedan finitas en un tercio del ancho.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -650,55 +633,53 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Boceto</th><th>Estudio y Tareas</th><th>Tareas que muestra</th><th>Mapa del año</th><th>Comparar</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Boceto</th><th>Jerarquía</th><th>Semana · 30 días · Año</th><th>Mapa del año</th><th>Sesiones de un día</th><th>Ir para atrás</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>1 · Pestañas</td><td>Dos pestañas con la misma forma</td><td>Todo: por día, a tiempo, por tipo, parciales, lo que se viene</td><td>Vista «Año» de las barras</td><td>Con el anterior, con flechas</td><td>No se ven juntos</td></tr>
-          <tr><td>2 · Dos franjas</td><td>Una pantalla, dos franjas</td><td>Resumen por tipo</td><td>No</td><td>Con el anterior, con flechas</td><td>Tareas solo como resumen</td></tr>
-          <tr><td>3 · Resumen y detalle</td><td>Tres pestañas</td><td>Todo, y en el resumen</td><td>Sí, en Estudio</td><td>Con el anterior, con flechas</td><td>Una pestaña más</td></tr>
-          <tr><td>4 · Al costado</td><td>Una pantalla, columna derecha</td><td>Por tipo y lo que se viene</td><td>No</td><td>Con el anterior, con flechas</td><td>Estudio apretado</td></tr>
-          <tr><td>5 · Dos períodos</td><td>Una pantalla, todo comparado</td><td>Hechas y entregas</td><td>No</td><td>Dos períodos a elección</td><td>La más compleja</td></tr>
+          <tr><td>F · Sin bajar</td><td>Hoy, el mapa, dos gráficos</td><td>Solo el acumulado (semana o 30 días)</td><td>Sí</td><td>Sí</td><td>No</td><td>Gráficos de abajo bajos</td></tr>
+          <tr class="elegida"><td>R · M en tarjetas</td><td>Las barras del período, al centro</td><td>Sí, todo cambia</td><td>Sí, con el período resaltado</td><td>No</td><td>No</td><td>Acumulado angosto</td></tr>
+          <tr><td>S · O con período</td><td>Cuatro cifras, después dos gráficos</td><td>Sí, todo cambia</td><td>No</td><td>No</td><td>No</td><td>Arriba compiten cuatro</td></tr>
+          <tr><td>T · Protagonista e inspector</td><td>Una tarjeta grande y tres chicas</td><td>Sí, todo cambia</td><td>No</td><td>Sí</td><td>No</td><td>Sin mapa ni acumulado</td></tr>
+          <tr><td>U · Recorrer el tiempo</td><td>El período, después las barras</td><td>Sí, todo cambia</td><td>Sí, con el período resaltado</td><td>No</td><td>Sí</td><td>Hoy queda chico</td></tr>
+          <tr><td>V · Tres preguntas</td><td>Hoy, después tres columnas iguales</td><td>Sí, todo cambia</td><td>No</td><td>No</td><td>No</td><td>Barras de 30 días finitas</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría 1, y le sumaría la comparación de 5 más adelante</h3>
-        <p><b>1 junta lo que marcaste:</b> las tarjetas de S arriba, la distribución de R abajo y las flechas de U. Separar Estudio y Tareas en pestañas evita lo que pasaría si todo entrara en una pantalla, que cada gráfico se achique. Y como las dos pestañas tienen la misma forma (cuatro cifras arriba y el detalle debajo), cambiar de una a otra no obliga a leer de nuevo. El período y las flechas son los mismos en las dos.</p>
-        <p><b>2, si preferís no tocar nada para ver las tareas.</b> Es la que más se parece a la 5ª ronda, con una franja de tareas abajo. <b>3</b> es 1 con un resumen adelante; conviene si en el uso real se mira casi siempre lo mismo.</p>
-        <p><b>Comparar dos períodos (5)</b> puede ser una función de 1: en lugar de una variante aparte, un «Comparar con…» en la cabecera que cambie las barras a pares. Lo dejaría para después de tener lo básico.</p>
-        <h4>Datos que faltan para las tareas</h4>
-        <p>Para lo completado por día y las entregas a tiempo hay que saber <b>cuándo</b> se hizo cada cosa, y hoy no se guarda. Hace falta un <code>completed_at</code> en <code>tasks</code> y un <code>hecho_en</code> en cada ítem del <code>checklist</code> (cada punto de un práctico, cada parte de un informe). La nota de los parciales ya está en el modelo (<code>grade</code>). El borrador está en <code>docs/rediseno/tareas-datos.md</code>.</p>
-        <h4>Fondo, tarjetas y meta</h4>
-        <p><b>Fondo liso.</b> Las tarjetas ya separan y los puntos competirían con las celdas. <b>Tarjetas:</b> probá «Oscuras», las mismas de Tareas; si quedan bien acá, es un argumento para usarlas en toda la app. La forma de cambiar la meta sigue pendiente (está puesta «En la línea»).</p>
+        <h3>Elegiría R, y U si querés mirar para atrás</h3>
+        <p><b>R es M con lo que le faltaba.</b> Están los mismos cinco gráficos que te gustaron, pero las tarjetas los separan y el tamaño marca el orden: las barras del período mandan, hoy las acompaña y el mapa y las horas quedan abajo como contexto. El selector cambia las barras, el acumulado, las horas y la parte resaltada del mapa al mismo tiempo, así que se ve una sola historia por período.</p>
+        <p><b>U, si «¿cómo me fue el mes pasado?» importa.</b> Es R con flechas, y las barras a todo el ancho. Las flechas se le pueden sumar a R sin cambiar nada más.</p>
+        <p><b>Lo que se puede cruzar:</b> la columna de la derecha de T (el día que tocaste) entra en R en el lugar del acumulado, si las sesiones de un día te importan más que la tendencia. El acumulado, en ese caso, pasa a la tarjeta de las barras como segunda pestaña.</p>
+        <h4>Qué cambia con el período</h4>
+        <p><b>Semana:</b> siete barras, cada una con la del mismo día de la semana anterior al lado (en T). <b>30 días:</b> treinta barras finas. <b>Año:</b> una barra por mes con el promedio por día contra la meta, y el acumulado por semanas. La meta sigue siendo diaria en los tres casos.</p>
+        <h4>Fondo con puntos y meta</h4>
+        <p><b>Liso.</b> Las tarjetas ya separan bien, y los puntos detrás se confundirían con las celdas del mapa. La forma de cambiar la meta sigue pendiente: el ajuste «Meta» la cambia en todas las maquetas (está puesta «En la línea»).</p>
       </div>
       <div>
-        <pre><span class="c-com">// 1 · un estado para el período y otro para la pestaña</span>
-type Vista = "estudio" | "tareas";
-const [vista, setVista] = useState&lt;Vista&gt;("estudio");
-const [periodo, setPeriodo] = useState&lt;Periodo&gt;("semana");
-const [desplazamiento, setDesplazamiento] = useState(0);
-
-&lt;Tabs value={vista} onValueChange={(v) =&gt; setVista(v as Vista)}&gt;
-  &lt;TabsList&gt;
-    &lt;TabsTrigger value="estudio"&gt;Estudio&lt;/TabsTrigger&gt;
-    &lt;TabsTrigger value="tareas"&gt;Tareas&lt;/TabsTrigger&gt;
-  &lt;/TabsList&gt;
-  &lt;TabsContent value="estudio"&gt;
-    &lt;TableroEstudio periodo={periodo} desplazamiento={desplazamiento} /&gt;
-  &lt;/TabsContent&gt;
-  &lt;TabsContent value="tareas"&gt;
-    &lt;TableroTareas periodo={periodo} desplazamiento={desplazamiento} /&gt;
-  &lt;/TabsContent&gt;
-&lt;/Tabs&gt;
-
-<span class="c-com">/* La misma grilla en las dos pestañas */</span>
+        <pre><span class="c-com">/* R · tarjetas con un protagonista: las barras ocupan dos columnas */</span>
 .tablero {
   display: grid; gap: .875rem;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "hoy semana semana tendencia"
+                       "anio anio anio cuando";
 }
-.tablero-cifras  { grid-template-columns: 1.3fr repeat(3, 1fr); }
-.tablero-detalle { grid-template-columns: 1.35fr 1fr 1fr; }</pre>
+
+<span class="c-com">// Un solo estado de período para todo el tablero</span>
+type Periodo = "semana" | "mes" | "anio";
+const [periodo, setPeriodo] = useState&lt;Periodo&gt;("semana");
+const { barras, acumulado, horas, rango } =
+  useDashboardStats({ periodo, desplazamiento: 0 });
+
+&lt;ToggleGroup type="single" value={periodo}
+  onValueChange={(v) =&gt; v &amp;&amp; setPeriodo(v as Periodo)}&gt;
+  &lt;ToggleGroupItem value="semana"&gt;Semana&lt;/ToggleGroupItem&gt;
+  &lt;ToggleGroupItem value="mes"&gt;30 días&lt;/ToggleGroupItem&gt;
+  &lt;ToggleGroupItem value="anio"&gt;Año&lt;/ToggleGroupItem&gt;
+&lt;/ToggleGroup&gt;</pre>
+        <h4>Datos para la Fase 3</h4>
+        <p>Se suma a lo de antes (guardar la meta diaria y la hora de inicio de cada sesión): la RPC tiene que recibir el período y el desplazamiento, y devolver también el período anterior para comparar. Para «Año» contra el año anterior hacen falta dos años de historia. Las barras por mes se arman en el cliente a partir de los días. El mapa del año es el mismo en los tres períodos, así que se pide una sola vez.</p>
       </div>
     </div>
   </section>
@@ -731,10 +712,9 @@ const [desplazamiento, setDesplazamiento] = useState(0);
     fondo: v => raiz.dataset.fondo = v,
     vineta: v => raiz.dataset.vineta = v,
     disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
-    tjtono: v => raiz.dataset.tarjetas = v,
   };
   const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", tjtono: "claras" };
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse" };
   const ponerAjuste = {};
   Object.keys(grupos).forEach(id => {
     const g = document.getElementById(id);
@@ -926,22 +906,21 @@ const [desplazamiento, setDesplazamiento] = useState(0);
 
   /* ¿Voy mejor o peor? Acumulado del período contra el anterior y el ritmo de la meta.
      En el año, un punto por semana. */
-  const tendencia = (per, off = 0, { flex = false, offAnt = off + 1, nombres = null } = {}) => {
-    const [a, b] = rango(per, off), largo = b - a + 1, paso = per === "ano" ? 7 : 1, n = Math.floor(largo / paso), T = textos(per, off), corr = (offAnt - off) * largo;
-    const nom = nombres || [off ? "Ese período" : "Ahora", cap(T.ant)];
+  const tendencia = (per, off = 0, { flex = false } = {}) => {
+    const [a, b] = rango(per, off), largo = b - a + 1, paso = per === "ano" ? 7 : 1, n = Math.floor(largo / paso), T = textos(per, off);
     const act = [], ant = [], ritmo = [], fin = []; let sa = 0, sb = 0;
     for (let k = 0; k < n; k++) {
-      for (let j = 0; j < paso; j++) { const i = b - k * paso - j; sa += dias[i].min; sb += dias[i + corr].min; }
+      for (let j = 0; j < paso; j++) { const i = b - k * paso - j; sa += dias[i].min; sb += dias[i + largo].min; }
       act.push(sa); ant.push(sb); ritmo.push(meta * (k + 1) * paso); fin.push(dias[b - k * paso - paso + 1]);
     }
     const dif = sa - sb;
-    const frase = nombres ? `${nombres[0]}, ${dif === 0 ? "lo mismo que" : `${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que`} ${nombres[1].toLowerCase()}.` : dif === 0 ? `${cap(T.en)}, lo mismo que ${T.ant}.` : `${cap(T.en)}, ${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${T.ant}.`;
-    const sub = `${fmt(sa)} contra ${fmt(sb)}. Cumpliste la meta ${cumplidos(a, b)} de ${largo} días; ${T.ant}, ${cumplidos(a + corr, b + corr)}.`;
+    const frase = dif === 0 ? `${cap(T.en)}, lo mismo que ${T.ant}.` : `${cap(T.en)}, ${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${T.ant}.`;
+    const sub = `${fmt(sa)} contra ${fmt(sb)}. Cumpliste la meta ${cumplidos(a, b)} de ${largo} días; ${T.ant}, ${cumplidos(a + largo, b + largo)}.`;
     const pasos = [60, 120, 180, 300, 600, 900, 1200, 1800, 3000, 6000, 12000, 30000, 60000];
     const crudo = Math.max(sa, sb, ritmo[n - 1]), pasoEje = pasos.find(p => crudo / p <= 4) || 60000, tope = Math.ceil(crudo / pasoEje) * pasoEje;
     const pts = arr => arr.map((v, k) => `${(k / (n - 1) * 100).toFixed(2)},${(100 - v / tope * 100).toFixed(2)}`).join(" ");
     const guias = Array.from({ length: Math.round(tope / pasoEje) }, (_, k) => (k + 1) * pasoEje).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
-    const etq = k => { const d = fin[k]; if (per === "semana") return DOW_L[d.dow]; if (per === "mes") return (k % 7 === 0 && k < n - 3) || k === n - 1 ? `${d.f.getDate()}` : ""; const m = d.f.getMonth(); return (k === 0 || fin[k - 1].f.getMonth() !== m) && m % 3 === 0 ? MESES[m] : ""; };
+    const etq = k => { const d = fin[k]; if (per === "semana") return DOW_L[d.dow]; if (per === "mes") return k % 7 === 0 || k === n - 1 ? `${d.f.getDate()}` : ""; const m = d.f.getMonth(); return (k === 0 || fin[k - 1].f.getMonth() !== m) && m % 3 === 0 ? MESES[m] : ""; };
     const etqs = act.map((_, k) => `<span class="${k === n - 1 && !off ? "hoy" : ""}">${etq(k)}</span>`).join("");
     const cols = act.map((v, k) => `<i data-tip="${per === "ano" ? `Semana al ${fechaCorta(fin[k].f)}` : fecha(fin[k].f)} · ${fmt(v)} acumulado (antes ${fmt(ant[k])}, la meta pide ${fmt(ritmo[k])})"></i>`).join("");
     const graf = `<div class="tend${flex ? " flex" : ""}">
@@ -950,7 +929,7 @@ const [desplazamiento, setDesplazamiento] = useState(0);
         <span class="t-punto" style="left:100%;top:${100 - sa / tope * 100}%"></span>
         <div class="tend-cols">${cols}</div></div>
         <div class="graf-etqs">${etqs}</div></div>
-      <div class="tend-ley"><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-act" stroke-width="2.5"/></svg>${nom[0]}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-ant" stroke-width="1.5"/></svg>${nom[1]}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-meta" stroke-width="1"/></svg>La meta</span></div>
+      <div class="tend-ley"><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-act" stroke-width="2.5"/></svg>${off ? "Ese período" : "Ahora"}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-ant" stroke-width="1.5"/></svg>${cap(T.ant)}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-meta" stroke-width="1"/></svg>La meta</span></div>
     </div>`;
     return { frase, sub, graf };
   };
@@ -987,20 +966,17 @@ const [desplazamiento, setDesplazamiento] = useState(0);
     });
   };
   const HUECO = { semana: 10, mes: 3, ano: 6 };
-  /* cuenta: cantidades (tareas hechas, notas) en vez de minutos; sin la línea de la meta, con ref opcional */
-  const barras = (lista, { sel = null, valores = true, pares = false, mini = false, hueco = 8, cuenta = false, techo = null, ref = null } = {}) => {
-    const max = techo || (cuenta ? Math.max(4, ...lista.map(x => Math.max(x.v, pares ? x.ant || 0 : 0))) : Math.max(meta * 1.12, ...lista.map(x => Math.max(x.v, pares ? x.ant || 0 : 0))));
-    const paso = (cuenta ? [1, 2, 5, 10, 20, 50, 100, 200, 500] : [30, 60, 90, 120, 180, 240, 300, 600]).find(p => max / p <= 4) || 600, tope = Math.ceil(max / paso) * paso;
-    const fmtV = cuenta ? v => (Math.round(v * 10) / 10).toLocaleString("es-AR") : fmtCorto;
-    const linea = cuenta ? (ref ? `<div class="br-meta" style="bottom:${ref.v / tope * 100}%"><span>${ref.t}</span></div>` : "") : `<div class="br-meta" style="bottom:${meta / tope * 100}%"><span>Meta ${fmt(meta)}</span></div>`;
-    const guias = mini ? "" : Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${cuenta ? v : fmtEje(v)}</span></div>`).join("");
+  const barras = (lista, { sel = null, valores = true, pares = false, mini = false, hueco = 8 } = {}) => {
+    const max = Math.max(meta * 1.12, ...lista.map(x => Math.max(x.v, pares ? x.ant || 0 : 0)));
+    const paso = [30, 60, 90, 120, 180, 240, 300, 600].find(p => max / p <= 4) || 600, tope = Math.ceil(max / paso) * paso;
+    const guias = mini ? "" : Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
     const cols = lista.map(x => {
-      const h = x.v / tope * 100, ok = cuenta || x.v >= meta, toca = x.dia !== undefined && !mini;
+      const h = x.v / tope * 100, ok = x.v >= meta, toca = x.dia !== undefined && !mini;
       const attrs = toca ? `type="button" data-dia="${x.dia}" data-k="b-${x.dia}" aria-pressed="${sel === x.dia}" aria-label="${x.tip}"` : `role="img" aria-label="${x.tip}"`;
       const tag = toca ? "button" : "div";
-      return `<${tag} class="br-col${x.hoy ? " hoy" : ""}${pares ? " par" : ""}" ${attrs} data-tip="${x.tip}" style="--h:${h.toFixed(1)}%">${pares ? `<i class="ant" style="height:${(x.ant / tope * 100).toFixed(1)}%"></i>` : ""}<i class="${x.v ? (ok ? "ok" : "") : "cero"}" style="height:${h.toFixed(1)}%"></i>${valores && x.v && !mini ? `<span class="v">${fmtV(x.v)}</span>` : ""}</${tag}>`;
+      return `<${tag} class="br-col${x.hoy ? " hoy" : ""}${pares ? " par" : ""}" ${attrs} data-tip="${x.tip}" style="--h:${h.toFixed(1)}%">${pares ? `<i class="ant" style="height:${(x.ant / tope * 100).toFixed(1)}%"></i>` : ""}<i class="${x.v ? (ok ? "ok" : "") : "cero"}" style="height:${h.toFixed(1)}%"></i>${valores && x.v && !mini ? `<span class="v">${fmtCorto(x.v)}</span>` : ""}</${tag}>`;
     }).join("");
-    return `<div class="br${mini ? " mini" : ""}${lista.length === 12 ? " meses" : ""}" style="--hueco:${hueco}px"><div class="br-area">${guias}${linea}<div class="br-cols">${cols}</div></div><div class="br-etqs">${lista.map(x => `<span class="${x.hoy ? "hoy" : ""}">${x.etq}</span>`).join("")}</div></div>`;
+    return `<div class="br${mini ? " mini" : ""}${lista.length === 12 ? " meses" : ""}" style="--hueco:${hueco}px"><div class="br-area">${guias}<div class="br-meta" style="bottom:${meta / tope * 100}%"><span>Meta ${fmt(meta)}</span></div><div class="br-cols">${cols}</div></div><div class="br-etqs">${lista.map(x => `<span class="${x.hoy ? "hoy" : ""}">${x.etq}</span>`).join("")}</div></div>`;
   };
   const barrasPer = (per, off, sel, extra = {}) => barras(listaPer(per, off), { sel, valores: per !== "mes", hueco: HUECO[per], ...extra });
   const fraseBarras = (per, k, T) => per === "ano" ? `${fmt(k.prom)} por día ${T.en} <span>· promedio de cada mes</span>` : `${fmt(k.total)} ${T.en} <span>· ${k.c} de ${k.n} días con la meta</span>`;
@@ -1018,205 +994,107 @@ const [desplazamiento, setDesplazamiento] = useState(0);
     let h = ""; for (let i = b; i >= a; i--) h += `<span class="celda" data-n="${nivelMeta(dias[i].min)}" data-tip="${tipDia(dias[i])}"></span>`;
     return `<div class="puntos" style="--cols:${per === "semana" ? 7 : 15}" role="img" aria-label="Los días del período">${h}</div>`;
   };
-  const comparar = (k, T, ahora = "Ahora") => { const max = Math.max(k.total, k.antes, 1); return `<div class="cmp"><span>${ahora}</span><span class="cmp-p"><i class="act" style="width:${k.total / max * 100}%"></i></span><b>${fmtCorto(k.total)}</b><span>${T.antCap}</span><span class="cmp-p"><i style="width:${k.antes / max * 100}%"></i></span><b>${fmtCorto(k.antes)}</b></div>`; };
+  const comparar = (k, T) => { const max = Math.max(k.total, k.antes, 1); return `<div class="cmp"><span>Ahora</span><span class="cmp-p"><i class="act" style="width:${k.total / max * 100}%"></i></span><b>${fmtCorto(k.total)}</b><span>${T.antCap}</span><span class="cmp-p"><i style="width:${k.antes / max * 100}%"></i></span><b>${fmtCorto(k.antes)}</b></div>`; };
   const selPer = per => `<div class="segmentado periodo" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"], ["ano", "Año"]].map(([v, t]) => `<button type="button" data-per="${v}" data-k="per-${v}" aria-pressed="${v === per}">${t}</button>`).join("")}</div>`;
-  const flechasPer = (per, off, attr = "off", rotulo = "Período") => `<span class="flechas"><button type="button" class="paso" data-${attr}="1" data-k="${attr}-ant" aria-label="${rotulo} anterior" ${off >= OFF_MAX[per] ? "disabled" : ""}>${ic("i-flecha", "izq")}</button><button type="button" class="paso" data-${attr}="-1" data-k="${attr}-sig" aria-label="${rotulo} siguiente" ${off <= 0 ? "disabled" : ""}>${ic("i-flecha")}</button></span>`;
-  const vistasDe = (app, lista) => `<div class="vistas" role="group" aria-label="Vista">${lista.map(([v, t, icono]) => `<button type="button" data-vista="${v}" data-k="vista-${v}" aria-pressed="${v === (app._vista || lista[0][0])}">${ic(icono)}${t}</button>`).join("")}</div>`;
-  const perCab = (app, { flechas = true, vistas = null } = {}) => {
+  const perCab = (app, { flechas = false } = {}) => {
     const per = app._per || "semana", off = app._off || 0, T = textos(per, off);
-    return `<div class="per-cab"><div class="per-izq">${flechas ? flechasPer(per, off) : ""}<h1 class="per-titulo">${T.titulo}<span>${T.fechas}</span></h1></div><div class="per-der">${vistas ? vistasDe(app, vistas) : ""}${selPer(per)}</div></div>`;
+    const fl = flechas ? `<span class="flechas"><button type="button" class="paso" data-off="1" data-k="off-ant" aria-label="Período anterior" ${off >= OFF_MAX[per] ? "disabled" : ""}>${ic("i-flecha", "izq")}</button><button type="button" class="paso" data-off="-1" data-k="off-sig" aria-label="Período siguiente" ${off <= 0 ? "disabled" : ""}>${ic("i-flecha")}</button></span>` : "";
+    return `<div class="per-cab"><div class="per-izq">${fl}<h1 class="per-titulo">${T.titulo}<span>${T.fechas}</span></h1></div>${selPer(per)}</div>`;
   };
-  /* Lo que comparten las estructuras */
+  /* Lo que comparten R a V */
   const base = app => {
     const per = app._per || "semana", off = app._off || 0, [a, b] = rango(per, off);
-    return { per, off, a, b, sel: app._dia ?? a, T: textos(per, off), k: cifrasPer(per, off), h: horario(a, b), t: tareasPer(per, off) };
+    return { per, off, a, b, sel: app._dia ?? 0, T: textos(per, off), k: cifrasPer(per, off), h: horario(a, b) };
   };
-
-  /* ── Tareas: temas, lo pendiente hoy y un historial inventado de lo completado ── */
-  const TEMAS = [["Paradigmas", "t-llaves"], ["Redes", "t-red"], ["Análisis y Diseño", "t-diagrama"], ["Inteligencia Artificial", "t-chispa"], ["Álgebra", "t-sigma"], ["Física II", "t-onda"], ["Sistemas Operativos", "t-capas"], ["Bases de Datos", "t-base"]];
-  const TIPOS = { practico: { n: "Prácticos", uno: "Práctico", ic: "k-practico", u: ["punto", "puntos"] }, informe: { n: "Informes", uno: "Informe", ic: "k-informe", u: ["parte", "partes"] }, parcial: { n: "Parciales", uno: "Parcial", ic: "k-parcial", u: ["unidad repasada", "unidades repasadas"] }, tarea: { n: "Tareas", uno: "Tarea", ic: "k-tarea", u: ["tarea", "tareas"] } };
-  const ORDEN = ["practico", "informe", "parcial", "tarea"];
-  /* Lo pendiente hoy: los mismos ítems del boceto de Tareas. dia = en cuántos días vence */
-  const PEND = [
-    ["parcial", "Primer parcial", 0, 11, 4, 2], ["practico", "TP N°1 — Introducción", 0, 5, 13, 9], ["practico", "TP N°2 — Sintaxis y Semántica", 0, 15, 12, 4],
-    ["informe", "Informe — Comparación de paradigmas", 0, 17, 5, 3], ["tarea", "Leer el apunte de Haskell", 0, null, 1, 0],
-    ["parcial", "Parcial 1", 1, 3, 3, 1], ["practico", "TP N°3 — Capa de transporte", 1, 1, 8, 4], ["tarea", "Leer el capítulo 4 de Kurose", 1, 0, 1, 0],
-    ["parcial", "Coloquio", 2, 26, 5, 0], ["practico", "TP Integrador — Casos de uso", 2, null, 6, 0], ["informe", "Informe de relevamiento", 2, 19, 4, 1],
-    ["informe", "Informe del práctico de clasificación", 3, 6, 4, 3], ["tarea", "Mandarle el mail al profe", 3, 1, 1, 0],
-    ["parcial", "Recuperatorio", 4, 8, 5, 3], ["practico", "Laboratorio 2 — Circuitos RC", 5, 9, 7, 5], ["informe", "Informe del laboratorio 2", 5, 13, 4, 0],
-    ["practico", "TP N°2 — Planificación de procesos", 6, 12, 10, 6], ["parcial", "Parcial 1", 7, 14, 4, 1],
-  ].map(([k, t, tema, dia, tot, h]) => ({ k, t, tema, dia, tot, h }));
-  let semilla2 = 4242;
-  const azar2 = () => (semilla2 = (semilla2 * 16807) % 2147483647) / 2147483647;
-  const hechas = dias.map(d => {
-    const r = { practico: 0, informe: 0, parcial: 0, tarea: 0 };
-    if (d.min) { r.practico = Math.floor(azar2() * Math.min(5, d.min / 30)); r.informe = azar2() < .22 ? 1 : 0; r.parcial = azar2() < .12 ? 1 : 0; r.tarea = azar2() < .45 ? (azar2() < .3 ? 2 : 1) : 0; }
-    else if (azar2() < .15) r.tarea = 1;
-    return r;
-  });
-  const ENTREGAS = [];
-  dias.forEach(d => { if (d.i > 0 && d.min && azar2() < .16) ENTREGAS.push({ i: d.i, k: azar2() < .62 ? "practico" : "informe", tema: Math.floor(azar2() * TEMAS.length), aTiempo: azar2() < .86 }); });
-  ENTREGAS.push({ i: 1, k: "practico", tema: 1, aTiempo: true }, { i: 3, k: "informe", tema: 3, aTiempo: true }, { i: 5, k: "practico", tema: 0, aTiempo: false });
-  const RENDIDOS = [11, 33, 52, 61, 74, 120, 141, 165, 210, 236, 300, 330, 380, 400, 425, 480, 510, 600, 640, 700].map((i, n) => ({ i, tema: (n * 3 + 3) % TEMAS.length, t: n % 3 === 2 ? "Recuperatorio" : `Parcial ${n % 2 + 1}`, nota: i === 11 ? 8 : 4 + Math.round(azar2() * 6) }));
-  const totH = i => { const x = hechas[i]; return x.practico + x.informe + x.parcial + x.tarea; };
-  const desglose = x => ORDEN.filter(k => x[k]).map(k => `${x[k]} ${TIPOS[k].u[x[k] === 1 ? 0 : 1]}`).join(", ") || "nada";
-  const nota = v => (Math.round(v * 10) / 10).toLocaleString("es-AR");
-  const enDias = d => d === 0 ? "Hoy" : d === 1 ? "Mañana" : `En ${d} días`;
-  const signoN = n => `${n >= 0 ? "+" : "−"}${Math.abs(n)}`;
-
-  const tareasPer = (per, off = 0) => {
-    const [a, b] = rango(per, off), [a2, b2] = rango(per, off + 1), T = textos(per, off);
-    const sumar = (x, y) => { const r = { practico: 0, informe: 0, parcial: 0, tarea: 0 }; for (let i = x; i <= y; i++) for (const k in r) r[k] += hechas[i][k]; return r; };
-    const por = sumar(a, b), ant = sumar(a2, b2), tot = ORDEN.reduce((s, k) => s + por[k], 0), totAnt = ORDEN.reduce((s, k) => s + ant[k], 0);
-    const ent = ENTREGAS.filter(e => e.i >= a && e.i <= b).sort((x, y) => y.i - x.i), entAnt = ENTREGAS.filter(e => e.i >= a2 && e.i <= b2);
-    const aT = ent.filter(e => e.aTiempo).length, aTAnt = entAnt.filter(e => e.aTiempo).length;
-    const rend = RENDIDOS.filter(e => e.i >= a && e.i <= b).sort((x, y) => y.i - x.i);
-    const pend = PEND.filter(x => x.h < x.tot), venc7 = pend.filter(x => x.dia !== null && x.dia <= 7).length;
-    const gen = PEND.reduce((s, x) => s + x.h, 0) / PEND.reduce((s, x) => s + x.tot, 0);
-    const prox = PEND.filter(x => x.k === "parcial" && x.dia !== null).sort((x, y) => x.dia - y.dia)[0];
-    const rAnt = RENDIDOS.filter(e => e.i >= a2 && e.i <= b2), prom = rAnt.length ? rAnt.reduce((s, e) => s + e.nota, 0) / rAnt.length : null;
-    return { per, off, a, b, T, por, ant, tot, totAnt, ent, entAnt, aT, aTAnt, rend, pend, venc7, gen, prox, prom };
-  };
-  /* Cifras de tareas */
-  const kHechas = (t, conDesglose = false) => kpi(`${t.tot}`, `cosas hechas ${t.T.en}`, `${signoN(t.tot - t.totAnt)} que ${t.T.ant}.${conDesglose ? ` ${cap(desglose(t.por))}.` : ""}`);
-  const kEntregas = t => t.ent.length ? kpi(`${t.aT} de ${t.ent.length}`, "entregas a tiempo", `${t.T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.`) : kpi("Ninguna", `entrega ${t.T.en}`, `${t.T.antCap}, ${t.entAnt.length}.`);
-  const kPend = t => t.off ? kpi(nota(t.tot / LARGO[t.per]), "cosas hechas por día", `${t.T.antCap}, ${nota(t.totAnt / LARGO[t.per])}.`) : kpi(`${t.pend.length}`, "cosas pendientes", `${t.venc7} vencen en los próximos 7 días.`);
-  const kParc = t => t.rend.length ? kpi(nota(t.rend.reduce((s, e) => s + e.nota, 0) / t.rend.length), `de promedio en ${t.rend.length} ${t.rend.length === 1 ? "parcial" : "parciales"}`, `${t.T.antCap}, ${t.prom === null ? "ninguno" : nota(t.prom)}.`)
-    : t.prox && !t.off ? kpi(enDias(t.prox.dia), `el ${t.prox.t.toLowerCase()} de ${TEMAS[t.prox.tema][0]}`, `Repasaste ${t.prox.h} de ${t.prox.tot} unidades.`) : kpi("Ninguno", `parcial ${t.T.en}`);
-  /* Mini gráficos de las tarjetas de tareas */
-  const miniEntregas = t => t.ent.length ? `<div class="puntos" style="--cols:${Math.max(7, Math.min(14, t.ent.length))}">${t.ent.slice().reverse().map(e => `<span class="celda" data-n="${e.aTiempo ? 4 : 1}" data-tip="${TIPOS[e.k].uno} de ${TEMAS[e.tema][0]} · ${fechaCorta(dias[e.i].f)} · ${e.aTiempo ? "a tiempo" : "tarde"}"></span>`).join("")}</div>` : `<p class="vacio">Sin entregas en este período.</p>`;
-  const miniGeneral = t => t.off ? barras(listaHechas(t.per, t.off), { mini: true, cuenta: true, hueco: t.per === "mes" ? 2 : 5 }) : `<div><div class="pbar" role="img" aria-label="Avance general ${Math.round(t.gen * 100)} %"><i style="width:${t.gen * 100}%"></i></div><p class="kpi-s">Avance general: ${Math.round(t.gen * 100)} % de todo lo anotado.</p></div>`;
-  const miniParc = t => t.rend.length ? barras(t.rend.slice().reverse().map(e => ({ v: e.nota, etq: "", tip: `${e.t} de ${TEMAS[e.tema][0]} · ${nota(e.nota)}` })), { mini: true, cuenta: true, techo: 10, hueco: 6 })
-    : t.prox && !t.off ? `<div class="pbar"><i style="width:${t.prox.h / t.prox.tot * 100}%"></i></div>` : "";
-  /* Lo completado por día (o por mes, en el año) */
-  const listaHechas = (per, off = 0) => {
-    const [a, b] = rango(per, off);
-    if (per === "ano") {
-      const g = [];
-      for (let i = b; i >= a; i--) { const f = dias[i].f, y = f.getFullYear(), mo = f.getMonth(); let x = g.at(-1); if (!x || x.y !== y || x.mo !== mo) g.push(x = { y, mo, t: 0 }); x.t += totH(i); }
-      if (g.length > 12) g.shift();
-      return g.map((x, k) => ({ v: x.t, etq: MESES[x.mo], tip: `${MESES[x.mo]} ${x.y} · ${x.t} cosas hechas`, hoy: !off && k === g.length - 1 }));
-    }
-    const n = b - a + 1;
-    return Array.from({ length: n }, (_, k) => { const i = b - k, d = dias[i]; return { v: totH(i), ant: totH(i + n), etq: per === "semana" ? DOW_L[d.dow] : d.f.getDate() % 5 === 0 || k === n - 1 ? `${d.f.getDate()}` : "", tip: `${d.i === 0 ? "Hoy" : fecha(d.f)} · ${desglose(hechas[i])}`, dia: i, hoy: i === 0 }; });
-  };
-  const tjHechas = (t, sel, { heroe = false } = {}) => `<section class="tj${heroe ? " heroe" : ""}">${et("k-tarea", "Lo que hiciste, día por día")}<h2 class="p-frase">${t.tot} cosas hechas ${t.T.en} <span>· ${t.per === "ano" ? "por mes" : `${nota(t.tot / LARGO[t.per])} por día`}</span></h2><div class="crece">${barras(listaHechas(t.per, t.off), { sel, cuenta: true, valores: t.per !== "mes", hueco: HUECO[t.per] })}</div></section>`;
-  /* Avance por tipo: hoy, cuánto falta; mirando atrás, lo que se hizo en ese período */
-  const tipos = t => {
-    const max = Math.max(1, ...ORDEN.map(k => t.por[k]));
-    return `<div class="tipos">${ORDEN.map(k => {
-      const it = PEND.filter(x => x.k === k), h = it.reduce((s, x) => s + x.h, 0), tot = it.reduce((s, x) => s + x.tot, 0), faltan = it.filter(x => x.h < x.tot).length, U = TIPOS[k].u;
-      return t.off
-        ? `<div class="tipo">${ic(TIPOS[k].ic)}<span class="nom">${TIPOS[k].n}</span><span class="pbar"><i style="width:${t.por[k] / max * 100}%"></i></span><span class="cif"><b>${t.por[k]}</b> ${U[t.por[k] === 1 ? 0 : 1]}</span><span class="sub">${t.T.antCap}, ${t.ant[k]}.</span></div>`
-        : `<div class="tipo">${ic(TIPOS[k].ic)}<span class="nom">${TIPOS[k].n}</span><span class="pbar" role="img" aria-label="${Math.round(h / tot * 100)} %"><i style="width:${h / tot * 100}%"></i></span><span class="cif"><b>${h}</b> de ${tot}</span><span class="sub">${t.por[k]} ${U[t.por[k] === 1 ? 0 : 1]} ${t.T.en} · ${faltan} ${faltan === 1 ? "pendiente" : "pendientes"}</span></div>`;
-    }).join("")}</div>`;
-  };
-  const tjTipos = t => `<section class="tj">${et("k-practico", t.off ? "Lo que avanzaste, por tipo" : "Avance por tipo")}${tipos(t)}</section>`;
-  /* Lo que se viene; mirando atrás, las entregas de ese período */
-  const proximas = (t, n = 5) => {
-    if (t.off) return t.ent.length ? `<div class="prox">${t.ent.slice(0, n).map(e => `<div class="prox-f">${ic(TIPOS[e.k].ic)}<span class="t">${TIPOS[e.k].uno} de ${TEMAS[e.tema][0]}</span><span class="c">${fechaCorta(dias[e.i].f)}</span><span class="m">${e.aTiempo ? "A tiempo" : "Tarde"}</span></div>`).join("")}</div>` : `<p class="vacio">No hubo entregas en este período.</p>`;
-    const l = PEND.filter(x => x.dia !== null && x.h < x.tot).sort((x, y) => x.dia - y.dia).slice(0, n);
-    return `<div class="prox">${l.map(x => `<div class="prox-f" data-tip="${x.t} · ${x.h} de ${x.tot} ${TIPOS[x.k].u[1]}">${ic(TIPOS[x.k].ic)}<span class="t">${x.t}</span><span class="c${x.dia <= 2 ? " pronto" : ""}">${enDias(x.dia)}</span><span class="m">${TEMAS[x.tema][0]} · ${x.h} de ${x.tot}</span><span class="pbar"><i style="width:${x.h / x.tot * 100}%"></i></span></div>`).join("")}</div>`;
-  };
-  const tjProx = (t, n = 5) => `<section class="tj">${et("i-cal", t.off ? "Entregas de ese período" : "Lo que se viene")}${proximas(t, n)}</section>`;
-  /* Notas de los parciales: los del período; si hay menos de dos, los últimos seis */
-  const tjNotas = t => {
-    const l = (t.rend.length >= 2 ? t.rend : RENDIDOS.filter(e => e.i >= t.a).sort((x, y) => x.i - y.i).slice(0, 6)).slice().sort((x, y) => y.i - x.i);
-    const prom = l.reduce((s, e) => s + e.nota, 0) / l.length;
-    const lista = l.map(e => ({ v: e.nota, etq: TEMAS[e.tema][0].split(" ")[0].slice(0, 9), tip: `${e.t} de ${TEMAS[e.tema][0]} · ${fechaCorta(dias[e.i].f, true)} · ${nota(e.nota)}` }));
-    return `<section class="tj">${et("k-parcial", "Notas de los parciales")}<h2 class="p-frase">${nota(prom)} de promedio <span>· ${t.rend.length >= 2 ? `${l.length} ${t.T.en}` : `tus últimos ${l.length}`}</span></h2><div class="notas-g">${barras(lista, { cuenta: true, techo: 10, hueco: 10, ref: { v: prom, t: `Promedio ${nota(prom)}` } })}</div></section>`;
-  };
-  /* Tarjeta chica de un tipo (2) */
-  const tipoCol = (t, k) => {
-    const it = PEND.filter(x => x.k === k), h = it.reduce((s, x) => s + x.h, 0), tot = it.reduce((s, x) => s + x.tot, 0), U = TIPOS[k].u;
-    const extra = k === "parcial" && t.rend.length ? `Promedio ${nota(t.rend.reduce((s, e) => s + e.nota, 0) / t.rend.length)} ${t.T.en}.` : `${t.por[k]} ${U[t.por[k] === 1 ? 0 : 1]} ${t.T.en}.`;
-    return `<div class="tcol"><p class="tj-et">${ic(TIPOS[k].ic)}${TIPOS[k].n}<b>${h} de ${tot}</b></p><div class="pbar"><i style="width:${h / tot * 100}%"></i></div><p class="kpi-s" style="margin:0">${extra}</p></div>`;
-  };
-
-  /* Piezas de estudio */
-  const filaEstudio = (app, x, { tres = false } = {}) => {
-    const { per, off, T, k, h } = x;
-    return `<section class="tj">${off ? `${et("i-meta", "Promedio")}${k.kProm}` : cabHoy(app)}</section>
-      <section class="tj">${et("i-cal", "Constancia")}${k.kCumpl}${puntosPer(per, off)}</section>
-      <section class="tj">${et("i-tend", "Contra el anterior")}${k.kDif}${comparar(k, T, off ? T.titulo : "Ahora")}</section>
-      ${tres ? "" : `<section class="tj">${et("i-reloj", "Tu horario")}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís`)}${histHoras(h)}</section>`}`;
-  };
-  const filaTareas = t => `<section class="tj">${et("k-tarea", "Lo que hiciste")}${kHechas(t)}${t.off ? "" : barras(listaHechas(t.per, 0), { mini: true, cuenta: true, hueco: t.per === "mes" ? 2 : 5 })}</section>
-      <section class="tj">${et("i-check", "Entregas")}${kEntregas(t)}${miniEntregas(t)}</section>
-      <section class="tj">${et("k-lista", t.off ? "Ritmo" : "Pendiente")}${kPend(t)}${miniGeneral(t)}</section>
-      <section class="tj">${et("k-parcial", "Parciales")}${kParc(t)}${miniParc(t)}</section>`;
-  const fraseMapa = x => x.per === "ano" ? `${x.k.c} días con la meta en el año` : `${x.k.c} de ${x.k.n} días con la meta ${x.T.en} <span>· resaltados en el año</span>`;
-  const mapaPer = x => mapa(x.sel, { desde: x.per === "ano" ? x.a : Math.max(0, x.b - 364), marcar: x.per === "ano" ? null : [x.a, x.b] });
-  const tjBarras = (app, x, { conAno = false } = {}) => {
-    const cal = conAno && app._hero === "cal";
-    const sw = conAno ? `<div class="rangos chico" role="group" aria-label="Vista del gráfico">${[["barras", "Días"], ["cal", "Año"]].map(([v, n]) => `<button type="button" data-hero="${v}" data-k="hero-${v}" aria-pressed="${(app._hero || "barras") === v}">${n}</button>`).join("")}</div>` : "";
-    return `<section class="tj heroe"><div class="tj-cab">${et("i-barras", "Día por día")}${sw}</div><h2 class="p-frase">${cal ? fraseMapa(x) : fraseBarras(x.per, x.k, x.T)}</h2>${cal ? `<div class="centro">${mapaPer(x)}</div>` : `<div class="crece">${barrasPer(x.per, x.off, x.sel)}</div>`}</section>`;
-  };
-  const tjTend = x => { const t = tendencia(x.per, x.off, { flex: true }); return `<section class="tj">${et("i-tend", "Acumulado")}<div><h2 class="p-frase">${t.frase}</h2><p class="p-sub">${t.sub}</p></div>${t.graf}</section>`; };
 
   /* ── Las estructuras ── */
-  const VISTAS2 = [["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
-  const VISTAS3 = [["resumen", "Resumen", "i-barras"], ["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
   const V = {
-    d1: app => {
-      const x = base(app), vista = app._vista || "estudio";
-      const cuerpo = vista === "estudio"
-        ? `<div class="g4">${filaEstudio(app, x)}</div><div class="g2">${tjBarras(app, x, { conAno: true })}${tjTend(x)}</div>`
-        : `<div class="g4">${filaTareas(x.t)}</div><div class="g2 g3">${tjHechas(x.t, x.sel, { heroe: true })}${tjTipos(x.t)}${tjProx(x.t)}</div>`;
-      return `<main class="main una-main m1">${perCab(app, { vistas: VISTAS2 })}${cuerpo}</main>`;
-    },
-    d2: app => {
-      const x = base(app);
-      return `<main class="main una-main m2">${perCab(app)}
-        <div class="g4">${filaEstudio(app, x)}</div>
-        <div class="g2">${tjBarras(app, x)}${tjTend(x)}</div>
-        <section class="tj"><div class="franja">${ic("k-tarea")}Tareas <span style="font-weight:400">· ${x.t.tot} cosas hechas ${x.T.en}, ${x.t.pend.length} pendientes</span></div><div class="cifras tcols">${ORDEN.map(k => tipoCol(x.t, k)).join("")}</div></section>
-      </main>`;
-    },
-    d3: app => {
-      const x = base(app), vista = app._vista || "resumen";
-      let cuerpo;
-      if (vista === "resumen") cuerpo = `<div class="c3 c-res"><div class="g4">${filaEstudio(app, x)}</div><div class="g4">${filaTareas(x.t)}</div><section class="tj">${et("i-cal", "Lo que se viene")}<div class="prox-h">${proximas(x.t, 6)}</div></section></div>`;
-      else if (vista === "estudio") cuerpo = `<div class="c3 g-est">${tjBarras(app, x)}${tjTend(x)}<section class="tj">${et("i-cal", "Constancia")}<h2 class="p-frase">${fraseMapa(x)}</h2><div class="centro">${mapaPer(x)}</div></section><section class="tj">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${x.h.ventana} y las ${x.h.ventana + 3} h <span>· los ${DOW_LARGO[x.h.mejorDow]}</span></h2>${histHoras(x.h, "crece")}</section></div>`;
-      else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
-      return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
-    },
-    d4: app => {
-      const x = base(app), t = x.t;
-      return `<main class="main una-main m4">${perCab(app)}
-        <div class="m4-grid">
-          <div class="m4-izq"><div class="g4">${filaEstudio(app, x, { tres: true })}</div><div class="g2">${tjBarras(app, x)}${tjTend(x)}</div></div>
-          <section class="tj m4-der">${et("k-tarea", "Tareas")}${kHechas(t)}${tipos(t)}<p class="tj-et" style="margin-top:6px">${ic("i-cal")}${t.off ? "Entregas de ese período" : "Lo que se viene"}</p>${proximas(t, 4)}</section>
+    f: app => {
+      const sel = app._dia ?? 0, c = constancia(), r = app._rango === "mes" ? "mes" : "semana", t = tendencia(r, 0, { flex: true });
+      const q = cuando(horario(0, 83), { llena: true, sub: `Promedio de las últimas 12 semanas.` });
+      const tabs = `<div class="rangos chico" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"]].map(([v, x]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${x}</button>`).join("")}</div>`;
+      return `<main class="main una-main f-main">
+        ${cabHoy(app)}
+        <section class="bloque"><div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
+          ${mapa(sel)}
+          ${detalle(dias[sel])}</section>
+        <div class="f-par">
+          <section class="bloque"><div class="panel-cab"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">${t.sub}</p></div>${tabs}</div>${t.graf}</section>
+          <section class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.graf}</section>
         </div>
       </main>`;
     },
-    d5: app => {
-      const per = app._per || "semana", off = app._off || 0, offB = app._offB ?? off + 1;
-      const [a, b] = rango(per, off), [a2, b2] = rango(per, offB);
-      const nomA = nombrePer(per, off), nomB = nombrePer(per, offB), artB = articuloPer(per, offB);
-      const A = cifrasPer(per, off), B = cifrasPer(per, offB), tA = tareasPer(per, off), tB = tareasPer(per, offB);
-      const dos = (titulo, icono, vA, vB, fmtX, sub) => { const max = Math.max(vA, vB, 1), d = vA - vB; return `<section class="tj">${et(icono, titulo)}${kpi(fmtX === "min" ? signo(d) : signoN(d), `que ${artB}`, sub)}<div class="dos"><span>A</span><span class="cmp-p"><i class="act" style="width:${vA / max * 100}%"></i></span><b>${fmtX === "min" ? fmtCorto(vA) : vA}</b><span>B</span><span class="cmp-p"><i style="width:${vB / max * 100}%"></i></span><b>${fmtX === "min" ? fmtCorto(vB) : vB}</b></div></section>`; };
-      const lA = listaPer(per, off), lB = listaPer(per, offB);
-      const lista = lA.map((x, k) => ({ ...x, ant: lB[k] ? lB[k].v : 0, tip: `${x.tip.split(" (")[0]} · contra ${lB[k] ? fmt(lB[k].v) : "nada"}` }));
-      const t = tendencia(per, off, { flex: true, offAnt: offB, nombres: [nomA, nomB] });
-      const chip = (cl, nom, o, attr) => `<span class="chip-per ${cl}"><i></i>${nom}${flechasPer(per, o, attr, cl === "a" ? "Período A" : "Período B")}</span>`;
-      return `<main class="main una-main m5">
-        <div class="per-cab"><div class="per-izq" style="flex-wrap:wrap">${chip("a", nomA, off, "off")}<span class="contra">contra</span>${chip("b", nomB, offB, "offb")}</div>${selPer(per)}</div>
-        <div class="g4 parejo">
-          ${dos("Estudiaste", "i-reloj", A.total, B.total, "min", `Días con la meta: ${A.c} contra ${B.c}.`)}
-          ${dos("Días con la meta", "i-cal", A.c, B.c, "n", `De ${A.n} días cada uno.`)}
-          ${dos("Cosas hechas", "k-tarea", tA.tot, tB.tot, "n", `${desglose(tA.por)}.`)}
-          ${dos("Entregas a tiempo", "i-check", tA.aT, tB.aT, "n", `De ${tA.ent.length} y ${tB.ent.length} entregas.`)}
+    r: app => {
+      const { per, a, b, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true });
+      const fraseMapa = per === "ano" ? `${k.c} días con la meta en el último año` : `${k.c} de ${k.n} días con la meta ${T.en} <span>· resaltados en el año</span>`;
+      return `<main class="main una-main r-main">
+        ${perCab(app)}
+        <div class="r-grid">
+          <section class="tj r-hoy">${cabHoy(app)}<div class="tj-pie" style="display:flex;flex-direction:column;gap:10px">${kRacha()}${marcas()}</div></section>
+          <section class="tj heroe r-sem">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj r-tend">${et("i-tend", "Mejor o peor")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+          <section class="tj r-mapa">${et("i-cal", "Constancia")}<h2 class="p-frase">${fraseMapa}</h2><div class="centro">${mapa(sel, { marcar: per === "ano" ? null : [a, b] })}</div></section>
+          <section class="tj r-cuando">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${h.ventana} y las ${h.ventana + 3} h <span>· los ${DOW_LARGO[h.mejorDow]}</span></h2>${histHoras(h, "crece")}</section>
         </div>
-        <div class="g2">
-          <section class="tj heroe"><div class="tj-cab">${et("i-barras", "Día por día")}<span class="ley-par"><span><i></i>A</span><span><i class="ant"></i>B</span><span><i class="meta"></i>Meta</span></span></div><h2 class="p-frase">${fmt(A.total)} contra ${fmt(B.total)} <span>· ${per === "ano" ? "promedio por día de cada mes" : "día por día"}</span></h2><div class="crece">${barras(lista, { sel: app._dia ?? 0, pares: true, valores: per === "semana", hueco: per === "semana" ? 14 : HUECO[per] })}</div></section>
-          <section class="tj">${et("i-tend", "Acumulado")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+      </main>`;
+    },
+    s: app => {
+      const { per, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true });
+      return `<main class="main una-main s-main">
+        ${perCab(app)}
+        <div class="s-top">
+          <section class="tj">${cabHoy(app)}</section>
+          <section class="tj">${et("i-cal", "Constancia")}${k.kCumpl}${puntosPer(per)}</section>
+          <section class="tj">${et("i-tend", "Contra el anterior")}${k.kDif}${comparar(k, T)}</section>
+          <section class="tj">${et("i-reloj", "Tu horario")}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís`)}${histHoras(h)}</section>
+        </div>
+        <div class="s-abajo">
+          <section class="tj heroe">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj">${et("i-tend", "Acumulado")}<div><h2 class="p-frase">${t.frase}</h2><p class="p-sub">${t.sub}</p></div>${t.graf}</section>
+        </div>
+      </main>`;
+    },
+    t: app => {
+      const { per, sel, T, k, h } = base(app), pares = per === "semana";
+      return `<main class="main una-main t-main">
+        ${perCab(app)}
+        <div class="t-grid">
+          <section class="tj heroe">${et("i-barras", "Día por día")}<div class="panel-cab"><h2 class="p-frase">${fraseBarras(per, k, T)}</h2>${pares ? leyPar : ""}</div>
+            <div class="crece">${barrasPer(per, 0, sel, { pares, hueco: pares ? 14 : HUECO[per] })}</div>
+            <div class="cifras">${k.kTotal}${k.kProm}${k.kCumpl}${kRacha()}</div></section>
+          <div class="t-der">
+            <section class="tj">${cabHoy(app)}</section>
+            <section class="tj">${et("i-cal", "El día que tocaste")}${detalle(dias[sel])}</section>
+            <section class="tj">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${h.ventana} y las ${h.ventana + 3} h <span>· los ${DOW_LARGO[h.mejorDow]}</span></h2>${histHoras(h, "crece")}</section>
+          </div>
+        </div>
+      </main>`;
+    },
+    u: app => {
+      const { per, off, a, b, sel, T, k, h } = base(app), t = tendencia(per, off, { flex: true });
+      const primera = off ? k.kProm : `<div>${cabHoy(app)}</div>`;
+      return `<main class="main una-main u-main">
+        ${perCab(app, { flechas: true })}
+        <div class="cifras u-cifras">${primera}${k.kTotal}${k.kCumpl}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís`, `Ahí arranca el ${h.share} %.`)}</div>
+        <section class="tj heroe">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, off, sel)}</div></section>
+        <div class="u-abajo">
+          <section class="tj">${et("i-cal", "En el año")}${mapa(sel, { desde: per === "ano" ? a : Math.max(0, b - 364), marcar: per === "ano" ? null : [a, b] })}</section>
+          <section class="tj">${et("i-tend", "Mejor o peor")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+        </div>
+      </main>`;
+    },
+    v: app => {
+      const { per, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true }), r = racha();
+      return `<main class="main una-main v-main">
+        <div class="v-top">${cabHoy(app)}<div class="v-per">${selPer(per)}<p class="p-sub">${T.titulo} ${T.fechas}</p></div></div>
+        <div class="v-cols">
+          <section class="tj">${et("i-cal", "¿Soy constante?")}${kpi(`${k.c} de ${k.n}`, `días con la meta ${T.en}`, `Racha: ${r} ${r === 1 ? "día" : "días"}. ${T.antCap}, ${k.cAnt} días.`)}<div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj">${et("i-tend", "¿Voy mejor o peor?")}${kpi(signo(k.dif), `que ${T.ant}`, `${fmt(k.total)} contra ${fmt(k.antes)}.`)}${t.graf}</section>
+          <section class="tj">${et("i-reloj", "¿Cuándo rindo?")}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}`, `Ahí arranca el ${h.share} % de lo que estudiás.`)}${histHoras(h, "crece")}</section>
         </div>
       </main>`;
     },
   };
-  const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
-  const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
   const DESPUES = {};
 
@@ -1257,11 +1135,8 @@ const [desplazamiento, setDesplazamiento] = useState(0);
       tip.classList.remove("ver");
       if (d.editmeta !== undefined) { el._editMeta = !el._editMeta; return pintar(a, true); }
       if (d.meta) { meta = Math.min(480, Math.max(30, meta + +d.meta)); apps.forEach(x => pintar(x, x === a)); return; }
-      if (d.per) { el._per = d.per; el._off = 0; el._offB = undefined; el._dia = undefined; return pintar(a, true, true); }
-      if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); el._dia = undefined; return pintar(a, true, true); }
-      if (d.offb) { const per = el._per || "semana"; el._offB = Math.min(OFF_MAX[per], Math.max(0, (el._offB ?? (el._off || 0) + 1) + +d.offb)); return pintar(a, true, true); }
-      if (d.vista) { el._vista = d.vista; return pintar(a, true, true); }
-      if (d.hero) { el._hero = d.hero; return pintar(a, true, true); }
+      if (d.per) { el._per = d.per; el._off = 0; return pintar(a, true, true); }
+      if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); return pintar(a, true, true); }
       if (d.rango) { el._rango = d.rango; return pintar(a, true); }
       if (d.dia !== undefined) { el._dia = +d.dia; return pintar(a, true); }
     });
