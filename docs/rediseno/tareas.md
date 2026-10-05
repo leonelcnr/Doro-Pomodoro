@@ -254,9 +254,9 @@ Recomendación: **O**; si se prefiere no salir de las cajas, **S2**. Fondos: en 
 «Claras» + Tarjetas «Auto»; si se ve plano, Tarjetas «Oscuras». En oscuro, «Más claras».
 Fuente de la 9ª ronda: `bocetos/tareas-ronda9.html`.
 
-Hallazgo para la Fase 3: la tabla `tasks` ya tiene casi todo. Los puntos de un TP entran
-en `checklist` (jsonb), la materia es `type` y la entrega es `limit`. Falta una columna
-`kind` ('tarea' | 'tp') y otra `remind_at`.
+Hallazgo para la Fase 3 (corregido el 2026-10-04): `tasks` tiene `checklist` (jsonb) y `type`
+(la categoría), pero **no tiene fecha de entrega**: el `limit` del tipo `Tarea` no existe en la
+base. El modelo de datos completo está en `docs/rediseno/tareas-datos.md`.
 
 Lo que tiene que resolver el boceto:
 - **Trabajos prácticos con puntos.** Un TP tiene materia (chip, p. ej. `PYLP`), título
@@ -298,7 +298,7 @@ con el agente `arquitecto-features` antes de escribir nada.
 - **Al entrar:** «Barra y nombre». La caja vieja se desvanece y la barra y el nombre viajan al
   encabezado. Al cerrar, la caja abierta se encoge hasta su lugar en la grilla.
 
-Fuente: `bocetos/tareas.html` (S2). **Próximo paso** (plan general, Fase 3): el modelo de datos
+Fuente: `bocetos/tareas.html` (S2). **Próximo paso** (plan general, Fase 3, borrador en `tareas-datos.md`): el modelo de datos
 de tareas, prácticos, informes, parciales, notas y recordatorios, con `arquitecto-features`,
 antes de escribir la pantalla. Decisiones de Leo para esa fase (2026-10-04):
 - **Avisos por fases:** primero notificaciones del navegador; Google Calendar después, en
