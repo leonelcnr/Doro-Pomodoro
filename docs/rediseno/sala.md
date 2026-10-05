@@ -125,12 +125,32 @@ V con cada nota como un cuadrado tipo post-it, todas del mismo gris. En las band
 notas, «Borrar todas» pasó a la fila del asa. Leo va a usar el boceto para debatir ideas
 con algunos usuarios.
 
+**Lo que dijeron los usuarios (2026-10-04):** en general prefirieron **X · A la derecha**.
+A algunos les chocaba ver dos rayitas abajo (la de tareas y la de notas). Leo pidió sacar
+la base del boceto (confundía), dejar X arriba y probar alternativas nuevas: al menos una
+con N (notas) y T (tareas) en la barra de arriba y al menos una con post-its. La 6ª ronda
+quedó guardada en `bocetos/sala-ronda6.html`.
+
+**Séptima ronda (misma URL):** todas son X sin la segunda rayita.
+1 · N y T arriba (las notas pasan a la barra, al lado de quién está; desvanecidos quedan
+letra y número y con el mouse encima se completa «Notas»/«Tareas»; las notas cuelgan de la
+barra; abajo queda solo la rayita de tareas), 2 · Todo arriba (como 1, pero las tareas
+también cuelgan de la barra: ninguna rayita abajo), 3 · Una sola asa (notas y tareas
+comparten la bandeja de abajo; el lápiz abre directo en la pestaña Notas), 4 · Queda el
+lápiz (X sin rayita: desvanecida queda el lápiz tenue), 5 · Al borde (la rayita de notas
+parada en el borde derecho; abre de costado y el reloj se corre), 6 · Post-its en la
+esquina (la bandeja de X con cada nota como post-it), 7 · Post-its colgados (1 con las
+notas como post-its). Por debajo de 900 px las notas abren a todo el ancho colgadas de la
+barra. Recomendación: **1**; plan B, 4; 7 si gustan los post-its. Punto a mirar en 1: la T
+de tareas al lado de la T de Tomi (se puede pasar a íconos: lápiz y lista).
+
 ---
 
 ## Dónde retomamos
 
-6ª ronda publicada (V–Z), en debate con usuarios. **Próximo paso:** elegir la bandeja
-de notas, confirmar el vencimiento de 12 h y dar la sala por cerrada.
+7ª ronda publicada (X arriba + 1–7, recomendada 1), esperando opinión de Leo.
+**Próximo paso:** elegir entre las de la 7ª ronda, confirmar el vencimiento de 12 h y dar la
+sala por cerrada.
 
 ## Propuestas transversales
 
