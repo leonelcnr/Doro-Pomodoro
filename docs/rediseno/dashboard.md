@@ -178,6 +178,26 @@ la franja con las sesiones del día, para no dejar un hueco abajo.
 Recomendación: **A**; plan B **C**. D la dejaría afuera. La 6ª ronda quedó en
 `bocetos/dashboard-ronda6.html`.
 
+**Opinión de Leo sobre la 7ª ronda (2026-10-05):** le gustó más **D** (la cifra pasa
+sola) y, de C, que no tuviera fondo. Las tarjetas de abajo son repetitivas, porque muestran lo
+mismo que la cifra. Pidió resaltar palabras clave (por ejemplo «viernes») en acento o en
+blanco, poner «Redes» en acento, darle más protagonismo al título de cada cifra (el «Hoy»
+chico de arriba) y le pareció muy interesante la vista de «Lo que se viene».
+
+**Octava ronda (publicada 2026-10-05, esperando opinión).** El Resumen es solo el
+escenario: sin tarjeta, sin tarjetas abajo, y la cifra pasa sola cada 7 s. Se frena con el
+puntero sobre el número y no avanza con «reducir movimiento». Cada cifra tiene un título de
+21 px arriba del número. Las palabras clave van en `em`: el día, la materia, lo que falta.
+Las cifras secundarias van en `b`, en blanco. Ajustes nuevos: **Resaltado** (acento o
+blanco) y **Título** (nombre o pregunta: «¿Cuándo rendís más?»). Estudio y Tareas no cambian.
+- **1 · D sin fondo.** Línea de progreso al pie y flechas con «3 de 9».
+- **2 · Segmentos con nombre** (recomendada). Nueve segmentos arriba, como historias; el
+  actual se llena en acento y tocar un nombre salta a esa cifra.
+- **3 · Índice al costado.** La lista de cifras a la izquierda con una rayita vertical.
+
+Recomendación: **2**, con el resaltado en acento solo para el dato que responde y el
+título como pregunta. La 7ª ronda quedó en `bocetos/dashboard-ronda7.html`.
+
 Hallazgos para la Fase 3:
 - `chartConfig` y `COLORES_TORTA` (`Dashboard.tsx`) y `--heatmap-0..4` (`index.css`)
   tienen el violeta escrito a mano: no van a seguir el acento elegido.
@@ -190,9 +210,10 @@ Hallazgos para la Fase 3:
 
 ## Dónde retomamos
 
-7ª ronda publicada: la 3 con el Resumen en cuatro formas (A a D, recomendada A · Las
-tarjetas eligen la cifra, plan B C). **Próximo paso:** recoger la opinión de Leo; siguen
-pendientes la forma de cambiar la meta («En la línea») y si las tarjetas van claras u oscuras.
+8ª ronda publicada: el Resumen como D sin fondo, en tres formas de índice (1 a 3,
+recomendada 2 · Segmentos con nombre), con ajustes de resaltado y de título. **Próximo
+paso:** recoger la opinión de Leo; siguen pendientes la meta («En la línea») y el tono de
+las tarjetas de Estudio y Tareas.
 
 ## Propuestas transversales
 

@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Octava ronda del dashboard (la 3, con el Resumen como D sin fondo). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Séptima ronda del dashboard (la 3, con el Resumen como E). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -538,48 +538,6 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 .r-b-tj { display: grid; gap: 14px; min-height: 0; }
 @container app (min-width: 600px) and (max-width: 999px) { .r-b-tj { grid-template-columns: 1fr 1fr; } .r-b-tj > :first-child { grid-column: 1 / -1; } }
 
-/* ───────── Octava ronda: D sin fondo ───────── */
-/* Palabras clave: en acento o en blanco (ajuste «Resaltado») */
-.esc-chico em { font-style: normal; font-weight: 500; color: var(--fg); }
-:root[data-resalte="acento"] .esc-chico em { color: var(--acento); }
-/* El escenario sin tarjeta: ocupa todo el Resumen */
-.solo { display: grid; gap: 20px; min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
-.solo.con-segs { grid-template-rows: auto minmax(0, 1fr); }
-.solo-c { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 0; }
-.solo .esc-in { width: min(100%, 580px); gap: 12px; }
-.solo .esc-grande { font-size: clamp(56px, 8cqi, 112px); }
-.solo .esc-chico { font-size: 17px; max-width: 44ch; }
-.solo .esc-graf { width: min(100%, 480px); margin-top: 10px; }
-/* De qué se trata la cifra: título arriba del número */
-.esc-tit { margin: 0 0 8px; display: inline-flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--fg); text-wrap: balance; }
-.esc-tit svg { width: 21px; height: 21px; color: var(--tenue); flex-shrink: 0; }
-/* 1 · la línea y las flechas al pie */
-.solo-pie { display: flex; align-items: center; gap: 16px; }
-.solo-pie .esc-prog { flex: 1; }
-.solo:has(.esc-in:hover, :focus-visible) .esc-prog i, .solo:has(.esc-in:hover, :focus-visible) .seg-l i { animation-play-state: paused; }
-/* 2 · segmentos con nombre, arriba, como historias */
-.segs { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; }
-.seg { border: 0; background: none; padding: 0; display: flex; flex-direction: column; gap: 8px; text-align: left; color: var(--tenue); font-size: 12.5px; min-width: 0; }
-.seg:hover { color: var(--fg); }
-.seg-l { display: block; height: 3px; border-radius: 2px; background: var(--linea); overflow: hidden; }
-.seg-l i { display: block; width: 100%; height: 100%; background: var(--acento); transform: scaleX(0); transform-origin: left; }
-.seg.hecho .seg-l i { transform: none; background: color-mix(in oklch, var(--fg) 38%, var(--linea)); }
-.seg.act { color: var(--fg); font-weight: 500; }
-.seg.act .seg-l i { animation: avanzar 7s linear both; }
-.quieto .seg.act .seg-l i { animation: none !important; transform: none; }
-.seg-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-@container app (max-width: 699px) { .segs .seg-t { display: none; } }
-/* 3 · índice al costado */
-.lado { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 0; }
-.lado .seg { flex-direction: row; align-items: center; gap: 12px; font-size: 14px; padding: 6px 0; }
-.lado .seg-l { width: 3px; height: 22px; flex-shrink: 0; }
-.lado .seg-l i { transform: scaleY(0); transform-origin: top; }
-.lado .seg.hecho .seg-l i { transform: none; }
-.lado .seg.act .seg-l i { animation-name: avanzarY; }
-@keyframes avanzarY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@container app (min-width: 1000px) { .solo.con-lado { grid-template-columns: 180px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 32px; } }
-@container app (max-width: 999px) { .lado { flex-direction: row; flex-wrap: wrap; gap: 2px 16px; } .lado .seg-l { height: 16px; } }
-
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
@@ -636,10 +594,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, octava ronda</h1>
-    <p>De la séptima: <b>D fue la que más te gustó</b>, y de C, que no tuviera fondo. Las tarjetas de abajo repetían lo que ya decía la cifra. En esta ronda <b>el Resumen es solo el escenario</b>, sin tarjeta alrededor y sin tarjetas abajo, y las cifras siguen pasando solas cada 7 segundos. Las tres propuestas cambian en cómo sabés qué cifra viene y cómo saltar a otra.</p>
-    <p>Lo que pediste está en todas. <b>Cada cifra tiene un título</b> grande arriba del número, para que se entienda de qué se trata («Tu horario», «Parciales»). Las palabras clave van resaltadas: los viernes, Redes, lo que falta. El ajuste <b>«Resaltado»</b> prueba el acento o el blanco, y <b>«Título»</b> cambia el nombre por una pregunta («¿Cuándo rendís más?»). «Lo que se viene» queda como estaba. Estudio y Tareas no cambian.</p>
-    <p>La cifra se frena con el puntero encima del número. Con «reducir movimiento» activado no avanza sola. Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La séptima ronda quedó guardada aparte.</p>
+    <h1>Dashboard, séptima ronda</h1>
+    <p>Elegiste <b>la 3 · Resumen, Estudio y Tareas</b>. Esta ronda la deja como base y se concentra en lo que pediste. <b>En Estudio</b>, el acumulado ya no es una columna angosta y alta: toma casi la mitad del ancho y la curva se lee de costado, como corresponde a algo que avanza en el tiempo. <b>En Tareas</b>, las tarjetas de abajo (avance por tipo y lo que se viene) miden lo que mide su lista, y el resto del alto se lo llevan los gráficos de arriba.</p>
+    <p><b>El Resumen</b> vuelve a la E de la primera ronda, la que te pareció «más resumen que dashboard»: una cifra grande, la frase que la explica y un gráfico chico. Ahora es una pieza adentro del Resumen y no la pantalla entera. Está con las cinco tarjetas que marcaste: <b>hoy, constancia, entregas, pendiente y parciales</b>. Las cuatro propuestas (A a D) cambian solo el Resumen; Estudio y Tareas son iguales en todas. Lo que te pareció tosco de la E era el salto entre cifras: acá cambian con un fundido de opacidad.</p>
+    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La sexta ronda quedó guardada aparte.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -647,10 +605,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Meta</span>
       <div class="segmentado" id="ctlmeta" role="group" aria-label="Forma de cambiar la meta"><button type="button" data-v="texto">Texto</button><button type="button" data-v="lapiz">Lápiz</button><button type="button" data-v="cifra">Cifra</button><button type="button" data-v="objetivo">Ícono y meta</button><button type="button" data-v="linea">En la línea</button><button type="button" data-v="siempre">Siempre a mano</button></div></div>
-    <div class="ajuste"><span class="ajuste-nombre">Resaltado</span>
-      <div class="segmentado" id="resalte" role="group" aria-label="Color de las palabras clave"><button type="button" data-v="acento">Acento</button><button type="button" data-v="blanco">Blanco</button></div></div>
-    <div class="ajuste"><span class="ajuste-nombre">Título</span>
-      <div class="segmentado" id="titulo" role="group" aria-label="Título de cada cifra"><button type="button" data-v="nombre">Nombre</button><button type="button" data-v="pregunta">Pregunta</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Tarjetas</span>
       <div class="segmentado" id="tjtono" role="group" aria-label="Tono de las tarjetas"><button type="button" data-v="claras">Claras</button><button type="button" data-v="oscuras">Oscuras, como Tareas</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Barra</span>
@@ -665,48 +619,64 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="s1" data-v="s1">
+  <section class="opcion" id="ra" data-v="ra">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">1</span><span class="nombre">D sin fondo</span></h2>
-        <p class="resumen">La D tal cual, sin tarjeta: el título, la cifra, la frase y su gráfico en el centro del Resumen. Abajo, <b>una línea fina</b> que se llena en 7 segundos y las flechas con «3 de 9».</p>
-        <p class="enfoque">Lo primero: <b>la cifra</b></p>
+        <h2><span class="letra">A</span><span class="nombre">Las tarjetas eligen la cifra</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Arriba, las cinco tarjetas. Debajo, el <b>escenario de E</b>, que arranca con el resumen del período («15 h, 8 h 45 min más que la semana anterior»), y al lado lo que se viene. <b>Tocar una tarjeta la abre en grande</b> en el escenario, con su frase completa y un gráfico más rico: hoy muestra tus sesiones en su hora; constancia, la racha. Las flechas recorren también lo que no tiene tarjeta: tu horario y lo que hiciste. Tocarla otra vez vuelve al período.</p>
+        <p class="enfoque">Lo primero: <b>las cinco tarjetas; el período, en grande</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo más despojado: nada compite con la cifra.</li><li>Las flechas permiten ir y volver sin esperar.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>No se sabe qué cifra viene ni cuántas faltan para la que te interesa.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Las tarjetas son el índice: no hay que adivinar qué hay detrás de las flechas.</li><li>Lo que se viene queda siempre a la vista.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Cada cifra está dos veces: chica en la tarjeta y grande en el escenario.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="s2" data-v="s2">
+  <section class="opcion" id="rb" data-v="rb">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">2</span><span class="nombre">Segmentos con nombre</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Arriba, <b>nueve segmentos con su nombre</b> (Período, Hoy, Constancia… Lo que viene), como las historias de Instagram. El de ahora se llena en acento, los que ya pasaron quedan en gris y los que vienen, vacíos. Tocar un nombre salta a esa cifra.</p>
-        <p class="enfoque">Lo primero: <b>la cifra; el índice, arriba y callado</b></p>
+        <h2><span class="letra">B</span><span class="nombre">Una cifra por vez, al costado</span></h2>
+        <p class="resumen">La E casi como era: <b>el escenario ocupa todo el alto de la izquierda</b> y se recorre con las flechas (nueve cifras: el período, hoy, constancia, horario, lo que hiciste, entregas, pendiente, parciales y lo que se viene). A la derecha, las cinco tarjetas en dos columnas, con hoy a lo ancho.</p>
+        <p class="enfoque">Lo primero: <b>la cifra del escenario</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se sabe qué viene y cuánto falta, sin repetir ningún dato.</li><li>Saltar a una cifra es un toque, sin pasar por las otras.</li><li>Es un patrón conocido: no hay que explicarlo.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Nueve nombres en una fila: en el celular solo quedan las rayitas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El escenario tiene más aire: es lo más parecido a la E.</li><li>Las tarjetas se leen sin tocar nada.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El escenario y las tarjetas no se hablan: tocar una tarjeta no la abre.</li><li>Lo que se viene queda adentro de las flechas.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="s3" data-v="s3">
+  <section class="opcion" id="rc" data-v="rc">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">3</span><span class="nombre">Índice al costado</span></h2>
-        <p class="resumen">A la izquierda, <b>la lista de las nueve cifras</b>, con una rayita vertical que se llena en la que está pasando. A la derecha, el escenario. Es como el índice de un libro: todo a la vista y la cifra al lado.</p>
-        <p class="enfoque">Lo primero: <b>la cifra; la lista, a un costado</b></p>
+        <h2><span class="letra">C</span><span class="nombre">El resumen, escrito</span></h2>
+        <p class="resumen">En vez de pasar cifras, <b>el resumen se escribe</b>: un párrafo centrado con lo importante en negrita («Esta semana estudiaste 15 h, 8 h 45 min más que la semana anterior, y cumpliste la meta 5 de 7 días…»). Es lo que gustó de la frase de D, llevado a todo el período. Debajo, las cinco tarjetas y una fila con lo que se viene.</p>
+        <p class="enfoque">Lo primero: <b>el párrafo</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El índice se lee entero, de arriba abajo.</li><li>Deja el centro igual de despejado que 1.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Le quita unos 200 px de ancho al escenario.</li><li>La lista y la cifra compiten un poco por la mirada.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Nada que tocar: se lee de arriba abajo en diez segundos.</li><li>Sin animaciones ni saltos: lo más calmo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El texto no tiene gráficos: el detalle está en las tarjetas.</li><li>Si los números cambian mucho, la frase puede quedar larga.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="rd" data-v="rd">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span><span class="nombre">La cifra pasa sola</span></h2>
+        <p class="resumen">El escenario arriba, a todo el ancho, y <b>las cifras pasan solas cada 7 segundos</b>, con una línea fina abajo que muestra cuánto falta. Se frena al poner el puntero encima. Debajo, las cinco tarjetas: la que está en el escenario queda marcada y tocar otra la trae. Con «reducir movimiento» activado no avanza sola.</p>
+        <p class="enfoque">Lo primero: <b>la cifra que está pasando</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se mira como un resumen, sin tocar nada.</li><li>Las tarjetas muestran en qué cifra va.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Lo que se mueve solo distrae, y en un tablero puede cansar.</li><li>Si querés una cifra puntual, hay que esperarla o tocarla.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -717,48 +687,51 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Resumen</th><th>Cómo sabés qué viene</th><th>Cómo saltás a otra cifra</th><th>Espacio para la cifra</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Resumen</th><th>Dónde está la E</th><th>Cómo se cambia de cifra</th><th>Tarjetas</th><th>Lo que se viene</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr><td>1 · D sin fondo</td><td>«3 de 9» y una línea</td><td>Flechas, de a una</td><td>Todo</td><td>Igual</td><td>A ciegas</td></tr>
-          <tr class="elegida"><td>2 · Segmentos</td><td>Nueve nombres arriba</td><td>Un toque en el nombre</td><td>Casi todo</td><td>Solo las rayitas</td><td>Fila de nombres apretada</td></tr>
-          <tr><td>3 · Índice al costado</td><td>La lista entera</td><td>Un toque en la lista</td><td>Unos 200 px menos</td><td>La lista pasa arriba</td><td>Dos cosas para mirar</td></tr>
+          <tr class="elegida"><td>A · Las tarjetas eligen</td><td>Abajo, al lado de lo que se viene</td><td>Tocando una tarjeta, o con flechas</td><td>Arriba, en fila; la elegida, marcada</td><td>Siempre a la vista</td><td>Cifras repetidas</td></tr>
+          <tr><td>B · Al costado</td><td>A la izquierda, todo el alto</td><td>Flechas</td><td>A la derecha, en dos columnas</td><td>Dentro de las flechas</td><td>Escenario y tarjetas sueltos</td></tr>
+          <tr><td>C · Escrito</td><td>Como párrafo, arriba</td><td>No se cambia: se lee</td><td>En fila, al medio</td><td>Una fila abajo</td><td>Sin gráficos en el resumen</td></tr>
+          <tr><td>D · Pasa sola</td><td>Arriba, a todo el ancho</td><td>Sola cada 7 s, o tocando</td><td>Abajo, marcan la que pasa</td><td>Dentro de la rotación</td><td>El movimiento distrae</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría 2</h3>
-        <p><b>Las tarjetas de abajo de D daban el índice, pero repitiendo los datos.</b> Los segmentos dan el mismo índice con una palabra por cifra: sabés qué viene, cuánto falta y podés saltar. Arriba y en gris no le quitan protagonismo a la cifra. <b>3</b> hace lo mismo con más lugar para los nombres, pero le roba ancho al escenario. <b>1</b> es la más limpia, pero obliga a recorrer a ciegas.</p>
-        <h4>Resaltado y título</h4>
-        <p><b>Resaltado en acento</b> para el dato que responde la pregunta: el día, la materia, lo que falta. Las cifras secundarias («59 %», «2 h») van en blanco. Así hay un solo acento por frase y no compite con el número grande. <b>Título:</b> «Nombre» se lee más rápido. «Pregunta» explica mejor la primera vez y retoma las tres preguntas con las que arrancó el dashboard. Elegiría pregunta.</p>
+        <h3>Elegiría A</h3>
+        <p><b>A resuelve lo tosco de la E.</b> En la E el problema no era la cifra grande sino no saber qué venía después, y pasar de una a otra a ciegas. En A, las tarjetas son el índice: ves las cinco cifras de un vistazo y tocás la que querés entender. El escenario la explica con más espacio. Si no tocás nada, el escenario cuenta el período, que es la pregunta del Resumen.</p>
+        <p><b>C, si preferís que el Resumen no tenga nada que tocar.</b> Es la más calma y la que más se acerca a «resumen y no dashboard». <b>B</b> es la E más pura, pero las tarjetas y el escenario quedan sin relación. <b>D</b> la dejaría afuera: en una pantalla de datos, que algo cambie solo obliga a esperar.</p>
+        <h4>Los dos arreglos</h4>
+        <p><b>Acumulado:</b> en Estudio la grilla pasa a doce columnas. Arriba, las barras toman 7 y el acumulado 5; abajo, el mapa 9 y el horario 3. En 1180 px el gráfico queda unos 420 px de ancho por 200 de alto, más ancho que alto. <b>Tareas:</b> la fila de abajo pasa a <code>auto</code>, así que mide lo que miden sus listas.</p>
         <h4>Sigue pendiente</h4>
-        <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas de Estudio y Tareas (claras u oscuras).</p>
+        <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas (claras u oscuras como Tareas).</p>
       </div>
       <div>
-        <pre><span class="c-com">// 2 · un segmento por cifra; el actual se llena en 7 s</span>
-const CIFRAS = ["periodo", "hoy", "constancia", "horario", "hechas",
-  "entregas", "pendiente", "parciales", "prox"] as const;
-type Cifra = (typeof CIFRAS)[number];
+        <pre><span class="c-com">// A · la tarjeta elegida abre su cifra en el escenario</span>
+type Cifra = "periodo" | "hoy" | "constancia" | "horario" | "hechas"
+  | "entregas" | "pendiente" | "parciales" | "prox";
+const [cifra, setCifra] = useState&lt;Cifra&gt;("periodo");
+const elegir = (c: Cifra) =&gt; setCifra((actual) =&gt; (actual === c ? "periodo" : c));
 
-const [actual, setActual] = useState&lt;Cifra&gt;("periodo");
-const pasar = () =&gt; setActual((c) =&gt;
-  CIFRAS[(CIFRAS.indexOf(c) + 1) % CIFRAS.length]);
-
-&lt;nav className="grid grid-cols-9 gap-1.5"&gt;
-  {CIFRAS.map((c, i) =&gt; (
-    &lt;Segmento key={c} nombre={NOMBRES[c]}
-      estado={i &lt; CIFRAS.indexOf(actual) ? "hecho" : c === actual ? "actual" : "falta"}
-      onAnimationEnd={c === actual ? pasar : undefined}
-      onClick={() =&gt; setActual(c)} /&gt;
+&lt;div className="grid gap-3.5 @[1000px]:grid-cols-[1.45fr_repeat(4,1fr)]"&gt;
+  {TARJETAS.map((t) =&gt; (
+    &lt;TarjetaResumen key={t.id} {...t}
+      elegida={cifra === t.id} onElegir={() =&gt; elegir(t.id)} /&gt;
   ))}
-&lt;/nav&gt;
+&lt;/div&gt;
+&lt;AnimatePresence mode="wait"&gt;
+  &lt;motion.div key={cifra} initial={{ opacity: 0.25 }} animate={{ opacity: 1 }}&gt;
+    &lt;Escenario cifra={cifra} periodo={periodo} desplazamiento={desplazamiento} /&gt;
+  &lt;/motion.div&gt;
+&lt;/AnimatePresence&gt;
 
-<span class="c-com">/* La animación marca el tiempo y se frena sola */</span>
-.segmento[data-estado="actual"] i { animation: avanzar 7s linear both; }
-.resumen:has(.cifra:hover) .segmento i { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) {
-  .segmento i { animation: none; }
+<span class="c-com">/* Estudio: el acumulado deja de ser una columna alta */</span>
+.estudio {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "barras barras barras barras barras barras barras acum acum acum acum acum"
+    "mapa mapa mapa mapa mapa mapa mapa mapa mapa hora hora hora";
 }</pre>
       </div>
     </div>
@@ -793,11 +766,9 @@ const pasar = () =&gt; setActual((c) =&gt;
     vineta: v => raiz.dataset.vineta = v,
     disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
     tjtono: v => raiz.dataset.tarjetas = v,
-    resalte: v => raiz.dataset.resalte = v,
-    titulo: v => raiz.dataset.titulo = v,
   };
   const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", tjtono: "claras", resalte: "acento", titulo: "nombre" };
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", tjtono: "claras" };
   const ponerAjuste = {};
   Object.keys(grupos).forEach(id => {
     const g = document.getElementById(id);
@@ -1223,26 +1194,26 @@ const pasar = () =&gt; setActual((c) =&gt;
     const { per, off, T, k, h, t } = x, d0 = dias[0];
     const dif = (n, f) => n === 0 ? "lo mismo que" : `<b>${f(Math.abs(n))} ${n > 0 ? "más" : "menos"}</b> que`;
     switch (id) {
-      case "periodo": return { ic: "i-tend", et: T.titulo, g: fmtCorto(k.total), c: `estudiaste ${T.en}, ${dif(k.dif, fmt)} ${T.ant}.`, graf: barras(listaPer(per, off), { mini: true, hueco: HUECO[per] }) };
+      case "periodo": return { ic: "i-tend", et: off ? T.titulo : "El período", g: fmtCorto(k.total), c: `estudiaste ${T.en}, ${dif(k.dif, fmt)} ${T.ant}.`, graf: barras(listaPer(per, off), { mini: true, hueco: HUECO[per] }) };
       case "hoy": return off
         ? { ic: "i-meta", et: "Promedio", g: fmtCorto(k.prom), c: `por día ${T.en}. ${T.antCap}, ${fmt(k.antes / k.n)}.`, graf: puntosPer(per, off) }
-        : { ic: "i-meta", et: "Hoy", g: fmtCorto(d0.min), c: `llevás hoy, de una meta de <b>${fmt(meta)}</b>. ${meta > d0.min ? `Te falta <em>${fmt(meta - d0.min)}</em>.` : "<em>Ya la cumpliste.</em>"}`, graf: d0.min ? `<div>${pista(d0)}${eje()}</div>` : "" };
-      case "constancia": return { ic: "i-cal", et: "Constancia", g: `${k.c} de ${k.n}`, c: `días con la meta ${T.en}. ${T.antCap}, ${k.cAnt}.${off ? "" : ` Llevás <em>${racha()} ${racha() === 1 ? "día" : "días"} seguidos</em>.`}`, graf: puntosPer(per, off) };
-      case "horario": return { ic: "i-reloj", et: "Tu horario", g: `${h.ventana} a ${h.ventana + 3} h`, c: `los <em>${DOW_LARGO[h.mejorDow]}</em>, cuando más rendís. Ahí arranca el <b>${h.share} %</b> de lo que estudiás.`, graf: histHoras(h) };
+        : { ic: "i-meta", et: "Hoy", g: fmtCorto(d0.min), c: `llevás hoy, de una meta de <b>${fmt(meta)}</b>. ${meta > d0.min ? `Te falta ${fmt(meta - d0.min)}.` : "Ya la cumpliste."}`, graf: d0.min ? `<div>${pista(d0)}${eje()}</div>` : "" };
+      case "constancia": return { ic: "i-cal", et: "Constancia", g: `${k.c} de ${k.n}`, c: `días con la meta ${T.en}. ${T.antCap}, ${k.cAnt}.${off ? "" : ` Llevás <b>${racha()} ${racha() === 1 ? "día" : "días"} seguidos</b>.`}`, graf: puntosPer(per, off) };
+      case "horario": return { ic: "i-reloj", et: "Tu horario", g: `${h.ventana} a ${h.ventana + 3} h`, c: `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís. Ahí arranca el ${h.share} % de lo que estudiás.`, graf: histHoras(h) };
       case "hechas": return { ic: "k-tarea", et: "Lo que hiciste", g: `${t.tot}`, c: `cosas hechas ${T.en}, ${dif(t.tot - t.totAnt, String)} ${T.ant}. ${cap(desglose(t.por))}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) };
-      case "entregas": return { ic: "i-check", et: "Entregas", g: t.ent.length ? `${t.aT} de ${t.ent.length}` : "Ninguna", c: t.ent.length ? `entregas <em>a tiempo</em> ${T.en}. ${T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.` : `entrega ${T.en}.`, graf: miniEntregas(t) };
+      case "entregas": return { ic: "i-check", et: "Entregas", g: t.ent.length ? `${t.aT} de ${t.ent.length}` : "Ninguna", c: t.ent.length ? `entregas a tiempo ${T.en}. ${T.antCap}, ${t.aTAnt} de ${t.entAnt.length}.` : `entrega ${T.en}.`, graf: miniEntregas(t) };
       case "pendiente": return off
         ? { ic: "k-lista", et: "Ritmo", g: nota(t.tot / LARGO[per]), c: `cosas hechas por día ${T.en}. ${T.antCap}, ${nota(t.totAnt / LARGO[per])}.`, graf: barras(listaHechas(per, off), { mini: true, cuenta: true, hueco: per === "mes" ? 2 : 5 }) }
-        : { ic: "k-lista", et: "Pendiente", g: `${t.pend.length}`, c: `cosas pendientes; <em>${t.venc7} vencen</em> en los próximos 7 días.`, graf: miniGeneral(t) };
+        : { ic: "k-lista", et: "Pendiente", g: `${t.pend.length}`, c: `cosas pendientes; <b>${t.venc7}</b> vencen en los próximos 7 días.`, graf: miniGeneral(t) };
       case "parciales": {
         if (t.rend.length) { const p = t.rend.reduce((s, e) => s + e.nota, 0) / t.rend.length; return { ic: "k-parcial", et: "Parciales", g: nota(p), c: `de promedio en ${t.rend.length} ${t.rend.length === 1 ? "parcial" : "parciales"} ${T.en}.`, graf: miniParc(t) }; }
-        if (t.prox && !off) return { ic: "k-parcial", et: "Parciales", g: enDias(t.prox.dia), c: `el <b>${t.prox.t.toLowerCase()}</b> de <em>${TEMAS[t.prox.tema][0]}</em>. Repasaste ${t.prox.h} de ${t.prox.tot} unidades.`, graf: miniParc(t) };
+        if (t.prox && !off) return { ic: "k-parcial", et: "Parciales", g: enDias(t.prox.dia), c: `el <b>${t.prox.t.toLowerCase()} de ${TEMAS[t.prox.tema][0]}</b>. Repasaste ${t.prox.h} de ${t.prox.tot} unidades.`, graf: miniParc(t) };
         return { ic: "k-parcial", et: "Parciales", g: "Ninguno", c: `parcial ${T.en}.`, graf: "" };
       }
       case "prox": {
         if (off) return { ic: "i-cal", et: "Entregas de ese período", g: `${t.ent.length}`, c: `entregas ${T.en}.`, graf: proximas(t, 3) };
         const l = PEND.filter(y => y.dia !== null && y.h < y.tot).sort((y, z) => y.dia - z.dia), p = l[0];
-        return { ic: "i-cal", et: "Lo que se viene", g: enDias(p.dia), c: `<b>${p.t}</b>, de <em>${TEMAS[p.tema][0]}</em>. Vas ${p.h} de ${p.tot} ${TIPOS[p.k].u[p.tot === 1 ? 0 : 1]}.`, graf: `<div class="prox">${l.slice(1, 4).map(y => `<div class="prox-f">${ic(TIPOS[y.k].ic)}<span class="t">${y.t}</span><span class="c">${enDias(y.dia)}</span><span class="m">${TEMAS[y.tema][0]} · ${y.h} de ${y.tot}</span></div>`).join("")}</div>` };
+        return { ic: "i-cal", et: "Lo que se viene", g: enDias(p.dia), c: `<b>${p.t}</b>, de ${TEMAS[p.tema][0]}. Vas ${p.h} de ${p.tot} ${TIPOS[p.k].u[1]}.`, graf: `<div class="prox">${l.slice(1, 4).map(y => `<div class="prox-f">${ic(TIPOS[y.k].ic)}<span class="t">${y.t}</span><span class="c">${enDias(y.dia)}</span><span class="m">${TEMAS[y.tema][0]} · ${y.h} de ${y.tot}</span></div>`).join("")}</div>` };
       }
     }
   };
@@ -1277,25 +1248,6 @@ const pasar = () =&gt; setActual((c) =&gt;
     d: (app, x) => `<div class="c3 r-d">${escHTML(app, x, { prog: true })}<div class="g5">${cincoTj(app, x, true)}</div></div>`,
   };
 
-  /* ── Octava ronda: el escenario sin fondo, sin tarjetas abajo ── */
-  const CORTO = { periodo: "Período", hoy: "Hoy", constancia: "Constancia", horario: "Horario", hechas: "Lo hecho", entregas: "Entregas", pendiente: "Pendiente", parciales: "Parciales", prox: "Lo que viene" };
-  const pregunta = (id, x) => ({ periodo: x.off ? `¿Cuánto estudiaste ${x.T.en}?` : "¿Cuánto estudiaste?", hoy: x.off ? "¿Cuánto por día?" : "¿Cómo vas hoy?", constancia: "¿Sos constante?", horario: "¿Cuándo rendís más?", hechas: "¿Cuánto hiciste?", entregas: "¿Entregás a tiempo?", pendiente: x.off ? "¿A qué ritmo?" : "¿Cuánto te falta?", parciales: x.t.rend.length ? "¿Cómo te fue en los parciales?" : "¿Cuándo es el próximo parcial?", prox: x.off ? "¿Qué entregaste?" : "¿Qué se viene?" })[id];
-  const escSolo = (app, x, modo) => {
-    const id = app._esc || "periodo", i = ESC.indexOf(id), e = escena(app, x, id), nueva = app._escNueva ? " nueva" : "";
-    app._escNueva = false;
-    const tit = raiz.dataset.titulo === "pregunta" ? pregunta(id, x) : e.et;
-    const quieto = reducido.matches ? " quieto" : "";
-    const segs = cls => `<nav class="${cls}" aria-label="Cifras">${ESC.map((c, k) => `<button type="button" class="seg${k < i ? " hecho" : ""}${k === i ? " act" : ""}" data-escir="${c}" data-k="ir-${c}" aria-current="${k === i}"><span class="seg-l"><i></i></span><span class="seg-t">${CORTO[c]}</span></button>`).join("")}</nav>`;
-    const centro = `<div class="solo-c"><div class="esc-in${nueva}" aria-live="polite"><p class="esc-tit">${ic(e.ic)}${tit}</p><p class="esc-grande">${e.g}</p><p class="esc-chico">${e.c}</p>${e.graf ? `<div class="esc-graf">${e.graf}</div>` : ""}</div></div>`;
-    const pie = `<div class="solo-pie">${quieto ? "" : `<div class="esc-prog"><i></i></div>`}<span class="esc-nav"${quieto ? ' style="margin-inline:auto"' : ""}><button type="button" class="paso" data-escpaso="-1" data-k="esc-ant" aria-label="Cifra anterior">${ic("i-flecha", "izq")}</button><span>${i + 1} de ${ESC.length}</span><button type="button" class="paso" data-escpaso="1" data-k="esc-sig" aria-label="Cifra siguiente">${ic("i-flecha")}</button></span></div>`;
-    if (modo === "segs") return `<section class="solo con-segs${quieto}">${segs("segs")}${centro}</section>`;
-    if (modo === "lado") return `<section class="solo con-lado${quieto}">${segs("lado")}${centro}</section>`;
-    return `<section class="solo${quieto}">${centro}${pie}</section>`;
-  };
-  RESUMEN.solo = (app, x) => escSolo(app, x, "solo");
-  RESUMEN.segs = (app, x) => escSolo(app, x, "segs");
-  RESUMEN.lado = (app, x) => escSolo(app, x, "lado");
-
   /* ── Las estructuras: todas son la 3; cambia solo el Resumen ── */
   const VISTAS3 = [["resumen", "Resumen", "i-barras"], ["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
   const tres = modo => app => {
@@ -1306,7 +1258,7 @@ const pasar = () =&gt; setActual((c) =&gt;
     else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
     return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
   };
-  const V = { s1: tres("solo"), s2: tres("segs"), s3: tres("lado") };
+  const V = { ra: tres("a"), rb: tres("b"), rc: tres("c"), rd: tres("d") };
   const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
   const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
@@ -1344,7 +1296,7 @@ const pasar = () =&gt; setActual((c) =&gt;
     el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
     const elegirEsc = c => { el._esc = c.dataset.esc === el._esc ? "periodo" : c.dataset.esc; el._escNueva = true; pintar(a); el.querySelector(`[data-esc="${c.dataset.esc}"]`)?.focus(); };
     el.addEventListener("keydown", e => { const c = e.target.closest?.("[data-esc]"); if (c && e.target === c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); elegirEsc(c); } });
-    el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i, .seg.act .seg-l i")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
+    el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
       const tjE = e.target.closest("[data-esc]");
@@ -1357,7 +1309,6 @@ const pasar = () =&gt; setActual((c) =&gt;
       if (d.per) { el._per = d.per; el._off = 0; el._offB = undefined; el._dia = undefined; return pintar(a, true, true); }
       if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); el._dia = undefined; return pintar(a, true, true); }
       if (d.offb) { const per = el._per || "semana"; el._offB = Math.min(OFF_MAX[per], Math.max(0, (el._offB ?? (el._off || 0) + 1) + +d.offb)); return pintar(a, true, true); }
-      if (d.escir) { el._esc = d.escir; el._escNueva = true; return pintar(a, true); }
       if (d.escpaso) { const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + +d.escpaso + ESC.length) % ESC.length]; el._escNueva = true; return pintar(a, true); }
       if (d.vista) { el._vista = d.vista; return pintar(a, true, true); }
       if (d.hero) { el._hero = d.hero; return pintar(a, true, true); }
@@ -1397,7 +1348,6 @@ const pasar = () =&gt; setActual((c) =&gt;
     ctlMeta = b.dataset.v; guardar("doro-dash-meta", ctlMeta); pulsar(grupoCtl, ctlMeta);
     apps.forEach(x => { { x.el._editMeta = false; pintar(x); } });
   }));
-  document.getElementById("titulo").addEventListener("click", () => apps.forEach(x => pintar(x)));
   setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
 
   /* ── Pantalla completa ── */
