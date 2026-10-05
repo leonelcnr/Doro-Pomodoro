@@ -2,7 +2,7 @@
 
 Diseño de la capa de datos para la pantalla de Tareas aprobada (S2, ver `tareas.md`).
 Es la Fase 3 de `docs/plan-rediseno.md`. La Fase A ya está escrita en
-`supabase/migrations/20261005120000_tareas_temas_y_fechas.sql` (**sin aplicar**). Lo demás
+`supabase/migrations/20261005120000_tareas_temas_y_fechas.sql` (**aplicada en producción el 2026-10-05**). Lo demás
 sigue como borrador.
 
 Decisiones de Leo (2026-10-04):
@@ -81,7 +81,7 @@ Decisiones de Leo (2026-10-05):
 
 ## Fase A · datos para la pantalla
 
-**Migración 1 (escrita, sin aplicar):** `supabase/migrations/20261005120000_tareas_temas_y_fechas.sql`.
+**Migración 1 (aplicada en producción el 2026-10-05: 15 temas, 28 de 30 tareas personales con tema):** `supabase/migrations/20261005120000_tareas_temas_y_fechas.sql`.
 - Tabla `topics` con RLS.
 - Columnas nuevas en `tasks`: `kind`, `topic_id`, `due_date`, `due_time`, `grade`,
   `remind_at`, `google_event_id` y `completed_at`.
@@ -100,7 +100,7 @@ drop table public.calendar_events;
 ```
 
 Orden:
-1. Aplicar la migración 1.
+1. ~~Aplicar la migración 1.~~ Hecho (2026-10-05).
 2. Desplegar el front nuevo, sin `src/features/calendar/`.
 3. Aplicar la migración 2.
 
