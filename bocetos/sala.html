@@ -1554,7 +1554,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     let estaAbierta = () => false;
     let alternarTareas = () => {};
     let alAbrirTareas = () => {};
-    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
+    if (r7 || ["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(v)) {
       const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
       const abrir = a => {
         bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
