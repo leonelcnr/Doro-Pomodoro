@@ -25,7 +25,7 @@ aprobación se pasa a la siguiente.
 | 1.3 | Sala | `/room/:roomId` | 🔄 Final: 4 · Queda el lápiz con notas en post-it, sin T arriba, rayita en acento con tareas nuevas. 8ª ronda de la bandeja de tareas (T1–T6, recomendada T4) publicada, esperando elección | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
 | 1.4 | Dashboard | `/dashboard` | 🔄 5ª ronda publicada: F sin scroll + cinco tableros en tarjetas con Semana/30 días/Año (R–V, recomendada R); esperando opinión | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
-| 1.6 | Login y registro | `/login`, `/registro` | ⏳ | — |
+| 1.6 | Login y registro | `/login`, `/registro` | ⏳ Entrar directo como anónimo y loguearse después; SEO (ver «Anotado por Leo») | — |
 | 1.7 | Invitación | `/invitacion/:code` | ⏳ | — |
 | 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ⏳ | — |
 | 1.9 | Estados de error y vacío | `ErrorPage`, 404 | ⏳ | — |
@@ -45,6 +45,22 @@ Detalle, rondas y decisiones en `docs/rediseno/home.md`.
   desvanecer puntos (no / a los lados / al centro)**, y en cada pantalla dejo una
   recomendación sobre si ahí los puntos suman o molestan.
 - **`--primary` violeta unificado o zinc** (Fase 2).
+- **Tema oscuro: «Oscuro» o «Negro».** Los bocetos traen los dos; queda uno solo.
+
+### Anotado por Leo para después de los bocetos (2026-10-05)
+
+Tareas que Leo pidió anotar para cuando estén todos los bocetos:
+
+1. **Definir qué tema oscuro queda:** «Oscuro» o «Negro» (ver la lista de arriba).
+2. **Agregar la opción de cambiar el color de acento.** Ya está como paso 3 de la Fase 3
+   (selector en el menú de la cuenta o en ajustes, guardado en `localStorage` y en el perfil).
+3. **Plan de estudio**, en una fase futura (después de la Fase 3). Sin definir todavía.
+4. **Bocetos del login (1.6) y mejorar el SEO.** La idea es **entrar directamente como
+   anónimo** y loguearse después, para reducir la fricción de empezar a usar la app.
+   Supabase ya tiene sesiones anónimas; falta que sean la puerta de entrada y que al
+   loguearse se conserven los datos (vincular la identidad en vez de crear otra cuenta;
+   ojo con `identity_already_exists`, ver `docs/seguridad-google-calendar.md`). Para el
+   SEO, una página pública que se pueda indexar antes de la app.
 
 ### Formato de los bocetos de esta fase
 
