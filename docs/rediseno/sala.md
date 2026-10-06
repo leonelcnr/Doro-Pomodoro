@@ -249,10 +249,28 @@ entregas y salir corta la sesión. El tipo en el renglón mantiene una tarea igu
 lo fino (nombres de partes, observaciones) se completa en Tareas. La 10ª quedó en
 `bocetos/sala-ronda10.html`.
 
+### 12ª ronda (2026-10-06): la base elegida, y renglones más livianos
+
+Leo eligió **T17** («Crear» ocupa la bandeja), **el despliegue de T16** (los íconos se abren
+al pasar, por encima de la lista) y **los renglones simplificados**. Igual siente que la
+lista tiene mucha información: muchos íconos, letras, etc. Pidió dejar un boceto con esas
+correcciones y buscar alternativas para aliviarla.
+
+- **T18 · La base:** lo elegido con los renglones de una línea.
+- **T19 · Solo lo actual:** el foco y una línea «Sigue: … · 14». Al desplegar aparecen los
+  temas y la lista.
+- **T20 · Solo el título:** el separador es el avance. La fecha aparece solo si es hoy,
+  mañana o ya pasó; el resto queda en el globo. La tarea se tilda a la derecha, al pasar.
+- **T21 · Agrupado por cuándo (recomendada):** los renglones de T20 bajo Atrasado, Hoy,
+  Mañana, Esta semana, Más adelante y Sin fecha.
+
+Lo que pesaba era lo que trae cada renglón, no cuántos renglones hay. T19 se puede sumar
+encima. La 11ª quedó en `bocetos/sala-ronda11.html`.
+
 ## Dónde retomamos
 
-11ª ronda publicada (T15–T17, recomendada T16), esperando la elección de Leo: cómo se
-muestra la columna de temas y cómo se crea desde la bandeja. Notas: decididas (globales,
+12ª ronda publicada (T18–T21, recomendada T21), esperando la elección de Leo sobre cómo
+se ven los renglones. Columna de temas y forma de crear ya decididas (T16 + T17). Notas: decididas (globales,
 sin tope, se pasan a un tema como tarea). Con eso se cierra la sala.
 
 ## Propuestas transversales
