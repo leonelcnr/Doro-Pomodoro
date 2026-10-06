@@ -79,7 +79,23 @@ progreso / recién llegado) e **Invitación** (solo arriba / también bajo el an
 - **4 · Hoja desde abajo.** El login sube sobre el home, como la bandeja, y el home queda
   atenuado (sin desenfoque).
 
+## Diseño final (aprobado por Leo, 2026-10-06)
+
+**1 · Una sola puerta.** Fuente: `bocetos/login.html` (opción 1).
+- Se llega desde el home: «Entrar» con el ícono de persona en la barra (se desvanece con
+  ella; el ícono queda) y, si se elige, la línea bajo el anillo.
+- Arriba a la izquierda, «Seguir sin cuenta» vuelve al home.
+- Columna centrada de 380 px: el logo, el título que dice para qué es la cuenta, una línea
+  con lo que se guarda y un botón por proveedor («Seguir con Google / GitHub / Discord»).
+- No hay «crear cuenta» ni «iniciar sesión»: si la cuenta es nueva se vincula al anónimo, y
+  si ya existía se entra a ella.
+- Textos: con progreso, «Guardá lo que hiciste» y lo hecho en negrita; recién llegado, «Tu
+  cuenta de Doro». La nota «sumamos lo de hoy» solo va cuando exista la Fase B; antes, la
+  nota dice únicamente «¿Ya tenés cuenta? Entrá con la misma».
+- Al volver, el home muestra un aviso («Listo: lo que hiciste quedó en tu cuenta de
+  Google») y el avatar con la inicial.
+
 ## Dónde retomamos
 
-Primera ronda publicada (1 a 4, recomendada 1). **Próximo paso:** la opinión de Leo y
-decidir si arrancamos la Fase A del código ya, aparte del boceto (no depende del diseño).
+✅ Aprobado (1 · Una sola puerta). Queda decidir el modelo del anónimo antes de la Fase A
+(ver la pregunta de Leo sobre guardar todo en `localStorage`).

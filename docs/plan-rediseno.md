@@ -25,7 +25,7 @@ aprobación se pasa a la siguiente.
 | 1.3 | Sala | `/room/:roomId` | 🔄 Final: 4 · Queda el lápiz con notas en post-it, sin T arriba, rayita en acento con tareas nuevas. Bandeja: T4 (foco). Base: ancho de T13, «Crear» de T17, plegada como T19 y por cuándo como T21; temas como botones, renglones de solo título, se marca desde el foco. 13ª ronda T22–T24 sobre cuánto se ve al desplegar (recomendada T23 · solo lo cercano abierto); notas globales, sin tope, con tema opcional; esperando elección | [Sala](https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i) |
 | 1.4 | Dashboard | `/dashboard` | ✅ 3 · Resumen, Estudio y Tareas, con el Resumen como una cifra por vez y el índice de puntos que se vuelven íconos (11ª ronda · 1) (aprobado 2026-10-06) | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
-| 1.6 | Login y registro | `/login`, `/registro` | 🔄 Se entra como anónimo; la cuenta es para guardar el progreso. 1ª ronda publicada (1–4, recomendada 1 · Una sola puerta); cambios de código por fases en `docs/rediseno/login.md`; esperando opinión | [Login](https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23) |
+| 1.6 | Login y registro | `/login`, `/registro` | ✅ 1 · Una sola puerta: se entra como anónimo y la cuenta es para guardar el progreso (aprobado 2026-10-06). Cambios de código por fases en `docs/rediseno/login.md` | [Login](https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23) |
 | 1.7 | Invitación | `/invitacion/:code` | ⏳ | — |
 | 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ⏳ | — |
 | 1.9 | Estados de error y vacío | `ErrorPage`, 404 | ⏳ | — |
