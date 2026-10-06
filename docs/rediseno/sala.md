@@ -224,11 +224,36 @@ La bandeja ancha deja libre el asa de las notas: mide `min(100% − 540px, 720px
 1140 px. Las notas abren al costado recién desde 1384 px; por debajo, abrir una cierra la
 otra.
 
+### 11ª ronda (2026-10-05): el ancho de T13, temas en íconos, y crear desde la bandeja
+
+Leo prefiere **el ancho de T13**, pero con la columna de temas en íconos o que se abra al
+pasar el mouse. **Notas: son las mismas en todas las salas y no tienen tope**, y tiene que
+poder pasarse una a un tema. Preguntó si desde la bandeja hay que poder crear parciales,
+prácticos e informes, o si eso queda en Tareas, sin perder simplicidad.
+
+- **T15 · Solo íconos · solo tareas:** el nombre aparece en el título de la lista y en el
+  globo del navegador; el + suma solo tareas.
+- **T16 · Se abre al pasar · el tipo en el renglón (recomendada):** la columna se abre por
+  encima de la lista, sin empujarla. En el renglón del +, el ícono elige el tipo y a la
+  derecha aparece un solo dato (fecha del parcial, o puntos o partes).
+- **T17 · Globo al lado · la bandeja pasa a «Crear»:** un globito por ícono. El botón de
+  ajustes del renglón cambia la bandeja entera a un formulario (tipo, título, tema, fecha,
+  cantidad); Esc vuelve.
+- **Otra bandeja para crear:** descartada sin bocetar, porque sería una tercera bandeja
+  junto a tareas y notas.
+- **Notas → tema (en las tres):** al pasar por un post-it aparece «Pasar a un tema». La
+  nota se mueve (no se copia) y se vuelve una tarea de ese tema.
+
+Mi postura: no dejar la creación solo en Tareas, porque en la sala aparecen fechas y
+entregas y salir corta la sesión. El tipo en el renglón mantiene una tarea igual que hoy;
+lo fino (nombres de partes, observaciones) se completa en Tareas. La 10ª quedó en
+`bocetos/sala-ronda10.html`.
+
 ## Dónde retomamos
 
-10ª ronda publicada (T11–T14 sobre T9, recomendada T14), esperando la elección de Leo. **Quedan abiertas:**
-si las notas son por sala o las mismas en todas, y si llevan un tope (p. ej. 50). Con eso se
-cierra la sala.
+11ª ronda publicada (T15–T17, recomendada T16), esperando la elección de Leo: cómo se
+muestra la columna de temas y cómo se crea desde la bandeja. Notas: decididas (globales,
+sin tope, se pasan a un tema como tarea). Con eso se cierra la sala.
 
 ## Propuestas transversales
 

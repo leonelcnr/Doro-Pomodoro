@@ -17,7 +17,8 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `tareas-ronda3.html` | Ronda 3 de tareas (G–L), guardada como referencia. | — |
 | `tareas-ronda2.html` | Ronda 2 de tareas (A–F, con la regla de F), guardada como referencia. No está publicada aparte. | — |
 | `dashboard.html` | Dashboard, ronda vigente (10ª): la cifra y el índice como un bloque centrado (1–4, recomendada 2 · Partida en dos). Las rondas 5 a 9 quedan en `dashboard-ronda5.html` … `dashboard-ronda9.html`. | https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ |
-| `sala.html` | Sala, versión vigente: la sala final (4 · Queda el lápiz con notas en post-it) y la 10ª ronda de la bandeja (T11–T14: T9 con el + en otro lugar, renglones de una línea y bandeja ancha). | https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i |
+| `sala.html` | Sala, versión vigente: la sala final (4 · Queda el lápiz con notas en post-it) y la 11ª ronda de la bandeja (T15–T17: bandeja ancha, temas en íconos al costado y tres formas de crear). | https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i |
+| `sala-ronda10.html` | Sala final con la 10ª ronda de la bandeja (T11–T14), guardada como referencia. | — |
 | `sala-ronda9.html` | Sala final con la 9ª ronda de la bandeja (T7–T10), guardada como referencia. | — |
 | `sala-ronda8.html` | Sala final con la 8ª ronda de la bandeja de tareas (T1–T6), guardada como referencia. | — |
 | `sala-ronda7.html` | Sala con X y la 7ª ronda de notas (1–7, sin dos rayitas), guardada como referencia. | — |
