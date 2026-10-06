@@ -221,5 +221,7 @@ sala completadas sí dejan de contar en el dashboard.
 
 ## Dónde retomamos
 
-✅ Diseño aprobado, Fases A, B y C en código. Falta aplicar las migraciones, desplegar
-`sumar-anonimo` y probar el ida y vuelta con un proveedor en el deploy de prueba.
+✅ Diseño aprobado, Fases A, B y C en código y en producción (2026-10-06): las cinco
+migraciones aplicadas, `sumar-anonimo` desplegada (v1, igual al repo) y los dos cron
+(`borrar-anonimos-inactivos` 04:30 UTC, `borrar-salas-inactivas` 04:35 UTC) activos.
+Falta probar el ida y vuelta con un proveedor en el deploy de prueba.
