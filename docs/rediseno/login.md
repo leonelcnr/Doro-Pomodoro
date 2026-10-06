@@ -200,6 +200,25 @@ Para producción (lo corre Leo):
 
 Para producción (lo corre Leo): `pnpm dlx supabase db push --linked`.
 
+## Salas descartables (decisión de Leo, 2026-10-06)
+
+Las salas se usan y se abandonan, así que se borran a los 30 días sin actividad, con sus
+membresías, invitaciones y tareas de sala (Leo eligió que las tareas se borren). Las
+sesiones de estudio no dependen de la sala: minutos y racha no se tocan. Las tareas de
+sala completadas sí dejan de contar en el dashboard.
+- Migración `20261006140000`: columna `rooms.last_activity_at` (cargada con lo mejor que
+  había: creación, último cambio del reloj, última entrada de un miembro, última tarea).
+- Cuenta como actividad: abrir la sala (`join_room_by_id`, que corre en cada entrada),
+  cambiar el reloj o la música (trigger en `rooms`) y crear, editar o borrar una tarea de
+  la sala (trigger en `tasks`).
+- `borrar_salas_inactivas(30)` con pg_cron a las 04:35 UTC. Probada en local: borra solo
+  la sala sin actividad y sus tareas, y no se puede llamar desde el cliente.
+- En producción, al 2026-10-06: la primera corrida borra 429 de 473 salas y quedan 44. Se
+  van 33 tareas de sala (4 completadas).
+- Un link a una sala borrada cae en la vista de error que ya existe («La sala no existe»).
+  Para la sesión de Sala: si el rediseño muestra una lista de salas, son las de los últimos
+  30 días.
+
 ## Dónde retomamos
 
 ✅ Diseño aprobado, Fases A, B y C en código. Falta aplicar las migraciones, desplegar
