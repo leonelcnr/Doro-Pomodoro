@@ -17,6 +17,7 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `tareas-ronda3.html` | Ronda 3 de tareas (G–L), guardada como referencia. | — |
 | `tareas-ronda2.html` | Ronda 2 de tareas (A–F, con la regla de F), guardada como referencia. No está publicada aparte. | — |
 | `dashboard.html` | Dashboard, **aprobado** (2026-10-06): la 1 de la 11ª ronda, puntos que se vuelven íconos. La 2 queda como referencia. H esconde la barra. Las rondas 5 a 10 quedan en `dashboard-ronda5.html` … `dashboard-ronda10.html`. | https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ |
+| `login.html` | Login, ronda vigente (1ª): se entra como anónimo; cuatro formas del login (recomendada 1 · Una sola puerta). | https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23 |
 | `sala.html` | Sala, versión vigente: la sala final (4 · Queda el lápiz con notas en post-it) y la 13ª ronda de la bandeja (T22–T24: plegada como T19, desplegada por cuándo y más liviana). | https://claude.ai/artifact/PBLhTftqrKNyctSFiKpB4i |
 | `sala-ronda12.html` | Sala final con la 12ª ronda de la bandeja (T18–T21), guardada como referencia. | — |
 | `sala-ronda11.html` | Sala final con la 11ª ronda de la bandeja (T15–T17), guardada como referencia. | — |

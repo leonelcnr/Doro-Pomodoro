@@ -1,0 +1,672 @@
+<meta charset="utf-8">
+<title>Login de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Login de Doro, primera ronda. Se entra directo como anónimo; el login es para guardar el progreso. Mundo del home D4: fondo neutro, un acento, líneas finas. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklab, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion, .metas { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2, .metas > h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.marca-base { font-size: 13px; font-weight: 500; color: var(--tenue); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 760px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 6px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); white-space: nowrap; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+
+/* ───────── Home D4 (del boceto aprobado), simplificado ───────── */
+.d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 32px 20px 104px; text-align: center; }
+.d-anillo { position: relative; border: 0; background: none; padding: 0; width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; max-width: 100%; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+.d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.d-anillo .pista-anillo { stroke: var(--linea); }
+.d-anillo .arco { stroke: var(--acento); transition: stroke-dashoffset .9s cubic-bezier(.16,1,.3,1); }
+.d-anillo:is(:hover, :focus-visible) .arco { stroke-dashoffset: 0 !important; }
+.d-anillo .relleno { fill: var(--superficie); transition: fill .3s; }
+.d-anillo:hover .relleno { fill: var(--acento-suave); }
+.d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.d-texto strong { font-size: clamp(20px, 3.4cqi, 26px); font-weight: 600; letter-spacing: -0.02em; }
+.d-texto span { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.d-unirse { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(100%, 360px); }
+.d-unirse label { font-size: 13.5px; color: var(--tenue); }
+.d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 40px; font-size: 15px; transition: border-color .2s; }
+.d-linea:focus { outline: none; border-color: var(--acento); }
+.d-linea::placeholder { color: var(--tenue); }
+.d-anillo { cursor: pointer; }
+/* Cuenta en la barra: anónimo = ícono de persona + «Entrar» (se desvanece con la barra) */
+.cuenta-tb { display: inline-flex; align-items: center; gap: 10px; border: 0; background: none; padding: 0; font-size: 14px; color: var(--tenue); }
+.cuenta-tb:hover { color: var(--fg); }
+.cuenta-tb .avatar svg { width: 16px; height: 16px; }
+.avatar.lleno { background: var(--acento-suave); border-color: color-mix(in oklch, var(--acento) 35%, var(--linea)); color: var(--fg); }
+/* Invitación bajo el anillo (ajuste «Invitación») */
+.nudge { margin: -16px 0 0; font-size: 13.5px; color: var(--tenue); max-width: 34ch; text-wrap: balance; }
+.btn-link { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; cursor: pointer; }
+.btn-link:hover { text-decoration-color: currentColor; }
+
+/* ───────── El login ───────── */
+.lg-main { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px 56px; }
+.lg-volver { position: absolute; top: 4px; left: 20px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 6px 0; font-size: 14px; color: var(--tenue); cursor: pointer; }
+.lg-volver:hover { color: var(--fg); }
+.lg-volver svg { width: 15px; height: 15px; transform: rotate(180deg); }
+@container app (min-width: 720px) { .lg-volver { left: 32px; } }
+.lg-col { width: min(100%, 380px); display: flex; flex-direction: column; gap: 22px; text-align: center; }
+.lg-marca { display: grid; place-items: center; }
+.lg-marca svg { width: 40px; height: 40px; color: var(--acento); }
+.lg-tit { margin: 0; font-size: clamp(26px, 4.2cqi, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+.lg-sub { margin: -10px 0 0; font-size: 15px; color: var(--tenue); text-wrap: balance; font-variant-numeric: tabular-nums; }
+.lg-sub b { color: var(--fg); font-weight: 500; }
+.lg-prov { display: flex; flex-direction: column; gap: 10px; }
+.prov { display: grid; grid-template-columns: 20px 1fr 20px; align-items: center; height: 46px; padding: 0 16px; border: 1px solid var(--linea); border-radius: 10px; background: var(--superficie); font-size: 15px; font-weight: 500; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.prov:hover { border-color: var(--tenue); }
+.prov svg { width: 18px; height: 18px; }
+.lg-nota { margin: 0; font-size: 13.5px; color: var(--tenue); text-wrap: balance; }
+.lg-nota b { color: var(--fg); font-weight: 500; }
+.lg-legal { margin: 0; font-size: 12px; color: var(--tenue); text-wrap: balance; }
+.lg-legal a { color: inherit; text-underline-offset: 3px; }
+/* 2 · Crear cuenta o entrar: pestañas subrayadas, como las del dashboard */
+.lg-tabs { display: flex; justify-content: center; gap: 24px; border-bottom: 1px solid var(--linea); }
+.lg-tabs button { border: 0; background: none; padding: 0 0 9px; margin-bottom: -1px; font-size: 14.5px; color: var(--tenue); border-bottom: 2px solid transparent; cursor: pointer; }
+.lg-tabs button:hover { color: var(--fg); }
+.lg-tabs button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); font-weight: 500; }
+/* 3 · El anillo de lado: lo que guardás, a la izquierda */
+.lg-dos { display: grid; gap: 40px; width: min(100%, 880px); align-items: center; }
+@container app (min-width: 760px) { .lg-dos { grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 72px; } }
+.lg-guardas { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.lg-guardas .d-anillo { width: clamp(160px, 24cqi, 230px); cursor: default; }
+.lg-lista { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.lg-lista li { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.lg-lista svg { width: 16px; height: 16px; }
+.lg-lista b { color: var(--fg); font-weight: 500; }
+.lg-dos .lg-col { text-align: left; }
+@container app (max-width: 759px) { .lg-dos .lg-col { text-align: center; } .lg-guardas .d-anillo { width: 150px; } }
+/* 4 · Hoja desde abajo, sobre el home (sin desenfoque: el home se atenúa) */
+.velo { position: absolute; inset: 0; z-index: 8; background: color-mix(in oklch, var(--bg) 62%, transparent); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.hoja { position: absolute; left: 50%; bottom: 0; z-index: 9; width: min(100%, 500px); max-height: calc(100% - 24px); overflow: auto; padding: 22px 24px 28px; border: 1px solid var(--linea); border-bottom: 0; border-radius: 20px 20px 0 0; background: var(--superficie); box-shadow: var(--sombra); transform: translate(-50%, 104%); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.hoja::before { content: ""; display: block; width: 32px; height: 4px; margin: 0 auto 14px; border-radius: 4px; background: var(--linea); }
+.hoja .lg-col { width: 100%; margin: 0 auto; max-width: 380px; }
+.hoja .lg-cerrar { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; display: grid; place-items: center; border: 0; background: none; border-radius: 8px; color: var(--tenue); cursor: pointer; }
+.hoja .lg-cerrar:hover { background: var(--campo); color: var(--fg); }
+.hoja .lg-cerrar svg { width: 16px; height: 16px; }
+.app.con-hoja .velo { opacity: 1; pointer-events: auto; }
+.app.con-hoja .hoja { transform: translate(-50%, 0); }
+.app.con-hoja .tb, .app.con-hoja .d-main { pointer-events: none; }
+/* Al volver del login, el home entra con un fundido corto */
+.entra { animation: fundido .3s ease both; }
+@keyframes fundido { from { opacity: .2; } }
+
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 64ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-lapiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-barras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 19v-7M10.5 19V6M15 19v-9M19.5 19v-5"/><path d="M3.5 19h17"/></symbol>
+  <symbol id="t-llaves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></symbol>
+  <symbol id="t-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7 6 16M13 7l5 9M7.2 18h9.6"/></symbol>
+  <symbol id="t-diagrama" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="5" rx="1"/><rect x="13.5" y="15.5" width="7" height="5" rx="1"/><path d="M7 8.5V18h6.5"/></symbol>
+  <symbol id="t-chispa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
+  <symbol id="k-practico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h2M4 12h2M4 17h2M9 7h11M9 12h11M9 17h7"/></symbol>
+  <symbol id="k-parcial" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5l2 2 4-4"/></symbol>
+  <symbol id="k-tarea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="t-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></symbol>
+  <symbol id="t-onda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-5 4-5 6 0s4 5 6 0 4-5 6 0"/></symbol>
+  <symbol id="k-informe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></symbol>
+  <symbol id="t-capas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3.5 8.5 12 13l8.5-4.5z"/><path d="M3.5 12.5 12 17l8.5-4.5M3.5 16.5 12 21l8.5-4.5"/></symbol>
+  <symbol id="t-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></symbol>
+  <symbol id="k-lista" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 14.5l2 2 4-4"/></symbol>
+  <symbol id="i-tend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-8"/><path d="M15 7h5v5"/></symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-prox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></symbol>
+  <symbol id="i-cuadros" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="p-google" viewBox="0 0 24 24"><path fill="currentColor" d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></symbol>
+  <symbol id="p-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></symbol>
+  <symbol id="p-discord" viewBox="0 0 127.14 96.36"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.08 0 72.37 72.37 0 0 0-3.36-6.83 105.15 105.15 0 0 0-26.23 8.07C2.04 33.12-2.3 57.54.91 81.54a105.21 105.21 0 0 0 32.18 14.82 72.4 72.4 0 0 0 6.91-10.87 68.32 68.32 0 0 1-10.86-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.31 68.31 0 0 1-10.87 5.19 72.4 72.4 0 0 0 6.91 10.86 105.02 105.02 0 0 0 32.18-14.82c3.55-27.4-3.14-50.41-19.34-73.47ZM42.68 65.88c-6.13 0-11.23-5.26-11.23-11.7s4.98-11.7 11.23-11.7c6.32 0 11.38 5.33 11.23 11.7 0 6.44-4.99 11.7-11.23 11.7Zm41.78 0c-6.13 0-11.23-5.26-11.23-11.7s4.98-11.7 11.23-11.7c6.32 0 11.38 5.33 11.23 11.7 0 6.44-4.99 11.7-11.23 11.7Z"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.2 3.8-4.8 7-4.8s5.8 1.6 7 4.8"/></symbol>
+</svg>
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Login de Doro</h1>
+    <p><b>Cambia la puerta de entrada.</b> Quien abre Doro cae directo en el home como anónimo y puede usar todo (reloj, salas, tareas). La cuenta deja de ser un requisito y pasa a ser una forma de <b>guardar lo que hiciste</b> y llevarlo a otros dispositivos. El login es la pantalla a la que se llega desde el home, cuando uno quiere.</p>
+    <p>Cada maqueta arranca en el home como anónimo. <b>Tocá «Entrar»</b> (o el anillo de la persona) para ir al login, elegí un proveedor y vas a ver cómo vuelve al home con la cuenta. El ajuste <b>«Llega»</b> cambia si el anónimo ya tiene progreso o recién llega; <b>«Invitación»</b> suma una línea bajo el anillo. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Llega</span>
+      <div class="segmentado" id="progreso" role="group" aria-label="Estado del anónimo"><button type="button" data-v="con">Con progreso</button><button type="button" data-v="nuevo">Recién llegado</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Invitación</span>
+      <div class="segmentado" id="invita" role="group" aria-label="Dónde se invita a crear la cuenta"><button type="button" data-v="arriba">Solo arriba</button><button type="button" data-v="anillo">También bajo el anillo</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="r1" data-v="r1">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">1</span><span class="nombre">Una sola puerta</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Un título que dice para qué es la cuenta («Guardá lo que hiciste»), una línea con lo que se guarda y <b>un botón por proveedor</b>. No hay «crear cuenta» ni «iniciar sesión»: <b>el sistema decide</b>. Si la cuenta es nueva, la vincula al anónimo; si ya existía, entra a ella.</p>
+        <p class="enfoque">Lo primero: <b>qué ganás con la cuenta</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Una sola decisión: con qué proveedor.</li><li>No hay forma de equivocarse de botón («¿era crear o entrar?»).</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Quien ya tiene cuenta no ve un «Iniciar sesión» explícito; lo dice la nota de abajo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r2" data-v="r2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">2</span><span class="nombre">Crear cuenta o entrar</span></h2>
+        <p class="resumen">Lo mismo, con <b>dos pestañas arriba</b>: «Crear cuenta» y «Ya tengo cuenta». Los botones son los mismos; cambian el título y la nota, para que quien vuelve sepa que está en el lugar correcto.</p>
+        <p class="enfoque">Lo primero: <b>elegir si sos nuevo o volvés</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La forma conocida: nadie duda dónde iniciar sesión.</li><li>Cada pestaña puede explicar lo suyo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Una decisión más, y las dos pestañas hacen lo mismo por detrás.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r3" data-v="r3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">3</span><span class="nombre">El anillo de lado</span></h2>
+        <p class="resumen">La pantalla usa el ancho: <b>a la izquierda, el anillo del home con lo que hiciste</b> (minutos de hoy, tareas, notas); a la derecha, el título y los proveedores. Angosto, el anillo queda arriba y más chico.</p>
+        <p class="enfoque">Lo primero: <b>lo que hiciste, y después cómo guardarlo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se ve qué se guarda, no solo se lee.</li><li>Sigue el idioma del home: el anillo es el mismo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Recién llegado no hay nada que mostrar: el anillo queda vacío y pierde sentido.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r4" data-v="r4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">4</span><span class="nombre">Hoja desde abajo</span></h2>
+        <p class="resumen">El login no es otra pantalla: <b>sube como una hoja sobre el home</b>, igual que la bandeja de tareas, y el home queda atenuado detrás. Se cierra con la X, tocando afuera o con Esc.</p>
+        <p class="enfoque">Lo primero: <b>no perder de vista el home</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se siente como un paso dentro de la app y no como salir de ella.</li><li>En el celular es el gesto natural.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La ruta <code>/login</code> sigue existiendo para los links, pero se ve distinta según de dónde venís.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Login</th><th>Decisiones</th><th>Qué muestra</th><th>Quien ya tiene cuenta</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>1 · Una sola puerta</td><td>Una: el proveedor</td><td>Para qué es la cuenta</td><td>Nota abajo</td><td>Igual</td><td>No ver «Iniciar sesión»</td></tr>
+          <tr><td>2 · Crear o entrar</td><td>Dos: pestaña y proveedor</td><td>Lo mismo, por pestaña</td><td>Su pestaña</td><td>Igual</td><td>Duda falsa entre pestañas</td></tr>
+          <tr><td>3 · El anillo de lado</td><td>Una</td><td>Lo que hiciste, dibujado</td><td>Nota abajo</td><td>Anillo arriba</td><td>Vacío si recién llegás</td></tr>
+          <tr><td>4 · Hoja desde abajo</td><td>Una</td><td>Lo de 1, sobre el home</td><td>Nota abajo</td><td>Gesto natural</td><td>Dos caras para una ruta</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegiría 1</h3>
+        <p><b>Si el anónimo ya puede usar todo, la cuenta no es una puerta: es un «guardar».</b> Por eso el título dice para qué sirve y hay una sola decisión, el proveedor. Distinguir «crear» de «entrar» lo resuelve el sistema: si la cuenta de Google es nueva, se vincula al anónimo y no se pierde nada; si ya existía, se entra a ella.</p>
+        <p><b>4</b> si querés que se sienta como un paso dentro de la app (combina con la bandeja del home). <b>3</b> es la más linda con progreso, pero recién llegado no tiene qué mostrar.</p>
+        <h4>Qué cambia por detrás (respuesta a «¿cuánta reestructuración es?»)</h4>
+        <p><b>Fase A, chica:</b> crear la sesión anónima al abrir la app (hoy se manda a <code>/login</code>), que «Iniciar sesión» del menú lleve a <code>/login</code> en vez de cerrar la sesión (hoy borra todo lo del anónimo), y que el login vincule la cuenta al anónimo (<code>linkIdentity</code>, que ya existe) o, si la cuenta ya existía, entre a ella. Toca <code>AuthContext</code>, el menú de la cuenta, la página de login e invitación.</p>
+        <p><b>Fase B, mediana:</b> cuando la cuenta ya existía, sumarle lo que hizo el anónimo (tareas, sesiones, temas, salas). Va en una edge function con permisos de servidor. Hasta tenerla, la nota de abajo tiene que ser honesta: lo de esta sesión no se suma.</p>
+        <p><b>Fase C:</b> limpiar anónimos sin actividad, frenar bots que crearían un anónimo por visita, y una página pública para el SEO.</p>
+      </div>
+      <div>
+        <pre><span class="c-com">// Fase A · al abrir la app no hay /login obligatorio</span>
+supabase.auth.onAuthStateChange((evento, sesion) =&gt; {
+  if (!sesion) return crearAnonimoUnaVez();   <span class="c-com">// antes: navigate("/login")</span>
+  establecerUsuario(mapearUsuario(sesion));
+});
+
+<span class="c-com">// El login: vincular si sos anónimo; si la cuenta ya existe, entrar</span>
+async function continuarCon(proveedor) {
+  if (usuario?.isAnonymous) {
+    guardarIdAnonimo(usuario.id);              <span class="c-com">// para la Fase B</span>
+    const { error } = await supabase.auth.linkIdentity({ provider: proveedor });
+    if (!error) return;
+  }
+  await supabase.auth.signInWithOAuth({ provider: proveedor });
+}
+<span class="c-com">// Si linkIdentity vuelve con identity_already_exists (por la URL),
+// se reintenta con signInWithOAuth: es una cuenta que ya existía.</span></pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+    progreso: v => raiz.dataset.progreso = v,
+    invita: v => raiz.dataset.invita = v,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", progreso: "con", invita: "arriba" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar("doro-d4-" + id, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer("doro-d4-" + id, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── La app de la maqueta: home como anónimo → login → home con cuenta ── */
+  const conProgreso = () => raiz.dataset.progreso !== "nuevo";
+  const PROV = [["google", "Google", "p-google"], ["github", "GitHub", "p-github"], ["discord", "Discord", "p-discord"]];
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const ARCO = 578.05;
+  const anillo = (frac, interior, extra = "") => `<span class="d-anillo"${extra}><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno" cx="100" cy="100" r="92"/><circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3"/><circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${ARCO}" stroke-dashoffset="${(ARCO * (1 - frac)).toFixed(2)}"/></svg><span class="d-texto">${interior}</span></span>`;
+
+  const barraApp = el => `<header class="tb">
+    <a class="marca" href="#" aria-label="Doro, inicio">${ic("i-logo")}<span class="desv">Doro</span></a>
+    <nav class="tb-nav desv" aria-label="Secciones"><a aria-current="page" href="#">Inicio</a><a href="#">Tareas</a><a href="#">Dashboard</a></nav>
+    <div class="tb-der">
+      <span class="hora desv">${ahora()}</span>
+      ${el._cuenta
+        ? `<span class="avatar lleno" aria-label="Tu cuenta">L</span>`
+        : `<button type="button" class="cuenta-tb" data-login data-k="entrar"><span class="desv">Entrar</span><span class="avatar">${ic("i-persona")}</span></button>`}
+    </div>
+  </header>`;
+
+  const home = el => {
+    const p = conProgreso();
+    const interior = `<strong>Crear sala</strong><span>${p ? "45 min de 2 h hoy" : "Tu primera sesión"}</span>`;
+    const nudge = !el._cuenta && raiz.dataset.invita === "anillo"
+      ? `<p class="nudge">${p ? "Lo que hacés queda en este dispositivo." : "Sin cuenta, todo queda en este dispositivo."} <button type="button" class="btn-link" data-login data-k="nudge">${p ? "Guardalo en tu cuenta" : "Creá tu cuenta"}</button></p>` : "";
+    return `<main class="d-main${el._entra ? " entra" : ""}">
+      ${anillo(p ? 45 / 120 : 0, interior, ' role="button" tabindex="0" aria-label="Crear sala"')}
+      ${nudge}
+      <form class="d-unirse" onsubmit="return false"><label>¿Te pasaron un link?</label><input class="d-linea" placeholder="Pegalo acá y tocá Enter"></form>
+    </main>`;
+  };
+
+  /* Textos del login según si hay progreso y la pestaña (2) */
+  const textos = (el, v) => {
+    const p = conProgreso(), entrar = v === "r2" && el._modo === "entrar";
+    if (entrar) return { tit: "Entrá a tu cuenta", sub: "Con la misma que usaste antes: Google, GitHub o Discord.", nota: p ? "Lo que hiciste sin cuenta en este dispositivo <b>se suma a tu cuenta</b>." : "" };
+    return p
+      ? { tit: "Guardá lo que hiciste", sub: "<b>45 min</b> de estudio, <b>5 tareas</b> y <b>2 notas</b>. Quedan en tu cuenta y las ves en cualquier dispositivo.", nota: v === "r2" ? "" : "¿Ya tenés cuenta? Entrá con la misma y <b>sumamos lo de hoy</b>." }
+      : { tit: "Tu cuenta de Doro", sub: "Para que tus tareas y tu estudio te sigan a cualquier dispositivo.", nota: v === "r2" ? "" : "¿Ya tenés cuenta? Entrá con la misma." };
+  };
+  const columna = (el, v) => {
+    const t = textos(el, v);
+    const tabs = v === "r2" ? `<div class="lg-tabs" role="group" aria-label="Crear cuenta o entrar">${[["crear", "Crear cuenta"], ["entrar", "Ya tengo cuenta"]].map(([m, n]) => `<button type="button" data-modo="${m}" data-k="modo-${m}" aria-pressed="${(el._modo || "crear") === m}">${n}</button>`).join("")}</div>` : "";
+    const marca = v === "r3" ? "" : `<div class="lg-marca">${ic("i-logo")}</div>`;
+    return `<div class="lg-col">${marca}${tabs}
+      <div><h1 class="lg-tit">${t.tit}</h1></div>
+      <p class="lg-sub">${t.sub}</p>
+      <div class="lg-prov">${PROV.map(([id, n, s]) => `<button type="button" class="prov" data-prov="${n}" data-k="prov-${id}">${ic(s)}<span>Seguir con ${n}</span><span></span></button>`).join("")}</div>
+      ${t.nota ? `<p class="lg-nota">${t.nota}</p>` : ""}
+      <p class="lg-legal">Al seguir aceptás los <a href="#">Términos</a> y la <a href="#">Política de privacidad</a>.</p>
+    </div>`;
+  };
+  const volverBtn = `<button type="button" class="lg-volver" data-volver data-k="volver">${ic("i-flecha")}Seguir sin cuenta</button>`;
+  const login = (el, v) => {
+    if (v === "r3") {
+      const p = conProgreso();
+      const lista = p ? `<ul class="lg-lista"><li>${ic("i-reloj")}<span><b>45 min</b> de estudio hoy</span></li><li>${ic("k-tarea")}<span><b>5 tareas</b> anotadas</span></li><li>${ic("k-lista")}<span><b>2 notas</b> de la sala</span></li></ul>` : `<p class="lg-nota">Todavía no hiciste nada: lo que hagas va a quedar acá.</p>`;
+      return `<main class="lg-main entra">${volverBtn}<div class="lg-dos"><div class="lg-guardas">${anillo(p ? 45 / 120 : 0, `<strong>${p ? "45 min" : "0 min"}</strong><span>hoy</span>`)}${lista}</div>${columna(el, v)}</div></main>`;
+    }
+    return `<main class="lg-main entra">${volverBtn}${columna(el, v)}</main>`;
+  };
+
+  const pintar = (a, enfocar) => {
+    const el = a.el, k = enfocar && el.contains(document.activeElement) && document.activeElement.dataset?.k;
+    if (a.v === "r4") {
+      a.cuerpo.innerHTML = `${barraApp(el)}${home(el)}<div class="velo" data-volver></div><section class="hoja" role="dialog" aria-label="Tu cuenta" aria-hidden="${!el._hoja}"><button type="button" class="lg-cerrar" data-volver data-k="cerrar" aria-label="Cerrar">${ic("i-x")}</button>${columna(el, "r4")}</section>`;
+      el.classList.toggle("con-hoja", !!el._hoja);
+      a.cuerpo.style.overflow = "hidden";   // la hoja cerrada espera debajo del borde: que no genere scroll
+    } else {
+      a.cuerpo.innerHTML = barraApp(el) + (el._pant === "login" ? login(el, a.v) : home(el));
+    }
+    el._entra = false;
+    if (k) a.cuerpo.querySelector(`[data-k="${k}"]`)?.focus();
+  };
+
+  /* ── Montaje ── */
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2600); };
+  const reiniciar = a => { a.el._cuenta = false; a.el._pant = "home"; a.el._hoja = false; a.el._modo = "crear"; pintar(a); };
+
+  const conectar = a => {
+    const el = a.el;
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div>`);
+    const abrirHoja = abrir => { el._hoja = abrir; el.classList.toggle("con-hoja", abrir); el.querySelector(".hoja")?.setAttribute("aria-hidden", String(!abrir)); if (abrir) setTimeout(() => el.querySelector(".hoja .prov")?.focus(), 350); else el.querySelector('[data-k="entrar"]')?.focus(); };
+    el.addEventListener("keydown", e => {
+      if (e.key === "Escape" && el._hoja) { e.stopPropagation(); abrirHoja(false); }
+      if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".d-anillo[role=button]")) { e.preventDefault(); avisar(el, "Acá se crea la sala (no es parte de este boceto)"); }
+    });
+    el.addEventListener("click", e => {
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
+      if (e.target.closest(".d-anillo[role=button]")) return avisar(el, "Acá se crea la sala (no es parte de este boceto)");
+      const b = e.target.closest("[data-login], [data-volver], [data-prov], [data-modo]"); if (!b) return;
+      const d = b.dataset;
+      if (d.login !== undefined) { if (a.v === "r4") return abrirHoja(true); el._pant = "login"; return pintar(a, false), el.querySelector(".prov")?.focus(); }
+      if (d.volver !== undefined) { if (a.v === "r4") return abrirHoja(false); el._pant = "home"; el._entra = true; pintar(a); return el.querySelector('[data-k="entrar"]')?.focus(); }
+      if (d.modo) { el._modo = d.modo; return pintar(a, true); }
+      if (d.prov) {
+        const vuelve = a.v === "r2" && el._modo === "entrar";
+        el._cuenta = true; el._pant = "home"; el._hoja = false; el._entra = true; pintar(a);
+        return avisar(el, vuelve ? `Entraste con ${d.prov}${conProgreso() ? "; lo de hoy se sumó" : ""}` : conProgreso() ? `Listo: lo que hiciste quedó en tu cuenta de ${d.prov}` : `Listo: tu cuenta de ${d.prov} está lista`);
+      }
+    });
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+  opciones.forEach((op, n) => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "position:relative;flex:1;display:flex;flex-direction:column;min-height:0"; el.appendChild(cuerpo);
+    const a = { v, el, cuerpo };
+    apps.push(a);
+    conectar(a);
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <button type="button" class="btn-completa" data-reiniciar>Volver a anónimo</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    bm.querySelector("[data-reiniciar]").addEventListener("click", () => reiniciar(a));
+    reiniciar(a);
+  });
+  ["progreso", "invita"].forEach(g => document.getElementById(g).addEventListener("click", () => apps.forEach(x => g === "progreso" ? reiniciar(x) : pintar(x))));
+  setInterval(() => document.querySelectorAll(".tb .hora").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic("i-contraer")}</button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra">${ic("i-x")}</button>`;
+  /* H o la X esconden el mando para ver la pantalla sola; H o la esquina de abajo a la derecha lo traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisoMando("Barra escondida. H o la esquina de abajo a la derecha la traen");
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  /* Fuera de pantalla completa, H esconde y trae la barra de ajustes */
+  const ajustesBarra = document.querySelector(".ajustes");
+  document.addEventListener("keydown", e => {
+    if (actual || e.key.toLowerCase() !== "h" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    ajustesBarra.hidden = !ajustesBarra.hidden;
+  });
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>
