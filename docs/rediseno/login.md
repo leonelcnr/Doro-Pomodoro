@@ -180,14 +180,14 @@ Para producción (lo corre Leo):
 
 - **Limpieza de anónimos.** La migración `20261006130000` crea
   `borrar_anonimos_inactivos(dias)` y la programa con pg_cron todos los días a las 04:30 UTC
-  con 30 días. Un anónimo está inactivo si se creó hace más de 30 días y ninguna de sus
+  con 60 días (Leo, 2026-10-06). Un anónimo está inactivo si se creó hace más de 60 días y ninguna de sus
   sesiones se renovó en ese tiempo. Si hostea una sala con otros miembros, antes el host
   pasa al que entró primero (borrar al host borraría la sala). Probada en local: borra los
   que corresponde, conserva al que volvió, al nuevo y a las cuentas, y no se puede llamar
   desde el cliente.
-  En producción, al 2026-10-06: 36 anónimos, 31 inactivos. De esos, 6 tienen una tarea
-  cada uno, 3 tienen sesiones de estudio y hostean 18 salas (3 con otros miembros, que
-  pasan a ellos). Se borran en la primera corrida del cron, no al aplicar la migración.
+  En producción, al 2026-10-06: 36 anónimos, 29 inactivos a 60 días. Entre todos tienen 6
+  tareas, 3 tienen sesiones de estudio y hostean 18 salas (3 con otros miembros, que pasan
+  a ellos). Se borran en la primera corrida del cron, no al aplicar la migración.
 - **Bots.** Lo grueso ya lo resuelve la Fase A: el anónimo nace con lo primero que se
   guarda, y un crawler no termina pomodoros ni crea tareas. Supabase limita los inicios
   anónimos a 30 por hora por IP. Turnstile queda para si aparecen anónimos en masa: pide

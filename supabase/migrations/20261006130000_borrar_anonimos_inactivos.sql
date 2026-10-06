@@ -10,12 +10,12 @@
 -- on delete cascade). Si la sala tiene otros miembros, antes se le pasa el
 -- host al que entró primero. Las salas sin nadie más se van con él.
 --
--- Corre todos los días a las 04:30 UTC con pg_cron.
+-- Corre todos los días a las 04:30 UTC con pg_cron, con 60 días de plazo.
 -- =====================================================================
 
 create extension if not exists pg_cron with schema pg_catalog;
 
-create function public.borrar_anonimos_inactivos(p_dias integer default 30)
+create function public.borrar_anonimos_inactivos(p_dias integer default 60)
 returns integer
 language plpgsql
 security definer
@@ -64,5 +64,5 @@ grant execute on function public.borrar_anonimos_inactivos(integer) to service_r
 select cron.schedule(
   'borrar-anonimos-inactivos',
   '30 4 * * *',
-  $$select public.borrar_anonimos_inactivos(30)$$
+  $$select public.borrar_anonimos_inactivos(60)$$
 );
