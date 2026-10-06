@@ -275,12 +275,34 @@ ajustes.
 
 ---
 
-## Dónde retomamos
+## Diseño final (aprobado por Leo, 2026-10-06)
 
-11ª ronda publicada, reducida a dos: 1 · Puntos que se vuelven íconos (recomendada) y 2 ·
-Íconos tenues. **Próximo paso:**
-recoger la opinión de Leo; siguen pendientes la meta («En la línea») y el tono de las
-tarjetas de Estudio y Tareas.
+**La 3 · Resumen, Estudio y Tareas, con el Resumen de la 11ª ronda · 1 · Puntos que se
+vuelven íconos.** Fuente: `bocetos/dashboard.html` (opción 1).
+- **Cabecera:** el período con sus fechas y flechas para ir atrás, las pestañas
+  Resumen / Estudio / Tareas y el selector Semana / 30 días / Año.
+- **Resumen:** una cifra por vez, sin fondo ni tarjetas. Título de la cifra (21 px, con su
+  ícono), el número grande, una frase con las palabras clave resaltadas y un gráfico chico.
+  Nueve cifras: período, hoy, constancia, horario, lo hecho, entregas, pendiente, parciales
+  y lo que se viene.
+- **La cifra pasa sola cada 9 s**, sin barra ni cuenta regresiva, y se frena con el puntero
+  sobre la cifra o sobre el índice. Con «reducir movimiento», no pasa.
+- **Índice abajo, al centro:** en reposo, nueve puntos (el de ahora en acento). Al acercarse
+  a la franja de abajo, sobre cada punto aparece su ícono (opacidad y 4 px de desplazamiento,
+  sin desenfoque) y el nombre va en el tooltip. En pantallas táctiles los íconos quedan
+  visibles. La cifra de ahora: ícono en acento y punto debajo.
+- **Estudio:** día por día con la meta, acumulado contra el anterior, constancia en el año y
+  cuándo rendís. **Tareas:** lo hecho por día, notas de los parciales, avance por tipo y lo
+  que se viene.
+- Nada de barras de progreso que se llenan ni cuentas regresivas (dan ansiedad).
+
+**Quedan con el valor del boceto salvo que Leo diga otra cosa:** la meta se cambia «En la
+línea» (± al final de la línea de hoy, que aparecen al pasar), las tarjetas de Estudio y
+Tareas «Claras», el resaltado en acento y el título como nombre (no como pregunta).
+
+Para la Fase 3 ver los hallazgos de arriba: la meta diaria hay que guardarla en la base
+(120 min por defecto), y `chartConfig`, `COLORES_TORTA` y `--heatmap-0..4` tienen el violeta
+escrito a mano.
 
 ## Propuestas transversales
 
