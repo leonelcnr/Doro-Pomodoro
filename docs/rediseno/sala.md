@@ -367,11 +367,36 @@ todas las maquetas.
 
 La 15ª quedó en `bocetos/sala-ronda15.html`.
 
+### 17ª ronda (2026-10-06): T29 y T35 sin la barra, por fecha y en cajas
+
+Devolución de Leo: **T29 es la que más le gustó**; T35 también, pero no la barra de
+pestañas (el segmentado). Pidió variantes de cada una, que algunas sumen **cajas por tipo**
+(parciales, prácticos, informes, tareas, como T6 y T14) y que **el orden por defecto sea
+todo junto por fecha de proximidad**.
+
+Todas arrancan por fecha. Dentro de las cajas, cada renglón lleva el día a la derecha y el
+ícono del tema (en «Todos»); cada caja tiene un + que abre «Crear» con ese tipo.
+
+- **T38 · T29, raya y orden en el menú (recomendada):** el tramo lleva una raya a su
+  altura («Hoy ─── mar 6/10») para no confundirse con un renglón. El menú de temas suma
+  «Ordenar: por fecha / por tipo»; por tipo, cajas apiladas.
+- **T39 · T29, cajas en grilla:** una palabra en el encabezado («Por fecha») cambia a
+  «Por tipo»: grilla de cajas de a dos en la bandeja ancha.
+- **T40 · T29, cerca y lejos:** hasta el fin de la semana, por fecha; lo de más adelante y
+  lo sin fecha, en cajas por tipo bajo «Más adelante». Sin control de orden.
+- **T41 · T35 colgando, sin barra:** todos los tramos a la vista; orden en el menú, como T38.
+- **T42 · T35, tres tiempos grandes:** Pronto, Esta semana y Después como títulos; el día
+  a la derecha de cada renglón. Sin cajas.
+- **T43 · T35, línea de tiempo:** el día a la izquierda, con un punto donde cambia; sin
+  títulos de tramo. Un ícono en el encabezado pasa a la grilla de cajas.
+
+La 16ª quedó en `bocetos/sala-ronda16.html`.
+
 ## Dónde retomamos
 
-16ª ronda publicada (T32–T37 sobre T27, recomendada T33), esperando la elección de Leo y
-su opinión sobre los íconos de tipo.
-Lo demás de la bandeja está decidido (ver rondas 13 a 16). Notas: decididas (globales,
+17ª ronda publicada (T38–T43; recomendada T38), esperando la elección de Leo y si quiere
+las cajas por tipo y cómo pasar a ellas.
+Lo demás de la bandeja está decidido (ver rondas 13 a 17). Notas: decididas (globales,
 sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
 
 ## Propuestas transversales
