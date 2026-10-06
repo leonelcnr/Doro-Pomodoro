@@ -37,21 +37,18 @@ tipografía y los tokens nuevos.
 
 Detalle, rondas y decisiones en `docs/rediseno/home.md`.
 
-### Decisiones que quedan para el final de la Fase 1
+### Decisiones del final de la Fase 1 (tomadas 2026-10-06)
 
-- **Fondo con puntos, sí o no.** A Leo le suma robustez al home, pero teme que rompa la
-  estética de las otras pantallas. Se decide con todos los bocetos a la vista. Hasta
-  entonces, **todos los bocetos traen el ajuste de fondo (liso / puntos) y el de
-  desvanecer puntos (no / a los lados / al centro)**, y en cada pantalla dejo una
-  recomendación sobre si ahí los puntos suman o molestan.
-- **`--primary` violeta unificado o zinc** (Fase 2).
-- **Tema oscuro: «Oscuro» o «Negro».** Los bocetos traen los dos; queda uno solo.
+- **Fondo sin puntos.** Los bocetos conservan el ajuste, pero la app va con fondo liso.
+- **`--primary` violeta unificado** (`--primary` = `--brand-strong`). Como después entra
+  el selector de acento, todo sale de `--brand` y `--brand-strong` (ver Fase 2).
+- **Tema oscuro: quedan los dos**, «Oscuro» y «Negro», además de «Claro».
 
 ### Anotado por Leo para después de los bocetos (2026-10-05)
 
 Tareas que Leo pidió anotar para cuando estén todos los bocetos:
 
-1. **Definir qué tema oscuro queda:** «Oscuro» o «Negro» (ver la lista de arriba).
+1. ~~Definir qué tema oscuro queda~~: quedan los dos (2026-10-06).
 2. **Agregar la opción de cambiar el color de acento.** Ya está como paso 3 de la Fase 3
    (selector en el menú de la cuenta o en ajustes, guardado en `localStorage` y en el perfil).
 3. **Plan de estudio**, en una fase futura (después de la Fase 3). Sin definir todavía.
@@ -97,35 +94,39 @@ trabaja en un chat propio que se retoma con `claude --resume`. Cada sesión toca
 archivos y la fila de su pantalla en la tabla de arriba, y commitea nombrando las rutas.
 Este archivo guarda lo común: reglas, formato, decisiones transversales y fases 2 y 3.
 
-Siguen abiertas para el final de la Fase 1: fondo con puntos sí/no, `--primary` violeta
-unificado o zinc, y si Calendario (1.5) se fusiona con Tareas.
+Las decisiones transversales del final de la Fase 1 se tomaron el 2026-10-06 (ver arriba).
 
 
-## Fase 2 — Corregir las variables de CSS
+## Fase 2 — Corregir las variables de CSS ✅ (2026-10-06)
 
-El problema está descrito en `docs/auditoria-home.md`, sección «LO PRÓXIMO»: `App.css` es
-una segunda copia de los tokens y le gana a `index.css`.
+El problema está descrito en `docs/auditoria-home.md`, sección «LO PRÓXIMO»: `App.css` era
+una segunda copia de los tokens y le ganaba a `index.css`. Comparación de opciones:
+https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd — se eligió **B · Violeta unificado**.
 
-Comparación de opciones: https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd
+Hecho:
+1. `index.css` es la única fuente. `App.css` y su import en `App.tsx` se borraron.
+2. `--radius` unificado en `0.65rem` (el valor que se veía, el de `App.css`).
+3. `--primary` = `var(--brand-strong)` y `--primary-foreground` = `var(--brand-foreground)`;
+   `--ring` = `var(--brand)`. Los `--sidebar-primary*` y `--sidebar-ring` apuntan a esos
+   mismos tokens, así que se fue el azul (hue 264) del oscuro y el magenta (hue 301.7).
+4. `--chart-1..5` borrados: no los usaba nadie.
+5. El mapa de calor (`--heatmap-1..4`) y el color de las barras del dashboard salen de
+   `--brand`/`--brand-strong` con `color-mix`. `--heatmap-zero`, que se usaba sin definir,
+   ahora existe.
+6. **Para el selector de acento** (Fase 3, paso 3): cambiar de acento = redefinir
+   `--brand` y `--brand-strong` (claro y oscuro). Todo lo demás los sigue. Quedan afuera a
+   propósito los violetas semánticos de `modoVisual.ts` y `atributos.ts`, y la paleta de
+   la torta del dashboard (categórica).
+7. **Tema «Negro»**: next-themes con `themes={['light','dark','negro']}`. `.negro` comparte
+   el bloque de `.dark` y baja los fondos a los del boceto del home (0.12 / 0.165 / 0.225).
+   La variante `dark:` de Tailwind vale para los dos. El `color-scheme` lo pone el CSS por
+   clase (`enableColorScheme={false}`), porque next-themes solo conoce light/dark.
+   Falta el selector en la UI: el toggler de animate-ui solo alterna claro/oscuro; el
+   selector de tres temas entra con el menú de la cuenta en la Fase 3.
 
-- **Preferencia inicial de Leo: B · Violeta unificado** (`--primary` = `--brand-strong`).
-- **No se decide hasta tener todos los bocetos.** Los rediseños cambian cuánto color hay
-  en pantalla: si el anillo pasa a ser el botón principal (D4), el violeta ya está en el
-  objeto central y un `--primary` violeta en el resto puede competir con él. Al cerrar la
-  Fase 1 se vuelve a comparar B contra C sobre las pantallas nuevas, no sobre las viejas.
-
-Pasos, una vez decidido:
-1. Dejar `index.css` como única fuente; borrar los tokens de `App.css` y su import en
-   `App.tsx:1`.
-2. Unificar `--radius` (0.625 contra 0.65).
-3. Corregir `--sidebar-primary` en oscuro: en `index.css` es azul (hue 264).
-4. `--chart-1..5` no los usa ningún componente: decidir si se borran.
-5. Verificar en `dist/assets/index-*.css` que quede un solo bloque `.dark` con `--primary`.
-6. **El usuario elige el color de acento** (decidido 2026-10-04, ya no es una idea en
-   evaluación). Todo el color de marca tiene que salir de uno o dos tokens (`--brand` y
-   `--brand-strong`, con su versión clara y oscura) para que cambiar de acento sea
-   cambiar esos valores. Esto pesa en la elección B/C: con zinc, el acento elegido solo
-   pinta la marca; con violeta unificado, `--primary` también cambia con el acento.
+Verificado: `tsc -b --force`, `pnpm lint`, `pnpm build` (un solo `--primary` y un solo
+`--radius` en `dist/assets/index-*.css`) y en el navegador los tres temas, incluido que
+«Negro» sobreviva a la recarga.
 
 ---
 
@@ -163,3 +164,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-04 | Dashboard: 1ª ronda con cinco estructuras (A–E), recomendada B · Anillos. Queda abierta la meta diaria. |
 | 2026-10-04 | El plan se parte en un doc por pantalla (`docs/rediseno/`) para trabajar cada una en un chat propio. |
 | 2026-10-04 | Tareas aprobada tras diez rondas: S2 · El nombre elige el tema (detalle desde la esquina, cajas oscuras, tarjetas más oscuras, entrada «barra y nombre»). |
+| 2026-10-06 | Decisiones del cierre de la Fase 1: fondo sin puntos, `--primary` violeta unificado, temas Claro, Oscuro y Negro. Fase 2 hecha. Login: migraciones de limpieza aplicadas en producción. |

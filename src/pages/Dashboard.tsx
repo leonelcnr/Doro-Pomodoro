@@ -18,11 +18,11 @@ import {
 const chartConfig = {
   minutes: {
     label: "Minutos",
-    color: "#8b5cf6",
+    color: "var(--brand)",
   },
   avgMinutes: {
     label: "Promedio Minutos",
-    color: "#8b5cf6",
+    color: "var(--brand)",
   },
 } satisfies ChartConfig
 
