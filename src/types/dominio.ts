@@ -62,9 +62,8 @@ export interface UsuarioEnSala {
 export interface Tarea {
   id: number;
   header: string;        // Título de la tarea
-  type: string;          // Tipo/categoría
+  type: string;          // Categoría vieja; la reemplaza `topic_id` (se quita en la limpieza)
   status: string;        // "Completada" | "En Progreso" | "Sin Empezar"
-  limit?: string | undefined;
   favorite?: boolean | undefined;
   priority?: string | undefined;
   room_id?: string | null | undefined;        // null si es personal; id de sala si no
@@ -73,7 +72,41 @@ export interface Tarea {
   description?: string | undefined;
   checklist?: ItemChecklist[] | undefined;     // subtareas / ítems de la tarea
   created_at?: string | undefined;            // timestamp de alta (desempate de orden)
+  kind?: TipoItem | undefined;                // la base pone 'tarea' por defecto
+  topic_id?: string | null | undefined;       // null = «General» (sin tema)
+  due_date?: string | null | undefined;       // "2026-10-10"
+  due_time?: string | null | undefined;       // "18:00:00" (Postgres agrega los segundos)
+  grade?: number | null | undefined;          // nota de 0 a 10, solo en parciales
+  remind_at?: string | null | undefined;      // instante ISO del aviso
+  google_event_id?: string | null | undefined;
+  /** Solo lectura: la llena el trigger `tasks_marcar_completada`. */
+  readonly completed_at?: string | null | undefined;
 }
+
+/**
+ * Qué es cada ítem de `tasks` (columna `kind`). El avance de cada uno vive en el
+ * `checklist`: puntos del práctico, partes del informe, unidades del parcial o
+ * subtareas de la tarea.
+ */
+export type TipoItem = "tarea" | "practico" | "informe" | "parcial";
+
+/** Íconos permitidos para un tema (el `check` de la columna `topics.icon`). */
+export type IconoTema =
+  | "llaves" | "red" | "diagrama" | "chispa" | "sigma" | "onda" | "globo"
+  | "codigo" | "capas" | "base" | "grafico" | "balanza" | "dado" | "libro";
+
+/** Tema (materia u otra agrupación) de un usuario: tabla `topics`. */
+export interface Tema {
+  id: string;
+  user_id: string;
+  name: string;
+  icon: IconoTema;
+  position: number;
+  created_at: string;
+}
+
+/** Datos editables de un tema. */
+export type TemaPayload = Partial<Pick<Tema, "name" | "icon" | "position">>;
 
 /**
  * Ítem de la checklist (subtarea) de una tarea. Se persiste como un arreglo en la
@@ -87,9 +120,10 @@ export interface ItemChecklist {
 
 /**
  * Carga útil para crear/actualizar tareas (un subconjunto de `Tarea`). Las altas
- * todavía no tienen `id` real; el upsert/insert completa el resto.
+ * todavía no tienen `id` real; el upsert/insert completa el resto. Sin
+ * `completed_at`, que solo escribe el trigger.
  */
-export type TareaPayload = Partial<Tarea>;
+export type TareaPayload = Partial<Omit<Tarea, "completed_at">>;
 
 /**
  * Estado del reloj compartido de una sala (columna `timer_state`). Es el objeto

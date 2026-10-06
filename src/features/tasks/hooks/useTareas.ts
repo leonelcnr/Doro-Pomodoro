@@ -38,6 +38,20 @@ export function ordenarTareas(arr: Tarea[]): Tarea[] {
   });
 }
 
+// Campos de la pantalla de Tareas que el alta pasa tal cual, solo si vienen
+// (lo que falta lo completa la base: `kind` = 'tarea', el resto null).
+const CAMPOS_FASE_A = [
+  "kind", "topic_id", "due_date", "due_time", "grade", "remind_at", "checklist",
+] as const;
+
+function camposDeFaseA(parcial: TareaPayload): TareaPayload {
+  const campos: TareaPayload = {};
+  for (const clave of CAMPOS_FASE_A) {
+    if (parcial[clave] !== undefined) Object.assign(campos, { [clave]: parcial[clave] });
+  }
+  return campos;
+}
+
 /**
  * Hook de dominio para las tareas. Encapsula la carga inicial, la suscripción
  * en tiempo real y los handlers de cambio/movimiento que antes estaban
@@ -246,6 +260,7 @@ export function useTareas(salaId?: string) {
       priority: parcial.priority || PRIORIDAD_POR_DEFECTO,
       favorite: parcial.favorite ?? false,
       description: parcial.description,
+      ...camposDeFaseA(parcial),
     };
 
     const tareaOptimista = { id: idTemporal, ...payload } as Tarea;
