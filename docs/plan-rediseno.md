@@ -146,7 +146,12 @@ Orden propuesto, de menor a mayor riesgo:
 3. **Selector de color de acento** — en el menú de la cuenta o en ajustes. La paleta
    sale de los bocetos (violeta, azul, verde, naranja, rosa, grafito). Se guarda **solo en
    `localStorage`** (decidido 2026-10-06, igual que el tema): sin columna en el perfil
-   por ahora. Tiene que aplicarse antes del primer pintado.
+   por ahora. Tiene que aplicarse antes del primer pintado. ✅ 2026-10-06: fila de seis
+   colores en el menú del avatar (`MenuCuenta`). `src/lib/acento.ts` guarda la elección
+   (`doro-acento`) y la pone como `data-acento` en `<html>`; los valores (claro y oscuro)
+   están en `index.css` y solo redefinen `--brand*`. Violeta es la base, sin atributo.
+   `public/apariencia-inicial.js` aplica tema y acento antes de pintar (archivo aparte
+   por la CSP).
 4. **Home** (D4 + bandeja).
 5. **Modelo de datos de tareas, TPs y recordatorios** — blueprint con
    `arquitecto-features`, migración y RLS con `dev-datos-realtime`.
@@ -172,3 +177,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-04 | Tareas aprobada tras diez rondas: S2 · El nombre elige el tema (detalle desde la esquina, cajas oscuras, tarjetas más oscuras, entrada «barra y nombre»). |
 | 2026-10-06 | Decisiones del cierre de la Fase 1: fondo sin puntos, `--primary` violeta unificado, temas Claro, Oscuro y Negro. Fase 2 hecha. Login: migraciones de limpieza aplicadas en producción. |
 | 2026-10-06 | Fase 3, paso 2: `EncabezadoApp` con el menú de la cuenta y el selector de tres temas; reemplaza a la sidebar. |
+| 2026-10-06 | Fase 3, paso 3: selector de acento en el menú del avatar, guardado en `localStorage`; tema y acento se aplican antes del primer pintado. |

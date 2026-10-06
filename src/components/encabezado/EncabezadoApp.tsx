@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/features/auth/context/useAuth"
+import { useAcento } from "@/hooks/useAcento"
 import { formatearHora } from "@/features/home/saludo"
 import { useHoraActual } from "@/features/home/hooks/useHoraActual"
 import { cn } from "@/lib/utils"
@@ -38,6 +39,7 @@ interface EncabezadoAppProps {
 export function EncabezadoApp({ extra }: EncabezadoAppProps) {
     const { user, cargando, signOut } = useAuth()
     const { theme, setTheme } = useTheme()
+    const [acento, cambiarAcento] = useAcento()
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const hora = formatearHora(useHoraActual())
@@ -89,6 +91,8 @@ export function EncabezadoApp({ extra }: EncabezadoAppProps) {
                     cargando={cargando}
                     tema={theme}
                     onCambiarTema={setTheme}
+                    acento={acento}
+                    onCambiarAcento={cambiarAcento}
                     onEntrar={irALogin}
                     onCerrarSesion={signOut}
                     onGuardarNombre={guardarNombre}

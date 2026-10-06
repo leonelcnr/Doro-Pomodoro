@@ -20,6 +20,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { ACENTOS, type Acento } from "@/lib/acento"
+import { cn } from "@/lib/utils"
 import type { Usuario } from "@/types/dominio"
 
 // Valores de next-themes (contrato con App.tsx), con su nombre en la UI.
@@ -34,6 +36,8 @@ interface MenuCuentaProps {
     cargando: boolean
     tema: string | undefined
     onCambiarTema: (tema: string) => void
+    acento: Acento
+    onCambiarAcento: (acento: Acento) => void
     onEntrar: () => void
     onCerrarSesion: () => void
     onGuardarNombre: (nombre: string) => void
@@ -41,7 +45,7 @@ interface MenuCuentaProps {
 
 /**
  * Avatar del encabezado y su menú: la cuenta (entrar, guardar el progreso,
- * editar el nombre, cerrar sesión) y el tema. Presentacional: todo llega por props.
+ * editar el nombre, cerrar sesión), el tema y el color de acento. Presentacional: todo llega por props.
  *
  * El anónimo no cierra sesión (perdería lo hecho): entra a su cuenta desde
  * «Guardar mi progreso», que es la misma puerta que «Entrar».
@@ -51,6 +55,8 @@ export function MenuCuenta({
     cargando,
     tema,
     onCambiarTema,
+    acento,
+    onCambiarAcento,
     onEntrar,
     onCerrarSesion,
     onGuardarNombre,
@@ -145,6 +151,32 @@ export function MenuCuenta({
                             {nombre}
                         </DropdownMenuItem>
                     ))}
+
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                        Acento
+                    </DropdownMenuLabel>
+                    {/* Cada muestra es un ítem del menú: se recorren con las flechas */}
+                    <div role="group" aria-label="Color de acento" className="flex gap-1.5 px-2 pb-2 pt-0.5">
+                        {ACENTOS.map(({ id, nombre, muestra }) => (
+                            <DropdownMenuItem
+                                key={id}
+                                onSelect={(evento) => {
+                                    evento.preventDefault()
+                                    onCambiarAcento(id)
+                                }}
+                                role="menuitemradio"
+                                aria-checked={acento === id}
+                                aria-label={nombre}
+                                title={nombre}
+                                style={{ "--muestra": muestra } as React.CSSProperties}
+                                className={cn(
+                                    "size-6 rounded-full bg-(--muestra) p-0 ring-1 ring-border ring-offset-2 ring-offset-popover transition-shadow focus:bg-(--muestra)",
+                                    acento === id ? "ring-2 ring-(--muestra)" : "hover:ring-muted-foreground",
+                                )}
+                            />
+                        ))}
+                    </div>
 
                     {!anonimo && (
                         <>
