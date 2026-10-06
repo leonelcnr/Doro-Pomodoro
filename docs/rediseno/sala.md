@@ -267,11 +267,35 @@ correcciones y buscar alternativas para aliviarla.
 Lo que pesaba era lo que trae cada renglón, no cuántos renglones hay. T19 se puede sumar
 encima. La 11ª quedó en `bocetos/sala-ronda11.html`.
 
+### 13ª ronda (2026-10-06): plegada como T19, desplegada más liviana
+
+Leo eligió **T19** (plegada: el foco y una línea con lo que sigue), pero desplegada sigue
+habiendo mucha información. Le gustó **T21** (por cuándo), aunque la rayita debajo de cada
+renglón confunde: no se entiende a qué renglón pertenece. Propuso sacar el tilde y marcar
+solo desde el foco. Además:
+- **Notas:** pasarlas a un tema no las convierte en tarea; siguen siendo notas.
+- **Temas:** el despliegue al pasar el mouse se rompía y molestaba; quedan como botones.
+
+Base común: renglones de solo título, sin rayita ni tilde (el tipo, el avance y el día van
+en el globo). Una tarea tocada entra al foco y, al marcarla o soltarla, vuelve lo que
+tenías. Una nota con tema muestra el ícono en el post-it y aparece al final de ese tema en
+la bandeja; se le puede quitar el tema.
+
+- **T22 · Todo desplegado:** columna de temas y todos los tramos.
+- **T23 · Solo lo cercano abierto (recomendada):** Atrasado, Hoy y Mañana abiertos; el
+  resto, título y cantidad, que se abren al tocarlos.
+- **T24 · Sin columna:** el ícono del encabezado muestra los temas en una fila.
+
+Mi respuesta sobre el tilde: no veo un problema grave si tocar una tarea no te hace perder
+el foco que tenías (por eso vuelve el anterior). Lo que se pierde es marcar varias
+seguidas; si pasa seguido, se puede sumar deslizar el renglón. La 12ª quedó en
+`bocetos/sala-ronda12.html`.
+
 ## Dónde retomamos
 
-12ª ronda publicada (T18–T21, recomendada T21), esperando la elección de Leo sobre cómo
-se ven los renglones. Columna de temas y forma de crear ya decididas (T16 + T17). Notas: decididas (globales,
-sin tope, se pasan a un tema como tarea). Con eso se cierra la sala.
+13ª ronda publicada (T22–T24, recomendada T23), esperando la elección de Leo sobre cuánto
+se ve al desplegar. Lo demás de la bandeja está decidido (ver 13ª ronda). Notas: decididas (globales,
+sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
 
 ## Propuestas transversales
 

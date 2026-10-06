@@ -1021,7 +1021,13 @@ span.tt-tit { cursor: default; }
   .app.ancha .tt-dos > .tt-riel { flex-direction: column; gap: 2px; overflow: visible; margin: 0; padding: 6px 0 0; top: 45px; box-shadow: none; }
   .app.ancha .tt-riel-b .linea-av { right: auto; width: 22px; }
 
-}
+  /* Al pasar, la columna se abre por encima de la lista (no la empuja) y muestra los nombres */
+  .app.ancha .tt-dos > .tt-riel { width: 44px; z-index: 4; border-radius: 12px; transition: width .28s var(--salida), box-shadow .2s, background-color .2s; transition-delay: 0s; }
+  .app.ancha .tt-dos > .tt-riel:is(:hover, :focus-within) { width: 196px; padding: 6px; margin: -6px 0 0 -6px; box-shadow: var(--sombra); outline: 1px solid var(--linea); transition-delay: .12s; }
+  .app.ancha .tt-riel-b { flex: none; width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 0 0 4px 11px; overflow: hidden; }
+  .app.ancha .tt-riel-b > svg { flex-shrink: 0; }
+  .app.ancha .tt-riel-b > span:not(.linea-av) { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; opacity: 0; transition: opacity .2s; }
+  .app.ancha .tt-riel:is(:hover, :focus-within) .tt-riel-b > span:not(.linea-av) { opacity: 1; transition-delay: .18s; }
 
 }
 
@@ -1048,18 +1054,6 @@ span.tt-tit { cursor: default; }
 :root[data-tactil] .tt-check-der { opacity: .6; }
 .tt-lista .tt-tramo { list-style: none; border-bottom: 0; padding: 14px 0 0; }
 .tt-lista .tt-tramo:first-child { padding-top: 4px; }
-
-/* T23 · el título del tramo es un botón que lo pliega */
-.tt-tramo-b button { width: 100%; display: flex; align-items: center; gap: 8px; border: 0; background: none; padding: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; text-align: left; }
-.tt-tramo-b button:hover { color: var(--fg); }
-.tt-tramo-b small { letter-spacing: 0; font-size: 12px; font-variant-numeric: tabular-nums; }
-.tt-tramo-b svg { width: 13px; height: 13px; margin-left: auto; transition: transform .25s var(--salida); }
-.tt-tramo-b button[aria-expanded="false"] svg { transform: rotate(180deg); }
-/* T24 · sin columna: el ícono del encabezado muestra los temas debajo */
-.tt-cab .tt-filtro-tema { margin: -4px 0 -4px -6px; color: var(--fg); }
-.tt-cab .tt-filtro-tema + span { margin-left: -2px; }
-.tt-cab .tt-mas + .tt-mas { margin-left: 2px; }
-.tt-temas-cab { padding-top: 6px; animation: tt-abre .25s var(--salida); }
 
 /* Fecha en «Crear» */
 .tt-alta-dia { flex-shrink: 0; border: 0; border-radius: 6px; background: var(--campo); padding: 4px 8px; font-size: 12.5px; color: var(--fg); outline: none; color-scheme: light dark; }
@@ -1095,10 +1089,6 @@ span.tt-tit { cursor: default; }
 .nota-temas button { width: 30px; height: 30px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; }
 .nota-temas button:hover { background: var(--campo); color: var(--fg); }
 .nota-temas svg { width: 17px; height: 17px; }
-.nota-temas button[aria-pressed="true"] { background: var(--campo); color: var(--fg); }
-.nota-tema { display: inline-grid; vertical-align: -2px; margin-right: 5px; color: var(--tenue); }
-.nota-tema svg { width: 12px; height: 12px; }
-.tt-nota-t .t { color: var(--tenue); white-space: normal; }
 .nota-temas small { width: 100%; text-align: center; font-size: 11px; color: var(--tenue); margin-bottom: 2px; }
 </style>
 
@@ -1152,7 +1142,7 @@ span.tt-tit { cursor: default; }
 <div class="pagina">
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
-    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, «Crear» ocupando la bandeja (T17), plegada como T19 y por cuándo como T21. Las notas son las mismas en todas las salas, sin tope, y se pueden poner en un tema sin dejar de ser notas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda12.html</code>.</p>
+    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, los temas en íconos que se abren al pasar (T16) y «Crear» ocupando la bandeja (T17). Las notas son las mismas en todas las salas, sin tope, y se pasan a un tema. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda11.html</code>.</p>
     <p>El reloj corre de verdad: dale play, abrí las tareas, marcá puntos en la regla, escribí una nota y recargá la página: sigue ahí. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
@@ -1221,51 +1211,65 @@ span.tt-tit { cursor: default; }
     </div>
   </div>
 
-  <header class="ronda" id="ronda-13">
-    <h2>13ª ronda: plegada como T19, desplegada más liviana</h2>
-    <p>Las tres arrancan plegadas, como T19: el foco y una línea con lo que sigue. Desplegadas usan los tramos de T21 (Atrasado, Hoy, Mañana…), pero <b>sin la rayita debajo de cada renglón ni el tilde</b>: queda solo el título. Los temas son botones, sin el despliegue al pasar. Cambia cuánto se ve al desplegar.</p>
-    <p><b>Marcar una tarea, desde el foco:</b> tocás una tarea y pasa al foco con «Marcar como hecha». Si estabas en otra cosa (un práctico, un parcial), al marcarla o soltarla el foco vuelve a eso. <b>Notas:</b> pasarlas a un tema ya no las convierte en tarea. Siguen siendo notas, el post-it muestra el ícono del tema y la nota aparece al final de ese tema en la bandeja.</p>
+  <header class="ronda" id="ronda-12">
+    <h2>12ª ronda: la base elegida, y renglones más livianos</h2>
+    <p>La base es <b>T17 con el despliegue de T16</b>: los temas al costado en íconos que se abren al pasar, y el + suma una tarea o pasa la bandeja a «Crear». <b>T18</b> es esa base con los renglones simples de la ronda pasada. <b>T19 a T21</b> le sacan peso a la lista de tres maneras: mostrar solo lo que sigue, dejar solo el título o agrupar por cuándo.</p>
   </header>
 
-  <section class="opcion" id="t22" data-v="t22">
+  <section class="opcion" id="t18" data-v="t18">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T22</span><span class="nombre">Todo desplegado</span></h2>
-        <p class="resumen">Al desplegar se ven los temas en la columna y todos los tramos abiertos, con los renglones de solo título.</p>
+        <h2><span class="letra">T18</span><span class="nombre">La base, con las correcciones</span></h2>
+        <p class="resumen">Temas en íconos que se abren al pasar, el botón de ajustes que lleva a «Crear» y los renglones de una línea: qué es, título, tema en «Todos», cuándo y la rayita.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Todo a la vista en un solo toque.</li><li>Sin rayitas ni tildes, cada renglón es una sola cosa.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Desplegada sigue siendo larga.</li><li>La columna de 7 íconos siempre está.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Es lo que ya elegiste, todo junto.</li><li>Cada renglón dice todo sin abrirlo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hasta cinco cosas por renglón: ícono, título, tema, fecha y rayita.</li><li>Con muchas tareas, la lista se siente cargada.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t23" data-v="t23">
+  <section class="opcion" id="t19" data-v="t19">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T23</span><span class="nombre">Solo lo cercano abierto</span><span class="recomendada">Recomendada</span></h2>
-        <p class="resumen">Al desplegar, solo Atrasado, Hoy y Mañana muestran sus renglones. Esta semana, Más adelante y Sin fecha quedan como un título con su cantidad, y se abren al tocarlos.</p>
+        <h2><span class="letra">T19</span><span class="nombre">Solo lo actual</span></h2>
+        <p class="resumen">La bandeja muestra el foco y, debajo, una sola línea: «Sigue: …» y cuántas cosas hay. Tocándola se despliegan los temas y la lista completa, y la flecha la vuelve a plegar. El + sigue a mano.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Desplegada muestra tres o cuatro renglones, no catorce.</li><li>Lo lejano no desaparece: está a un toque y dice cuánto hay.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Si hoy y mañana están vacíos, se ven solo títulos.</li><li>Recuerda qué tramo abriste solo mientras dura la sesión.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Lo más tranquilo: una cosa a la vez.</li><li>Abrir la bandeja durante el pomodoro no distrae.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Elegir otra cosa lleva un toque más.</li><li>No se ve cuánto falta por tema hasta desplegar.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t24" data-v="t24">
+  <section class="opcion" id="t20" data-v="t20">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T24</span><span class="nombre">Sin columna</span></h2>
-        <p class="resumen">Desplegada no tiene columna de temas. El ícono del encabezado muestra el tema actual y, al tocarlo, aparece una fila de íconos para elegir otro, que se cierra al elegir. La lista ocupa todo el ancho.</p>
+        <h2><span class="letra">T20</span><span class="nombre">Solo el título</span></h2>
+        <p class="resumen">El renglón es el título y nada más. La línea que separa un renglón del siguiente es su avance. La fecha aparece solo si es hoy, mañana o ya pasó. Lo demás (qué es, «6 de 8», el tema) está al pasar el mouse, y la tarea se tilda a la derecha.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo mínimo: un encabezado y los títulos.</li><li>En el celular queda igual que en la compu.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Cambiar de tema lleva dos toques.</li><li>Los demás temas no se ven de un vistazo.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Una sola cosa para leer por renglón.</li><li>El avance no ocupa lugar: es la línea que ya estaba.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin ícono, el tipo se adivina por el título («TP», «Parcial»).</li><li>Las fechas lejanas quedan escondidas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="t21" data-v="t21">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">T21</span><span class="nombre">Agrupado por cuándo</span><span class="recomendada">Recomendada</span></h2>
+        <p class="resumen">Los renglones de T20, bajo títulos chicos: Atrasado, Hoy, Mañana, Esta semana, Más adelante y Sin fecha. La fecha sale de cada renglón y queda una vez por grupo.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Renglones de una sola palabra a la vista: el título.</li><li>La urgencia se ve por dónde está el renglón, no leyendo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma títulos de grupo, que en un tema con dos cosas sobran.</li><li>El día exacto queda al pasar el mouse.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1273,36 +1277,41 @@ span.tt-tit { cursor: default; }
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>13ª ronda · comparación</h2>
+    <h2>12ª ronda · comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Al desplegar se ve</th><th>Cambiar de tema</th><th>Renglones a la vista (ejemplo)</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Qué se lee por renglón</th><th>Dónde queda lo demás</th><th>Para elegir otra cosa</th></tr></thead>
         <tbody>
-          <tr><td>T22 · Todo desplegado</td><td>Columna y todos los tramos</td><td>1 toque</td><td>14</td></tr>
-          <tr class="elegida"><td>T23 · Solo lo cercano abierto</td><td>Columna; Atrasado, Hoy y Mañana abiertos</td><td>1 toque</td><td>2, más tres títulos con su cantidad</td></tr>
-          <tr><td>T24 · Sin columna</td><td>Encabezado y todos los tramos</td><td>2 toques</td><td>14</td></tr>
+          <tr><td>T18 · La base</td><td>Ícono, título, tema, fecha y rayita</td><td>En el renglón</td><td>1 toque</td></tr>
+          <tr><td>T19 · Solo lo actual</td><td>Una línea: lo que sigue</td><td>Al desplegar</td><td>2 toques</td></tr>
+          <tr><td>T20 · Solo el título</td><td>Título (y fecha si es urgente)</td><td>Al pasar el mouse; el avance en la línea</td><td>1 toque</td></tr>
+          <tr class="elegida"><td>T21 · Agrupado por cuándo</td><td>Título</td><td>La fecha en el grupo; el avance en la línea</td><td>1 toque</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo T23 · Solo lo cercano abierto</h3>
-        <p><b>Es T19 aplicado a la lista:</b> plegada muestra lo que sigue, y desplegada muestra lo cercano. Lo lejano queda como título con su cantidad. Así cada nivel suma poco.</p>
-        <p><b>Se puede combinar con T24</b> si querés quitar también la columna. Lo dejaría para después de probar T23, porque los temas siempre a la vista fueron algo que elegiste.</p>
-        <h4>Sacar el tilde de la lista</h4>
-        <p><b>No veo un problema grave</b>, con una condición: tocar una tarea no te puede hacer perder lo que estabas haciendo. Por eso, en el boceto, una tarea tocada entra al foco por un rato y, al marcarla o soltarla, vuelve el práctico o parcial que tenías. El costo es un toque más para tildar algo suelto (tocar y después «Marcar como hecha»). A cambio, se marca siempre en el mismo lugar y la lista queda limpia.</p>
-        <p><b>Lo que sí pierde:</b> marcar varias tareas seguidas, una tras otra. Si pasa seguido, se puede sumar después un gesto (deslizar el renglón) sin volver a mostrar el tilde.</p>
+        <h3>Recomiendo T21 · Agrupado por cuándo</h3>
+        <p><b>Lo cargado no era la cantidad de renglones, sino lo que trae cada uno.</b> Hay cinco datos por línea y cuatro son íconos o números chicos. T21 deja uno, el título. La fecha pasa al grupo y el avance pasa a la línea que ya separaba los renglones.</p>
+        <p><b>No esconde nada importante:</b> lo urgente queda arriba y con su título, y el tipo y «6 de 8» siguen al pasar el mouse y en el foco, donde se usan.</p>
+        <p><b>T19 se puede sumar encima</b> si querés la bandeja todavía más callada durante el pomodoro: plegada muestra lo que sigue y desplegada sería T21.</p>
       </div>
-      <pre><span class="c-com">// src/features/room/hooks/useFocoSala.ts</span>
-<span class="c-com">// una tarea suelta entra al foco sin perder lo que tenías</span>
-const enfocar = (item: Item) =&gt; {
-  if (item.tipo === "tarea" &amp;&amp; foco &amp;&amp; foco.tipo !== "tarea") setPrevio(foco);
-  setFoco(item);
-};
-const alTerminar = () =&gt; { setFoco(previo?.pendiente ? previo : null); setPrevio(null); };
+      <pre><span class="c-com">// src/features/room/components/ListaPorCuando.tsx</span>
+const TRAMOS = [
+  ["Atrasado", d =&gt; d &lt; 0], ["Hoy", d =&gt; d === 0], ["Mañana", d =&gt; d === 1],
+  ["Esta semana", d =&gt; d &lt; 7], ["Más adelante", d =&gt; d &gt;= 7], ["Sin fecha", d =&gt; d == null],
+] as const;
 
-<span class="c-com">// las notas no cambian de tipo: solo ganan un tema</span>
-type Nota = { id: string; texto: string; hora: string; fase: string; tema?: string };</pre>
+{tramos.map(([nombre, items]) =&gt; (
+  &lt;Fragment key={nombre}&gt;
+    &lt;TituloTramo&gt;{nombre}&lt;/TituloTramo&gt;
+    {items.map(it =&gt; &lt;RenglonLimpio key={it.id} item={it} alEnfocar={setFoco} /&gt;)}
+  &lt;/Fragment&gt;
+))}
+
+<span class="c-com">/* el separador es el avance */</span>
+.renglon::after { background: linear-gradient(to right,
+  var(--acento) var(--avance), var(--linea) var(--avance)); }</pre>
     </div>
   </section>
 </div>
@@ -1666,7 +1675,7 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
     }));
 
     /* ── Tareas: el sistema de la pantalla Tareas, adentro de la bandeja ── */
-    const st = { amb: "mias", abierto: null, tema: 0, tipo: null, menu: false, filtro: "todo", temaF: null, q: "", altaEn: null, altaTxt: "", verTodo: false, focoPrevio: null, tramos: {}, verTemas: false, crear: null, foco: null, noVistas: 0, ajena: 0, llega: null };
+    const st = { amb: "mias", abierto: null, tema: 0, tipo: null, menu: false, filtro: "todo", temaF: null, q: "", altaEn: null, altaTxt: "", verTodo: false, crear: null, foco: null, noVistas: 0, ajena: 0, llega: null };
     let temas, sala;
     const buscar = k => listar(temas).find(it => it.k === k);
     const tipoPorDefecto = mi => { const l = listar(temas).filter(it => it.mi === mi); return (ordenar(l.filter(pendiente))[0] || l[0])?.t ?? "t"; };
@@ -1677,7 +1686,7 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
       st.tema = prox ? prox.mi : 0;
       st.tipo = tipoPorDefecto(st.tema);
       st.foco = ordenar(l.filter(it => it.t === "pr" && pendiente(it)))[0]?.k ?? null;
-      st.abierto = null; st.menu = false; st.filtro = "todo"; st.temaF = null; st.q = ""; st.altaEn = null; st.altaTxt = ""; st.verTodo = false; st.focoPrevio = null; st.tramos = {}; st.verTemas = false; st.crear = null;
+      st.abierto = null; st.menu = false; st.filtro = "todo"; st.temaF = null; st.q = ""; st.altaEn = null; st.altaTxt = ""; st.verTodo = false; st.crear = null;
     };
 
     /* Décima ronda: todas son T9 (el foco arriba y lo demás por tema). Cambia dónde se suma y cuánto texto lleva cada renglón */
@@ -1711,38 +1720,27 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
       return x.slice(0, tope).map(it => filaCorta(it, o)).join("")
         + (tope < x.length ? `<li class="tt-mas-items"><button type="button" data-tema-f="${o.mi}">${x.length - tope} más</button></li>` : "");
     };
-    /* 13ª ronda · el renglón es solo el título, sin rayita ni tilde: se marca desde el foco.
-       El tipo, el avance y el día quedan en el globo del navegador */
-    const filaLimpia = it => {
-      const p = progreso(it), d = it.o.dia;
-      const ayuda = [it.T.uno, p && `${p[0]} de ${p[1]}`, it.m.nombre, d != null && relativo(d)].filter(Boolean).join(" · ");
-      return `<li class="tt-it tt-limpia${it.k === st.llega ? " llega" : ""}"><div class="tt-fila">
+    /* T20 y T21 · el renglón es solo el título. La línea de abajo es el avance (pasá el mouse: «6 de 8»);
+       la tarea se tilda a la derecha, al pasar. T20 suma la fecha solo si es hoy, mañana o ya pasó */
+    const filaLimpia = (it, o = {}) => {
+      const p = progreso(it), pct = p ? Math.round(p[0] / p[1] * 100) : null, d = it.o.dia;
+      const ayuda = [it.T.uno, p && `${p[0]} de ${p[1]}`, o.conTema && it.m.nombre, d != null && relativo(d)].filter(Boolean).join(" · ");
+      return `<li class="tt-it tt-limpia${pct != null ? " con-av" : ""}${it.k === st.llega ? " llega" : ""}"${pct != null ? ` style="--p:${pct}%"` : ""}><div class="tt-fila">
         <button type="button" class="tt-tit" data-enfocar="${it.k}" title="${esc(ayuda)}"><span class="t">${esc(it.o.titulo)}</span></button>
+        ${o.conFecha && d != null && d <= 1 ? `<span class="tt-cuando ya">${cuandoCorto(d)}</span>` : ""}
+        ${it.t === "t" ? `<span class="tt-check-der">${checkHTML(it.k, it.o.hecha, it.o.titulo)}</span>` : ""}
       </div></li>`;
     };
     const TRAMOS = [["Atrasado", d => d != null && d < 0], ["Hoy", d => d === 0], ["Mañana", d => d === 1], ["Esta semana", d => d >= 2 && d < 7], ["Más adelante", d => d >= 7], ["Sin fecha", d => d == null]];
-    /* T23 · los tramos lejanos quedan plegados, con su cantidad */
-    const CERCA = ["Atrasado", "Hoy", "Mañana"];
-    const abiertoTramo = n => v !== "t23" || (st.tramos[n] ?? CERCA.includes(n));
-    const porCuando = x => TRAMOS.map(([n, f]) => {
-      const z = x.filter(it => f(it.o.dia)); if (!z.length) return "";
-      const ab = abiertoTramo(n);
-      const cab = v === "t23"
-        ? `<li class="tt-tramo tt-tramo-b${n === "Atrasado" ? " atrasado" : ""}" role="presentation"><button type="button" data-tramo="${n}" aria-expanded="${ab}">${n}${ab ? "" : `<small>${z.length}</small>`}${ic("i-arriba")}</button></li>`
-        : `<li class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}" role="presentation">${n}</li>`;
-      return cab + (ab ? z.map(filaLimpia).join("") : "");
-    }).join("");
-    const renglones = x => porCuando(x);
-    /* Notas que se pasaron a un tema: siguen siendo notas y aparecen al final de ese tema */
-    const notasDe = nombre => { let l; try { l = JSON.parse(leer("doro-notas", "null")); } catch (e) { l = null; } return (Array.isArray(l) ? l : []).filter(n => n.tema === nombre); };
-    const notasTema = m => { const z = m ? notasDe(m.nombre) : []; return z.length ? `<li class="tt-tramo" role="presentation">Notas</li>${z.map(n => `<li class="tt-it tt-limpia tt-nota-t"><div class="tt-fila"><span class="tt-tit"><span class="t">${esc(n.texto)}</span></span></div></li>`).join("")}` : ""; };
+    const porCuando = (x, o) => TRAMOS.map(([n, f]) => { const z = x.filter(it => f(it.o.dia)); return z.length ? `<li class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}" role="presentation">${n}</li>${z.map(it => filaLimpia(it, o)).join("")}` : ""; }).join("");
+    const renglones = (x, o) => v === "t21" ? porCuando(x, o) : v === "t20" ? x.map(it => filaLimpia(it, { ...o, conFecha: true })).join("") : filas(x, o);
 
     /* El renglón para sumar: Enter suma una tarea; el botón de la derecha abre «Crear» (parcial, práctico o informe), que ocupa la bandeja */
     const TIPO_DE = Object.fromEntries(TIPOS.map(T => [T.id, T]));
     const nuevoDe = T => T.id === "t" ? "Nueva tarea" : `Nuevo ${T.uno.toLowerCase()}`;
     const CUANTOS = { pr: "puntos", pa: "unidades", in: "partes" };
     const altaFila = mi => `<li class="tt-alta-fila"><div class="tt-alta-in">${ic("i-mas")}<input data-alta value="${esc(st.altaTxt)}" placeholder="Nueva tarea${mi != null ? ` en ${esc(temas[mi].nombre)}` : ""}…" aria-label="Nueva tarea" autocomplete="off"><button type="button" class="tt-mas" data-crear-abrir title="Parcial, práctico o informe" aria-label="Más opciones: parcial, práctico o informe">${ic("i-ajustes-2")}</button></div></li>`;
-    const lista = (x, o = {}) => `<ul class="tt-lista">${o.alta ? altaFila(o.altaMi) : ""}${renglones(x) || (o.alta ? "" : `<li class="vacio">${o.vacio || "Al día."}</li>`)}</ul>`;
+    const lista = (x, o = {}) => `<ul class="tt-lista">${o.alta ? altaFila(o.altaMi) : ""}${renglones(x, o) || (o.alta ? "" : `<li class="vacio">${o.vacio || "Al día."}</li>`)}</ul>`;
     const masBtn = (clave, nombre) => `<button type="button" class="tt-mas" data-alta-en="${clave}" aria-expanded="${st.altaEn === clave}" aria-label="Sumar${nombre ? " a " + esc(nombre) : ""}" title="Sumar">${ic("i-mas")}</button>`;
 
     /* Crear un ítem de cualquier tipo en un tema; devuelve su clave para marcarlo al llegar */
@@ -1771,26 +1769,21 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
       </div>`;
     };
 
-    /* Lo que muestra «Mías»: plegado, el foco y una línea con lo que sigue (T19). Desplegado, la lista por cuándo.
-       T22 y T23 con los temas al costado; T24 sin columna: un botón en el encabezado muestra los temas */
+    /* Lo que muestra «Mías»: el foco arriba, los temas al costado (solo íconos) y la lista del tema elegido */
     const VISTAS_RIEL = () => {
       const l = listar(temas), m = st.temaF != null ? temas[st.temaF] : null, y = m ? l.filter(it => it.mi === st.temaF) : l;
+      const riel = `<div class="tt-riel" role="group" aria-label="Filtrar por tema">${[[null, "Todos los temas", "t-todo", null], ...temas.map((t, i) => [i, t.nombre, t.icono, l.filter(it => it.mi === i)])]
+        .map(([i, n, icono, z]) => `<button type="button" class="tt-tema-ic tt-riel-b" data-tema-f="${i ?? ""}" data-nombre="${esc(n)}" aria-pressed="${st.temaF === i}" aria-label="${esc(n)}">${ic(icono)}<span>${esc(n)}</span>${z ? linea(pctDe(z)) : ""}</button>`).join("")}</div>`;
+      /* T19 · plegado: solo el foco y una línea con lo que sigue; el resto se despliega */
       const resto = restoDe(y);
-      if (!st.verTodo && st.altaEn !== "g") {
+      if (v === "t19" && !st.verTodo && st.altaEn !== "g") {
         const sig = resto[0];
         return focoHTML() + `<div class="tt-plegado"><button type="button" class="tt-ver-todo" data-ver-todo aria-expanded="false">${sig ? `<span class="tenue">Sigue</span><span class="t">${esc(sig.o.titulo)}</span>` : `<span class="tenue">No sigue nada</span>`}<small>${resto.length}</small>${ic("i-arriba")}</button>${masBtn("g")}</div>`;
       }
-      const botonTema = (i, n, icono) => `<button type="button" class="tt-tema-ic" data-tema-f="${i ?? ""}" aria-pressed="${st.temaF === i}" aria-label="${esc(n)}" title="${esc(n)}">${ic(icono)}</button>`;
-      const opciones = [[null, "Todos los temas", "t-todo"], ...temas.map((t, i) => [i, t.nombre, t.icono])];
-      const filtro = v === "t24" ? `<button type="button" class="tt-mas tt-filtro-tema" data-ver-temas aria-expanded="${st.verTemas}" aria-label="Elegir tema" title="Elegir tema">${ic(m ? m.icono : "t-todo")}</button>` : "";
-      const cab = `<h4 class="tt-cab">${v === "t24" ? "" : ic(m ? m.icono : "k-cal")}${filtro}<span>${m ? esc(m.nombre) : "Lo que sigue"}</span>${masBtn("g", m?.nombre)}<button type="button" class="tt-mas tt-plegar" data-ver-todo aria-expanded="true" aria-label="Plegar" title="Plegar">${ic("i-arriba")}</button></h4>`;
-      const temasFila = v === "t24" && st.verTemas ? `<div class="tt-temas tt-temas-cab" role="group" aria-label="Filtrar por tema">${opciones.map(o => botonTema(...o)).join("")}</div>` : "";
-      const cuerpoLista = `${cab}${temasFila}<ul class="tt-lista">${st.altaEn === "g" ? altaFila(st.temaF ?? temas.findIndex(t => t.general)) : ""}${renglones(resto) || (st.altaEn === "g" ? "" : `<li class="vacio">Este tema está al día.</li>`)}${notasTema(m)}</ul>`;
-      if (v === "t24") return focoHTML() + `<div>${cuerpoLista}</div>`;
-      const riel = `<div class="tt-riel" role="group" aria-label="Filtrar por tema">${opciones.map(o => botonTema(...o)).join("")}</div>`;
-      return focoHTML() + `<div class="tt-dos">${riel}<div class="tt-dos-lista">${cuerpoLista}</div></div>`;
+      const cab = `<h4 class="tt-cab">${ic(m ? m.icono : "k-cal")}<span>${m ? esc(m.nombre) : "Lo que sigue"}</span>${m ? linea(pctDe(y), "tt-cab-av") : ""}${masBtn("g", m?.nombre)}${v === "t19" ? `<button type="button" class="tt-mas tt-plegar" data-ver-todo aria-expanded="true" aria-label="Plegar" title="Plegar">${ic("i-arriba")}</button>` : ""}</h4>`;
+      return focoHTML() + `<div class="tt-dos">${riel}<div class="tt-dos-lista">${cab}${lista(resto, { conTema: !m, alta: st.altaEn === "g", altaMi: st.temaF ?? temas.findIndex(t => t.general), vacio: "Este tema está al día." })}</div></div>`;
     };
-    const VISTAS = { t22: VISTAS_RIEL, t23: VISTAS_RIEL, t24: VISTAS_RIEL };
+    const VISTAS = { t18: VISTAS_RIEL, t19: VISTAS_RIEL, t20: VISTAS_RIEL, t21: VISTAS_RIEL };
 
     const cuerpo = $("[data-cuerpo]");
     const vistaSala = () => `<label class="alta"><svg><use href="#i-mas"/></svg><input data-alta-sala placeholder="Nueva tarea para la sala…" aria-label="Nueva tarea para la sala"></label>
@@ -1830,11 +1823,7 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
     const marcar = (k, b) => {
       if (k.startsWith("s-")) { const t = sala[+k.slice(2)]; t.hecha = !t.hecha; return pintar(); }
       const it = buscar(k); it.o.hecha = !it.o.hecha;
-      if (st.foco === k && it.o.hecha) {
-        const prev = st.focoPrevio && buscar(st.focoPrevio);
-        st.foco = prev && pendiente(prev) ? prev.k : null; st.focoPrevio = null;
-        avisar(st.foco ? `Hecha. Volvés a ${prev.o.titulo.split(" — ")[0]}` : "Hecha. Elegí lo que sigue");
-      }
+      if (st.foco === k && it.o.hecha) { st.foco = null; avisar("Hecha. Elegí lo que sigue"); }
       if (it.o.hecha) {
         b.classList.add("hecho"); b.closest(".tt-it, .tt-tarjeta")?.classList.add("se-va");
         setTimeout(pintar, 380);
@@ -1860,13 +1849,8 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
       }
       if ((b = el("[data-check]"))) return marcar(b.dataset.check, b);
       if ((b = el("[data-abrir]"))) { st.abierto = st.abierto === b.dataset.abrir ? null : b.dataset.abrir; return pintar(); }
-      if ((b = el("[data-enfocar]"))) {
-        const nuevo = buscar(b.dataset.enfocar);
-        st.focoPrevio = nuevo.t === "t" && st.foco && buscar(st.foco)?.t !== "t" ? st.foco : st.focoPrevio && nuevo.t === "t" ? st.focoPrevio : null;
-        st.foco = nuevo.k; st.q = ""; pintar(); cuerpo.scrollTo({ top: 0, behavior: "smooth" }); return; }
-      if (el("[data-soltar]")) { const prev = st.focoPrevio && buscar(st.focoPrevio); st.foco = prev && pendiente(prev) ? prev.k : null; st.focoPrevio = null; return pintar(); }
-      if ((b = el("[data-tramo]"))) { st.tramos[b.dataset.tramo] = b.getAttribute("aria-expanded") !== "true"; return pintar(); }
-      if (el("[data-ver-temas]")) { st.verTemas = !st.verTemas; return pintar(); }
+      if ((b = el("[data-enfocar]"))) { st.foco = b.dataset.enfocar; st.q = ""; pintar(); cuerpo.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      if (el("[data-soltar]")) { st.foco = null; return pintar(); }
       if (el("[data-tema-menu]")) { st.menu = !st.menu; return pintar(); }
       if ((b = el("[data-tema]"))) { st.tema = +b.dataset.tema; st.menu = false; st.tipo = tipoPorDefecto(st.tema); st.abierto = null; return pintar(); }
       if ((b = el("[data-tipo]"))) { st.tipo = b.dataset.tipo; st.abierto = null; return pintar(); }
@@ -1884,7 +1868,7 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
         pintar(); avisar(creado(c.tipo, temas[c.mi])); return;
       }
       if ((b = el("[data-alta-en]"))) { st.altaEn = st.altaEn === b.dataset.altaEn ? null : b.dataset.altaEn; return pintar(st.altaEn && "[data-alta]"); }
-      if ((b = el("[data-tema-f]"))) { st.verTemas = false; const i = b.dataset.temaF === "" ? null : +b.dataset.temaF; st.temaF = st.temaF === i ? null : i; st.abierto = null; return pintar(); }
+      if ((b = el("[data-tema-f]"))) { const i = b.dataset.temaF === "" ? null : +b.dataset.temaF; st.temaF = st.temaF === i ? null : i; st.abierto = null; return pintar(); }
       if ((b = el("[data-ir-tipo]"))) { st.tipo = b.dataset.irTipo; st.abierto = null; pintar(); cuerpo.scrollTop = 0; return; }
       if (el("[data-volver]")) { st.tipo = null; st.abierto = null; return pintar(); }
       if (st.menu && !el(".tt-menu")) { st.menu = false; pintar(); }
@@ -1966,10 +1950,10 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
         $("[data-notas-lista]").innerHTML = notas.length ? [...notas].reverse().map(n => `
           <li class="nota${n.id === nueva ? " llega" : ""}">
             <span class="nota-txt">${esc(n.texto)}</span>
-            <span class="nota-pie">${(m => m ? `<span class="nota-tema" title="${esc(m.nombre)}">${ic(m.icono)}</span>` : "")(temas.find(t => t.nombre === n.tema))}${esc(n.hora)} · ${esc(n.fase)}</span>
+            <span class="nota-pie">${esc(n.hora)} · ${esc(n.fase)}</span>
             <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
-            <button type="button" class="a-tema" data-a-tema="${n.id}" aria-label="${n.tema ? "Cambiar de tema" : "Pasar a un tema"}: ${esc(n.texto)}" title="${n.tema ? "Cambiar de tema" : "Pasar a un tema"}">${ic("i-a-tema")}</button>
-            ${n.id === eligiendo ? `<div class="nota-temas" role="group" aria-label="¿A qué tema?"><small>¿A qué tema?</small>${temas.map((t, i) => `<button type="button" data-nota-tema="${n.id}:${i}" title="${esc(t.nombre)}" aria-label="${esc(t.nombre)}"${n.tema === t.nombre ? ' aria-pressed="true"' : ""}>${ic(t.icono)}</button>`).join("")}${n.tema ? `<button type="button" data-nota-tema="${n.id}:" title="Sin tema" aria-label="Sin tema">${ic("i-x")}</button>` : ""}</div>` : ""}
+            <button type="button" class="a-tema" data-a-tema="${n.id}" aria-label="Pasar a un tema: ${esc(n.texto)}" title="Pasar a un tema">${ic("i-a-tema")}</button>
+            ${n.id === eligiendo ? `<div class="nota-temas" role="group" aria-label="¿A qué tema?"><small>¿A qué tema?</small>${temas.map((t, i) => `<button type="button" data-nota-tema="${n.id}:${i}" title="${esc(t.nombre)}" aria-label="${esc(t.nombre)}">${ic(t.icono)}</button>`).join("")}</div>` : ""}
           </li>`).join("") : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Queda acá hasta que la descartes.</li>`;
         nueva = null;
         $$("[data-notas-n]").forEach(x => x.textContent = notas.length || "");
@@ -1984,16 +1968,20 @@ type Nota = { id: string; texto: string; hora: string; fase: string; tema?: stri
         notas.unshift(n); nueva = n.id; inp.value = ""; guardarNotas(); pintarNotas();
       });
       gemela.addEventListener("click", e => {
-        /* Pasar a un tema: sigue siendo nota (con el ícono del tema) y aparece al final de ese tema en la bandeja */
+        /* Pasar a un tema: el post-it se vuelve una tarea de ese tema y sale de las notas */
         const at = e.target.closest("[data-a-tema]");
         if (at) { eligiendo = eligiendo === at.dataset.aTema ? null : at.dataset.aTema; return pintarNotas(); }
         const nt = e.target.closest("[data-nota-tema]");
         if (nt) {
-          const [id, i] = nt.dataset.notaTema.split(":");
-          notas = cargar(); const n = notas.find(x => x.id === id);
+          const [id, i] = nt.dataset.notaTema.split(":"), n = cargar().find(x => x.id === id);
           eligiendo = null;
-          if (n) { n.tema = i === "" ? undefined : temas[+i].nombre; guardarNotas(); avisar(n.tema ? `La nota quedó en ${n.tema}` : "La nota quedó sin tema"); }
-          pintarNotas(); pintar();
+          if (!n) return pintarNotas();
+          nt.closest(".nota").classList.add("se-va");
+          setTimeout(() => {
+            notas = cargar().filter(x => x.id !== id); guardarNotas(); pintarNotas();
+            st.llega = crearItem("t", +i, n.texto, 0, null); pintar();
+            avisar(`Pasó a ${temas[+i].nombre} como tarea`);
+          }, 220);
           return;
         }
         if (eligiendo && !e.target.closest(".nota-temas")) { eligiendo = null; pintarNotas(); }
