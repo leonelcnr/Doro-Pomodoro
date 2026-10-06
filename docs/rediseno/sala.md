@@ -399,15 +399,37 @@ proximidad, el día a la izquierda con un punto donde cambia, lo sin fecha al fi
 ícono en el encabezado que pasa a la grilla de cajas por tipo (Parciales, Prácticos,
 Informes, Tareas; cada caja con su + que abre «Crear» con ese tipo).
 
+### 18ª ronda (2026-10-06): los dos diálogos que faltaban
+
+Todas sobre la bandeja final T43. Tres variantes para los tiempos del reloj (el engranaje)
+y tres para la música:
+
+- **C1 · Renglones con − y + (recomendada):** el mismo panel chico que la música, pegado
+  al engranaje. Tres renglones con el número grande y − / +, y el descanso automático
+  abajo. Se aplica al toque, sin «Guardar», con la línea «Cambia el reloj de los 3».
+- **C2 · Ritmos y a medida:** Clásico 25·5·15, Largo 50·10·30, Profundo 90·20·30 de un
+  toque; «A medida» despliega los renglones de C1.
+- **C3 · En el reloj mismo:** sin panel; el engranaje pone el reloj grande en modo
+  edición, con flechas sobre los minutos y las tres fases debajo.
+- **M1 · Las tres pestañas, completas:** el diálogo de hoy terminado: los 12 sonidos
+  como íconos, volumen solo en los prendidos, y en «Solo yo» / «Para la sala» qué suena
+  y quién lo puso.
+- **M2 · Sin pestañas:** todo en una hoja: lo que suena, los íconos de ambiente y un solo
+  campo de link con «Solo yo · Para la sala» debajo (Spotify va solo a «Solo yo»).
+- **M3 · Lo que suena primero (recomendada):** abre en lo que está sonando, cada cosa con
+  su volumen, «Pausar todo» y **«Silenciar para mí»** la música que puso otro (local, no
+  toca `music_state`). Si no suena nada, abre en los íconos de ambiente.
+
+La 17ª quedó en `bocetos/sala-ronda17.html`.
+
 ## Dónde retomamos
 
 **Bandeja de tareas: cerrada con T43.** Notas: decididas (globales, sin tope, con tema
 opcional sin dejar de ser notas).
 
-Quedan dos detalles antes de cerrar la sala del todo:
-1. Pulir cómo se ve el **diálogo de configuraciones** (tiempos del reloj, el engranaje).
-2. Confirmar si el **diálogo de música** del boceto (Ambiental / Solo yo / Para la sala)
-   es el final.
+Quedan dos detalles antes de cerrar la sala del todo, bocetados en la **18ª ronda**
+(recomendé C1 y M3): falta que Leo elija el **diálogo de configuraciones** (C1–C3) y el
+**de música** (M1–M3).
 
 ## Propuestas transversales
 
