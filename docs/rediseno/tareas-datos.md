@@ -107,7 +107,17 @@ Orden:
 `sync-calendar` deja de funcionar con el `drop` hasta la Fase C. No pasa nada, porque ya no
 hay pantalla que la llame.
 
-**Código que acompaña la Fase A** (con `dev-datos-realtime`):
+**Código que acompaña la Fase A** (con `dev-datos-realtime`). Hecho el 2026-10-05, salvo el
+borrado de `src/features/calendar/`, que sale junto con la pantalla nueva:
+- Tipos en `dominio.ts`, `temasService`, `useTemas`, y el alta de `useTareas` con los campos
+  nuevos.
+- Cuentas puras en `features/tasks/avance.ts` (avance por ítem, tipo y tema, y «Faltan los
+  puntos 3 a 8, 11 y 12») y `calendario.ts`; los hooks `useCajaTema`, `useAvancePorTema` y
+  `useCalendarioTareas` las envuelven.
+- El avance se cuenta por unidades: cada punto, parte o unidad del checklist vale uno, y un
+  ítem sin checklist vale uno (hecho si está «Completada»).
+
+Lo planeado era:
 - `src/types/dominio.ts`:
   - Agregar `TipoItem = 'tarea' | 'practico' | 'informe' | 'parcial'` y la interfaz `Tema`.
   - Sumar a `Tarea` los campos `kind`, `topic_id`, `due_date`, `due_time`, `grade`,
