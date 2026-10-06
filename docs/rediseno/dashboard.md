@@ -225,13 +225,33 @@ Hallazgos para la Fase 3:
   días cumplidos se calculan en el cliente. Para el detalle del día hace falta la hora de
   inicio de cada sesión; la grilla días × horas necesita agrupar también por día de la semana.
 
+**Opinión de Leo sobre la 9ª ronda (2026-10-05):** la **1** es la que más le gusta, pero
+la ve **descentrada**: la cifra estaba centrada en el ancho, pero la columna de íconos quedaba
+sola contra el borde izquierdo y cargaba la composición hacia ese lado. De la **2** le gustó
+cómo se marca la cifra de ahora: el ícono en acento con un punto debajo.
+
+**Décima ronda (publicada 2026-10-05, esperando opinión).** Cuatro formas de que la cifra y
+el índice se lean como un bloque centrado. En todas, la cifra de ahora va como en la 2
+(ícono en acento y punto debajo, sin fondo) y el nombre aparece al pasar el puntero.
+- **1 · La columna, pegada a la cifra.** La misma columna, a la izquierda de la cifra y no
+  contra el borde; la cifra sigue en el centro exacto.
+- **2 · Partida en dos** (recomendada). Las cuatro cifras de Estudio en una columna a la
+  izquierda y las cinco de Tareas a la derecha: simétrico, y el lado ya dice de qué se trata.
+- **3 · Fila arriba, bajo las pestañas.** Los nueve íconos en fila, arriba de la cifra.
+- **4 · El título abre el índice.** El título de la cifra es un botón que abre una grilla
+  de 3 × 3 con los nombres; en reposo no hay nada más que la cifra.
+
+Las 1 y 2 usan una grilla de tres columnas (`1fr auto 1fr`) para que la cifra quede en el
+medio sin importar el ancho de los costados. Angosto, las columnas pasan abajo en filas. La
+9ª ronda quedó en `bocetos/dashboard-ronda9.html`.
+
 ---
 
 ## Dónde retomamos
 
-9ª ronda publicada: el Resumen con índice de íconos y sin cuenta regresiva (1 a 3,
-recomendada 1 · Íconos al costado). **Próximo paso:** recoger la opinión de Leo; siguen
-pendientes la meta («En la línea») y el tono de las tarjetas de Estudio y Tareas.
+10ª ronda publicada: la cifra y el índice centrados juntos (1 a 4, recomendada 2 · Partida
+en dos). **Próximo paso:** recoger la opinión de Leo; siguen pendientes la meta («En la
+línea») y el tono de las tarjetas de Estudio y Tareas.
 
 ## Propuestas transversales
 
