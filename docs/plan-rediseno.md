@@ -144,9 +144,9 @@ Orden propuesto, de menor a mayor riesgo:
    `app-sidebar`, `nav-main`, `nav-user`, `site-header` y `daily-streak` (plantilla): se
    borran cuando termine la Fase 3, por si alguna pantalla los necesita de referencia.
 3. **Selector de color de acento** — en el menú de la cuenta o en ajustes. La paleta
-   sale de los bocetos (violeta, azul, verde, naranja, rosa, grafito). Se guarda en
-   `localStorage` para que aplique antes del primer pintado, y en el perfil de Supabase
-   para que siga al usuario entre dispositivos. Hay que definir dónde vive en el perfil.
+   sale de los bocetos (violeta, azul, verde, naranja, rosa, grafito). Se guarda **solo en
+   `localStorage`** (decidido 2026-10-06, igual que el tema): sin columna en el perfil
+   por ahora. Tiene que aplicarse antes del primer pintado.
 4. **Home** (D4 + bandeja).
 5. **Modelo de datos de tareas, TPs y recordatorios** — blueprint con
    `arquitecto-features`, migración y RLS con `dev-datos-realtime`.
