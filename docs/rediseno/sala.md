@@ -392,12 +392,22 @@ Todas arrancan por fecha. Dentro de las cajas, cada renglón lleva el día a la 
 
 La 16ª quedó en `bocetos/sala-ronda16.html`.
 
+### Final (2026-10-06): T43 · Línea de tiempo
+
+Leo eligió **T43** como boceto final de la bandeja de la sala: todo por fecha de
+proximidad, el día a la izquierda con un punto donde cambia, lo sin fecha al final, y un
+ícono en el encabezado que pasa a la grilla de cajas por tipo (Parciales, Prácticos,
+Informes, Tareas; cada caja con su + que abre «Crear» con ese tipo).
+
 ## Dónde retomamos
 
-17ª ronda publicada (T38–T43; recomendada T38), esperando la elección de Leo y si quiere
-las cajas por tipo y cómo pasar a ellas.
-Lo demás de la bandeja está decidido (ver rondas 13 a 17). Notas: decididas (globales,
-sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
+**Bandeja de tareas: cerrada con T43.** Notas: decididas (globales, sin tope, con tema
+opcional sin dejar de ser notas).
+
+Quedan dos detalles antes de cerrar la sala del todo:
+1. Pulir cómo se ve el **diálogo de configuraciones** (tiempos del reloj, el engranaje).
+2. Confirmar si el **diálogo de música** del boceto (Ambiental / Solo yo / Para la sala)
+   es el final.
 
 ## Propuestas transversales
 
