@@ -199,9 +199,34 @@ variantes. Sin «Salir borra». Para la app: clave por usuario (`doro-notas-<usu
 
 ---
 
+### 10ª ronda (2026-10-05): T9, más fácil de leer
+
+Leo se queda con **T9** (separar por tema, y debajo lo que sigue), con tres pedidos: la
+barra fija de «Nueva tarea… (#redes)» rompe la bandeja; el texto del foco («Faltan los
+puntos 7 y 8») repite lo que ya muestra la regla; y los renglones de dos líneas («Redes ·
+hoy» y además «6/8») cuestan de leer a primera vista. Pidió al menos una variante con la
+bandeja más ancha.
+
+En todas: sin barra de alta, el foco sin frase debajo de la regla, y **renglones de una
+línea** (tipo, título, cuándo y la rayita; «6 de 8» al pasar el mouse). La 9ª quedó en
+`bocetos/sala-ronda9.html`.
+
+- **T11 · Grupos por tema:** íconos arriba y un grupo por tema con sus próximas tres
+  cosas. El + del grupo abre un renglón para escribir ahí, y la tarea va a ese tema.
+- **T12 · El + en la fila de íconos:** una lista por fecha, con el tema como ícono. El +
+  vuelve campo la fila de íconos (Esc vuelve).
+- **T13 · Ancha, temas al costado:** bandeja de hasta 720 px, columna de temas con nombre
+  y avance, y el + en el encabezado de la lista.
+- **T14 · Ancha, un recuadro por tema (recomendada):** los grupos de T11 en recuadros de a
+  dos. El + está en cada recuadro y el nombre abre el tema entero. En angosto queda T11.
+
+La bandeja ancha deja libre el asa de las notas: mide `min(100% − 540px, 720px)` desde
+1140 px. Las notas abren al costado recién desde 1384 px; por debajo, abrir una cierra la
+otra.
+
 ## Dónde retomamos
 
-9ª ronda publicada (T7–T10, recomendada T9), esperando la elección de Leo. **Quedan abiertas:**
+10ª ronda publicada (T11–T14 sobre T9, recomendada T14), esperando la elección de Leo. **Quedan abiertas:**
 si las notas son por sala o las mismas en todas, y si llevan un tope (p. ej. 50). Con eso se
 cierra la sala.
 
