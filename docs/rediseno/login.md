@@ -95,6 +95,31 @@ progreso / recién llegado) e **Invitación** (solo arriba / también bajo el an
 - Al volver, el home muestra un aviso («Listo: lo que hiciste quedó en tu cuenta de
   Google») y el avatar con la inicial.
 
+## ¿Anónimo en Supabase o todo en `localStorage`? (pregunta de Leo, 2026-10-06)
+
+Idea de Leo: que el anónimo guarde todo en `localStorage` y que recién al crear la cuenta
+se empiece a guardar en la base.
+
+- **Lo que gana:** no hay usuarios anónimos en la base (ni basura ni bots), y pasar lo hecho
+  a una cuenta que ya existía es fácil: se insertan las filas locales con el usuario real.
+- **Lo que cuesta:** una segunda capa de datos. Hoy leen y escriben en Supabase
+  `tareasService`, `temasService`, `useTareas` (realtime), `useTimerActions` (sesiones de
+  estudio y racha), `useDashboardStats` (las estadísticas las calcula la RPC en el servidor)
+  y `salasService`. Cada uno necesitaría su versión local.
+- **Las salas no pueden ser locales:** crear o entrar a una sala, la presencia, el reloj
+  compartido y las invitaciones dependen de `auth.uid()` y de `room_members`. Para usar una
+  sala, el anónimo igual necesita una sesión en el servidor: quedan dos modelos.
+- **No es más durable:** la sesión anónima de Supabase también vive en `localStorage`. Si se
+  borra el navegador, se pierde igual en los dos modelos.
+- **El caso común no migra nada:** anónimo → cuenta nueva con `linkIdentity` conserva el
+  mismo id de usuario. La migración solo hace falta si la persona ya tenía cuenta.
+
+**Propuesta:** seguir con el anónimo en Supabase, pero **crearlo tarde**: recién en la
+primera acción que guarda algo (el primer pomodoro terminado, la primera tarea, crear o
+entrar a una sala). Quien solo mira, incluidos los bots, no crea nada. Así se obtiene lo
+mejor de la idea sin una segunda capa de datos. La Fase B queda solo para quien ya tenía
+cuenta. Mientras no exista, el login le avisa que lo de esta sesión no se suma.
+
 ## Dónde retomamos
 
 ✅ Aprobado (1 · Una sola puerta). Queda decidir el modelo del anónimo antes de la Fase A
