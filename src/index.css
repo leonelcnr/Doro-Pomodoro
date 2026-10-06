@@ -184,6 +184,25 @@
   }
 }
 
+/* Encabezado que se desvanece (EncabezadoApp, home D4). Solo con mouse: en
+   pantallas táctiles queda completo. Vuelve enseguida al pasar el puntero, al
+   llegar con Tab o con uno de sus menús abierto, y se va medio segundo después.
+   Solo opacidad y desplazamiento: el blur traba en equipos modestos. */
+@media (hover: hover) {
+  .encabezado .desvanece {
+    opacity: 0;
+    translate: 0 -2px;
+    pointer-events: none;
+    transition: opacity 0.35s ease 0.5s, translate 0.35s ease 0.5s;
+  }
+  .encabezado:is(:hover, :focus-within, :has([data-state="open"])) .desvanece {
+    opacity: 1;
+    translate: none;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+}
+
 /* Calendar Animations */
 @keyframes calendar-fade-in {
   from {

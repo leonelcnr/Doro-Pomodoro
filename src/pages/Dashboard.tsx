@@ -1,6 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bar, BarChart, CartesianGrid, XAxis, PieChart, Pie } from "recharts"
@@ -107,15 +105,8 @@ export default function Dashboard() {
   }, [pieChartData]);
 
   return (
-    <SidebarProvider defaultOpen={false}
-      style={{
-        "--sidebar-width": "calc(var(--spacing) * 72)",
-        "--header-height": "calc(var(--spacing) * 12)",
-      } as React.CSSProperties}
-    >
-      <AppSidebar />
-      <SidebarInset>
-        <SiteHeader />
+    <div className="flex min-h-dvh flex-col">
+            <EncabezadoApp />
         <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-6xl mx-auto w-full min-w-0">
 
           {/* Cabecera y filtro global de tiempo */}
@@ -399,7 +390,6 @@ export default function Dashboard() {
           </Card>
 
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
   )
 }

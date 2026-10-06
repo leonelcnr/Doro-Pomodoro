@@ -1,6 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, Check, Loader2, Plus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -168,16 +166,8 @@ export default function CalendarPage() {
   // ── Render ─────────────────────────────────────────────────
 
   return (
-    <SidebarProvider
-      defaultOpen={false}
-      style={{
-        "--sidebar-width": "calc(var(--spacing) * 72)",
-        "--header-height": "calc(var(--spacing) * 12)",
-      } as React.CSSProperties}
-    >
-      <AppSidebar />
-      <SidebarInset>
-        <SiteHeader />
+    <div className="flex min-h-dvh flex-col">
+            <EncabezadoApp />
         <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-6xl mx-auto w-full min-w-0">
 
           {/* Cabecera */}
@@ -372,7 +362,6 @@ export default function CalendarPage() {
             </Card>
           </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
   );
 }

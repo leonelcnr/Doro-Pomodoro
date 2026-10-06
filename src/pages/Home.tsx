@@ -1,15 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
-import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
-import { SiteHeader } from "@/components/site-header"
-import {
-    SidebarInset,
-    SidebarProvider,
-} from "@/components/ui/sidebar"
+import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 
 import SalaNueva from "../features/home/components/SalaNueva"
 import { HeroEnfoque } from "@/features/home/components/HeroEnfoque"
-import { RelojSaludo } from "@/features/home/components/RelojSaludo"
 import { obtenerSaludo } from "@/features/home/saludo"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
 import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea"
@@ -96,20 +90,8 @@ const Home = () => {
     };
 
     return (
-        <SidebarProvider
-            defaultOpen={false}
-            style={
-                {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                } as React.CSSProperties
-            }
-        >
-            <AppSidebar />
-            <SidebarInset>
-                <SiteHeader>
-                    <RelojSaludo />
-                </SiteHeader>
+        <div className="flex min-h-dvh flex-col">
+            <EncabezadoApp />
                 <div className="flex flex-1 flex-col">
                     {/* El ancho se limita como en Dashboard y RoomPage (`max-w-6xl`): el
                         home era la única página que se estiraba a pantalla completa.
@@ -166,8 +148,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </SidebarInset>
-        </SidebarProvider>
+            </div>
     )
 }
 

@@ -136,7 +136,13 @@ Orden propuesto, de menor a mayor riesgo:
 
 1. **Tokens** (Fase 2) — primero, porque todas las pantallas dependen de ellos.
 2. **Encabezado propio que se desvanece** — `site-header` es bloque de plantilla y no se
-   toca; va en un componente nuevo (`EncabezadoApp`).
+   toca; va en un componente nuevo (`EncabezadoApp`). ✅ 2026-10-06: `src/components/encabezado/`
+   (`EncabezadoApp` + `MenuCuenta`, presentacional). Reemplaza a la sidebar en Inicio,
+   Dashboard y Calendario. El menú del avatar trae la cuenta (lo de la Fase A del login) y
+   el **tema en tres opciones** (Claro, Oscuro, Negro); ahí va a ir también el acento.
+   `extra` es el lugar del contador de tareas del home (paso 4). Quedan sin uso
+   `app-sidebar`, `nav-main`, `nav-user`, `site-header` y `daily-streak` (plantilla): se
+   borran cuando termine la Fase 3, por si alguna pantalla los necesita de referencia.
 3. **Selector de color de acento** — en el menú de la cuenta o en ajustes. La paleta
    sale de los bocetos (violeta, azul, verde, naranja, rosa, grafito). Se guarda en
    `localStorage` para que aplique antes del primer pintado, y en el perfil de Supabase
@@ -165,3 +171,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-04 | El plan se parte en un doc por pantalla (`docs/rediseno/`) para trabajar cada una en un chat propio. |
 | 2026-10-04 | Tareas aprobada tras diez rondas: S2 · El nombre elige el tema (detalle desde la esquina, cajas oscuras, tarjetas más oscuras, entrada «barra y nombre»). |
 | 2026-10-06 | Decisiones del cierre de la Fase 1: fondo sin puntos, `--primary` violeta unificado, temas Claro, Oscuro y Negro. Fase 2 hecha. Login: migraciones de limpieza aplicadas en producción. |
+| 2026-10-06 | Fase 3, paso 2: `EncabezadoApp` con el menú de la cuenta y el selector de tres temas; reemplaza a la sidebar. |
