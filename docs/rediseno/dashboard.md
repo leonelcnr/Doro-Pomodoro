@@ -267,12 +267,18 @@ cifra (cada gráfico tiene otro alto). Si el título es el índice (4 a 6), te c
 justo cuando vas a tocarlo; por eso en esas tres el bloque arranca a una altura fija. La 10ª
 ronda quedó en `bocetos/dashboard-ronda10.html`.
 
+**Ajuste (2026-10-06):** Leo pidió dejar en el artefacto **solo la 1 y la 2**. Las 3 a 6 se
+sacaron de la página (su código sigue en el HTML, y la versión con las seis está en el commit
+10b9699). Se sumó **H** para esconder y traer la barra: en pantalla completa, el mando (la
+esquina de abajo a la derecha también lo trae y la X lo esconde); fuera de ella, la barra de
+ajustes.
+
 ---
 
 ## Dónde retomamos
 
-11ª ronda publicada: índice abajo que se desvanece (1 a 3) o el título como índice sin cajas
-(4 a 6); recomendadas 1 · Puntos y, de la otra familia, 5 · La rueda. **Próximo paso:**
+11ª ronda publicada, reducida a dos: 1 · Puntos que se vuelven íconos (recomendada) y 2 ·
+Íconos tenues. **Próximo paso:**
 recoger la opinión de Leo; siguen pendientes la meta («En la línea») y el tono de las
 tarjetas de Estudio y Tareas.
 

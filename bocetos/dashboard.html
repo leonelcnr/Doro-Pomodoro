@@ -728,6 +728,10 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
 :root[data-tactil] .vecinas .vec { transform: none; }
 @media (hover: none) { .vec { opacity: .75; } .rueda .vec.arriba, .rueda .vec.abajo { transform: translate(-50%, 0); } .vecinas .vec { transform: none; } }
 
+/* Pantalla completa: el mando se puede esconder; la esquina de abajo a la derecha lo trae */
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
@@ -778,6 +782,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
   <symbol id="i-prox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></symbol>
   <symbol id="i-cuadros" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
   <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
@@ -787,9 +792,8 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 <div class="pagina">
   <header class="cabecera">
     <h1>Dashboard, undécima ronda</h1>
-    <p>De la décima no convenció ninguna. Pediste <b>el índice abajo, desvanecido hasta que pasás el puntero</b>, y te interesó la 4 (el título abre el índice), pero <b>muy tosca</b>: botón con fondo, caja con sombra, grilla de nueve casilleros.</p>
-    <p>Esta ronda tiene dos familias. <b>1 a 3: el índice abajo</b>, que en reposo casi no está y aparece al acercarte a la franja de abajo. <b>4 a 6: el título es el índice</b>, sin cajas, sin fondos y sin sombras, todo con tipografía y opacidad. En todas, la cifra de ahora va en acento con su punto, y se frena mientras mirás el índice.</p>
-    <p>Para ver cómo se comportan en reposo, sacá el puntero de la maqueta. En «Táctil» todo queda visible, porque no hay puntero. Siguen los ajustes «Avance», «Resaltado» y «Título». La décima ronda quedó guardada aparte.</p>
+    <p>De la décima no convenció ninguna. Pediste <b>el índice abajo, desvanecido hasta que pasás el puntero</b>. Quedan dos formas de hacerlo: <b>puntos que se vuelven íconos</b> e <b>íconos tenues</b>. En las dos, la cifra de ahora va en acento con su punto, y la cifra deja de pasar mientras mirás el índice.</p>
+    <p>Para verlas en reposo, sacá el puntero de la maqueta. En «Táctil» el índice queda visible, porque no hay puntero. <b>H</b> esconde y trae la barra de ajustes; en pantalla completa, la del mando (también vuelve desde la esquina de abajo a la derecha). La décima ronda quedó guardada aparte.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -849,82 +853,14 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="marco"><div class="app una" data-app></div></div>
   </section>
 
-  <section class="opcion" id="r3" data-v="r3">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">3</span><span class="nombre">Solo la de ahora</span></h2>
-        <p class="resumen">En reposo, abajo, <b>solo el ícono de la cifra de ahora</b>, con su punto. Al acercar el puntero, <b>la fila se abre desde ahí</b> hacia los costados y aparecen las otras ocho.</p>
-        <p class="enfoque">Lo primero: <b>la cifra y el ícono que la acompaña</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>En reposo dice dónde estás sin mostrar nada más.</li><li>La apertura se lee como «había más acá».</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Al abrirse, el ícono de ahora se corre a su lugar en la fila.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="r4" data-v="r4">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">4</span><span class="nombre">El título abre una lista</span></h2>
-        <p class="resumen">La 4 de la décima, sin caja. El título lleva una flechita tenue. Al tocarlo, <b>la cifra se desvanece y en su lugar aparece la lista de las nueve</b>, en texto, centrada y sin fondo. Elegís una y vuelve la cifra.</p>
-        <p class="enfoque">Lo primero: <b>solo la cifra</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Nada flota encima: la lista ocupa el lugar de la cifra.</li><li>Los nombres se leen enteros, sin aprender íconos.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un toque más para cambiar.</li><li>Mientras está abierta, no ves la cifra.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="r5" data-v="r5">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">5</span><span class="nombre">La rueda</span></h2>
-        <p class="resumen">El título es una rueda, como el selector de hora del celular. <b>Al pasar el puntero, aparecen arriba y abajo la cifra anterior y la siguiente</b>, más chicas y tenues. Las tocás o girás la ruedita del mouse para pasar.</p>
-        <p class="enfoque">Lo primero: <b>el título de la cifra</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo más liviano de la familia del título: dos renglones tenues, nada más.</li><li>Se siente físico: girás y cambia.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Solo se ven las vecinas, no las nueve.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="r6" data-v="r6">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">6</span><span class="nombre">Las vecinas al costado</span></h2>
-        <p class="resumen">Igual que la rueda, pero de lado: <b>al pasar el puntero por el título, a la izquierda aparece la anterior y a la derecha la siguiente</b>, en texto tenue con una flechita.</p>
-        <p class="enfoque">Lo primero: <b>el título de la cifra</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se lee como una línea: «Hoy ‹ Esta semana › Constancia».</li><li>Ocupa el mismo renglón del título.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Solo se ven las vecinas.</li><li>Con títulos largos (la pregunta), la línea se llena.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
   <section class="cierre" id="cierre">
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Resumen</th><th>En reposo</th><th>Al acercarte</th><th>Ves las nueve</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Resumen</th><th>En reposo</th><th>Al acercarte</th><th>La de ahora</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>1 · Puntos</td><td>Nueve puntos abajo</td><td>Los íconos sobre los puntos</td><td>Sí</td><td>Íconos siempre</td><td>Los puntos no dicen qué son</td></tr>
-          <tr><td>2 · Íconos tenues</td><td>Íconos casi transparentes</td><td>Toman su color</td><td>Sí</td><td>Íconos siempre</td><td>Nueve dibujos en reposo</td></tr>
-          <tr><td>3 · Solo la de ahora</td><td>Un ícono abajo</td><td>La fila se abre</td><td>Al abrirse</td><td>Fila siempre</td><td>El ícono se corre</td></tr>
-          <tr><td>4 · Lista</td><td>El título con una flechita</td><td>—; se abre al tocar</td><td>Al tocar</td><td>Igual</td><td>Tapa la cifra</td></tr>
-          <tr><td>5 · Rueda</td><td>Solo el título</td><td>Anterior y siguiente, arriba y abajo</td><td>No</td><td>Vecinas siempre</td><td>Solo dos vecinas</td></tr>
-          <tr><td>6 · Vecinas al costado</td><td>Solo el título</td><td>Anterior y siguiente, a los lados</td><td>No</td><td>Vecinas siempre</td><td>Línea larga</td></tr>
+          <tr class="elegida"><td>1 · Puntos</td><td>Nueve puntos abajo</td><td>Los íconos aparecen sobre los puntos</td><td>Punto en acento</td><td>Íconos siempre</td><td>Los puntos no dicen qué son</td></tr>
+          <tr><td>2 · Íconos tenues</td><td>Íconos casi transparentes</td><td>Toman su color</td><td>Ícono algo más visible y punto en acento</td><td>Íconos siempre</td><td>Nueve dibujos en reposo</td></tr>
         </tbody>
       </table>
     </div>
@@ -932,10 +868,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <div class="recomendacion">
       <div>
         <h3>Elegiría 1</h3>
-        <p><b>Es lo que pediste, llevado al mínimo.</b> En reposo, abajo hay una línea de nueve puntos: dice que hay más cifras y en cuál estás, sin dibujos. Al acercarte, cada punto se vuelve su ícono. Con un punto en acento, la cifra de ahora se marca igual que en la 2 que te gustó.</p>
-        <p>De la familia del título, elegiría <b>5 · La rueda</b>: es la 4 sin nada de lo tosco, dos renglones tenues que aparecen solo al pasar. <b>4</b> si querés ver los nueve nombres juntos.</p>
+        <p><b>Es lo que pediste, llevado al mínimo.</b> En reposo, abajo hay una línea de nueve puntos: dice que hay más cifras y en cuál estás, sin dibujos. Al acercarte, cada punto se vuelve su ícono. La cifra de ahora se marca igual que en la 2 de la novena, con un punto en acento.</p>
+        <p><b>2</b> si preferís ver siempre qué cifras hay, aunque sea en gris muy claro.</p>
         <h4>Desvanecer sin trabar</h4>
-        <p>Todo aparece con opacidad y un desplazamiento de pocos píxeles, sin desenfoque. Lo que dispara la aparición es la franja de abajo (1 a 3) o el título (4 a 6), no toda la pantalla, así el índice no aparece cada vez que movés el mouse.</p>
+        <p>Todo aparece con opacidad y un desplazamiento de pocos píxeles, sin desenfoque. Lo que dispara la aparición es la franja de abajo, no toda la pantalla, así el índice no aparece cada vez que movés el mouse.</p>
         <h4>Sigue pendiente</h4>
         <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas de Estudio y Tareas (claras u oscuras).</p>
       </div>
@@ -1541,7 +1477,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
     return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
   };
-  const V = { r1: tres("puntos"), r2: tres("tenue"), r3: tres("unico"), r4: tres("lista"), r5: tres("rueda"), r6: tres("vecinas") };
+  const V = { r1: tres("puntos"), r2: tres("tenue") };
   const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
   const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
@@ -1651,19 +1587,40 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
     <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
     <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
-    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${ic("i-x")}</button>`;
+    <button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic("i-contraer")}</button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra">${ic("i-x")}</button>`;
+  /* H o la X esconden el mando para ver la pantalla sola; H o la esquina de abajo a la derecha lo traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisoMando("Barra escondida. H o la esquina de abajo a la derecha la traen");
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  /* Fuera de pantalla completa, H esconde y trae la barra de ajustes */
+  const ajustesBarra = document.querySelector(".ajustes");
+  document.addEventListener("keydown", e => {
+    if (actual || e.key.toLowerCase() !== "h" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    ajustesBarra.hidden = !ajustesBarra.hidden;
+  });
   mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
   mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
   mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
   mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
   function mostrar(op) {
     if (actual && actual !== op) actual.classList.remove("completa");
     actual = op; op.classList.add("completa");
     mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
     const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
   }
-  function abrirCompleta(op) { raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
-  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
   document.addEventListener("keydown", e => {
     if (!actual) return;
@@ -1674,6 +1631,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     if (k === "d") return usarCiclo("vineta");
     if (k === "t") return usarCiclo("tema");
     if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
     mostrar(opciones[(i + opciones.length) % opciones.length]);
