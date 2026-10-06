@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Undécima ronda del dashboard (el índice abajo que se desvanece, y el título como índice, sin cajas). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+/* Décima ronda del dashboard (la 1 de la novena, con la cifra y el índice centrados juntos). Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
 :root {
   --bg: oklch(0.985 0.002 285);
   --superficie: oklch(1 0 0);
@@ -660,74 +660,6 @@ button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
   .tit-menu { grid-template-columns: repeat(3, 96px); }
 }
 
-/* ───────── Undécima ronda: abajo y desvanecido, o el título como índice ───────── */
-.solo:has(.ind:hover, .ind:focus-within, .tit-env.abierta, .rueda:hover, .rueda:focus-within, .vecinas:hover, .vecinas:focus-within) .esc-reloj { animation-play-state: paused; }
-/* La franja de abajo: un área generosa que dispara la aparición */
-.ind { display: flex; justify-content: center; gap: 2px; padding: 14px 0 6px; }
-.ib { position: relative; display: grid; justify-items: center; align-content: end; gap: 7px; width: 40px; height: 44px; padding: 0 0 4px; border: 0; background: none; color: var(--tenue); }
-.ib svg { width: 18px; height: 18px; transition: opacity .25s, transform .3s cubic-bezier(.16,1,.3,1), color .15s; }
-.ib .pt { width: 4px; height: 4px; border-radius: 50%; background: transparent; transition: background-color .2s, opacity .25s; }
-.ib:hover { color: var(--fg); }
-.ib.act { color: var(--acento); }
-.ib.act .pt { background: var(--acento); }
-/* 1 · puntos que se vuelven íconos */
-.ind.puntos .pt { background: color-mix(in oklch, var(--tenue) 55%, transparent); }
-.ind.puntos .ib.act .pt { background: var(--acento); }
-.ind.puntos .ib svg { opacity: 0; transform: translateY(4px); }
-/* 2 · íconos tenues */
-.ind.tenue .ib svg { opacity: .16; }
-.ind.tenue .ib.act svg { opacity: .4; }
-/* 3 · solo la de ahora; las otras se abren desde ahí */
-.ind.unico .ib:not(.act) { width: 0; opacity: 0; overflow: hidden; transition: width .3s cubic-bezier(.16,1,.3,1), opacity .2s; }
-.ind.unico { gap: 0; }
-/* Al acercarse (o con foco), todo aparece */
-.ind:is(:hover, :focus-within) .ib svg { opacity: 1; transform: none; }
-.ind.unico:is(:hover, :focus-within) .ib:not(.act) { width: 40px; opacity: 1; }
-:root[data-tactil] .ind .ib svg { opacity: 1; transform: none; }
-:root[data-tactil] .ind.unico .ib:not(.act) { width: 40px; opacity: 1; }
-@media (hover: none) { .ind .ib svg { opacity: 1; transform: none; } .ind.unico .ib:not(.act) { width: 40px; opacity: 1; } }
-@container app (max-width: 420px) { .ib { width: 34px; } .ind.unico:is(:hover, :focus-within) .ib:not(.act), :root[data-tactil] .ind.unico .ib:not(.act) { width: 34px; } }
-/* 4 a 6 · el título no salta: el bloque arranca a una altura fija y no se recentra con cada cifra */
-.solo.r11:not(.con-abajo) .solo-c { justify-content: flex-start; padding-top: clamp(24px, 9%, 96px); }
-/* 4 · el título abre una lista, sin caja: la cifra se desvanece y la lista ocupa su lugar */
-.solo.r11 .esc-in { position: relative; }
-.tit-lim { border: 0; background: none; padding: 0; cursor: pointer; }
-.tit-lim .chev { width: 14px; height: 14px; transform: rotate(90deg); color: var(--tenue); opacity: .6; transition: transform .25s, opacity .2s; }
-.tit-lim:hover .chev { opacity: 1; }
-.tit-env.lista.abierta .chev { transform: rotate(-90deg); opacity: 1; }
-.esc-in > :not(.tit-env) { transition: opacity .2s; }
-.esc-in:has(.tit-env.lista.abierta) > :not(.tit-env) { opacity: 0; pointer-events: none; animation: apagar .2s ease both; }
-@keyframes apagar { from { opacity: 1; } }
-.tit-lista { position: absolute; top: calc(100% + 2px); left: 50%; z-index: 4; transform: translate(-50%, -4px); display: flex; flex-direction: column; align-items: stretch; width: max-content; opacity: 0; visibility: hidden; transition: opacity .2s, transform .25s cubic-bezier(.16,1,.3,1), visibility 0s .2s; }
-.tit-env.lista.abierta .tit-lista { opacity: 1; visibility: visible; transform: translate(-50%, 0); animation: asomar .25s cubic-bezier(.16,1,.3,1) both; }
-@keyframes asomar { from { opacity: 0; transform: translate(-50%, -4px); } }
-.tl { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 5px 14px; border: 0; background: none; font-size: 17px; color: var(--tenue); cursor: pointer; }
-.tl:hover { color: var(--fg); }
-.tl .pt { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
-.tl.act { color: var(--acento); }
-.tl.act .pt { background: var(--acento); }
-/* 5 · la rueda: anterior y siguiente aparecen arriba y abajo del título */
-.rueda { position: relative; display: flex; flex-direction: column; align-items: center; margin: 22px 0 30px; }
-.rueda .esc-tit { margin: 0; }
-.vec { border: 0; background: none; padding: 2px 8px; font-size: 14px; color: var(--tenue); cursor: pointer; opacity: 0; transition: opacity .2s, transform .25s cubic-bezier(.16,1,.3,1), color .15s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.vec:hover { color: var(--fg); }
-.vec svg { width: 13px; height: 13px; }
-.vec svg.izq { transform: rotate(180deg); }
-.rueda .vec { position: absolute; left: 50%; }
-.rueda .vec.arriba { bottom: calc(100% + 2px); transform: translate(-50%, 6px) scale(.92); }
-.rueda .vec.abajo { top: calc(100% + 2px); transform: translate(-50%, -6px) scale(.92); }
-.rueda:is(:hover, :focus-within) .vec { opacity: .75; }
-.rueda:is(:hover, :focus-within) .vec.arriba, .rueda:is(:hover, :focus-within) .vec.abajo { transform: translate(-50%, 0); }
-/* 6 · las vecinas al costado del título */
-.vecinas { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 18px; margin-bottom: 8px; width: min(100cqi - 40px, 640px); }
-.vecinas .esc-tit { margin: 0; }
-.vecinas .vec.izq { justify-self: end; transform: translateX(6px); }
-.vecinas .vec.der { justify-self: start; transform: translateX(-6px); }
-.vecinas:is(:hover, :focus-within) .vec { opacity: .75; transform: none; }
-:root[data-tactil] .vec { opacity: .75; transform: translate(-50%, 0); }
-:root[data-tactil] .vecinas .vec { transform: none; }
-@media (hover: none) { .vec { opacity: .75; } .rueda .vec.arriba, .rueda .vec.abajo { transform: translate(-50%, 0); } .vecinas .vec { transform: none; } }
-
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
@@ -786,10 +718,10 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
 </svg>
 <div class="pagina">
   <header class="cabecera">
-    <h1>Dashboard, undécima ronda</h1>
-    <p>De la décima no convenció ninguna. Pediste <b>el índice abajo, desvanecido hasta que pasás el puntero</b>, y te interesó la 4 (el título abre el índice), pero <b>muy tosca</b>: botón con fondo, caja con sombra, grilla de nueve casilleros.</p>
-    <p>Esta ronda tiene dos familias. <b>1 a 3: el índice abajo</b>, que en reposo casi no está y aparece al acercarte a la franja de abajo. <b>4 a 6: el título es el índice</b>, sin cajas, sin fondos y sin sombras, todo con tipografía y opacidad. En todas, la cifra de ahora va en acento con su punto, y se frena mientras mirás el índice.</p>
-    <p>Para ver cómo se comportan en reposo, sacá el puntero de la maqueta. En «Táctil» todo queda visible, porque no hay puntero. Siguen los ajustes «Avance», «Resaltado» y «Título». La décima ronda quedó guardada aparte.</p>
+    <h1>Dashboard, décima ronda</h1>
+    <p>De la novena: <b>la 1 es la que más te gusta, pero se ve descentrada.</b> La cifra estaba centrada en el ancho, pero la columna de íconos quedaba sola contra el borde izquierdo, lejos de todo, y la composición se cargaba hacia ese lado. Esta ronda prueba cuatro formas de que <b>la cifra y el índice se lean como un solo bloque centrado</b>.</p>
+    <p>En todas, <b>la cifra de ahora se marca como en la 2</b>: el ícono en acento con un punto debajo, sin fondo. El nombre de cada ícono aparece al pasar el puntero.</p>
+    <p>Siguen los ajustes «Avance», «Resaltado» y «Título». Probalas en «Escritorio» (1180 × 760) o en pantalla completa. La novena ronda quedó guardada aparte.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -820,13 +752,13 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="r1" data-v="r1">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">1</span><span class="nombre">Puntos que se vuelven íconos</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Abajo, en reposo, <b>nueve puntitos</b> como los de un carrusel; el de ahora, en acento. Al acercar el puntero a la franja de abajo, <b>sobre cada punto aparece su ícono</b> y el nombre va en el tooltip.</p>
-        <p class="enfoque">Lo primero: <b>la cifra; abajo, apenas una línea de puntos</b></p>
+        <h2><span class="letra">1</span><span class="nombre">La columna, pegada a la cifra</span></h2>
+        <p class="resumen">La misma columna de la 1, pero <b>al lado de la cifra</b> y no contra el borde. La cifra sigue exactamente en el centro, y la columna queda a su izquierda, a la altura del gráfico. Los dos se leen como un bloque.</p>
+        <p class="enfoque">Lo primero: <b>la cifra; el índice, a mano</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>En reposo es lo mínimo que todavía dice «hay más» y «vas por acá».</li><li>Los íconos aparecen solo cuando los buscás.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Los puntos no dicen qué cifra es cada uno hasta que te acercás.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Es la 1 casi sin cambios: solo se acerca.</li><li>La columna ya no queda flotando sola en el borde.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El bloque sigue siendo un poco más pesado a la izquierda.</li><li>Si la cifra es angosta (un número solo), queda un hueco entre los dos.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -836,13 +768,13 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="r2" data-v="r2">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">2</span><span class="nombre">Íconos tenues</span></h2>
-        <p class="resumen">La fila de íconos de la 2 de la novena, <b>casi transparente</b> en reposo. El punto de la cifra de ahora se ve siempre. Al acercar el puntero, la fila toma su color.</p>
-        <p class="enfoque">Lo primero: <b>la cifra; los íconos, como una marca de agua</b></p>
+        <h2><span class="letra">2</span><span class="nombre">Partida en dos: Estudio y Tareas</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Las nueve cifras se separan como las pestañas: <b>las cuatro de Estudio a la izquierda</b> (período, hoy, constancia, horario) y <b>las cinco de Tareas a la derecha</b>. Las dos columnas flanquean la cifra, así que el conjunto queda simétrico.</p>
+        <p class="enfoque">Lo primero: <b>la cifra, entre sus dos columnas</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Siempre sabés qué cifras hay, aunque sea en gris muy claro.</li><li>Es la más fácil de entender.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>En reposo igual hay nueve dibujos en pantalla.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Equilibrio de verdad: el mismo peso a cada lado.</li><li>El lado ya dice de qué se trata la cifra, sin aprender nueve íconos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos columnas en vez de una.</li><li>Cuatro contra cinco: una columna es un ícono más larga.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -852,13 +784,13 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="r3" data-v="r3">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">3</span><span class="nombre">Solo la de ahora</span></h2>
-        <p class="resumen">En reposo, abajo, <b>solo el ícono de la cifra de ahora</b>, con su punto. Al acercar el puntero, <b>la fila se abre desde ahí</b> hacia los costados y aparecen las otras ocho.</p>
-        <p class="enfoque">Lo primero: <b>la cifra y el ícono que la acompaña</b></p>
+        <h2><span class="letra">3</span><span class="nombre">Fila arriba, bajo las pestañas</span></h2>
+        <p class="resumen">Los nueve íconos en <b>una fila centrada arriba de la cifra</b>, como un segundo nivel de las pestañas Resumen, Estudio y Tareas. La de ahora, en acento con su punto.</p>
+        <p class="enfoque">Lo primero: <b>dónde estás; después, la cifra</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>En reposo dice dónde estás sin mostrar nada más.</li><li>La apertura se lee como «había más acá».</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Al abrirse, el ícono de ahora se corre a su lugar en la fila.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Todo sobre el mismo eje, como la 2, pero leído como navegación y no como pie.</li><li>Igual en la compu y en el celular.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma una fila arriba, cerca de las pestañas: dos niveles de navegación seguidos.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -868,45 +800,13 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   <section class="opcion" id="r4" data-v="r4">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">4</span><span class="nombre">El título abre una lista</span></h2>
-        <p class="resumen">La 4 de la décima, sin caja. El título lleva una flechita tenue. Al tocarlo, <b>la cifra se desvanece y en su lugar aparece la lista de las nueve</b>, en texto, centrada y sin fondo. Elegís una y vuelve la cifra.</p>
+        <h2><span class="letra">4</span><span class="nombre">El título abre el índice</span></h2>
+        <p class="resumen">No hay columna ni fila. <b>El título de la cifra es un botón</b> («Esta semana ⌄»): al tocarlo se abre debajo una grilla de 3 × 3 con las nueve cifras, centrada. Mientras está abierta, la cifra no pasa.</p>
         <p class="enfoque">Lo primero: <b>solo la cifra</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Nada flota encima: la lista ocupa el lugar de la cifra.</li><li>Los nombres se leen enteros, sin aprender íconos.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un toque más para cambiar.</li><li>Mientras está abierta, no ves la cifra.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="r5" data-v="r5">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">5</span><span class="nombre">La rueda</span></h2>
-        <p class="resumen">El título es una rueda, como el selector de hora del celular. <b>Al pasar el puntero, aparecen arriba y abajo la cifra anterior y la siguiente</b>, más chicas y tenues. Las tocás o girás la ruedita del mouse para pasar.</p>
-        <p class="enfoque">Lo primero: <b>el título de la cifra</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo más liviano de la familia del título: dos renglones tenues, nada más.</li><li>Se siente físico: girás y cambia.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Solo se ven las vecinas, no las nueve.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app una" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="r6" data-v="r6">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">6</span><span class="nombre">Las vecinas al costado</span></h2>
-        <p class="resumen">Igual que la rueda, pero de lado: <b>al pasar el puntero por el título, a la izquierda aparece la anterior y a la derecha la siguiente</b>, en texto tenue con una flechita.</p>
-        <p class="enfoque">Lo primero: <b>el título de la cifra</b></p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se lee como una línea: «Hoy ‹ Esta semana › Constancia».</li><li>Ocupa el mismo renglón del título.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Solo se ven las vecinas.</li><li>Con títulos largos (la pregunta), la línea se llena.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Lo más limpio en reposo: la pantalla es la cifra y nada más.</li><li>La grilla muestra los nueve nombres juntos, sin tener que aprender íconos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un toque más para saltar a otra cifra.</li><li>No se ve cuántas cifras hay hasta abrirla.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -917,43 +817,41 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     <h2>Comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Resumen</th><th>En reposo</th><th>Al acercarte</th><th>Ves las nueve</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <thead><tr><th>Resumen</th><th>Dónde está el índice</th><th>Cifra centrada</th><th>Equilibrio</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>1 · Puntos</td><td>Nueve puntos abajo</td><td>Los íconos sobre los puntos</td><td>Sí</td><td>Íconos siempre</td><td>Los puntos no dicen qué son</td></tr>
-          <tr><td>2 · Íconos tenues</td><td>Íconos casi transparentes</td><td>Toman su color</td><td>Sí</td><td>Íconos siempre</td><td>Nueve dibujos en reposo</td></tr>
-          <tr><td>3 · Solo la de ahora</td><td>Un ícono abajo</td><td>La fila se abre</td><td>Al abrirse</td><td>Fila siempre</td><td>El ícono se corre</td></tr>
-          <tr><td>4 · Lista</td><td>El título con una flechita</td><td>—; se abre al tocar</td><td>Al tocar</td><td>Igual</td><td>Tapa la cifra</td></tr>
-          <tr><td>5 · Rueda</td><td>Solo el título</td><td>Anterior y siguiente, arriba y abajo</td><td>No</td><td>Vecinas siempre</td><td>Solo dos vecinas</td></tr>
-          <tr><td>6 · Vecinas al costado</td><td>Solo el título</td><td>Anterior y siguiente, a los lados</td><td>No</td><td>Vecinas siempre</td><td>Línea larga</td></tr>
+          <tr><td>1 · Columna pegada</td><td>A la izquierda de la cifra</td><td>Sí</td><td>Algo cargado a la izquierda</td><td>Fila abajo</td><td>Hueco si la cifra es angosta</td></tr>
+          <tr class="elegida"><td>2 · Partida en dos</td><td>Estudio a la izquierda, Tareas a la derecha</td><td>Sí</td><td>Simétrico</td><td>Dos filas abajo</td><td>Dos columnas</td></tr>
+          <tr><td>3 · Fila arriba</td><td>Arriba, bajo las pestañas</td><td>Sí</td><td>Simétrico</td><td>Igual</td><td>Dos navegaciones seguidas</td></tr>
+          <tr><td>4 · El título abre</td><td>Escondido en el título</td><td>Sí</td><td>Simétrico</td><td>Igual</td><td>Un toque más</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="recomendacion">
       <div>
-        <h3>Elegiría 1</h3>
-        <p><b>Es lo que pediste, llevado al mínimo.</b> En reposo, abajo hay una línea de nueve puntos: dice que hay más cifras y en cuál estás, sin dibujos. Al acercarte, cada punto se vuelve su ícono. Con un punto en acento, la cifra de ahora se marca igual que en la 2 que te gustó.</p>
-        <p>De la familia del título, elegiría <b>5 · La rueda</b>: es la 4 sin nada de lo tosco, dos renglones tenues que aparecen solo al pasar. <b>4</b> si querés ver los nueve nombres juntos.</p>
-        <h4>Desvanecer sin trabar</h4>
-        <p>Todo aparece con opacidad y un desplazamiento de pocos píxeles, sin desenfoque. Lo que dispara la aparición es la franja de abajo (1 a 3) o el título (4 a 6), no toda la pantalla, así el índice no aparece cada vez que movés el mouse.</p>
+        <h3>Elegiría 2</h3>
+        <p><b>Es la que resuelve el descentrado sin esconder nada.</b> Con una sola columna, el índice siempre va a pesar de un lado. Con dos, el peso queda igual a cada lado y la cifra queda en el medio de verdad. Además, la división repite la de las pestañas: a la izquierda lo que estudiaste, a la derecha lo que hiciste.</p>
+        <p><b>4</b> si preferís la pantalla más quieta: en reposo no hay nada más que la cifra. <b>1</b> si querés cambiar lo mínimo respecto de lo que ya te gustaba.</p>
+        <h4>La marca de la cifra de ahora</h4>
+        <p>En las cuatro va como en la 2 de la novena: ícono en acento y un punto debajo, sin fondo. Es lo único en acento del índice.</p>
         <h4>Sigue pendiente</h4>
         <p>La forma de cambiar la meta (está puesta «En la línea») y el tono de las tarjetas de Estudio y Tareas (claras u oscuras).</p>
       </div>
       <div>
-        <pre><span class="c-com">// 1 · puntos que se vuelven íconos al acercarse</span>
-&lt;nav className="indice-puntos group"&gt;
-  {CIFRAS.map((c) =&gt; (
-    &lt;button key={c} aria-current={c === actual} aria-label={NOMBRES[c]}&gt;
-      &lt;Icono cifra={c} className="opacity-0 translate-y-1 transition
-        group-hover:opacity-100 group-hover:translate-y-0" /&gt;
-      &lt;span className="punto" /&gt;
-    &lt;/button&gt;
-  ))}
-&lt;/nav&gt;
+        <pre><span class="c-com">// 2 · tres columnas: Estudio, la cifra, Tareas.</span>
+<span class="c-com">// Las laterales miden lo mismo, así la del medio queda centrada.</span>
+&lt;section className="grid h-full grid-cols-[1fr_auto_1fr] items-center gap-10"&gt;
+  &lt;Indice cifras={ESTUDIO} className="justify-self-end" /&gt;
+  &lt;Cifra cifra={actual} /&gt;
+  &lt;Indice cifras={TAREAS} className="justify-self-start" /&gt;
+&lt;/section&gt;
 
-<span class="c-com">/* En pantallas táctiles no hay hover: los íconos quedan visibles */</span>
-@media (hover: none) {
-  .indice-puntos svg { opacity: 1; transform: none; }
+<span class="c-com">/* La de ahora: ícono en acento y un punto debajo */</span>
+.indice [aria-current="true"] { color: var(--acento); }
+.indice [aria-current="true"]::after {
+  content: ""; position: absolute; bottom: 2px; left: 50%;
+  width: 4px; height: 4px; margin-left: -2px;
+  border-radius: 50%; background: var(--acento);
 }</pre>
       </div>
     </div>
@@ -1509,14 +1407,6 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     if (modo === "pegado") return `<section class="solo r9 r10s"><div class="solo-c tres-col">${col(ESC, "col izq")}${escIn}<span></span></div>${reloj}</section>`;
     if (modo === "dos") return `<section class="solo r9 r10s"><div class="solo-c tres-col">${col(ESC.slice(0, 4), "col izq")}${escIn}${col(ESC.slice(4), "col der")}</div>${reloj}</section>`;
     if (modo === "arriba") return `<section class="solo r9 r10s con-arriba">${col(ESC, "fila")}${centro}${reloj}</section>`;
-    /* Undécima ronda */
-    const btnInd = c => `<button type="button" class="ib${c === id ? " act" : ""}" data-escir="${c}" data-k="ir-${c}" aria-current="${c === id}" aria-label="${nom(c)}" data-tip="${nom(c)}">${ic(ICONO[c])}<i class="pt"></i></button>`;
-    if (modo === "puntos" || modo === "tenue" || modo === "unico") return `<section class="solo r9 r11 con-abajo">${centro}<nav class="ind ${modo}" aria-label="Cifras">${ESC.map(btnInd).join("")}</nav>${reloj}</section>`;
-    const tituloCon = html => `<section class="solo r9 r11"><div class="solo-c">${escIn.replace(/<p class="esc-tit">[\s\S]*?<\/p>/, html)}</div>${reloj}</section>`;
-    const sigC = ESC[(i + 1) % ESC.length], antC = ESC[(i + ESC.length - 1) % ESC.length];
-    if (modo === "lista") return tituloCon(`<div class="tit-env lista${app._lista ? " abierta" : ""}"><button type="button" class="esc-tit tit-lim" data-lista data-k="tit" aria-expanded="${!!app._lista}">${ic(e.ic)}${tit}${ic("i-flecha", "chev")}</button><div class="tit-lista" role="group" aria-label="Cifras">${ESC.map(c => `<button type="button" class="tl${c === id ? " act" : ""}" data-escir="${c}" data-k="ir-${c}" aria-current="${c === id}"><i class="pt"></i>${nom(c)}</button>`).join("")}</div></div>`);
-    if (modo === "rueda") return tituloCon(`<div class="rueda" data-rueda><button type="button" class="vec arriba" data-escpaso="-1" data-k="esc-ant" aria-label="Anterior: ${nom(antC)}">${nom(antC)}</button><p class="esc-tit">${ic(e.ic)}${tit}</p><button type="button" class="vec abajo" data-escpaso="1" data-k="esc-sig" aria-label="Siguiente: ${nom(sigC)}">${nom(sigC)}</button></div>`);
-    if (modo === "vecinas") return tituloCon(`<div class="vecinas"><button type="button" class="vec izq" data-escpaso="-1" data-k="esc-ant" aria-label="Anterior: ${nom(antC)}">${ic("i-flecha", "izq")}${nom(antC)}</button><p class="esc-tit">${ic(e.ic)}${tit}</p><button type="button" class="vec der" data-escpaso="1" data-k="esc-sig" aria-label="Siguiente: ${nom(sigC)}">${nom(sigC)}${ic("i-flecha")}</button></div>`);
     if (modo === "titulo") {
       const menu = `<div class="tit-menu" role="group" aria-label="Cifras">${ESC.map(c => `<button type="button" class="tm${c === id ? " act" : ""}" data-escir="${c}" data-k="ir-${c}" aria-current="${c === id}">${ic(ICONO[c])}<span>${nom(c)}</span></button>`).join("")}</div>`;
       const titBtn = `<div class="tit-env"><button type="button" class="esc-tit tit-btn" data-k="tit" aria-haspopup="true">${ic(e.ic)}${tit}${ic("i-flecha", "chev")}</button>${menu}</div>`;
@@ -1529,7 +1419,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
   RESUMEN.riel = (app, x) => escR9(app, x, "riel");
   RESUMEN.abajo = (app, x) => escR9(app, x, "abajo");
   RESUMEN.flechas = (app, x) => escR9(app, x, "flechas");
-  ["pegado", "dos", "arriba", "titulo", "puntos", "tenue", "unico", "lista", "rueda", "vecinas"].forEach(m => { RESUMEN[m] = (app, x) => escR9(app, x, m); });
+  ["pegado", "dos", "arriba", "titulo"].forEach(m => { RESUMEN[m] = (app, x) => escR9(app, x, m); });
 
   /* ── Las estructuras: todas son la 3; cambia solo el Resumen ── */
   const VISTAS3 = [["resumen", "Resumen", "i-barras"], ["estudio", "Estudio", "i-reloj"], ["tareas", "Tareas", "k-tarea"]];
@@ -1541,7 +1431,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     else cuerpo = `<div class="c3 c-tar">${tjHechas(x.t, x.sel, { heroe: true })}${tjNotas(x.t)}${tjTipos(x.t)}${tjProx(x.t, 4)}</div>`;
     return `<main class="main una-main m3">${perCab(app, { vistas: VISTAS3 })}${cuerpo}</main>`;
   };
-  const V = { r1: tres("puntos"), r2: tres("tenue"), r3: tres("unico"), r4: tres("lista"), r5: tres("rueda"), r6: tres("vecinas") };
+  const V = { r1: tres("pegado"), r2: tres("dos"), r3: tres("arriba"), r4: tres("titulo") };
   const articuloPer = (per, off) => { const [a, b] = rango(per, off); if (!off) return { semana: "esta semana", mes: "estos 30 días", ano: "este año" }[per]; return per === "semana" ? `la semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `los 30 días al ${fechaCorta(dias[a].f)}` : `el año al ${fechaCorta(dias[a].f, true)}`; };
   const nombrePer = (per, off) => { const [a, b] = rango(per, off); if (!off) return textos(per, 0).titulo; return per === "semana" ? `Semana del ${fechaCorta(dias[b].f)}` : per === "mes" ? `30 días al ${fechaCorta(dias[a].f)}` : `Año al ${fechaCorta(dias[a].f, true)}`; };
 
@@ -1578,15 +1468,12 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
     el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
     el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
     const elegirEsc = c => { el._esc = c.dataset.esc === el._esc ? "periodo" : c.dataset.esc; el._escNueva = true; pintar(a); el.querySelector(`[data-esc="${c.dataset.esc}"]`)?.focus(); };
-    el.addEventListener("keydown", e => { if (e.key === "Escape" && el._lista) { el._lista = false; pintar(a); el.querySelector('[data-k="tit"]')?.focus(); } });
     el.addEventListener("keydown", e => { const c = e.target.closest?.("[data-esc]"); if (c && e.target === c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); elegirEsc(c); } });
-    el.addEventListener("wheel", e => { const r = e.target.closest?.("[data-rueda]"); if (!r) return; e.preventDefault(); const ahoraT = Date.now(); if (ahoraT - (el._ruedaT || 0) < 350) return; el._ruedaT = ahoraT; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + (e.deltaY > 0 ? 1 : -1) + ESC.length) % ESC.length]; el._escNueva = true; pintar(a); }, { passive: false });
     el.addEventListener("animationend", e => { if (!e.target.matches(".esc-prog i, .seg.act .seg-l i, .esc-reloj")) return; const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + 1) % ESC.length]; el._escNueva = true; pintar(a, true); });
     el.addEventListener("click", e => {
       if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
       const tjE = e.target.closest("[data-esc]");
       if (tjE && !e.target.closest("button")) return elegirEsc(tjE);
-      if (el._lista && !e.target.closest(".tit-env")) { el._lista = false; pintar(a); }
       const b = e.target.closest("button"); if (!b || b.disabled) return;
       const d = b.dataset;
       tip.classList.remove("ver");
@@ -1595,8 +1482,7 @@ pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); borde
       if (d.per) { el._per = d.per; el._off = 0; el._offB = undefined; el._dia = undefined; return pintar(a, true, true); }
       if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); el._dia = undefined; return pintar(a, true, true); }
       if (d.offb) { const per = el._per || "semana"; el._offB = Math.min(OFF_MAX[per], Math.max(0, (el._offB ?? (el._off || 0) + 1) + +d.offb)); return pintar(a, true, true); }
-      if (d.lista !== undefined) { el._lista = !el._lista; return pintar(a, true); }
-      if (d.escir) { el._esc = d.escir; el._escNueva = true; el._lista = false; return pintar(a, true); }
+      if (d.escir) { el._esc = d.escir; el._escNueva = true; return pintar(a, true); }
       if (d.escpaso) { const i = ESC.indexOf(el._esc || "periodo"); el._esc = ESC[(i + +d.escpaso + ESC.length) % ESC.length]; el._escNueva = true; return pintar(a, true); }
       if (d.vista) { el._vista = d.vista; return pintar(a, true, true); }
       if (d.hero) { el._hero = d.hero; return pintar(a, true, true); }

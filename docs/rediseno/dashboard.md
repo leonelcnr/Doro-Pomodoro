@@ -245,13 +245,36 @@ Las 1 y 2 usan una grilla de tres columnas (`1fr auto 1fr`) para que la cifra qu
 medio sin importar el ancho de los costados. Angosto, las columnas pasan abajo en filas. La
 9ª ronda quedó en `bocetos/dashboard-ronda9.html`.
 
+**Opinión de Leo sobre la 10ª ronda (2026-10-06):** no le gustó ninguna. Pidió el índice
+**abajo, desvanecido salvo con hover**. La 4 (el título abre el índice) le pareció
+interesante pero **muy tosca**: botón con fondo, caja con sombra y grilla de casilleros.
+
+**Undécima ronda (publicada 2026-10-06, esperando opinión).** Dos familias, todo con opacidad
+y un desplazamiento chico (sin desenfoque). La aparición la dispara la franja de abajo o el
+título, no toda la pantalla. En táctil todo queda visible.
+- **1 · Puntos que se vuelven íconos** (recomendada). En reposo, nueve puntos abajo (el de
+  ahora en acento); al acercarse, sobre cada punto aparece su ícono.
+- **2 · Íconos tenues.** La fila de íconos casi transparente; toma color al acercarse.
+- **3 · Solo la de ahora.** En reposo, un ícono con su punto; la fila se abre desde ahí.
+- **4 · El título abre una lista.** Sin caja: la cifra se desvanece y en su lugar aparecen
+  los nueve nombres en texto. Se cierra eligiendo, con un clic afuera o con Esc.
+- **5 · La rueda** (recomendada de esta familia). Al pasar por el título aparecen arriba y
+  abajo la anterior y la siguiente; también se pasa con la ruedita del mouse.
+- **6 · Las vecinas al costado.** Lo mismo, a los lados del título.
+
+Hallazgo: con el bloque centrado en vertical, **el título salta** cada vez que cambia la
+cifra (cada gráfico tiene otro alto). Si el título es el índice (4 a 6), te corre el botón
+justo cuando vas a tocarlo; por eso en esas tres el bloque arranca a una altura fija. La 10ª
+ronda quedó en `bocetos/dashboard-ronda10.html`.
+
 ---
 
 ## Dónde retomamos
 
-10ª ronda publicada: la cifra y el índice centrados juntos (1 a 4, recomendada 2 · Partida
-en dos). **Próximo paso:** recoger la opinión de Leo; siguen pendientes la meta («En la
-línea») y el tono de las tarjetas de Estudio y Tareas.
+11ª ronda publicada: índice abajo que se desvanece (1 a 3) o el título como índice sin cajas
+(4 a 6); recomendadas 1 · Puntos y, de la otra familia, 5 · La rueda. **Próximo paso:**
+recoger la opinión de Leo; siguen pendientes la meta («En la línea») y el tono de las
+tarjetas de Estudio y Tareas.
 
 ## Propuestas transversales
 
