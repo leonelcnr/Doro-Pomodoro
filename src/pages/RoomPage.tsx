@@ -58,7 +58,8 @@ const RoomPage = () => {
     // invitación. Si falla la membresía, bloqueamos con la vista de error; el
     // error de la invitación es secundario y no debe bloquear la sala.
     useEffect(() => {
-        if (!roomId || !usuario) return;
+        // Sin sesión todavía: entrar a la sala crea la anónima (ver salasService)
+        if (!roomId) return;
 
         // Id presente pero malformado: no tocamos Supabase, mostramos error.
         if (!salaIdValida) {
@@ -94,7 +95,7 @@ const RoomPage = () => {
         };
 
         cargarSala();
-    }, [roomId, salaIdValida, usuario]);
+    }, [roomId, salaIdValida, usuario?.id]);
 
     // Arma el enlace de invitación a partir del código vigente
     const enlaceInvitacion = useMemo(() => {

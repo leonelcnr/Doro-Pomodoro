@@ -4,6 +4,7 @@ import supabase from "@/lib/supabase";
 import * as temasService from "@/features/tasks/services/temasService";
 import { useAuth } from "@/features/auth/context/useAuth";
 import type { IconoTema, Tema } from "@/types/dominio";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 
 /** Orden de la tabla: `position` y, a igualdad, el más viejo primero. */
 export function ordenarTemas(arr: Tema[]): Tema[] {
@@ -71,9 +72,10 @@ export function useTemas() {
   // nombre ya existe: ver `temasService.esNombreRepetido`).
   const crearTema = useCallback(
     async (nombre: string, icono?: IconoTema): Promise<Tema | undefined> => {
-      if (!usuario) return undefined;
+      // Sin sesión todavía: el primer tema crea la anónima
+      const usuarioId = usuario?.id ?? (await asegurarSesion());
       const position = temas.length ? Math.max(...temas.map((t) => t.position)) + 1 : 0;
-      const real = await temasService.crearTema(usuario.id, {
+      const real = await temasService.crearTema(usuarioId, {
         name: nombre.trim(),
         position,
         ...(icono ? { icon: icono } : {}),

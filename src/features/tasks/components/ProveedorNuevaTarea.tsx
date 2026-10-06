@@ -11,6 +11,7 @@ import {
 import type { AmbitoTarea } from "@/features/tasks/hooks/useTareas";
 import type { TareaPayload } from "@/types/dominio";
 import { DialogNuevaTarea } from "./DialogNuevaTarea";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 
 /**
  * Proveedor del alta global de tareas. Monta un listener de Ctrl/⌘+K que abre el
@@ -29,13 +30,12 @@ export function ProveedorNuevaTarea() {
   const [abierto, establecerAbierto] = useState(false);
   const [categorias, establecerCategorias] = useState<string[]>([]);
 
-  // Atajos globales para abrir el modal (solo con sesión activa):
+  // Atajos globales para abrir el modal (también sin sesión: la tarea la crea):
   //  - Ctrl/⌘+K (estándar de paleta)
   //  - tecla T suelta (salvo que se esté escribiendo en un campo)
   // También escucha el evento `abrir-nueva-tarea` (lo despacha el botón
   // "Agregar Tarea" de la tabla).
   useEffect(() => {
-    if (!user) return;
     const escribiendo = () => {
       const activo = document.activeElement;
       return (
@@ -60,7 +60,7 @@ export function ProveedorNuevaTarea() {
       window.removeEventListener("keydown", alPresionar);
       window.removeEventListener("abrir-nueva-tarea", alPedirApertura);
     };
-  }, [user]);
+  }, []);
 
   // Al abrir, trae las categorías existentes del usuario para el selector.
   useEffect(() => {
@@ -73,11 +73,12 @@ export function ProveedorNuevaTarea() {
 
   const crear = useCallback(
     async (parcial: TareaPayload, ambito: AmbitoTarea) => {
-      if (!user) return;
+      // Sin sesión todavía: la primera tarea crea la anónima
+      const usuarioId = user?.id ?? (await asegurarSesion());
       const roomId = ambito === "sala" ? (salaId ?? null) : null;
       try {
         await tareasService.crearTarea({
-          user_id: user.id,
+          user_id: usuarioId,
           room_id: roomId,
           header: parcial.header?.trim() || "Nueva Tarea",
           type: parcial.type?.trim() || CATEGORIA_POR_DEFECTO,
@@ -95,8 +96,6 @@ export function ProveedorNuevaTarea() {
     },
     [user, salaId]
   );
-
-  if (!user) return null;
 
   return (
     <DialogNuevaTarea

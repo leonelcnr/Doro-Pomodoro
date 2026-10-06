@@ -2,6 +2,7 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import supabase from "@/lib/supabase";
 import type { EstadoReloj, Invitacion, EstadoMusicaSala } from "@/types/dominio";
 import type { Modo } from "@/types/timer";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 
 /**
  * Capa de servicio para las salas (`rooms`) y sus operaciones relacionadas en
@@ -50,6 +51,7 @@ export function esEstadoRelojValido(valor: unknown): valor is EstadoReloj {
 // la sala: sin esto la fila se queda con el default de la columna, que no cumple
 // el contrato `EstadoReloj`, y la sala nueva arranca en 00:00.
 export async function crearSala(estadoInicial?: EstadoReloj): Promise<string> {
+  await asegurarSesion(); // sin sesión todavía: la sala crea la anónima
   const { data, error } = await supabase.rpc("create_room", {
     p_name: "Sala de estudio",
     p_is_public: false,
@@ -74,6 +76,7 @@ export async function crearSala(estadoInicial?: EstadoReloj): Promise<string> {
 
 // Se une a una sala por su código (RPC join_room) y devuelve el id de la sala
 export async function unirseASala(codigo: string | null): Promise<string> {
+  await asegurarSesion();
   const { data, error } = await supabase.rpc("join_room", { p_code: codigo });
   if (error) throw error;
   return data as string;
@@ -83,6 +86,7 @@ export async function unirseASala(codigo: string | null): Promise<string> {
 // join_room_by_id, idempotente). Necesario por el endurecimiento de RLS: sin la
 // fila en `room_members` las lecturas/sincronizaciones de la sala fallan.
 export async function unirseASalaPorId(salaId: string): Promise<void> {
+  await asegurarSesion();
   const { error } = await supabase.rpc("join_room_by_id", { p_room_id: salaId });
   if (error) throw error;
 }

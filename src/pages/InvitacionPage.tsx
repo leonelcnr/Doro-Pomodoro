@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import supabase from "@/lib/supabase";
 import * as salasService from "@/features/room/services/salasService";
 import { Button } from "@/components/ui/button"
 import {
@@ -15,8 +14,8 @@ import { Spinner } from "@/components/ui/spinner"
 
 /**
  * Página intermedia al abrir un enlace de invitación (/invitacion/:code).
- * Procesa automáticamente el código: valida la sesión (redirige a login si hace
- * falta), se une a la sala vía la RPC `join_room` y navega a ella.
+ * Procesa automáticamente el código: se une a la sala vía la RPC `join_room` y
+ * navega a ella. No pide cuenta: sin sesión, entra como anónimo.
  */
 const Invitacion = () => {
     // `code` viene del parámetro de la ruta (contrato con el router)
@@ -32,18 +31,11 @@ const Invitacion = () => {
                 return;
             }
 
-            // 1) Verificamos la sesión (si no hay login, vamos a login y luego volvemos acá)
-            const { data: { session: sesion } } = await supabase.auth.getSession();
-            if (!sesion) {
-                const redireccion = encodeURIComponent(`/invitacion/${codigoInvitacion}`);
-                navigate(`/login?redirect=${redireccion}`, { replace: true, state: { from: location.pathname } });
-                return;
-            }
-
-            // 2) Nos unimos a la sala mediante el servicio de salas
+            // 1) Nos unimos a la sala (sin sesión todavía, se crea la anónima: la
+            //    invitación no pide cuenta)
             try {
                 const salaId = await salasService.unirseASala(codigoInvitacion);
-                // 3) Entramos a la sala
+                // 2) Entramos a la sala
                 navigate(`/room/${salaId}`, { replace: true });
             } catch (error: unknown) {
                 const mensaje = error instanceof Error ? error.message : undefined;

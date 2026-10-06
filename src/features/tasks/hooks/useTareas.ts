@@ -4,6 +4,7 @@ import supabase from "@/lib/supabase";
 import * as tareasService from "@/features/tasks/services/tareasService";
 import { useAuth } from "@/features/auth/context/useAuth";
 import type { Tarea, TareaPayload } from "@/types/dominio";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 import {
   CATEGORIA_POR_DEFECTO,
   ESTADO_POR_DEFECTO,
@@ -180,6 +181,8 @@ export function useTareas(salaId?: string) {
   // (alta, baja, edición, reordenamiento por drag & drop) dentro de un ámbito.
   const guardarCambios = useCallback(
     async (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => {
+      // Sin sesión todavía: la primera tarea crea la anónima
+      const usuarioId = usuario?.id ?? (await asegurarSesion());
       const nuevosIds = new Set(nuevoEstadoTareas.map((t) => t.id));
 
       // Solo borramos dentro del ámbito afectado (las del otro ámbito no se tocan)
@@ -195,7 +198,7 @@ export function useTareas(salaId?: string) {
       nuevoEstadoTareas.forEach((t) => {
         // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
         const datosNuevaTarea = {
-          user_id: usuario?.id,
+          user_id: usuarioId,
           room_id: t.room_id ? t.room_id : (ambito === "sala" ? salaId : null),
           header: t.header,
           type: t.type,
@@ -246,13 +249,14 @@ export function useTareas(salaId?: string) {
   // array). Hace prepend optimista con un id temporal y reconcilia con la fila
   // real que devuelve la DB (deduplicando si el eco del realtime llegó antes).
   const crearTarea = useCallback(async (parcial: TareaPayload, ambito: AmbitoTarea) => {
-    if (!usuario) return;
+    // Sin sesión todavía: la primera tarea crea la anónima
+    const usuarioId = usuario?.id ?? (await asegurarSesion());
 
     const idTemporal = Date.now() + Math.floor(Math.random() * 1000);
     const roomId = ambito === "sala" ? (salaId ?? null) : null;
 
     const payload: TareaPayload = {
-      user_id: usuario.id,
+      user_id: usuarioId,
       room_id: roomId,
       header: parcial.header?.trim() || "Nueva Tarea",
       type: parcial.type?.trim() || CATEGORIA_POR_DEFECTO,

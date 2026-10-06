@@ -1,4 +1,5 @@
 import supabase from "@/lib/supabase";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 
 // Tipos de evento del calendario. Los valores se almacenan tal cual en la columna `type`.
 export type EventType = "Examen" | "Entrega" | "Estudio" | "Otro";
@@ -47,19 +48,16 @@ export async function fetchEvents(): Promise<CalendarEvent[]> {
   return data ?? [];
 }
 
-// Crea un evento asociándolo al usuario autenticado actual
+// Crea un evento asociándolo al usuario de la sesión
 export async function createEvent(
   datos: CreateEventPayload
 ): Promise<CalendarEvent> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error("No autenticado.");
+  // Sin sesión todavía: el primer evento crea la anónima
+  const usuarioId = await asegurarSesion();
 
   const { data, error } = await supabase
     .from("calendar_events")
-    .insert({ ...datos, user_id: user.id })
+    .insert({ ...datos, user_id: usuarioId })
     .select()
     .single();
 

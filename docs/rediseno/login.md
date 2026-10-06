@@ -120,7 +120,31 @@ entrar a una sala). Quien solo mira, incluidos los bots, no crea nada. Así se o
 mejor de la idea sin una segunda capa de datos. La Fase B queda solo para quien ya tenía
 cuenta. Mientras no exista, el login le avisa que lo de esta sesión no se suma.
 
+## Fase A hecha (2026-10-06)
+
+Leo eligió el anónimo en Supabase creado tarde.
+- `authHelpers.asegurarSesion()`: devuelve el id de la sesión o crea la anónima (una sola
+  aunque la pidan varios a la vez). La llaman justo antes de escribir: `useTareas`
+  (alta y guardado), `useTemas`, `ProveedorNuevaTarea`, el fin del pomodoro
+  (`useTimerActions`), `salasService` (crear, unirse por código o por id),
+  `calendarService.createEvent` y `conectarGoogleCalendar`.
+- `AuthContext`: sin sesión, `user` es null y la app se usa igual (expone `cargando`). Ya no
+  manda a `/login`. Cerrar sesión de una cuenta vuelve al home sin cuenta.
+- `entrarCon(proveedor, volverA)`: el anónimo vincula (`linkIdentity`); sin sesión, entra
+  (`signInWithOAuth`). Lo pendiente queda en `sessionStorage`. Si vuelve con
+  `identity_already_exists`, `resolverRegresoOAuth` entra a la cuenta que ya existía. Al
+  volver con cuenta, `cerrarEntradaPendiente` avisa y devuelve a `?redirect=` (solo rutas
+  internas: `rutaSegura`).
+- Login: la puerta única con los textos del diseño final, todavía con los componentes de
+  hoy (el look final llega con la Fase 3). `/registro` redirige a `/login` con su query.
+- Menú de la cuenta: sin sesión, «Entrar»; anónimo, «Guardar mi progreso» y «Editar
+  nombre» (ya no cierra sesión); con cuenta, «Cerrar sesión». Avatar con la inicial.
+- `InvitacionPage` y `RoomPage` ya no piden sesión: unirse crea la anónima.
+- Tests en `authHelpers.test.ts`. Probado en el navegador: el home carga sin sesión ni
+  redirección, y `/registro?redirect=…` cae en el login con «Seguir sin cuenta» a esa ruta.
+  No se probó el ida y vuelta real con un proveedor (crearía usuarios en producción).
+
 ## Dónde retomamos
 
-✅ Aprobado (1 · Una sola puerta). Queda decidir el modelo del anónimo antes de la Fase A
-(ver la pregunta de Leo sobre guardar todo en `localStorage`).
+✅ Diseño aprobado y Fase A en código. Falta probar el ida y vuelta con un proveedor en el
+deploy de prueba. Después, Fase B (sumar lo del anónimo a una cuenta que ya existía) y C.

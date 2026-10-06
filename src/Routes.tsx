@@ -6,8 +6,8 @@
 //
 // Definición central de rutas de la app (react-router). Estructura anidada:
 //  - AuthProviderLayout: provee el contexto de autenticación a todo lo de adentro.
-//    - HomeLayout: páginas principales con sesión (inicio, dashboard, calendario, sala).
-//    - AuthLayout: páginas de login y registro.
+//    - HomeLayout: páginas principales (inicio, dashboard, calendario, sala), con o sin cuenta.
+//    - AuthLayout: la página de la cuenta (/login; /registro redirige ahí).
 //    - Páginas sueltas: invitación, términos y privacidad.
 //
 // Las páginas se cargan con `React.lazy` (code-splitting por ruta): cada una queda en
@@ -15,7 +15,7 @@
 // arrastra dependencias pesadas como `recharts` (solo la usa el Dashboard). Los layouts
 // se mantienen eager porque son livianos y envuelven a todo.
 import { lazy, Suspense, type ReactNode } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate, useLocation } from "react-router-dom";
 import AuthProviderLayout from "./layouts/AuthProviderLayout";
 import HomeLayout from "./layouts/HomeLayout";
 import AuthLayout from "./layouts/AuthLayout";
@@ -26,7 +26,6 @@ import ErrorPage from "./pages/ErrorPage";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
-const Registro = lazy(() => import("./pages/Registro"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const Invitacion = lazy(() => import("./pages/InvitacionPage"));
@@ -41,6 +40,13 @@ function PantallaCarga() {
             <Spinner />
         </div>
     );
+}
+
+// `/registro` era el mismo formulario que el login: ahora hay una sola puerta.
+// Se conserva el query (`?redirect=`) de los links viejos.
+function RegistroALogin() {
+    const { search } = useLocation();
+    return <Navigate to={`/login${search}`} replace />;
 }
 
 // Envuelve el elemento de una ruta en Suspense para el code-splitting.
@@ -68,7 +74,7 @@ export const router = createBrowserRouter([
                 element: <AuthLayout />,
                 children: [
                     { path: "/login", element: conSuspense(<Login />) },
-                    { path: "/registro", element: conSuspense(<Registro />) },
+                    { path: "/registro", element: <RegistroALogin /> },
                 ],
             },
             { path: "invitacion/:code", element: conSuspense(<Invitacion />) },
