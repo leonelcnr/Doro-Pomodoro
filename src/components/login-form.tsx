@@ -42,7 +42,7 @@ const PROVEEDORES: { id: Proveedor; nombre: string }[] = [
 /**
  * La única puerta de Doro (diseño final del login, «1 · Una sola puerta»). No hay
  * «crear cuenta» ni «iniciar sesión»: si la cuenta es nueva se vincula a lo que
- * se hizo sin cuenta, y si ya existía se entra a ella.
+ * se hizo sin cuenta, y si ya existía se entra a ella y se le suma lo hecho.
  */
 export function LoginForm({
   conProgreso,
@@ -92,8 +92,9 @@ export function LoginForm({
       </div>
 
       <p className="text-sm text-muted-foreground text-balance">
-        ¿Ya tenés cuenta? Entrá con la misma.
-        {conProgreso && " Lo que hiciste sin cuenta todavía no se suma a una cuenta que ya existía."}
+        {conProgreso
+          ? "¿Ya tenés cuenta? Entrá con la misma: sumamos lo que hiciste hoy."
+          : "¿Ya tenés cuenta? Entrá con la misma."}
       </p>
 
       <p className="text-xs text-muted-foreground text-balance">

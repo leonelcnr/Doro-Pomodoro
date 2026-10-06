@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import supabase from "@/lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Usuario } from "@/types/dominio";
 import { AuthContext } from "./useAuth";
 import {
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [cargando, setCargando] = useState(true);
     const [hasGoogleLinked, setHasGoogleLinked] = useState(false);
     const navigate = useNavigate();
+    const clienteConsultas = useQueryClient();
 
     // Conecta Google Calendar (la lógica vive en `authHelpers.conectarGoogleCalendar`)
     const connectGoogleCalendar = conectarGoogleCalendar;
@@ -71,17 +73,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 return mapearUsuario(sesion);
             });
 
-            // Volvió del proveedor ya con cuenta: aviso y regreso a donde estaba
+            // Volvió del proveedor ya con cuenta: suma lo del anónimo si hacía
+            // falta, avisa y vuelve a donde estaba. Fuera del callback: Supabase
+            // pide no llamar a su API desde adentro (se traba).
             if (!esAnonimo) {
-                const volverA = cerrarEntradaPendiente();
-                // Fuera del callback: Supabase recomienda no encadenar trabajo acá adentro
-                if (volverA) setTimeout(() => navigate(volverA, { replace: true }), 0);
+                setTimeout(async () => {
+                    const cierre = await cerrarEntradaPendiente();
+                    if (!cierre) return;
+                    if (cierre.sumado) {
+                        // Usuario nuevo como objeto: los hooks que dependen de él
+                        // (tareas, temas, racha) recargan; el dashboard se invalida.
+                        setUser((previo) => (previo ? { ...previo } : previo));
+                        void clienteConsultas.invalidateQueries();
+                    }
+                    navigate(cierre.volverA, { replace: true });
+                }, 0);
             }
         });
         return () => {
             authListener.subscription.unsubscribe();
         };
-    }, [navigate]);
+    }, [navigate, clienteConsultas]);
 
 
 

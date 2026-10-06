@@ -144,7 +144,40 @@ Leo eligió el anónimo en Supabase creado tarde.
   redirección, y `/registro?redirect=…` cae en el login con «Seguir sin cuenta» a esa ruta.
   No se probó el ida y vuelta real con un proveedor (crearía usuarios en producción).
 
+## Fase B hecha (2026-10-06)
+
+Quien usó Doro sin cuenta y entra a una cuenta que ya existía ya no pierde lo que hizo.
+- Al volver con `identity_already_exists`, `resolverRegresoOAuth` guarda el token del
+  anónimo (la sesión local todavía es la suya) antes de ir a entrar a la cuenta.
+- Al volver ya con la cuenta, `cerrarEntradaPendiente` llama a la edge function
+  `sumar-anonimo`. Esa función comprueba los dos JWT (la cuenta en el header, que no puede
+  ser anónima; el anónimo en el cuerpo, que tiene que serlo), llama a la RPC
+  `fusionar_anonimo` y borra al anónimo con la API de admin. El aviso dice «Listo: lo que
+  hiciste se sumó a tu cuenta de …». Si falla, entra igual y avisa que no se sumó.
+- `fusionar_anonimo` (migración `20261006120000`), en una transacción y solo para
+  `service_role`:
+  - Temas: los de igual nombre se juntan y el resto va al final.
+  - Tareas: apuntan al tema que corresponde.
+  - Sesiones de estudio y eventos del calendario pasan a la cuenta.
+  - Salas: membresías (gana host), salas que hosteaba e invitaciones.
+  - `user_stats`: se suman los minutos y la racha se recalcula con los días de estudio
+    juntos.
+- Después de sumar, el `AuthContext` renueva el usuario (tareas, temas y racha recargan) e
+  invalida el caché del dashboard.
+- El login ya promete «sumamos lo que hiciste hoy».
+- Probado: la RPC con un caso de choques en la base local, y la edge function de punta a
+  punta en local con tokens reales. Rechaza al anónimo llamando como cuenta (401), la falta
+  de token (400) y un token que no es anónimo o ya se sumó (410).
+- Límite: el token del anónimo dura una hora. Si el ida y vuelta con el proveedor tarda
+  más, no se suma y se avisa.
+- `supabase/config.toml` (solo local): se prendieron los anónimos y la vinculación manual,
+  como en producción.
+
+Para producción (lo corre Leo):
+`pnpm dlx supabase db push --linked` y `pnpm dlx supabase functions deploy sumar-anonimo`.
+
 ## Dónde retomamos
 
-✅ Diseño aprobado y Fase A en código. Falta probar el ida y vuelta con un proveedor en el
-deploy de prueba. Después, Fase B (sumar lo del anónimo a una cuenta que ya existía) y C.
+✅ Diseño aprobado, Fases A y B en código. Falta aplicar la migración y desplegar
+`sumar-anonimo`, y probar el ida y vuelta con un proveedor en el deploy de prueba. Queda la
+Fase C (limpieza de anónimos viejos, bots, página pública).

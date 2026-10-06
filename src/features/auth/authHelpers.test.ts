@@ -8,10 +8,12 @@ const auth = vi.hoisted(() => ({
   signInWithOAuth: vi.fn(),
 }));
 
-vi.mock("@/lib/supabase", () => ({ default: { auth } }));
+const funciones = vi.hoisted(() => ({ invoke: vi.fn() }));
+
+vi.mock("@/lib/supabase", () => ({ default: { auth, functions: funciones } }));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
-function conSesion(sesion: { user: { id: string; is_anonymous: boolean } } | null) {
+function conSesion(sesion: { access_token?: string; user: { id: string; is_anonymous: boolean } } | null) {
   auth.getSession.mockResolvedValue({ data: { session: sesion } });
 }
 
@@ -22,6 +24,7 @@ beforeEach(() => {
   auth.signInAnonymously.mockResolvedValue({ data: { user: { id: "anon-1" } }, error: null });
   auth.linkIdentity.mockResolvedValue({ error: null });
   auth.signInWithOAuth.mockResolvedValue({ error: null });
+  funciones.invoke.mockResolvedValue({ error: null });
   window.history.replaceState(null, "", "/");
 });
 
@@ -62,8 +65,8 @@ describe("entrar con un proveedor", () => {
     expect(auth.signInWithOAuth).toHaveBeenCalledOnce();
   });
 
-  it("si la cuenta ya existía, entra a ella y vuelve a donde estaba", async () => {
-    conSesion({ user: { id: "anon-1", is_anonymous: true } });
+  it("si la cuenta ya existía, entra a ella y le suma lo del anónimo una sola vez", async () => {
+    conSesion({ access_token: "token-anon", user: { id: "anon-1", is_anonymous: true } });
     await entrarCon("google", "/dashboard");
 
     window.history.replaceState(null, "", "/?error_code=identity_already_exists");
@@ -71,7 +74,30 @@ describe("entrar con un proveedor", () => {
     await vi.waitFor(() => expect(auth.signInWithOAuth).toHaveBeenCalledOnce());
     expect(window.location.search).toBe("");
 
-    expect(cerrarEntradaPendiente()).toBe("/dashboard");
-    expect(cerrarEntradaPendiente()).toBeNull();
+    // Supabase avisa dos veces de la sesión: se suma una sola vez
+    const [primero, segundo] = await Promise.all([cerrarEntradaPendiente(), cerrarEntradaPendiente()]);
+    expect(primero).toEqual({ volverA: "/dashboard", sumado: true });
+    expect(segundo).toBeNull();
+    expect(funciones.invoke).toHaveBeenCalledExactlyOnceWith("sumar-anonimo", {
+      body: { token_anonimo: "token-anon" },
+    });
+  });
+
+  it("si sumar falla, igual entra y vuelve", async () => {
+    conSesion({ access_token: "token-anon", user: { id: "anon-1", is_anonymous: true } });
+    await entrarCon("github", "/");
+    window.history.replaceState(null, "", "/#error_code=identity_already_exists");
+    resolverRegresoOAuth();
+    await vi.waitFor(() => expect(auth.signInWithOAuth).toHaveBeenCalledOnce());
+
+    funciones.invoke.mockResolvedValue({ error: new Error("410") });
+    await expect(cerrarEntradaPendiente()).resolves.toEqual({ volverA: "/", sumado: false });
+  });
+
+  it("vincular o entrar con cuenta nueva no llama a sumar", async () => {
+    conSesion({ user: { id: "anon-1", is_anonymous: true } });
+    await entrarCon("discord", "/room/x");
+    await expect(cerrarEntradaPendiente()).resolves.toEqual({ volverA: "/room/x", sumado: false });
+    expect(funciones.invoke).not.toHaveBeenCalled();
   });
 });

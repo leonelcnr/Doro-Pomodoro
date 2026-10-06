@@ -53,8 +53,10 @@ interface EntradaPendiente {
   proveedor: Proveedor;
   // El anónimo vincula el proveedor (conserva su id y sus datos)
   vinculando: boolean;
-  // La cuenta ya existía y se entró a ella: lo del anónimo no se sumó (Fase B)
+  // La cuenta ya existía y se entró a ella: lo del anónimo se suma al volver
   cuentaExistente: boolean;
+  // Token del anónimo, para que `sumar-anonimo` compruebe que era suyo
+  tokenAnonimo?: string;
   volverA: string;
 }
 
@@ -127,12 +129,20 @@ export function resolverRegresoOAuth(): void {
   sessionStorage.removeItem(CLAVE_ENTRADA);
 
   if (codigoError === "identity_already_exists" && entrada?.vinculando) {
-    void irAlProveedor({ ...entrada, vinculando: false, cuentaExistente: true }).catch(
-      (error: unknown) => {
-        console.error(error);
-        toast.error("No se pudo entrar a tu cuenta.");
-      }
-    );
+    void (async () => {
+      // La sesión local sigue siendo la del anónimo: guardamos su token para
+      // sumar lo que hizo cuando vuelva ya dentro de la cuenta
+      const { data: { session: sesion } } = await supabase.auth.getSession();
+      await irAlProveedor({
+        ...entrada,
+        vinculando: false,
+        cuentaExistente: true,
+        ...(sesion?.user.is_anonymous ? { tokenAnonimo: sesion.access_token } : {}),
+      });
+    })().catch((error: unknown) => {
+      console.error(error);
+      toast.error("No se pudo entrar a tu cuenta.");
+    });
     return;
   }
 
@@ -148,11 +158,21 @@ export function resolverRegresoOAuth(): void {
   }
 }
 
+export interface EntradaCerrada {
+  volverA: string;
+  // Se sumó lo del anónimo: hay que recargar los datos de la cuenta
+  sumado: boolean;
+}
+
 /**
- * Cuando la sesión ya es de una cuenta y había una entrada pendiente: avisa cómo
- * salió y devuelve a dónde volver (o null si no había nada pendiente).
+ * Cuando la sesión ya es de una cuenta y había una entrada pendiente: si la cuenta
+ * ya existía, le suma lo que hizo el anónimo (edge function `sumar-anonimo`), avisa
+ * cómo salió y devuelve a dónde volver. Null si no había nada pendiente.
+ *
+ * Lee y borra lo pendiente antes del primer `await`: aunque Supabase avise dos
+ * veces de la sesión, se suma una sola vez.
  */
-export function cerrarEntradaPendiente(): string | null {
+export async function cerrarEntradaPendiente(): Promise<EntradaCerrada | null> {
   const entrada = leerEntradaPendiente();
   if (!entrada) return null;
   sessionStorage.removeItem(CLAVE_ENTRADA);
@@ -160,14 +180,27 @@ export function cerrarEntradaPendiente(): string | null {
   const nombre = NOMBRES_PROVEEDOR[entrada.proveedor];
   if (entrada.vinculando) {
     toast.success(`Listo: lo que hiciste quedó en tu cuenta de ${nombre}`);
-  } else if (entrada.cuentaExistente) {
-    toast.success(`Entraste a tu cuenta de ${nombre}`, {
-      description: "Lo que hiciste sin cuenta no se sumó: esa cuenta ya existía.",
-    });
-  } else {
-    toast.success(`Entraste con ${nombre}`);
+    return { volverA: entrada.volverA, sumado: false };
   }
-  return entrada.volverA;
+  if (!entrada.cuentaExistente) {
+    toast.success(`Entraste con ${nombre}`);
+    return { volverA: entrada.volverA, sumado: false };
+  }
+
+  if (entrada.tokenAnonimo) {
+    const { error } = await supabase.functions.invoke("sumar-anonimo", {
+      body: { token_anonimo: entrada.tokenAnonimo },
+    });
+    if (!error) {
+      toast.success(`Listo: lo que hiciste se sumó a tu cuenta de ${nombre}`);
+      return { volverA: entrada.volverA, sumado: true };
+    }
+    console.error("No se pudo sumar lo del anónimo:", error);
+  }
+  toast.success(`Entraste a tu cuenta de ${nombre}`, {
+    description: "No se pudo sumar lo que hiciste sin cuenta.",
+  });
+  return { volverA: entrada.volverA, sumado: false };
 }
 
 /**
