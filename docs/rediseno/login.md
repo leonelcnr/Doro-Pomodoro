@@ -176,8 +176,31 @@ Quien usó Doro sin cuenta y entra a una cuenta que ya existía ya no pierde lo 
 Para producción (lo corre Leo):
 `pnpm dlx supabase db push --linked` y `pnpm dlx supabase functions deploy sumar-anonimo`.
 
+## Fase C hecha (2026-10-06)
+
+- **Limpieza de anónimos.** La migración `20261006130000` crea
+  `borrar_anonimos_inactivos(dias)` y la programa con pg_cron todos los días a las 04:30 UTC
+  con 30 días. Un anónimo está inactivo si se creó hace más de 30 días y ninguna de sus
+  sesiones se renovó en ese tiempo. Si hostea una sala con otros miembros, antes el host
+  pasa al que entró primero (borrar al host borraría la sala). Probada en local: borra los
+  que corresponde, conserva al que volvió, al nuevo y a las cuentas, y no se puede llamar
+  desde el cliente.
+  En producción, al 2026-10-06: 36 anónimos, 31 inactivos. De esos, 6 tienen una tarea
+  cada uno, 3 tienen sesiones de estudio y hostean 18 salas (3 con otros miembros, que
+  pasan a ellos). Se borran en la primera corrida del cron, no al aplicar la migración.
+- **Bots.** Lo grueso ya lo resuelve la Fase A: el anónimo nace con lo primero que se
+  guarda, y un crawler no termina pomodoros ni crea tareas. Supabase limita los inicios
+  anónimos a 30 por hora por IP. Turnstile queda para si aparecen anónimos en masa: pide
+  una cuenta de Cloudflare y activar el captcha en Supabase.
+- **SEO.** `index.html` con título y descripción, canonical, Open Graph (imagen
+  `Home.png`), datos estructurados `WebApplication` y un `<noscript>` con el texto.
+  `public/robots.txt` deja afuera `/room/` y `/invitacion/` y apunta a
+  `public/sitemap.xml`. Google ejecuta el JS, así que con el home abierto sin cuenta ya
+  indexa la app de verdad. Una página pública aparte (landing) es diseño: va con boceto.
+
+Para producción (lo corre Leo): `pnpm dlx supabase db push --linked`.
+
 ## Dónde retomamos
 
-✅ Diseño aprobado, Fases A y B en código. Falta aplicar la migración y desplegar
-`sumar-anonimo`, y probar el ida y vuelta con un proveedor en el deploy de prueba. Queda la
-Fase C (limpieza de anónimos viejos, bots, página pública).
+✅ Diseño aprobado, Fases A, B y C en código. Falta aplicar las migraciones, desplegar
+`sumar-anonimo` y probar el ida y vuelta con un proveedor en el deploy de prueba.
