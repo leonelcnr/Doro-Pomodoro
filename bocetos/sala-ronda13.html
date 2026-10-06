@@ -1009,6 +1009,9 @@ span.tt-tit { cursor: default; }
 @container app (min-width: 900px) { .app.ancha .bandeja { width: min(calc(100% - 200px), 720px); } }
 @container app (min-width: 1140px) { .app.ancha .bandeja { width: min(calc(100% - 540px), 720px); } }
 .app.postit.ancha .gemela { --ancho-postits: max(300px, min(380px, calc(50cqi - 392px))); }
+@container app (min-width: 1160px) and (max-width: 1383px) {
+  .app.ancha.gem-ancha .gemela.abierta { left: max(12px, calc(50% - 280px)); right: auto; }
+}
 
 /* ═════ 11ª ronda: los temas al costado, solo íconos ═════ */
 .tt-dos { display: flex; flex-direction: column; gap: 10px; }
@@ -1017,6 +1020,9 @@ span.tt-tit { cursor: default; }
   .app.ancha .tt-dos { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; align-items: start; }
   .app.ancha .tt-dos > .tt-riel { flex-direction: column; gap: 2px; overflow: visible; margin: 0; padding: 6px 0 0; top: 45px; box-shadow: none; }
   .app.ancha .tt-riel-b .linea-av { right: auto; width: 22px; }
+
+}
+
 }
 
 /* T19 · plegado: una sola línea con lo que sigue */
@@ -1055,19 +1061,6 @@ span.tt-tit { cursor: default; }
 .tt-cab .tt-mas + .tt-mas { margin-left: 2px; }
 .tt-temas-cab { padding-top: 6px; animation: tt-abre .25s var(--salida); }
 
-/* T27 · el tema es un menú con nombres */
-.tt-cab-envoltura { position: relative; }
-.tt-cab-menu { display: inline-flex; align-items: center; gap: 8px; min-width: 0; border: 0; background: none; padding: 4px 8px; margin: -4px 0 -4px -8px; border-radius: 8px; font: inherit; color: inherit; }
-.tt-cab-menu:hover, .tt-cab-menu[aria-expanded="true"] { background: var(--campo); }
-.tt-cab-menu span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tt-cab-menu svg:last-child { width: 13px; height: 13px; color: var(--tenue); transform: rotate(180deg); transition: transform .25s var(--salida); }
-.tt-cab-menu[aria-expanded="true"] svg:last-child { transform: none; }
-.tt-cab-envoltura .tt-menu { top: 40px; left: -8px; }
-/* T28 · un tramo por vez */
-.tt-pestanas-cuando { margin-top: 10px; align-self: flex-start; }
-.tt-pestanas-cuando button { display: inline-flex; align-items: baseline; gap: 6px; }
-.tt-pestanas-cuando small { font-size: 11.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-
 /* Fecha en «Crear» */
 .tt-alta-dia { flex-shrink: 0; border: 0; border-radius: 6px; background: var(--campo); padding: 4px 8px; font-size: 12.5px; color: var(--fg); outline: none; color-scheme: light dark; }
 
@@ -1098,21 +1091,15 @@ span.tt-tit { cursor: default; }
 .a-tema:hover { background: var(--superficie); color: var(--fg); }
 .nota:is(:hover, :focus-within) .a-tema { opacity: 1; }
 :root[data-tactil] .a-tema { opacity: .7; }
-.gemela.eligiendo :is(.notas-lista, .alta, .notas-aviso, .notas-cab) { display: none !important; }
-.notas-elegir:empty { display: none; }
-.notas-elegir { display: flex; flex-direction: column; gap: 10px; animation: tt-abre .25s var(--salida); }
-.ne-cab { display: flex; align-items: center; gap: 6px; margin-left: -6px; font-size: 13.5px; color: var(--tenue); }
-.ne-cab span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ne-grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-.ne-grilla button { display: flex; align-items: center; gap: 10px; min-width: 0; height: 40px; padding: 0 10px; border: 1px solid transparent; background: var(--campo); border-radius: 9px; font-size: 13.5px; text-align: left; color: var(--fg); }
-.ne-grilla button:hover { border-color: var(--linea); }
-.ne-grilla button[aria-pressed="true"] { border-color: var(--tenue); }
-.ne-grilla button svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--tenue); }
-.ne-grilla button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ne-grilla .ne-sin { background: none; color: var(--tenue); }
+.nota-temas { position: absolute; inset: 0; z-index: 2; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px; padding: 8px; border-radius: inherit; background: var(--superficie); outline: 1px solid var(--linea); animation: caja .25s var(--salida); }
+.nota-temas button { width: 30px; height: 30px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; }
+.nota-temas button:hover { background: var(--campo); color: var(--fg); }
+.nota-temas svg { width: 17px; height: 17px; }
+.nota-temas button[aria-pressed="true"] { background: var(--campo); color: var(--fg); }
 .nota-tema { display: inline-grid; vertical-align: -2px; margin-right: 5px; color: var(--tenue); }
 .nota-tema svg { width: 12px; height: 12px; }
 .tt-nota-t .t { color: var(--tenue); white-space: normal; }
+.nota-temas small { width: 100%; text-align: center; font-size: 11px; color: var(--tenue); margin-bottom: 2px; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1165,7 +1152,7 @@ span.tt-tit { cursor: default; }
 <div class="pagina">
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
-    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, «Crear» ocupando la bandeja (T17), plegada como T19, por cuándo como T21 y los temas detrás de un botón como T24. Las notas son las mismas en todas las salas, sin tope, y se pueden poner en un tema sin dejar de ser notas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda13.html</code>.</p>
+    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, «Crear» ocupando la bandeja (T17), plegada como T19 y por cuándo como T21. Las notas son las mismas en todas las salas, sin tope, y se pueden poner en un tema sin dejar de ser notas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda12.html</code>.</p>
     <p>El reloj corre de verdad: dale play, abrí las tareas, marcá puntos en la regla, escribí una nota y recargá la página: sigue ahí. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
@@ -1234,66 +1221,51 @@ span.tt-tit { cursor: default; }
     </div>
   </div>
 
-  <header class="ronda" id="ronda-14">
-    <h2>14ª ronda: T24, con variantes</h2>
-    <p>Las cuatro son T24: plegada muestra el foco y «Sigue»; desplegada, la lista por cuándo con renglones de solo título y los temas detrás de un botón. <b>El + ahora lleva directo a «Crear»</b>, que por defecto crea una tarea y te deja cambiar de tipo, y queda al lado de «Sigue», como correspondía. Cambia cómo se elige el tema y cómo se reparten los tramos.</p>
-    <p><b>Notas, arregladas:</b> elegir un tema ya no plegaba la bandeja de notas. Elegir el tema ahora ocupa la bandeja de notas: dos columnas con ícono y nombre, que entran aunque haya nueve temas. Volvés con la flecha o con Esc.</p>
+  <header class="ronda" id="ronda-13">
+    <h2>13ª ronda: plegada como T19, desplegada más liviana</h2>
+    <p>Las tres arrancan plegadas, como T19: el foco y una línea con lo que sigue. Desplegadas usan los tramos de T21 (Atrasado, Hoy, Mañana…), pero <b>sin la rayita debajo de cada renglón ni el tilde</b>: queda solo el título. Los temas son botones, sin el despliegue al pasar. Cambia cuánto se ve al desplegar.</p>
+    <p><b>Marcar una tarea, desde el foco:</b> tocás una tarea y pasa al foco con «Marcar como hecha». Si estabas en otra cosa (un práctico, un parcial), al marcarla o soltarla el foco vuelve a eso. <b>Notas:</b> pasarlas a un tema ya no las convierte en tarea. Siguen siendo notas, el post-it muestra el ícono del tema y la nota aparece al final de ese tema en la bandeja.</p>
   </header>
 
-  <section class="opcion" id="t25" data-v="t25">
+  <section class="opcion" id="t22" data-v="t22">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T25</span><span class="nombre">T24, corregida</span></h2>
-        <p class="resumen">La que elegiste, con el + al lado de «Sigue» y abriendo «Crear». El ícono del encabezado muestra la fila de temas.</p>
+        <h2><span class="letra">T22</span><span class="nombre">Todo desplegado</span></h2>
+        <p class="resumen">Al desplegar se ven los temas en la columna y todos los tramos abiertos, con los renglones de solo título.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Lo mínimo: un encabezado y los títulos.</li><li>Crear cualquier cosa es un solo botón.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Desplegada muestra todos los tramos abiertos.</li><li>Los temas se reconocen solo por ícono.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Todo a la vista en un solo toque.</li><li>Sin rayitas ni tildes, cada renglón es una sola cosa.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Desplegada sigue siendo larga.</li><li>La columna de 7 íconos siempre está.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t26" data-v="t26">
+  <section class="opcion" id="t23" data-v="t23">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T26</span><span class="nombre">Con los tramos de T23</span><span class="recomendada">Recomendada</span></h2>
-        <p class="resumen">T25, pero Esta semana, Más adelante y Sin fecha arrancan plegados, con su cantidad. Cada título se abre o se cierra al tocarlo.</p>
+        <h2><span class="letra">T23</span><span class="nombre">Solo lo cercano abierto</span><span class="recomendada">Recomendada</span></h2>
+        <p class="resumen">Al desplegar, solo Atrasado, Hoy y Mañana muestran sus renglones. Esta semana, Más adelante y Sin fecha quedan como un título con su cantidad, y se abren al tocarlos.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Desplegada sigue siendo corta: lo cercano y lo demás contado.</li><li>Tres niveles de detalle: plegada, cercano y todo.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un toque más para ver lo de la semana.</li><li>Si hoy y mañana están vacíos, se ven solo títulos.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Desplegada muestra tres o cuatro renglones, no catorce.</li><li>Lo lejano no desaparece: está a un toque y dice cuánto hay.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Si hoy y mañana están vacíos, se ven solo títulos.</li><li>Recuerda qué tramo abriste solo mientras dura la sesión.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t27" data-v="t27">
+  <section class="opcion" id="t24" data-v="t24">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T27</span><span class="nombre">El tema como menú</span></h2>
-        <p class="resumen">El encabezado es el nombre del tema con una flecha. Al tocarlo se abre un menú con todos los temas, con ícono, nombre y cuántas cosas pendientes tiene cada uno.</p>
+        <h2><span class="letra">T24</span><span class="nombre">Sin columna</span></h2>
+        <p class="resumen">Desplegada no tiene columna de temas. El ícono del encabezado muestra el tema actual y, al tocarlo, aparece una fila de íconos para elegir otro, que se cierra al elegir. La lista ocupa todo el ancho.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Los temas se leen por nombre y con cuánto les queda.</li><li>Entra cualquier cantidad de temas.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El menú tapa la lista mientras elegís.</li><li>Ocupa más que la fila de íconos.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="t28" data-v="t28">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">T28</span><span class="nombre">Un tramo por vez</span></h2>
-        <p class="resumen">Debajo del encabezado, tres botones: Pronto (atrasado, hoy y mañana), Esta semana y Después, cada uno con su cantidad. La lista muestra solo uno.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La lista nunca es larga.</li><li>Elegís el horizonte de un toque, como el tema.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>No se ve lo de la semana sin cambiar de botón.</li><li>Suma una fila más en el encabezado.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Lo mínimo: un encabezado y los títulos.</li><li>En el celular queda igual que en la compu.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Cambiar de tema lleva dos toques.</li><li>Los demás temas no se ven de un vistazo.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1301,37 +1273,36 @@ span.tt-tit { cursor: default; }
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>14ª ronda · comparación</h2>
+    <h2>13ª ronda · comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Elegir tema</th><th>Desplegada se ve</th><th>Para ver lo lejano</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Al desplegar se ve</th><th>Cambiar de tema</th><th>Renglones a la vista (ejemplo)</th></tr></thead>
         <tbody>
-          <tr><td>T25 · T24 corregida</td><td>Fila de íconos</td><td>Todos los tramos</td><td>Bajar</td></tr>
-          <tr class="elegida"><td>T26 · Con los tramos de T23</td><td>Fila de íconos</td><td>Lo cercano y lo demás contado</td><td>Tocar el título del tramo</td></tr>
-          <tr><td>T27 · El tema como menú</td><td>Menú con nombres</td><td>Todos los tramos</td><td>Bajar</td></tr>
-          <tr><td>T28 · Un tramo por vez</td><td>Fila de íconos</td><td>Un solo tramo</td><td>Cambiar de botón</td></tr>
+          <tr><td>T22 · Todo desplegado</td><td>Columna y todos los tramos</td><td>1 toque</td><td>14</td></tr>
+          <tr class="elegida"><td>T23 · Solo lo cercano abierto</td><td>Columna; Atrasado, Hoy y Mañana abiertos</td><td>1 toque</td><td>2, más tres títulos con su cantidad</td></tr>
+          <tr><td>T24 · Sin columna</td><td>Encabezado y todos los tramos</td><td>2 toques</td><td>14</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo T26 · T24 con los tramos de T23</h3>
-        <p><b>Cada nivel suma poco:</b> plegada ves una cosa; desplegada, lo de hoy y mañana con lo demás contado; y lo lejano, si lo pedís.</p>
-        <p><b>El menú de T27 combina con cualquiera</b> si los íconos solos no te alcanzan: cambia solo el encabezado.</p>
-        <p><b>T28 corta más</b>, pero obliga a cambiar de botón para comparar hoy con la semana. Los tramos plegables de T26 dejan ver las dos cosas a la vez.</p>
-        <h4>El + y «Crear»</h4>
-        <p>Al ir directo a «Crear», sumar una tarea pasa a ser + · título · Enter. Son los mismos pasos que antes y en el mismo lugar que un parcial. Con el título vacío, Enter no hace nada.</p>
+        <h3>Recomiendo T23 · Solo lo cercano abierto</h3>
+        <p><b>Es T19 aplicado a la lista:</b> plegada muestra lo que sigue, y desplegada muestra lo cercano. Lo lejano queda como título con su cantidad. Así cada nivel suma poco.</p>
+        <p><b>Se puede combinar con T24</b> si querés quitar también la columna. Lo dejaría para después de probar T23, porque los temas siempre a la vista fueron algo que elegiste.</p>
+        <h4>Sacar el tilde de la lista</h4>
+        <p><b>No veo un problema grave</b>, con una condición: tocar una tarea no te puede hacer perder lo que estabas haciendo. Por eso, en el boceto, una tarea tocada entra al foco por un rato y, al marcarla o soltarla, vuelve el práctico o parcial que tenías. El costo es un toque más para tildar algo suelto (tocar y después «Marcar como hecha»). A cambio, se marca siempre en el mismo lugar y la lista queda limpia.</p>
+        <p><b>Lo que sí pierde:</b> marcar varias tareas seguidas, una tras otra. Si pasa seguido, se puede sumar después un gesto (deslizar el renglón) sin volver a mostrar el tilde.</p>
       </div>
-      <pre><span class="c-com">// src/features/room/components/BandejaTareas.tsx</span>
-{plegada
-  ? &lt;LineaSigue item={siguiente} cantidad={pendientes.length}
-      alDesplegar={desplegar} alCrear={abrirCrear} /&gt;
-  : &lt;&gt;
-      &lt;Encabezado tema={tema} alElegirTema={setTema} alCrear={abrirCrear} alPlegar={plegar} /&gt;
-      &lt;ListaPorCuando items={pendientes}
-        abiertosAlEmpezar={["Atrasado", "Hoy", "Mañana"]} /&gt;
-    &lt;/&gt;}
-{creando &amp;&amp; &lt;PanelCrear tipoInicial="tarea" tema={tema} alVolver={cerrarCrear} /&gt;}</pre>
+      <pre><span class="c-com">// src/features/room/hooks/useFocoSala.ts</span>
+<span class="c-com">// una tarea suelta entra al foco sin perder lo que tenías</span>
+const enfocar = (item: Item) =&gt; {
+  if (item.tipo === "tarea" &amp;&amp; foco &amp;&amp; foco.tipo !== "tarea") setPrevio(foco);
+  setFoco(item);
+};
+const alTerminar = () =&gt; { setFoco(previo?.pendiente ? previo : null); setPrevio(null); };
+
+<span class="c-com">// las notas no cambian de tipo: solo ganan un tema</span>
+type Nota = { id: string; texto: string; hora: string; fase: string; tema?: string };</pre>
     </div>
   </section>
 </div>
@@ -1561,7 +1532,6 @@ span.tt-tit { cursor: default; }
       <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button></div>
       <label class="alta"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo y Enter" aria-label="Nueva nota"></label>
       <ul class="notas-lista" data-notas-lista></ul>
-      <div class="notas-elegir" data-notas-elegir></div>
       <p class="notas-aviso">Quedan guardadas en este navegador.</p>
     </div>`;
 
@@ -1696,7 +1666,7 @@ span.tt-tit { cursor: default; }
     }));
 
     /* ── Tareas: el sistema de la pantalla Tareas, adentro de la bandeja ── */
-    const st = { amb: "mias", abierto: null, tema: 0, tipo: null, menu: false, filtro: "todo", temaF: null, q: "", altaEn: null, altaTxt: "", verTodo: false, focoPrevio: null, tramos: {}, verTemas: false, cuando: 0, crear: null, foco: null, noVistas: 0, ajena: 0, llega: null };
+    const st = { amb: "mias", abierto: null, tema: 0, tipo: null, menu: false, filtro: "todo", temaF: null, q: "", altaEn: null, altaTxt: "", verTodo: false, focoPrevio: null, tramos: {}, verTemas: false, crear: null, foco: null, noVistas: 0, ajena: 0, llega: null };
     let temas, sala;
     const buscar = k => listar(temas).find(it => it.k === k);
     const tipoPorDefecto = mi => { const l = listar(temas).filter(it => it.mi === mi); return (ordenar(l.filter(pendiente))[0] || l[0])?.t ?? "t"; };
@@ -1707,7 +1677,7 @@ span.tt-tit { cursor: default; }
       st.tema = prox ? prox.mi : 0;
       st.tipo = tipoPorDefecto(st.tema);
       st.foco = ordenar(l.filter(it => it.t === "pr" && pendiente(it)))[0]?.k ?? null;
-      st.abierto = null; st.menu = false; st.filtro = "todo"; st.temaF = null; st.q = ""; st.altaEn = null; st.altaTxt = ""; st.verTodo = false; st.focoPrevio = null; st.tramos = {}; st.verTemas = false; st.cuando = 0; st.crear = null;
+      st.abierto = null; st.menu = false; st.filtro = "todo"; st.temaF = null; st.q = ""; st.altaEn = null; st.altaTxt = ""; st.verTodo = false; st.focoPrevio = null; st.tramos = {}; st.verTemas = false; st.crear = null;
     };
 
     /* Décima ronda: todas son T9 (el foco arriba y lo demás por tema). Cambia dónde se suma y cuánto texto lleva cada renglón */
@@ -1751,13 +1721,13 @@ span.tt-tit { cursor: default; }
       </div></li>`;
     };
     const TRAMOS = [["Atrasado", d => d != null && d < 0], ["Hoy", d => d === 0], ["Mañana", d => d === 1], ["Esta semana", d => d >= 2 && d < 7], ["Más adelante", d => d >= 7], ["Sin fecha", d => d == null]];
-    /* T26 · los tramos lejanos quedan plegados, con su cantidad (los de T23) */
+    /* T23 · los tramos lejanos quedan plegados, con su cantidad */
     const CERCA = ["Atrasado", "Hoy", "Mañana"];
-    const abiertoTramo = n => v !== "t26" || (st.tramos[n] ?? CERCA.includes(n));
+    const abiertoTramo = n => v !== "t23" || (st.tramos[n] ?? CERCA.includes(n));
     const porCuando = x => TRAMOS.map(([n, f]) => {
       const z = x.filter(it => f(it.o.dia)); if (!z.length) return "";
       const ab = abiertoTramo(n);
-      const cab = v === "t26"
+      const cab = v === "t23"
         ? `<li class="tt-tramo tt-tramo-b${n === "Atrasado" ? " atrasado" : ""}" role="presentation"><button type="button" data-tramo="${n}" aria-expanded="${ab}">${n}${ab ? "" : `<small>${z.length}</small>`}${ic("i-arriba")}</button></li>`
         : `<li class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}" role="presentation">${n}</li>`;
       return cab + (ab ? z.map(filaLimpia).join("") : "");
@@ -1801,37 +1771,26 @@ span.tt-tit { cursor: default; }
       </div>`;
     };
 
-    /* 14ª ronda · todas son T24: plegada, el foco y «Sigue»; desplegada, la lista por cuándo y los temas detrás de un botón.
-       T26 suma los tramos plegables de T23; T27 elige el tema con un menú con nombres; T28 muestra un tramo por vez */
-    const PESTANAS = [["Pronto", ["Atrasado", "Hoy", "Mañana"]], ["Esta semana", ["Esta semana"]], ["Después", ["Más adelante", "Sin fecha"]]];
-    const VISTAS_T24 = () => {
+    /* Lo que muestra «Mías»: plegado, el foco y una línea con lo que sigue (T19). Desplegado, la lista por cuándo.
+       T22 y T23 con los temas al costado; T24 sin columna: un botón en el encabezado muestra los temas */
+    const VISTAS_RIEL = () => {
       const l = listar(temas), m = st.temaF != null ? temas[st.temaF] : null, y = m ? l.filter(it => it.mi === st.temaF) : l;
       const resto = restoDe(y);
-      const mas = `<button type="button" class="tt-mas" data-crear-abrir aria-label="Crear${m ? " en " + esc(m.nombre) : ""}" title="Crear">${ic("i-mas")}</button>`;
-      if (!st.verTodo) {
+      if (!st.verTodo && st.altaEn !== "g") {
         const sig = resto[0];
-        return focoHTML() + `<div class="tt-plegado"><button type="button" class="tt-ver-todo" data-ver-todo aria-expanded="false">${sig ? `<span class="tenue">Sigue</span><span class="t">${esc(sig.o.titulo)}</span>` : `<span class="tenue">No sigue nada</span>`}<small>${resto.length}</small>${ic("i-arriba")}</button>${mas}</div>`;
+        return focoHTML() + `<div class="tt-plegado"><button type="button" class="tt-ver-todo" data-ver-todo aria-expanded="false">${sig ? `<span class="tenue">Sigue</span><span class="t">${esc(sig.o.titulo)}</span>` : `<span class="tenue">No sigue nada</span>`}<small>${resto.length}</small>${ic("i-arriba")}</button>${masBtn("g")}</div>`;
       }
-      const opciones = [[null, "Todos los temas", "t-todo", l], ...temas.map((t, i) => [i, t.nombre, t.icono, l.filter(it => it.mi === i)])];
-      const plegar = `<button type="button" class="tt-mas tt-plegar" data-ver-todo aria-expanded="true" aria-label="Plegar" title="Plegar">${ic("i-arriba")}</button>`;
-      let cab, debajo = "";
-      if (v === "t27") {
-        cab = `<div class="tt-cab-envoltura"><h4 class="tt-cab"><button type="button" class="tt-cab-menu" data-ver-temas aria-expanded="${st.verTemas}">${ic(m ? m.icono : "t-todo")}<span>${m ? esc(m.nombre) : "Todos los temas"}</span>${ic("i-arriba")}</button>${mas}${plegar}</h4>
-          ${st.verTemas ? `<ul class="tt-menu">${opciones.map(([i, n, icono, z]) => `<li><button type="button" data-tema-f="${i ?? ""}" aria-current="${st.temaF === i}">${ic(icono)}${esc(n)}<small>${restoDe(z).length}</small></button></li>`).join("")}</ul>` : ""}</div>`;
-      } else {
-        cab = `<h4 class="tt-cab"><button type="button" class="tt-mas tt-filtro-tema" data-ver-temas aria-expanded="${st.verTemas}" aria-label="Elegir tema" title="Elegir tema">${ic(m ? m.icono : "t-todo")}</button><span>${m ? esc(m.nombre) : "Lo que sigue"}</span>${mas}${plegar}</h4>`;
-        if (st.verTemas) debajo = `<div class="tt-temas tt-temas-cab" role="group" aria-label="Filtrar por tema">${opciones.map(([i, n, icono]) => `<button type="button" class="tt-tema-ic" data-tema-f="${i ?? ""}" aria-pressed="${st.temaF === i}" aria-label="${esc(n)}" title="${esc(n)}">${ic(icono)}</button>`).join("")}</div>`;
-      }
-      let x = resto;
-      if (v === "t28") {
-        const cuenta = ([, tr]) => resto.filter(it => TRAMOS.some(([n, f]) => tr.includes(n) && f(it.o.dia))).length;
-        debajo += `<div class="segmentado tt-pestanas-cuando" role="group" aria-label="Cuándo">${PESTANAS.map((p, i) => `<button type="button" data-cuando="${i}" aria-pressed="${st.cuando === i}">${p[0]}<small>${cuenta(p)}</small></button>`).join("")}</div>`;
-        const tr = PESTANAS[st.cuando][1];
-        x = resto.filter(it => TRAMOS.some(([n, f]) => tr.includes(n) && f(it.o.dia)));
-      }
-      return focoHTML() + `<div>${cab}${debajo}<ul class="tt-lista">${renglones(x) || `<li class="vacio">${v === "t28" ? "Nada por acá." : "Este tema está al día."}</li>`}${notasTema(m)}</ul></div>`;
+      const botonTema = (i, n, icono) => `<button type="button" class="tt-tema-ic" data-tema-f="${i ?? ""}" aria-pressed="${st.temaF === i}" aria-label="${esc(n)}" title="${esc(n)}">${ic(icono)}</button>`;
+      const opciones = [[null, "Todos los temas", "t-todo"], ...temas.map((t, i) => [i, t.nombre, t.icono])];
+      const filtro = v === "t24" ? `<button type="button" class="tt-mas tt-filtro-tema" data-ver-temas aria-expanded="${st.verTemas}" aria-label="Elegir tema" title="Elegir tema">${ic(m ? m.icono : "t-todo")}</button>` : "";
+      const cab = `<h4 class="tt-cab">${v === "t24" ? "" : ic(m ? m.icono : "k-cal")}${filtro}<span>${m ? esc(m.nombre) : "Lo que sigue"}</span>${masBtn("g", m?.nombre)}<button type="button" class="tt-mas tt-plegar" data-ver-todo aria-expanded="true" aria-label="Plegar" title="Plegar">${ic("i-arriba")}</button></h4>`;
+      const temasFila = v === "t24" && st.verTemas ? `<div class="tt-temas tt-temas-cab" role="group" aria-label="Filtrar por tema">${opciones.map(o => botonTema(...o)).join("")}</div>` : "";
+      const cuerpoLista = `${cab}${temasFila}<ul class="tt-lista">${st.altaEn === "g" ? altaFila(st.temaF ?? temas.findIndex(t => t.general)) : ""}${renglones(resto) || (st.altaEn === "g" ? "" : `<li class="vacio">Este tema está al día.</li>`)}${notasTema(m)}</ul>`;
+      if (v === "t24") return focoHTML() + `<div>${cuerpoLista}</div>`;
+      const riel = `<div class="tt-riel" role="group" aria-label="Filtrar por tema">${opciones.map(o => botonTema(...o)).join("")}</div>`;
+      return focoHTML() + `<div class="tt-dos">${riel}<div class="tt-dos-lista">${cuerpoLista}</div></div>`;
     };
-    const VISTAS = { t25: VISTAS_T24, t26: VISTAS_T24, t27: VISTAS_T24, t28: VISTAS_T24 };
+    const VISTAS = { t22: VISTAS_RIEL, t23: VISTAS_RIEL, t24: VISTAS_RIEL };
 
     const cuerpo = $("[data-cuerpo]");
     const vistaSala = () => `<label class="alta"><svg><use href="#i-mas"/></svg><input data-alta-sala placeholder="Nueva tarea para la sala…" aria-label="Nueva tarea para la sala"></label>
@@ -1906,7 +1865,6 @@ span.tt-tit { cursor: default; }
         st.focoPrevio = nuevo.t === "t" && st.foco && buscar(st.foco)?.t !== "t" ? st.foco : st.focoPrevio && nuevo.t === "t" ? st.focoPrevio : null;
         st.foco = nuevo.k; st.q = ""; pintar(); cuerpo.scrollTo({ top: 0, behavior: "smooth" }); return; }
       if (el("[data-soltar]")) { const prev = st.focoPrevio && buscar(st.focoPrevio); st.foco = prev && pendiente(prev) ? prev.k : null; st.focoPrevio = null; return pintar(); }
-      if ((b = el("[data-cuando]"))) { st.cuando = +b.dataset.cuando; return pintar(); }
       if ((b = el("[data-tramo]"))) { st.tramos[b.dataset.tramo] = b.getAttribute("aria-expanded") !== "true"; return pintar(); }
       if (el("[data-ver-temas]")) { st.verTemas = !st.verTemas; return pintar(); }
       if (el("[data-tema-menu]")) { st.menu = !st.menu; return pintar(); }
@@ -1914,7 +1872,7 @@ span.tt-tit { cursor: default; }
       if ((b = el("[data-tipo]"))) { st.tipo = b.dataset.tipo; st.abierto = null; return pintar(); }
       if ((b = el("[data-filtro]"))) { st.filtro = v === "t8" && st.filtro === b.dataset.filtro ? "todo" : b.dataset.filtro; st.abierto = null; return pintar(); }
       if (el("[data-ver-todo]")) { st.verTodo = !st.verTodo; if (!st.verTodo) st.altaEn = null; return pintar(); }
-      if (el("[data-crear-abrir]")) { st.crear = { tipo: "t", titulo: "", mi: st.temaF ?? temas.findIndex(t => t.general), dia: "", n: 8 }; pintar("[data-crear-tit]"); cuerpo.scrollTop = 0; return; }
+      if (el("[data-crear-abrir]")) { st.crear = { tipo: "pr", titulo: st.altaTxt.trim(), mi: st.temaF ?? temas.findIndex(t => t.general), dia: "", n: 8 }; st.altaTxt = ""; pintar("[data-crear-tit]"); cuerpo.scrollTop = 0; return; }
       if (el("[data-crear-cerrar]")) { st.crear = null; st.altaEn = null; return pintar(); }
       if ((b = el("[data-crear-tipo]"))) { st.crear.tipo = b.dataset.crearTipo; st.crear.n = st.crear.tipo === "pr" ? 8 : 4; return pintar("[data-crear-tit]"); }
       if ((b = el("[data-crear-tema]"))) { st.crear.mi = +b.dataset.crearTema; return pintar(); }
@@ -1930,7 +1888,6 @@ span.tt-tit { cursor: default; }
       if ((b = el("[data-ir-tipo]"))) { st.tipo = b.dataset.irTipo; st.abierto = null; pintar(); cuerpo.scrollTop = 0; return; }
       if (el("[data-volver]")) { st.tipo = null; st.abierto = null; return pintar(); }
       if (st.menu && !el(".tt-menu")) { st.menu = false; pintar(); }
-      if (st.verTemas && v === "t27" && !el(".tt-menu, [data-ver-temas]")) { st.verTemas = false; pintar(); }
     });
     /* El campo se cierra solo si queda vacío y el foco se va a otra cosa */
     cuerpo.addEventListener("focusout", e => {
@@ -2012,13 +1969,9 @@ span.tt-tit { cursor: default; }
             <span class="nota-pie">${(m => m ? `<span class="nota-tema" title="${esc(m.nombre)}">${ic(m.icono)}</span>` : "")(temas.find(t => t.nombre === n.tema))}${esc(n.hora)} · ${esc(n.fase)}</span>
             <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
             <button type="button" class="a-tema" data-a-tema="${n.id}" aria-label="${n.tema ? "Cambiar de tema" : "Pasar a un tema"}: ${esc(n.texto)}" title="${n.tema ? "Cambiar de tema" : "Pasar a un tema"}">${ic("i-a-tema")}</button>
+            ${n.id === eligiendo ? `<div class="nota-temas" role="group" aria-label="¿A qué tema?"><small>¿A qué tema?</small>${temas.map((t, i) => `<button type="button" data-nota-tema="${n.id}:${i}" title="${esc(t.nombre)}" aria-label="${esc(t.nombre)}"${n.tema === t.nombre ? ' aria-pressed="true"' : ""}>${ic(t.icono)}</button>`).join("")}${n.tema ? `<button type="button" data-nota-tema="${n.id}:" title="Sin tema" aria-label="Sin tema">${ic("i-x")}</button>` : ""}</div>` : ""}
           </li>`).join("") : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Queda acá hasta que la descartes.</li>`;
         nueva = null;
-        /* Elegir tema: la bandeja de notas muestra los temas con su nombre, en dos columnas */
-        const ne = notas.find(n => n.id === eligiendo); if (!ne) eligiendo = null;
-        gemela.classList.toggle("eligiendo", !!ne);
-        $("[data-notas-elegir]").innerHTML = ne ? `<div class="ne-cab"><button type="button" class="tt-soltar" data-elegir-cerrar aria-label="Volver a las notas" title="Volver (Esc)">${ic("i-volver")}</button><span>${esc(ne.texto)}</span></div>
-          <div class="ne-grilla" role="group" aria-label="¿A qué tema?">${temas.map((t, i) => `<button type="button" data-nota-tema="${ne.id}:${i}" aria-pressed="${ne.tema === t.nombre}">${ic(t.icono)}<span>${esc(t.nombre)}</span></button>`).join("")}${ne.tema ? `<button type="button" data-nota-tema="${ne.id}:" class="ne-sin">${ic("i-x")}<span>Sin tema</span></button>` : ""}</div>` : "";
         $$("[data-notas-n]").forEach(x => x.textContent = notas.length || "");
         $$("[data-notas-borrar]").forEach(x => x.hidden = notas.length < 2);
       };
@@ -2033,17 +1986,17 @@ span.tt-tit { cursor: default; }
       gemela.addEventListener("click", e => {
         /* Pasar a un tema: sigue siendo nota (con el ícono del tema) y aparece al final de ese tema en la bandeja */
         const at = e.target.closest("[data-a-tema]");
-        if (at) { eligiendo = at.dataset.aTema; pintarNotas(); return $(".gemela [data-nota-tema]")?.focus({ preventScroll: true }); }
+        if (at) { eligiendo = eligiendo === at.dataset.aTema ? null : at.dataset.aTema; return pintarNotas(); }
         const nt = e.target.closest("[data-nota-tema]");
         if (nt) {
           const [id, i] = nt.dataset.notaTema.split(":");
           notas = cargar(); const n = notas.find(x => x.id === id);
           eligiendo = null;
           if (n) { n.tema = i === "" ? undefined : temas[+i].nombre; guardarNotas(); avisar(n.tema ? `La nota quedó en ${n.tema}` : "La nota quedó sin tema"); }
-          pintarNotas(); pintar(); $(".gemela [data-notas-alta]")?.focus({ preventScroll: true });
+          pintarNotas(); pintar();
           return;
         }
-        if (e.target.closest("[data-elegir-cerrar]")) { eligiendo = null; pintarNotas(); return enfocar(".gemela [data-notas-alta]"); }
+        if (eligiendo && !e.target.closest(".nota-temas")) { eligiendo = null; pintarNotas(); }
         const q = e.target.closest("[data-quitar]");
         if (q) {
           q.closest(".nota").classList.add("se-va");
@@ -2069,14 +2022,12 @@ span.tt-tit { cursor: default; }
       });
       /* Se pliega sola cuando el foco sale de la bandeja de notas */
       gemela.addEventListener("focusout", e => {
-        /* Solo si el foco pasa a otra cosa de afuera. Un clic en un post-it o un botón que se redibuja no la pliega */
-        if (e.relatedTarget && !gemela.contains(e.relatedTarget)) abrirGemela(false);
+        if (!gemela.contains(e.relatedTarget)) setTimeout(() => { if (!gemela.contains(document.activeElement)) abrirGemela(false); }, 150);
       });
-      app.addEventListener("pointerdown", e => { if (gemela.classList.contains("abierta") && !gemela.contains(e.target)) abrirGemela(false); });
       alAbrirTareas = () => { if (app.clientWidth < anchoCostado) abrirGemela(false); };
       s.abrirNotas = () => { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); };
       app.addEventListener("keydown", e => {
-        if (e.key === "Escape" && eligiendo) { e.stopPropagation(); eligiendo = null; pintarNotas(); return $(".gemela [data-notas-alta]")?.focus({ preventScroll: true }); }
+        if (e.key === "Escape" && eligiendo) { e.stopPropagation(); eligiendo = null; return pintarNotas(); }
         if (e.key === "Escape" && gemela.classList.contains("abierta")) { e.stopPropagation(); abrirGemela(false); return; }
         if (e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.stopPropagation(); s.abrirNotas(); }
       });

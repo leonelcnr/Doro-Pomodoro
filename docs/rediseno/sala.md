@@ -291,10 +291,39 @@ el foco que tenías (por eso vuelve el anterior). Lo que se pierde es marcar var
 seguidas; si pasa seguido, se puede sumar deslizar el renglón. La 12ª quedó en
 `bocetos/sala-ronda12.html`.
 
+### 14ª ronda (2026-10-06): T24, con variantes
+
+Leo eligió **T24**. Pidió:
+- arreglar el + plegado, que quedaba debajo de «Sigue»;
+- variantes de T24, al menos una con los tramos plegables de T23;
+- que el + lleve directo a «Crear»;
+- arreglar las notas, que se escondían, y el selector de temas, que con muchos temas
+  quedaba chico y se salía del borde.
+
+Arreglos:
+- **El + debajo de «Sigue»:** era una llave `}` de más en el CSS, que anulaba la regla
+  siguiente.
+- **Notas que se plegaban solas:** se cerraban cuando el foco se perdía al redibujar o al
+  tocar un post-it. Ahora se pliegan solo si el foco pasa a algo de afuera o con un clic
+  afuera. Con la bandeja ancha, también vuelven a abrir a la derecha.
+- **Selector de temas de las notas:** ocupa la bandeja de notas, en dos columnas con ícono
+  y nombre.
+- **El +:** abre «Crear» con tarea por defecto.
+
+Variantes:
+- **T25 · T24 corregida.**
+- **T26 · Con los tramos de T23 (recomendada):** Esta semana, Más adelante y Sin fecha
+  arrancan plegados con su cantidad.
+- **T27 · El tema como menú:** nombre del tema con flecha; menú con ícono, nombre y
+  pendientes.
+- **T28 · Un tramo por vez:** Pronto, Esta semana y Después como botones.
+
+La 13ª quedó en `bocetos/sala-ronda13.html`.
+
 ## Dónde retomamos
 
-13ª ronda publicada (T22–T24, recomendada T23), esperando la elección de Leo sobre cuánto
-se ve al desplegar. Lo demás de la bandeja está decidido (ver 13ª ronda). Notas: decididas (globales,
+14ª ronda publicada (T25–T28 sobre T24, recomendada T26), esperando la elección de Leo.
+Lo demás de la bandeja está decidido (ver rondas 13 y 14). Notas: decididas (globales,
 sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
 
 ## Propuestas transversales
