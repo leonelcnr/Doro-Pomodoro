@@ -320,10 +320,30 @@ Variantes:
 
 La 13ª quedó en `bocetos/sala-ronda13.html`.
 
+### 15ª ronda (2026-10-06): T27, pulida
+
+Leo eligió **el menú de temas de T27**. Los tramos plegables de T26 le resultaron toscos.
+A la lista de T27 le faltaban márgenes y protagonismo para los tramos (Hoy, Mañana…). Las
+pestañas de T28 le interesaron, pero estaban pegadas a lo de abajo.
+
+En las tres:
+- Los tramos pasan a ser títulos con peso: sin mayúsculas chicas, con el día en Hoy y
+  Mañana y la cantidad en los demás.
+- Los renglones son más altos.
+- Atrasado, si hay, va en acento.
+
+Variantes:
+- **T29 · Tramos como títulos (recomendada).**
+- **T30 · Con las pestañas de T28:** Pronto, Esta semana y Después, con aire arriba y
+  abajo.
+- **T31 · El tramo al costado:** columna de 104 px con el nombre; en angosto vuelve arriba.
+
+La 14ª quedó en `bocetos/sala-ronda14.html`.
+
 ## Dónde retomamos
 
-14ª ronda publicada (T25–T28 sobre T24, recomendada T26), esperando la elección de Leo.
-Lo demás de la bandeja está decidido (ver rondas 13 y 14). Notas: decididas (globales,
+15ª ronda publicada (T29–T31 sobre T27, recomendada T29), esperando la elección de Leo.
+Lo demás de la bandeja está decidido (ver rondas 13 a 15). Notas: decididas (globales,
 sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
 
 ## Propuestas transversales
