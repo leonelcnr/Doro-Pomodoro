@@ -1075,43 +1075,6 @@ span.tt-tit { cursor: default; }
   .tt-bloque-etq { flex-direction: row; align-items: baseline; gap: 8px; padding: 0 0 4px; }
 }
 
-/* 16ª ronda */
-.tt-ico-op { display: none; }
-:root[data-iconos="con"] .tt-ico-op { display: grid; }
-.tt-der { flex-shrink: 0; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; display: none; }
-/* T32 y T34 · el tramo en una franja: no se confunde con un renglón */
-.app:is(.v-t32, .v-t34) .tt-lista .tt-tramo { margin-top: 18px; padding: 8px 12px; border: 0; border-radius: 8px; background: var(--campo); font-size: 13px; }
-.app:is(.v-t32, .v-t34) .tt-lista .tt-tramo:first-child { margin-top: 6px; }
-.app:is(.v-t32, .v-t34) .tt-limpia { margin-left: 12px; }
-.app:is(.v-t32, .v-t34) .tt-limpia:has(+ .tt-tramo)::after, .app:is(.v-t32, .v-t34) .tt-limpia:last-child::after { display: none; }
-/* T33 y T35 · el tramo como título grande y sus renglones con sangría, colgando de una línea */
-.app:is(.v-t33, .v-t35) .tt-lista .tt-tramo { padding: 22px 0 6px; border: 0; font-size: 15.5px; letter-spacing: -0.01em; }
-.app:is(.v-t33, .v-t35) .tt-lista .tt-tramo:first-child { padding-top: 8px; }
-.app:is(.v-t33, .v-t35) .tt-limpia { margin-left: 3px; padding-left: 16px; border-left: 2px solid var(--linea); }
-.app:is(.v-t33, .v-t35) .tt-limpia::after { left: 16px; }
-.app:is(.v-t33, .v-t35) .tt-limpia:has(+ .tt-tramo)::after, .app:is(.v-t33, .v-t35) .tt-limpia:last-child::after { display: none; }
-/* T34 · pestañas subrayadas, como Mías / De la sala */
-.tt-cuando-sub { margin: 10px 0 4px; padding: 0 4px; gap: 18px; }
-/* T35 · el segmentado a todo el ancho, con aire adentro y afuera */
-.tt-pestanas-cuando.tt-cuando-ancho { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; margin: 16px 0 12px; padding: 4px; }
-.tt-cuando-ancho button { justify-content: center; padding: 8px 14px; }
-/* T36 y T37 · el tramo al costado: sin líneas entre sus renglones, el nombre a la altura del primero, la derecha con el tema y el día */
-.app:is(.v-t36, .v-t37) .tt-der { display: block; }
-.app:is(.v-t36, .v-t37) .tt-bloque { grid-template-columns: 112px minmax(0, 1fr); gap: 12px; padding: 10px 0; }
-.app:is(.v-t36, .v-t37) .tt-bloque .tt-limpia::after { display: none; }
-.app:is(.v-t36, .v-t37) .tt-bloque .tt-limpia .tt-fila { min-height: 40px; }
-.app:is(.v-t36, .v-t37) .tt-bloque .tt-tit { padding: 10px 0; }
-.app:is(.v-t36, .v-t37) .tt-bloque-etq { padding-top: 10px; line-height: 20px; }
-.app:is(.v-t36, .v-t37) .tt-bloque-etq small { line-height: 18px; }
-/* T37 · además, una línea separa el nombre de los renglones y el nombre acompaña al bajar */
-.app.v-t37 .tt-bloque-etq { position: sticky; top: 45px; align-self: start; padding-right: 12px; }
-.app.v-t37 .tt-bloque > .tt-lista { border-left: 1px solid var(--linea); padding-left: 16px; }
-@container app (max-width: 699px) {
-  .app:is(.v-t36, .v-t37) .tt-bloque { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .app.v-t37 .tt-bloque-etq { position: static; }
-  .app.v-t37 .tt-bloque > .tt-lista { border-left: 0; padding-left: 0; }
-}
-
 /* T27 · el tema es un menú con nombres */
 .tt-cab-envoltura { position: relative; }
 .tt-cab-menu { display: inline-flex; align-items: center; gap: 8px; min-width: 0; border: 0; background: none; padding: 4px 8px; margin: -4px 0 -4px -8px; border-radius: 8px; font: inherit; color: inherit; }
@@ -1222,7 +1185,7 @@ span.tt-tit { cursor: default; }
 <div class="pagina">
   <header class="cabecera">
     <h1>Sala de Doro: la misma vista, más quieta</h1>
-    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, «Crear» ocupando la bandeja (T17), plegada como T19, por cuándo como T21 y los temas en un menú con nombres como T27. Las notas son las mismas en todas las salas, sin tope, y se pueden poner en un tema sin dejar de ser notas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda15.html</code>.</p>
+    <p>La sala quedó cerrada: <b>4 · Queda el lápiz</b>, con las notas como post-its y sin el botón de tareas en la barra, porque las tareas ya viven en la bandeja de abajo. Cuando alguien suma una tarea a la sala, <b>la rayita de la bandeja toma el color del acento</b> (probalo con «Alguien suma una tarea»). De la bandeja quedan <b>T9</b> (el foco arriba y lo demás por tema), <b>el ancho de T13</b>, «Crear» ocupando la bandeja (T17), plegada como T19, por cuándo como T21 y los temas en un menú con nombres como T27. Las notas son las mismas en todas las salas, sin tope, y se pueden poner en un tema sin dejar de ser notas. Las rondas anteriores están en <code>bocetos/sala-ronda5.html</code> a <code>sala-ronda14.html</code>.</p>
     <p>El reloj corre de verdad: dale play, abrí las tareas, marcá puntos en la regla, escribí una nota y recargá la página: sigue ahí. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, N abre las notas, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema y Esc sale. <b>La X (o H) esconde la barra de ajustes</b>; H o la esquina de abajo a la derecha la traen de vuelta.</p>
   </header>
 
@@ -1283,13 +1246,6 @@ span.tt-tit { cursor: default; }
       </div>
     </div>
     <div class="ajuste">
-      <span class="ajuste-nombre">Íconos</span>
-      <div class="segmentado" id="iconos" role="group" aria-label="Íconos de tipo en los renglones">
-        <button type="button" data-v="sin">Sin</button>
-        <button type="button" data-v="con">Con</button>
-      </div>
-    </div>
-    <div class="ajuste">
       <span class="ajuste-nombre">Temas</span>
       <div class="segmentado" id="temas" role="group" aria-label="Cantidad de temas">
         <button type="button" data-v="5">5</button>
@@ -1298,95 +1254,50 @@ span.tt-tit { cursor: default; }
     </div>
   </div>
 
-  <header class="ronda" id="ronda-16">
-    <h2>16ª ronda: que el tramo no parezca una tarea</h2>
-    <p>Dos variantes por cada boceto de la ronda pasada. Todas son T27: plegada, el foco y «Sigue»; desplegada, el menú de temas con nombres. <b>Nuevo en la barra de ajustes: «Íconos»</b>, que suma o saca el ícono de tipo (parcial, práctico, informe, tarea) en cada renglón de las seis maquetas, para comparar si ayuda a leer.</p>
+  <header class="ronda" id="ronda-15">
+    <h2>15ª ronda: T27, pulida</h2>
+    <p>Las tres son T27: plegada, el foco y «Sigue»; desplegada, <b>el menú de temas</b> con nombres y pendientes. Ya no hay tramos plegables. Los tramos ganan protagonismo: dejan las mayúsculas chicas y pasan a ser títulos con peso, con el día al lado en Hoy y Mañana y la cantidad en los demás. Los renglones tienen más aire. Atrasado, si hay, toma el acento.</p>
   </header>
 
-  <section class="opcion" id="t32" data-v="t32">
+  <section class="opcion" id="t29" data-v="t29">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T32</span><span class="nombre">T29 · El tramo en una franja</span></h2>
-        <p class="resumen">El tramo es una franja de fondo con el nombre y el día. Sus renglones van un poco corridos a la derecha y sin línea en el último, así se ve dónde termina el grupo.</p>
+        <h2><span class="letra">T29</span><span class="nombre">Tramos como títulos</span><span class="recomendada">Recomendada</span></h2>
+        <p class="resumen">Cada tramo es un título («Hoy dom 4/10», «Esta semana 3») con espacio arriba y una línea debajo. Los renglones son más altos y siguen siendo solo el título.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La franja no puede confundirse con un renglón: tiene fondo.</li><li>Cada grupo se ve cerrado.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Suma bloques de color a la lista.</li><li>Con muchos tramos, muchas franjas.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Se lee de un vistazo: primero el cuándo, después el qué.</li><li>Sin controles de más: solo el menú de temas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Con muchos tramos, la lista se alarga.</li><li>Lo lejano sigue a la vista, aunque abajo.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t33" data-v="t33">
+  <section class="opcion" id="t30" data-v="t30">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T33</span><span class="nombre">T29 · Renglones colgando del tramo</span><span class="recomendada">Recomendada</span></h2>
-        <p class="resumen">El tramo es un título más grande y sin línea. Sus renglones van con sangría, colgando de una línea vertical, como un índice.</p>
+        <h2><span class="letra">T30</span><span class="nombre">Con las pestañas de T28</span></h2>
+        <p class="resumen">T29 con Pronto, Esta semana y Después debajo del encabezado, ahora con aire arriba y abajo. Cada pestaña muestra sus tramos con los mismos títulos.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La jerarquía se ve por la forma: lo que cuelga es lo de adentro.</li><li>Sin fondos ni colores de más.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Los títulos pierden 20 px.</li><li>La línea vertical es un trazo más.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>La lista nunca es larga.</li><li>El horizonte se elige igual que el tema: un toque.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hoy y la semana no se ven juntos.</li><li>Dos controles en el encabezado: tema y cuándo.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="t34" data-v="t34">
+  <section class="opcion" id="t31" data-v="t31">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">T34</span><span class="nombre">T30 · Pestañas subrayadas</span></h2>
-        <p class="resumen">Pronto, Esta semana y Después como las pestañas de Mías / De la sala: texto con un subrayado, con aire a los lados. Abajo, los tramos en franja de T32.</p>
+        <h2><span class="letra">T31</span><span class="nombre">El tramo al costado</span></h2>
+        <p class="resumen">El nombre del tramo va en una columna a la izquierda, a la altura de su primer renglón, y los renglones a la derecha. Cada tramo es un bloque. En angosto, el nombre vuelve arriba.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>El mismo idioma que las pestañas de arriba: se entiende solo.</li><li>Más liviana que una caja.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Dos filas de pestañas, una sobre otra.</li><li>Hoy y la semana siguen sin verse juntos.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="t35" data-v="t35">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">T35</span><span class="nombre">T30 · Segmentado a todo el ancho</span></h2>
-        <p class="resumen">El segmentado de T30 ocupa todo el ancho, en tres partes iguales y con aire adentro y afuera. Abajo, los renglones colgando de T33.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se lee como un solo control, bien separado de la lista.</li><li>Fácil de tocar en el celular.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Es la fila que más pesa del encabezado.</li><li>Hoy y la semana no se ven juntos.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="t36" data-v="t36">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">T36</span><span class="nombre">T31 · Al costado, sin cortes</span></h2>
-        <p class="resumen">Las líneas separan tramos, no renglones: dentro de un tramo, los renglones van seguidos. El nombre del tramo queda a la altura del primero. A la derecha, el tema (en «Todos») y el día, en tenue.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Cada tramo es un bloque entero: nada queda cortado.</li><li>La derecha dice de qué tema es y qué día.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Vuelve a haber datos en el renglón, aunque tenues.</li><li>En el celular, el nombre va arriba.</li></ul></div>
-      </div>
-    </div>
-    <div class="barra-marco" data-barra></div>
-    <div class="marco"><div class="app" data-app></div></div>
-  </section>
-
-  <section class="opcion" id="t37" data-v="t37">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">T37</span><span class="nombre">T31 · Al costado, con guía</span></h2>
-        <p class="resumen">T36 con una línea vertical entre el nombre y los renglones. El nombre del tramo acompaña al bajar hasta que termina su grupo.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Siempre sabés en qué tramo estás, aunque bajes.</li><li>La guía ordena las dos columnas.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un trazo más.</li><li>En angosto se comporta como T36.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El tramo tiene su propio lugar y no compite con los títulos.</li><li>Aprovecha el ancho de la bandeja.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Los títulos de los renglones pierden 120 px.</li><li>En el celular queda igual que T29.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1394,36 +1305,35 @@ span.tt-tit { cursor: default; }
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>16ª ronda · comparación</h2>
+    <h2>15ª ronda · comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Cómo se distingue el tramo</th><th>Pestañas de cuándo</th><th>Lo de la derecha</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Dónde va el tramo</th><th>Controles</th><th>Hoy y la semana juntos</th></tr></thead>
         <tbody>
-          <tr><td>T32 · Franja</td><td>Fondo</td><td>—</td><td>—</td></tr>
-          <tr class="elegida"><td>T33 · Renglones colgando</td><td>Tamaño y sangría</td><td>—</td><td>—</td></tr>
-          <tr><td>T34 · Pestañas subrayadas</td><td>Fondo</td><td>Subrayadas</td><td>—</td></tr>
-          <tr><td>T35 · Segmentado ancho</td><td>Tamaño y sangría</td><td>Segmentado, tres partes</td><td>—</td></tr>
-          <tr><td>T36 · Costado sin cortes</td><td>Columna propia</td><td>—</td><td>Tema y día</td></tr>
-          <tr><td>T37 · Costado con guía</td><td>Columna con línea, acompaña al bajar</td><td>—</td><td>Tema y día</td></tr>
+          <tr class="elegida"><td>T29 · Tramos como títulos</td><td>Título arriba de sus renglones</td><td>Menú de temas</td><td>Sí</td></tr>
+          <tr><td>T30 · Con las pestañas de T28</td><td>Título, dentro de cada pestaña</td><td>Menú de temas y pestañas</td><td>No</td></tr>
+          <tr><td>T31 · El tramo al costado</td><td>Columna a la izquierda</td><td>Menú de temas</td><td>Sí</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo T33 · Renglones colgando del tramo</h3>
-        <p><b>El problema era que el tramo y la tarea tenían la misma forma:</b> un texto a la izquierda con una línea debajo. T33 los separa por forma, no por color: el tramo es más grande y va al borde, y las tareas cuelgan de una línea con sangría. No suma fondos ni controles.</p>
-        <p><b>Si querés las pestañas,</b> T35 es T33 con el segmentado a todo el ancho y con aire. <b>Si preferís el costado,</b> T36 ya no corta nada y usa la derecha.</p>
-        <p><b>Íconos:</b> probalos con el ajuste nuevo. Mi apuesta es que en «Todos» ayudan (hay de todo mezclado) y en un tema solo sobran.</p>
+        <h3>Recomiendo T29 · Tramos como títulos</h3>
+        <p><b>Es T27 con lo que le faltaba:</b> los tramos se leen primero y la lista respira, sin sumar controles. Plegada, la bandeja ya resuelve el «una cosa a la vez». Desplegada no hace falta esconder más.</p>
+        <p><b>T30</b> vale si la lista se te hace larga en la práctica, con muchas materias. <b>T31</b> queda muy ordenado en la compu, pero en el celular es lo mismo que T29 y les quita lugar a los títulos.</p>
       </div>
       <pre><span class="c-com">// src/features/room/components/ListaPorCuando.tsx</span>
-&lt;section&gt;
-  &lt;h5 className="pt-6 pb-1.5 text-[15px] font-semibold"&gt;
-    {nombre} &lt;small className="font-normal text-muted-foreground"&gt;{pista}&lt;/small&gt;
-  &lt;/h5&gt;
-  &lt;ul className="ml-[3px] border-l-2 pl-4"&gt;
-    {items.map(it =&gt; &lt;RenglonLimpio key={it.id} item={it} conIcono={conIconos} /&gt;)}
-  &lt;/ul&gt;
-&lt;/section&gt;</pre>
+{tramos.map(({ nombre, items }) =&gt; (
+  &lt;section key={nombre}&gt;
+    &lt;h5 className="flex items-baseline gap-2 pt-6 pb-2 border-b text-sm font-semibold"&gt;
+      {nombre}
+      &lt;small className="font-normal text-muted-foreground tabular-nums"&gt;
+        {nombre === "Hoy" || nombre === "Mañana" ? diaCorto(items[0].dia) : items.length}
+      &lt;/small&gt;
+    &lt;/h5&gt;
+    {items.map(it =&gt; &lt;RenglonLimpio key={it.id} item={it} alEnfocar={setFoco} /&gt;)}
+  &lt;/section&gt;
+))}</pre>
     </div>
   </section>
 </div>
@@ -1835,26 +1745,22 @@ span.tt-tit { cursor: default; }
     };
     /* 13ª ronda · el renglón es solo el título, sin rayita ni tilde: se marca desde el foco.
        El tipo, el avance y el día quedan en el globo del navegador */
-    const filaLimpia = (it, o = {}) => {
+    const filaLimpia = it => {
       const p = progreso(it), d = it.o.dia;
       const ayuda = [it.T.uno, p && `${p[0]} de ${p[1]}`, it.m.nombre, d != null && relativo(d)].filter(Boolean).join(" · ");
-      const der = [o.conTema && esc(it.m.nombre), d != null && d > 1 && fecha(d).split(" ")[d < 7 ? 0 : 1]].filter(Boolean).join(" · ");
       return `<li class="tt-it tt-limpia${it.k === st.llega ? " llega" : ""}"><div class="tt-fila">
-        <span class="tt-ico tt-ico-op" aria-hidden="true">${ic(it.T.icono)}</span>
         <button type="button" class="tt-tit" data-enfocar="${it.k}" title="${esc(ayuda)}"><span class="t">${esc(it.o.titulo)}</span></button>
-        ${der ? `<span class="tt-der">${der}</span>` : ""}
       </div></li>`;
     };
     const TRAMOS = [["Atrasado", d => d != null && d < 0], ["Hoy", d => d === 0], ["Mañana", d => d === 1], ["Esta semana", d => d >= 2 && d < 7], ["Más adelante", d => d >= 7], ["Sin fecha", d => d == null]];
     /* Cada tramo con su cantidad (y el día, en Hoy y Mañana). T31 pone el nombre del tramo al costado de sus renglones */
     const pistaTramo = (n, z) => n === "Hoy" ? fecha(0) : n === "Mañana" ? fecha(1) : `${z.length}`;
-    const COSTADO = ["t36", "t37"], CON_PESTANAS = ["t34", "t35"];
-    const porCuando = (x, o = {}) => TRAMOS.map(([n, f]) => {
+    const porCuando = x => TRAMOS.map(([n, f]) => {
       const z = x.filter(it => f(it.o.dia)); if (!z.length) return "";
-      if (COSTADO.includes(v)) return `<li class="tt-bloque${n === "Atrasado" ? " atrasado" : ""}"><div class="tt-bloque-etq"><span>${n}</span><small>${pistaTramo(n, z)}</small></div><ul class="tt-lista">${z.map(it => filaLimpia(it, o)).join("")}</ul></li>`;
-      return `<li class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}" role="presentation"><span>${n}</span><small>${pistaTramo(n, z)}</small></li>${z.map(it => filaLimpia(it, o)).join("")}`;
+      if (v === "t31") return `<li class="tt-bloque${n === "Atrasado" ? " atrasado" : ""}"><div class="tt-bloque-etq">${n}<small>${pistaTramo(n, z)}</small></div><ul class="tt-lista">${z.map(filaLimpia).join("")}</ul></li>`;
+      return `<li class="tt-tramo${n === "Atrasado" ? " atrasado" : ""}" role="presentation">${n}<small>${pistaTramo(n, z)}</small></li>${z.map(filaLimpia).join("")}`;
     }).join("");
-    const renglones = (x, o) => porCuando(x, o);
+    const renglones = x => porCuando(x);
     /* Notas que se pasaron a un tema: siguen siendo notas y aparecen al final de ese tema */
     const notasDe = nombre => { let l; try { l = JSON.parse(leer("doro-notas", "null")); } catch (e) { l = null; } return (Array.isArray(l) ? l : []).filter(n => n.tema === nombre); };
     const notasTema = m => { const z = m ? notasDe(m.nombre) : []; return z.length ? `<li class="tt-tramo" role="presentation">Notas</li>${z.map(n => `<li class="tt-it tt-limpia tt-nota-t"><div class="tt-fila"><span class="tt-tit"><span class="t">${esc(n.texto)}</span></span></div></li>`).join("")}` : ""; };
@@ -1893,9 +1799,7 @@ span.tt-tit { cursor: default; }
       </div>`;
     };
 
-    /* 16ª ronda · todas son T27. T32 y T34: el tramo en una franja; T33 y T35: los renglones con sangría bajo el tramo;
-       T34 y T35 suman las pestañas de cuándo; T36 y T37: el tramo al costado, con lo de la derecha aprovechado.
-       Antes, 15ª ronda · todas son T27 (T24 con el tema como menú). T29: tramos con más aire; T30: suma las pestañas de T28; T31: el tramo al costado.
+    /* 15ª ronda · todas son T27 (T24 con el tema como menú). T29: tramos con más aire; T30: suma las pestañas de T28; T31: el tramo al costado.
        Antes: 14ª ronda · todas son T24: plegada, el foco y «Sigue»; desplegada, la lista por cuándo y los temas detrás de un botón.
        T26 suma los tramos plegables de T23; T27 elige el tema con un menú con nombres; T28 muestra un tramo por vez */
     const PESTANAS = [["Pronto", ["Atrasado", "Hoy", "Mañana"]], ["Esta semana", ["Esta semana"]], ["Después", ["Más adelante", "Sin fecha"]]];
@@ -1918,17 +1822,15 @@ span.tt-tit { cursor: default; }
         if (st.verTemas) debajo = `<div class="tt-temas tt-temas-cab" role="group" aria-label="Filtrar por tema">${opciones.map(([i, n, icono]) => `<button type="button" class="tt-tema-ic" data-tema-f="${i ?? ""}" aria-pressed="${st.temaF === i}" aria-label="${esc(n)}" title="${esc(n)}">${ic(icono)}</button>`).join("")}</div>`;
       }
       let x = resto;
-      if (CON_PESTANAS.includes(v)) {
+      if (v === "t30") {
         const cuenta = ([, tr]) => resto.filter(it => TRAMOS.some(([n, f]) => tr.includes(n) && f(it.o.dia))).length;
-        debajo += v === "t34"
-          ? `<div class="pestanas tt-cuando-sub" role="tablist" aria-label="Cuándo">${PESTANAS.map((p, i) => `<button type="button" role="tab" data-cuando="${i}" aria-selected="${st.cuando === i}">${p[0]} <span class="n">${cuenta(p)}</span></button>`).join("")}</div>`
-          : `<div class="segmentado tt-pestanas-cuando tt-cuando-ancho" role="group" aria-label="Cuándo">${PESTANAS.map((p, i) => `<button type="button" data-cuando="${i}" aria-pressed="${st.cuando === i}">${p[0]}<small>${cuenta(p)}</small></button>`).join("")}</div>`;
+        debajo += `<div class="segmentado tt-pestanas-cuando" role="group" aria-label="Cuándo">${PESTANAS.map((p, i) => `<button type="button" data-cuando="${i}" aria-pressed="${st.cuando === i}">${p[0]}<small>${cuenta(p)}</small></button>`).join("")}</div>`;
         const tr = PESTANAS[st.cuando][1];
         x = resto.filter(it => TRAMOS.some(([n, f]) => tr.includes(n) && f(it.o.dia)));
       }
-      return focoHTML() + `<div>${cab}${debajo}<ul class="tt-lista">${renglones(x, { conTema: !m }) || `<li class="vacio">${CON_PESTANAS.includes(v) ? "Nada por acá." : "Este tema está al día."}</li>`}${notasTema(m)}</ul></div>`;
+      return focoHTML() + `<div>${cab}${debajo}<ul class="tt-lista">${renglones(x) || `<li class="vacio">${v === "t30" ? "Nada por acá." : "Este tema está al día."}</li>`}${notasTema(m)}</ul></div>`;
     };
-    const VISTAS = { t32: VISTAS_T24, t33: VISTAS_T24, t34: VISTAS_T24, t35: VISTAS_T24, t36: VISTAS_T24, t37: VISTAS_T24 };
+    const VISTAS = { t29: VISTAS_T24, t30: VISTAS_T24, t31: VISTAS_T24 };
 
     const cuerpo = $("[data-cuerpo]");
     const vistaSala = () => `<label class="alta"><svg><use href="#i-mas"/></svg><input data-alta-sala placeholder="Nueva tarea para la sala…" aria-label="Nueva tarea para la sala"></label>
@@ -2210,12 +2112,6 @@ span.tt-tit { cursor: default; }
     nTemas = b.dataset.v; guardar("doro-sala-temas", nTemas); pulsar(gTemas, nTemas);
     salas.forEach(x => x.reiniciarTareas());
   }));
-
-  /* Ajuste «Íconos»: el ícono de tipo (parcial, práctico, informe, tarea) en cada renglón, para comparar */
-  const gIconos = document.getElementById("iconos");
-  const ponerIconos = x => { document.documentElement.dataset.iconos = x; pulsar(gIconos, x); };
-  ponerIconos(leer("doro-sala-iconos", "sin"));
-  gIconos.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { guardar("doro-sala-iconos", b.dataset.v); ponerIconos(b.dataset.v); }));
 
   /* Un solo latido mueve todos los relojes */
   const latir = t => { salas.forEach(s => s.tic(t)); requestAnimationFrame(latir); };

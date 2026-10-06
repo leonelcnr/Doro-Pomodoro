@@ -340,10 +340,38 @@ Variantes:
 
 La 14ª quedó en `bocetos/sala-ronda14.html`.
 
+### 16ª ronda (2026-10-06): que el tramo no parezca una tarea
+
+Devolución de Leo:
+- **T29:** no se distinguía el tramo de la tarea; a primera vista, «Hoy» parecía una
+  tarea.
+- **T30:** lo mismo, y además las pestañas pedían aire a los lados (o otro tipo de
+  pestaña).
+- **T31:** algunas cosas parecían cortadas, y quedaba espacio libre a la derecha.
+
+Pidió variantes de cada una y un ajuste para sumar o sacar los íconos de tipo y comparar.
+
+Ajuste nuevo **«Íconos» (Sin / Con)** en la barra: suma el ícono de tipo a cada renglón en
+todas las maquetas.
+
+- **T32 · Franja:** el tramo es una franja con fondo; los renglones, un poco corridos.
+- **T33 · Renglones colgando (recomendada):** el tramo es un título grande y los renglones
+  cuelgan de una línea vertical, con sangría.
+- **T34 · Pestañas subrayadas:** como Mías / De la sala, sobre los tramos en franja.
+- **T35 · Segmentado a todo el ancho:** en tres partes iguales y con aire, sobre los
+  renglones colgando.
+- **T36 · Al costado sin cortes:** sin líneas entre renglones de un tramo; a la derecha,
+  el tema (en «Todos») y el día.
+- **T37 · Al costado con guía:** T36 con una línea vertical; el nombre del tramo acompaña
+  al bajar.
+
+La 15ª quedó en `bocetos/sala-ronda15.html`.
+
 ## Dónde retomamos
 
-15ª ronda publicada (T29–T31 sobre T27, recomendada T29), esperando la elección de Leo.
-Lo demás de la bandeja está decidido (ver rondas 13 a 15). Notas: decididas (globales,
+16ª ronda publicada (T32–T37 sobre T27, recomendada T33), esperando la elección de Leo y
+su opinión sobre los íconos de tipo.
+Lo demás de la bandeja está decidido (ver rondas 13 a 16). Notas: decididas (globales,
 sin tope, con tema opcional sin dejar de ser notas). Con eso se cierra la sala.
 
 ## Propuestas transversales
