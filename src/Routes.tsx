@@ -37,7 +37,7 @@ const NoEncontrada = lazy(() => import("./pages/NoEncontrada"));
 // Fallback mientras el chunk de la página se descarga.
 function PantallaCarga() {
     return (
-        <div className="w-full h-screen flex items-center justify-center bg-background">
+        <div className="flex min-h-dvh w-full items-center justify-center bg-background">
             <Spinner />
         </div>
     );

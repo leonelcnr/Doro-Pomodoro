@@ -193,7 +193,12 @@ Orden propuesto, de menor a mayor riesgo:
      (pide que `join_room` devuelva nombre y si ya eras miembro), las notas con tema en la
      caja de Tareas, y en el Dashboard el detalle de un día y el mapa del año en angosto.
 8. Pendientes menores de `docs/auditoria-home.md` (copy de `PanelTareas.tsx:131`, badges
-   muertos en `atributos.ts`, X-01 `h-screen` → `min-h-[100dvh]`).
+   muertos en `atributos.ts`, X-01 `h-screen` → `min-h-[100dvh]`). ✅ 2026-10-07: `PanelTareas`
+   ya no existe, se fueron los badges y el `h-screen` de la carga. Se borraron los bloques de
+   plantilla (`app-sidebar`, `nav-*`, `site-header`, `daily-streak`, `data-table`) y lo que
+   quedó sin uso (`FiltroCategorias`, `QuickAddTarea`, `TareasVacias`, `useCajaTema`,
+   `useCalendarioTareas`). Queda el atajo global Ctrl+K / T (`ProveedorNuevaTarea`), que abre
+   el diálogo viejo de alta: decidir si se va o se rehace con «Crear» de la bandeja.
 
 Cada paso cierra con `pnpm lint`, `tsc -b --force`, `pnpm build`, revisión en el navegador
 en claro y oscuro, y un commit propio.
@@ -216,3 +221,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-07 | Fase 3, paso 4: Home D4 con el anillo, la línea del link y la bandeja T43 de la sala (sin «De la sala»), con el fade «Queda el asa». |
 | 2026-10-07 | Fase 3, paso 6: pantalla de Tareas (S2) con cajas, caja abierta, detalle desde la esquina y calendario; se va la pantalla vieja de Calendario. |
 | 2026-10-07 | Fase 3, paso 7: Sala, Dashboard, Login, Invitación, Reloj flotante y Errores aplicados (Dashboard y las cuatro chicas con subagentes en paralelo). |
+| 2026-10-07 | Fase 3, paso 8: limpieza de plantillas y código sin uso. Fase 3 cerrada en código; falta probar la Sala en una sala real y desplegar. |
