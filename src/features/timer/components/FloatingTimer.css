@@ -19,9 +19,10 @@
     padding: 0;
 }
 
-/* El reloj escala con la ventana en vez de tener un tamaño fijo, así nunca se recorta. */
+/* El reloj escala con la ventana en vez de tener un tamaño fijo, así nunca se recorta
+   (6 · Un poco más grande: un 20 % más que la ventana de antes). */
 .reloj-flotante__hora {
-    font-size: clamp(1.75rem, 32cqmin, 4.5rem);
+    font-size: clamp(2rem, min(38cqmin, 27cqw), 6rem);
 }
 
 /* La barra de progreso solo existe en el modo compacto. */
@@ -48,7 +49,7 @@
     }
 
     .reloj-flotante__hora {
-        font-size: min(21cqw, 52cqh);
+        font-size: min(23cqw, 57cqh);
     }
 
     .reloj-flotante__accion {

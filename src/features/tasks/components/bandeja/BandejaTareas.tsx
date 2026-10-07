@@ -20,6 +20,13 @@ interface BandejaTareasProps {
     onCrear: (payload: TareaPayload) => void
     /** Lo que va arriba del foco (en la sala, las pestañas Mías / De la sala). */
     arriba?: ReactNode
+    /** En lugar del foco y la lista (en la sala, la pestaña «De la sala»). */
+    cuerpo?: ReactNode
+    /** Pendientes que no están en `tareas` pero cuentan en el asa (las de la sala). */
+    pendientesExtra?: number
+    /** Alguien sumó una tarea a la sala y todavía no se miró: la rayita toma el acento. */
+    nuevas?: boolean
+    className?: string
 }
 
 /**
@@ -31,7 +38,7 @@ interface BandejaTareasProps {
  * («Queda el asa»): las reglas viven en index.css (`.bandeja`).
  */
 export function BandejaTareas(props: BandejaTareasProps) {
-    const { tareas, temas, abierta, onAbrir, foco, onEnfocar, onCrear, arriba } = props
+    const { tareas, temas, abierta, onAbrir, foco, onEnfocar, onCrear, arriba, cuerpo, pendientesExtra = 0, nuevas = false, className } = props
     const asaRef = useRef<HTMLButtonElement>(null)
     const [verTodo, establecerVerTodo] = useState(false)
     const [temaElegido, establecerTemaElegido] = useState<string | null | undefined>(undefined)
@@ -74,10 +81,12 @@ export function BandejaTareas(props: BandejaTareasProps) {
         <aside
             aria-label="Tareas"
             data-abierta={abierta || undefined}
+            data-nuevas={nuevas || undefined}
             onKeyDown={alPresionar}
             className={cn(
                 "bandeja @container/bandeja fixed text-[0.9375rem] leading-normal bottom-0 left-1/2 z-10 flex max-h-[78dvh] w-[min(calc(100%-1.5rem),35rem)] -translate-x-1/2 flex-col rounded-t-2xl border border-b-0 bg-card shadow-lg min-[56.25rem]:w-[min(calc(100%-12.5rem),45rem)]",
                 abierta ? "translate-y-0" : "translate-y-[calc(100%-3.75rem)]",
+                className,
             )}
         >
             <button
@@ -101,7 +110,7 @@ export function BandejaTareas(props: BandejaTareasProps) {
                             </span>
                         </>
                     ) : (
-                        `${pendientes.length} ${pendientes.length === 1 ? "pendiente" : "pendientes"}`
+                        `${pendientes.length + pendientesExtra} ${pendientes.length + pendientesExtra === 1 ? "pendiente" : "pendientes"}`
                     )}
                     <ChevronUp className={cn("size-4 transition-transform duration-400", abierta && "rotate-180")} aria-hidden />
                 </span>
@@ -128,49 +137,53 @@ export function BandejaTareas(props: BandejaTareasProps) {
                 ) : (
                     <>
                         {arriba}
-                        <FocoTarea {...props} nombreTema={foco ? nombreTema(foco) : ""} />
-                        {verTodo ? (
-                            <ListaBandeja
-                                items={resto}
-                                opciones={opciones}
-                                elegido={elegido}
-                                verTemas={verTemas}
-                                porTipo={porTipo}
-                                nombreTema={nombreTema}
-                                onVerTemas={establecerVerTemas}
-                                onElegirTema={(id) => {
-                                    establecerTemaElegido(id)
-                                    establecerVerTemas(false)
-                                }}
-                                onAlternarOrden={() => establecerPorTipo(!porTipo)}
-                                onCrear={establecerCrear}
-                                onPlegar={() => establecerVerTodo(false)}
-                                onEnfocar={onEnfocar}
-                            />
-                        ) : (
-                            // Plegada: una sola línea con lo que sigue, y el + que abre «Crear»
-                            <div className="flex items-center gap-1.5">
-                                <button
-                                    type="button"
-                                    aria-expanded={false}
-                                    onClick={() => establecerVerTodo(true)}
-                                    className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[0.625rem] border px-3 text-left text-[0.875rem] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-                                >
-                                    <span className="text-muted-foreground">{siguiente ? "Sigue" : "No sigue nada"}</span>
-                                    {siguiente && <span className="min-w-0 flex-1 truncate">{siguiente.header}</span>}
-                                    <small className="ml-auto text-[0.78125rem] text-muted-foreground tabular-nums">{resto.length}</small>
-                                    <ChevronUp className="size-4 rotate-180 text-muted-foreground" aria-hidden />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => establecerCrear("tarea")}
-                                    aria-label="Crear"
-                                    title="Crear"
-                                    className="grid size-11 shrink-0 place-items-center rounded-[0.625rem] text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                                >
-                                    <Plus className="size-[0.9375rem]" aria-hidden />
-                                </button>
-                            </div>
+                        {cuerpo ?? (
+                            <>
+                                <FocoTarea {...props} nombreTema={foco ? nombreTema(foco) : ""} />
+                                {verTodo ? (
+                                    <ListaBandeja
+                                        items={resto}
+                                        opciones={opciones}
+                                        elegido={elegido}
+                                        verTemas={verTemas}
+                                        porTipo={porTipo}
+                                        nombreTema={nombreTema}
+                                        onVerTemas={establecerVerTemas}
+                                        onElegirTema={(id) => {
+                                            establecerTemaElegido(id)
+                                            establecerVerTemas(false)
+                                        }}
+                                        onAlternarOrden={() => establecerPorTipo(!porTipo)}
+                                        onCrear={establecerCrear}
+                                        onPlegar={() => establecerVerTodo(false)}
+                                        onEnfocar={onEnfocar}
+                                    />
+                                ) : (
+                                    // Plegada: una sola línea con lo que sigue, y el + que abre «Crear»
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            type="button"
+                                            aria-expanded={false}
+                                            onClick={() => establecerVerTodo(true)}
+                                            className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[0.625rem] border px-3 text-left text-[0.875rem] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+                                        >
+                                            <span className="text-muted-foreground">{siguiente ? "Sigue" : "No sigue nada"}</span>
+                                            {siguiente && <span className="min-w-0 flex-1 truncate">{siguiente.header}</span>}
+                                            <small className="ml-auto text-[0.78125rem] text-muted-foreground tabular-nums">{resto.length}</small>
+                                            <ChevronUp className="size-4 rotate-180 text-muted-foreground" aria-hidden />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => establecerCrear("tarea")}
+                                            aria-label="Crear"
+                                            title="Crear"
+                                            className="grid size-11 shrink-0 place-items-center rounded-[0.625rem] text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                                        >
+                                            <Plus className="size-[0.9375rem]" aria-hidden />
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </>
                 )}

@@ -32,6 +32,7 @@ const Invitacion = lazy(() => import("./pages/InvitacionPage"));
 const Room = lazy(() => import("./pages/RoomPage"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const NoEncontrada = lazy(() => import("./pages/NoEncontrada"));
 
 // Fallback mientras el chunk de la página se descarga.
 function PantallaCarga() {
@@ -63,6 +64,8 @@ export const router = createBrowserRouter([
         children: [
             {
                 element: <HomeLayout />,
+                // Si se rompe una página, el error queda en su área con el encabezado
+                errorElement: <ErrorPage conEncabezado />,
                 children: [
                     { index: true, element: conSuspense(<Home />) },
                     { path: "tareas", element: conSuspense(<Tareas />) },
@@ -70,6 +73,7 @@ export const router = createBrowserRouter([
                     // El calendario viejo se fue: su lugar es la vista «Calendario» de Tareas
                     { path: "calendar", element: <Navigate to="/tareas" replace /> },
                     { path: "room/:roomId", element: conSuspense(<Room />) },
+                    { path: "*", element: conSuspense(<NoEncontrada />) },
                 ],
             },
             {

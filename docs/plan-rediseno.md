@@ -174,7 +174,24 @@ Orden propuesto, de menor a mayor riesgo:
    falta aplicar la migración 2 (`drop table calendar_events`) **después del deploy**.
    Pendiente: las notas de la sala (salen con la sala, paso 7) y el aviso del detalle
    (con la Fase B de avisos).
-7. **Sala, Dashboard, Calendario, Login, Invitación, reloj flotante.**
+7. **Sala, Dashboard, Calendario, Login, Invitación, reloj flotante.** ✅ 2026-10-07 (código;
+   la Sala falta verla en una sala real):
+   - **Sala:** 4 · Queda el lápiz. Zona del reloj con la grilla del boceto, fase en el
+     acento, dígitos que entran y el hilo solo corriendo; con el mouse quieto queda el
+     reloj (`useQuieto`). Bandeja T43 con «Mías / De la sala» y la rayita en acento si
+     alguien suma algo; el reloj sube sin achicarse (I). Notas en post-it abajo a la
+     derecha (`useNotas`, localStorage por usuario, con tema opcional; la N las abre).
+     Tiempos **C1** (`PanelTiempos`) y música **M7** (la última mezcla vuelve sola, el
+     video se cambia sin sacarlo, «Silenciar para mí»). Se fueron «Solo yo», el
+     `DialogSettings`, `PanelTareas` y el color por fase.
+   - **Dashboard:** 11ª ronda · 1 (Resumen de una cifra por vez, Estudio, Tareas) con SVG,
+     sin recharts; meta en `useMetaDiaria` (la usa también el anillo del Home).
+   - **Login, Invitación, Reloj flotante, Errores:** lo de sus docs. Columnas de estado en
+     `src/components/estados/`, 404 y `errorElement` en `HomeLayout`.
+   - **Pendientes:** el aviso «Sin conexión» en la sala (`useConexion` + `LineaAviso`
+     ya existen; falta saber cuándo se cae el canal), el aviso al llegar por invitación
+     (pide que `join_room` devuelva nombre y si ya eras miembro), las notas con tema en la
+     caja de Tareas, y en el Dashboard el detalle de un día y el mapa del año en angosto.
 8. Pendientes menores de `docs/auditoria-home.md` (copy de `PanelTareas.tsx:131`, badges
    muertos en `atributos.ts`, X-01 `h-screen` → `min-h-[100dvh]`).
 
@@ -198,3 +215,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-06 | Fase 3, paso 3: selector de acento en el menú del avatar, guardado en `localStorage`; tema y acento se aplican antes del primer pintado. |
 | 2026-10-07 | Fase 3, paso 4: Home D4 con el anillo, la línea del link y la bandeja T43 de la sala (sin «De la sala»), con el fade «Queda el asa». |
 | 2026-10-07 | Fase 3, paso 6: pantalla de Tareas (S2) con cajas, caja abierta, detalle desde la esquina y calendario; se va la pantalla vieja de Calendario. |
+| 2026-10-07 | Fase 3, paso 7: Sala, Dashboard, Login, Invitación, Reloj flotante y Errores aplicados (Dashboard y las cuatro chicas con subagentes en paralelo). |

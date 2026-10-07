@@ -1,46 +1,64 @@
-import { SlidingNumber } from '@/components/animate-ui/primitives/texts/sliding-number';
+import { cn } from '@/lib/utils';
 
-// Renderiza un número con dígitos animados, con un mínimo de dígitos (padding a
-// la izquierda con ceros). Cada SlidingNumber dibuja un rodillo por dígito, así
-// que segmentamos el valor en sus dígitos y renderizamos uno por rodillo. Esto
-// permite que los minutos crezcan por encima de 99 (cronómetro largo) sin romper
-// el layout, manteniendo siempre al menos `minDigitos` (2 para MM y SS).
-function Digitos({ value, minDigitos = 2 }: { value: number; minDigitos?: number }) {
-    const acotado = Math.max(0, Math.floor(value) || 0);
-    const texto = String(acotado).padStart(minDigitos, '0');
-    const digitos = texto.split('').map(Number);
-
+/** Cada dígito entra desde arriba cuando cambia (la `key` lo vuelve a montar). Sin blur: son enormes. */
+function Digitos({ valor }: { valor: number }) {
+    const texto = String(valor).padStart(2, '0');
     return (
         <span className="inline-flex">
-            {digitos.map((digito, indice) => (
-                <SlidingNumber key={indice} number={digito} initiallyStable />
+            {texto.split('').map((d, i) => (
+                <span key={`${i}-${d}`} className="inline-block w-[0.6em] animate-[digito_0.42s_cubic-bezier(.16,1,.3,1)] text-center">
+                    {d}
+                </span>
             ))}
         </span>
     );
 }
 
+interface RelojDigitalProps {
+    tiempoRestante: number;
+    estaActivo: boolean;
+    /** Todavía no arrancó la fase: los números van un poco apagados. */
+    sinEmpezar: boolean;
+    /** 0 a 1, lo que ya pasó de la fase; null en el cronómetro (no lleva hilo). */
+    avance: number | null;
+}
+
 /**
- * Reloj minimalista (solo presentacional): muestra SIEMPRE MM:SS en minutos, sin
- * convertir nunca a horas (60 minutos se ven "60:00", no "1:00:00"). Los minutos
- * pueden crecer a 3+ dígitos si el cronómetro es largo. Crece un poco mientras el
- * temporizador está activo.
- *
- * Normaliza el tiempo de entrada (descarta NaN/negativos y lo topa en 5999:59)
- * para no romperse jamás ante un valor corrupto o un cronómetro muy largo.
+ * Los números de la sala: MM:SS siempre en minutos (60 minutos se ven «60:00»),
+ * con dos puntos redondos. Corriendo, crece un poco y aparece el hilo debajo, que
+ * avanza con la fase; en pausa se desvanece.
  */
-export function RelojDigital({ tiempoRestante, estaActivo }: { tiempoRestante: number, estaActivo: boolean }) {
-    const total = Math.min(
-        5999 * 60 + 59, // tope: 5999:59 (~100 h en minutos)
-        Math.max(0, Math.floor(tiempoRestante) || 0)
-    );
-    const minutos = Math.floor(total / 60);
-    const segundos = total % 60;
+export function RelojDigital({ tiempoRestante, estaActivo, sinEmpezar, avance }: RelojDigitalProps) {
+    // Tope de 5999:59 y nada de NaN o negativos: un valor corrupto no rompe el reloj
+    const total = Math.min(5999 * 60 + 59, Math.max(0, Math.floor(tiempoRestante) || 0));
 
     return (
-        <div className={`flex items-baseline gap-2 font-mono ${estaActivo ? 'text-[5rem] md:text-[8rem] lg:text-[9.5rem]' : 'text-[4.5rem] md:text-[7rem] lg:text-[8rem]'} leading-none font-medium tracking-tighter transition-all duration-500 select-none`}>
-            <Digitos value={minutos} />
-            <span className="opacity-20 transition-all duration-500">:</span>
-            <Digitos value={segundos} />
+        <div
+            role="timer"
+            aria-label="Tiempo restante"
+            className={cn(
+                'relative flex items-center justify-self-center text-[clamp(3.5rem,17cqi,11.5rem)] leading-none font-semibold tracking-[-0.04em] tabular-nums transition-[scale,color] duration-[900ms] ease-[cubic-bezier(.16,1,.3,1)] select-none [grid-area:reloj]',
+                estaActivo && 'scale-[1.035]',
+                sinEmpezar && 'text-foreground/88',
+            )}
+        >
+            <Digitos valor={Math.floor(total / 60)} />
+            <span aria-hidden className="mx-[0.14em] inline-flex flex-col gap-[0.2em]">
+                <i className="size-[0.1em] rounded-full bg-muted-foreground/70" />
+                <i className="size-[0.1em] rounded-full bg-muted-foreground/70" />
+            </span>
+            <Digitos valor={total % 60} />
+            {avance != null && (
+                <span
+                    aria-hidden
+                    className={cn(
+                        'absolute inset-x-[0.14em] -bottom-[0.2em] h-0.5 overflow-hidden rounded-full bg-border transition-opacity duration-[600ms]',
+                        estaActivo ? 'opacity-100' : 'opacity-0 delay-300',
+                    )}
+                >
+                    <i className="absolute inset-0 origin-left bg-brand transition-[scale] duration-1000 ease-linear" style={{ scale: `${avance} 1` }} />
+                </span>
+            )}
         </div>
     );
 }

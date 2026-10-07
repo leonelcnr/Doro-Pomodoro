@@ -12,10 +12,8 @@ import { useTemas } from "@/features/tasks/hooks/useTemas"
 import { useFoco } from "@/features/tasks/hooks/useFoco"
 import { useAuth } from "@/features/auth/context/useAuth"
 import { useDashboardStats } from "@/features/dashboard/hooks/useDashboardStats"
+import { useMetaDiaria } from "@/features/dashboard/hooks/useMetaDiaria"
 import type { ItemChecklist, Tarea, TareaPayload } from "@/types/dominio"
-
-// Meta diaria de minutos de enfoque que llena el anillo (la misma del dashboard)
-const META_DIARIA_MINUTOS = 120
 
 /**
  * Página de inicio (D4 · Anillo y bandeja): en el centro, el anillo que crea la
@@ -30,6 +28,8 @@ const Home = () => {
     const { foco, enfocar, soltar } = useFoco(tareas)
     const { user } = useAuth()
     const { statsByRange, isLoading } = useDashboardStats(user?.id)
+    // La misma meta que se ajusta en el Dashboard
+    const [metaDiaria] = useMetaDiaria()
     const { creando, crearSala, unirse } = useSalaNueva()
     const [bandejaAbierta, establecerBandejaAbierta] = useState(false)
     const pendientes = tareas.filter(estaPendiente).length
@@ -86,7 +86,7 @@ const Home = () => {
             <main className="@container flex flex-1 flex-col items-center justify-center gap-10 px-5 pt-8 pb-[6.5rem] text-center">
                 <AnilloSala
                     minutosHoy={statsByRange.day.displayMinutes}
-                    metaMinutos={META_DIARIA_MINUTOS}
+                    metaMinutos={metaDiaria}
                     cargando={isLoading}
                     creando={creando}
                     onCrear={crearSala}

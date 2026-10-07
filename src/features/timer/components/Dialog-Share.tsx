@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Share2, Copy, Check } from 'lucide-react'
+import { claseControl } from '../clasesReloj'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -32,8 +33,8 @@ const DialogShare = ({ enlace, codigo }: { enlace: string, codigo: string }) => 
 
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10"><Share2 /></Button>
+            <DialogTrigger className={claseControl} title="Compartir la sala" aria-label="Compartir la sala">
+                <Share2 />
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>

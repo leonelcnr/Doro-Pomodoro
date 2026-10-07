@@ -1,9 +1,8 @@
 import { useTimer } from '../hooks/useTimerActions';
-import { Button } from '@/components/ui/button'
 import DialogShare from './Dialog-Share';
-import { RotateCcw, PictureInPicture2 } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 import { useTimerStore } from '@/store/timerStore';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useDocumentPiP } from '@/hooks/useDocumentPiP';
 import { FloatingTimer } from './FloatingTimer';
@@ -11,28 +10,36 @@ import { MusicPlayer } from '@/features/room/components/MusicPlayer';
 import { IndicadorModo } from './IndicadorModo';
 import { RelojDigital } from './RelojDigital';
 import { ControlesTimer } from './ControlesTimer';
-import type { TimerSettings } from '@/types/timer';
+import { claseControl } from '../clasesReloj';
+import { cn } from '@/lib/utils';
+
+interface TimerDisplayProps {
+    enlace: string;
+    codigo: string;
+    salaId?: string;
+    /** Cuántos hay en la sala («Cambia el reloj de los 3»). */
+    enLaSala: number;
+}
 
 /**
- * Reloj de la sala: contenedor que conecta el store/hook del temporizador con
- * las piezas presentacionales (`IndicadorModo`, `RelojDigital`, `ControlesTimer`)
- * y los controles auxiliares (compartir, música, reset, Picture-in-Picture).
+ * La zona del reloj de la sala: la fase arriba, los números en el centro y los
+ * controles a los costados (compartir, música y reiniciar a la izquierda; play,
+ * ventana flotante y tiempos a la derecha). En angosto los controles bajan.
+ * Las clases `zona-*` las apaga index.css con el reloj corriendo y el mouse quieto.
  *
- * Es presentacional respecto de la sala: `salaId` solo se reenvía a `MusicPlayer`.
- * La sincronización del reloj con Supabase la maneja `useSincronizacionReloj`
- * (invocado desde `RoomPage`), no este componente.
+ * La sincronización con Supabase la maneja `useSincronizacionReloj` desde la sala.
  */
-export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codigo: string, salaId?: string }) => {
+export const TimerDisplay = ({ enlace, codigo, salaId, enLaSala }: TimerDisplayProps) => {
     const { tiempoRestante, estaActivo, modo, alternarTemporizador, manejarReinicio, ponerPomodoro, ponerDescansoLargo, ponerDescansoCorto, ponerCronometro } = useTimer();
     const { configuracion, establecerConfiguracion, tiempoInicial } = useTimerStore();
 
-    // Fracción de la fase que todavía queda, para el hilo de progreso del reloj flotante.
-    // El cronómetro no tiene tope, así que no lleva barra.
+    // Lo que queda de la fase (para la ventana flotante) y lo que ya pasó (para el hilo).
+    // El cronómetro no tiene tope, así que no lleva ninguno de los dos.
     const progresoFase = modo === 'stopwatch' || tiempoInicial <= 0
         ? null
         : Math.max(0, Math.min(1, tiempoRestante / tiempoInicial));
 
-    // Avanza cíclicamente entre las fases al tocar el indicador de modo
+    // Tocar el nombre de la fase pasa a la siguiente
     const manejarClickModo = () => {
         if (modo === 'pomodoro') ponerDescansoCorto();
         else if (modo === 'shortBreak') ponerDescansoLargo();
@@ -40,32 +47,16 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
     };
     const { esSoportado, ventanaPiP, solicitarPiP, cerrarPiP } = useDocumentPiP();
 
-    const manejarGuardarConfiguracion = React.useCallback((nuevaConfiguracion: TimerSettings) => {
-        establecerConfiguracion(nuevaConfiguracion);
-    }, [establecerConfiguracion]);
-
-    // Abre o cierra la ventana flotante (PiP) según su estado actual
     const alternarPiP = async () => {
-        if (ventanaPiP) {
-            cerrarPiP();
-        } else {
-            await solicitarPiP({ width: 320, height: 240 });
-        }
+        if (ventanaPiP) cerrarPiP();
+        else await solicitarPiP({ width: 320, height: 240 });
     };
 
-    // Ocultamos el cursor del body mientras el PiP está activo, como feedback visual
-    useEffect(() => {
-        if (ventanaPiP) {
-            document.body.classList.add('pip-active-body');
-        } else {
-            document.body.classList.remove('pip-active-body');
-        }
-        return () => document.body.classList.remove('pip-active-body');
-    }, [ventanaPiP]);
-
+    // Al salir de la sala la ventana flotante se cierra: si no, quedaba en blanco
+    useEffect(() => () => cerrarPiP(), [cerrarPiP]);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-10 w-full max-w-4xl mx-auto">
+        <div className="@container/zona mx-auto flex w-full flex-col items-center">
             {ventanaPiP && createPortal(
                 <FloatingTimer
                     tiempoRestante={tiempoRestante}
@@ -78,58 +69,71 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
                 ventanaPiP.document.body
             )}
 
-            {/* Mantenemos la UI del reloj montada pero oculta durante el PiP para no
-                desmontar el iframe del MusicPlayer */}
-            <div className={`${ventanaPiP ? 'hidden' : 'flex'} flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 py-8 w-full`}>
-                {/* Controles Izquierda: Compartir, Música, Reset */}
-                <div className="flex items-center gap-3 order-2 md:order-1">
-                    <DialogShare enlace={enlace} codigo={codigo} />
-                    <MusicPlayer salaId={salaId} />
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={manejarReinicio}
-                        className="h-10 w-10 hover:bg-accent transition-all shadow-sm">
-                        <RotateCcw className="w-5 h-5" />
-                    </Button>
-                </div>
-
-                {/* Contenedor del Reloj y el Indicador de Modo */}
-                <div className="relative flex flex-col items-center justify-center order-1 md:order-2">
-                    <IndicadorModo
-                        modo={modo}
-                        onClickModo={manejarClickModo}
-                        onPomodoro={ponerPomodoro}
-                        onCronometro={ponerCronometro}
-                    />
-                    <RelojDigital tiempoRestante={tiempoRestante} estaActivo={estaActivo} />
-                </div>
-
-                {/* Controles Derecha: Play/Pausa, PiP, Configuración */}
-                <ControlesTimer
+            {/* Oculta (no desmontada) durante la ventana flotante: la música sigue sonando */}
+            <div
+                className={cn(
+                    'grid grid-cols-2 items-center gap-x-2 gap-y-2.5 [grid-template-areas:"modo_modo"_"reloj_reloj"_"izq_der"]',
+                    '@[43.75rem]/zona:grid-cols-[1fr_auto_1fr] @[43.75rem]/zona:gap-x-[clamp(1.75rem,5cqi,4rem)] @[43.75rem]/zona:gap-y-1.5 @[43.75rem]/zona:[grid-template-areas:"._modo_."_"izq_reloj_der"]',
+                    ventanaPiP && 'hidden',
+                )}
+            >
+                <IndicadorModo
+                    modo={modo}
                     estaActivo={estaActivo}
-                    onAlternar={alternarTemporizador}
-                    esSoportadoPiP={esSoportado}
-                    onAlternarPiP={alternarPiP}
-                    configuracion={configuracion}
-                    onGuardarConfiguracion={manejarGuardarConfiguracion}
+                    onClickModo={manejarClickModo}
+                    onPomodoro={ponerPomodoro}
+                    onCronometro={ponerCronometro}
                 />
+                <div className="zona-controles mt-[1.125rem] flex gap-1.5 [grid-area:izq] justify-self-end @[43.75rem]/zona:mt-0">
+                    <DialogShare enlace={enlace} codigo={codigo} />
+                    <MusicPlayer salaId={salaId} enLaSala={enLaSala} />
+                    <button type="button" onClick={manejarReinicio} className={claseControl} title="Reiniciar" aria-label="Reiniciar el reloj">
+                        <RotateCcw />
+                    </button>
+                </div>
+                <RelojDigital
+                    tiempoRestante={tiempoRestante}
+                    estaActivo={estaActivo}
+                    sinEmpezar={!estaActivo && tiempoRestante === tiempoInicial}
+                    avance={progresoFase == null ? null : 1 - progresoFase}
+                />
+                <div className="mt-[1.125rem] @[43.75rem]/zona:mt-0 [grid-area:der] justify-self-start">
+                    <ControlesTimer
+                        estaActivo={estaActivo}
+                        onAlternar={alternarTemporizador}
+                        esSoportadoPiP={esSoportado}
+                        onAlternarPiP={alternarPiP}
+                        configuracion={configuracion}
+                        onCambiarConfiguracion={establecerConfiguracion}
+                        enLaSala={enLaSala}
+                    />
+                </div>
             </div>
 
+            {/* Con la ventana flotante abierta, la pestaña muestra el reloj apagado y cómo traerlo */}
             {ventanaPiP && (
-                <div className="flex flex-col items-center gap-6 animate-in fade-in duration-500">
-                    <div className="flex flex-col items-center gap-2">
-                        <PictureInPicture2 className="w-12 h-12 text-muted-foreground opacity-50 mb-2" />
-                        <h3 className="text-xl font-medium tracking-tight">Temporizador en ventana</h3>
-                        <p className="text-sm text-muted-foreground text-center max-w-[15.625rem]">
-                            El reloj se está mostrando ahora en una ventana flotante para mantener tu enfoque.
-                        </p>
+                <div className="flex flex-col items-center gap-3.5 py-6 text-center animate-in fade-in duration-500">
+                    <div className="flex items-center text-[clamp(3.5rem,13vw,9.375rem)] leading-none font-semibold tracking-[-0.04em] tabular-nums text-foreground/15" aria-hidden>
+                        <span>{String(Math.floor(tiempoRestante / 60)).padStart(2, '0')}</span>
+                        <span className="mx-[0.12em] inline-flex flex-col gap-[0.2em]" aria-hidden>
+                            <i className="size-[0.1em] rounded-full bg-current" />
+                            <i className="size-[0.1em] rounded-full bg-current" />
+                        </span>
+                        <span>{String(tiempoRestante % 60).padStart(2, '0')}</span>
                     </div>
-                    <Button variant="outline" onClick={cerrarPiP}>
-                        Devolver a esta pestaña
-                    </Button>
+                    <p className="m-0 inline-flex items-center gap-2 text-[0.875rem] text-muted-foreground">
+                        <span className="size-1.5 rounded-full bg-primary" />
+                        En la ventana flotante
+                    </p>
+                    <button
+                        type="button"
+                        onClick={cerrarPiP}
+                        className="text-[0.875rem] text-muted-foreground underline decoration-border underline-offset-[3px] hover:text-foreground hover:decoration-current"
+                    >
+                        Traerlo acá
+                    </button>
                 </div>
             )}
-        </div >
+        </div>
     );
 };

@@ -300,6 +300,77 @@ html {
   }
 }
 
+/* Notas de la sala (4 · Queda el lápiz): plegada y sin el puntero encima, en vez de
+   la rayita queda el lápiz tenue; con el reloj corriendo y el mouse quieto se va. */
+.bandeja-notas {
+  transition: translate 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.35s ease 0.5s, border-color 0.35s ease 0.5s, box-shadow 0.35s ease 0.5s,
+    opacity 0.45s ease 0.5s;
+}
+.bandeja-notas-asa > * {
+  transition: opacity 0.35s ease 0.5s;
+}
+.bandeja-notas:is(:hover, :focus-within, [data-abierta]),
+.bandeja-notas:is(:hover, :focus-within, [data-abierta]) .bandeja-notas-asa > * {
+  transition-delay: 0s;
+}
+@media (hover: hover) {
+  .bandeja-notas:not(:hover, :focus-within, [data-abierta]) {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .bandeja-notas:not(:hover, :focus-within, [data-abierta]) .bandeja-notas-asa > * {
+    opacity: 0.5;
+  }
+  [data-quieto] .bandeja-notas:not([data-abierta]) {
+    opacity: 0;
+  }
+}
+
+/* La sala: la fase late con el reloj corriendo y cada dígito entra desde arriba
+   cuando cambia (sin blur: son enormes). Con el reloj corriendo y el mouse quieto
+   queda solo el reloj: se van los controles, la fase baja y la barra se desvanece. */
+@keyframes latido {
+  50% {
+    scale: 0.55;
+    opacity: 0.6;
+  }
+}
+@keyframes digito {
+  from {
+    opacity: 0;
+    translate: 0 -0.16em;
+  }
+}
+.zona-controles,
+.zona-modo {
+  transition: opacity 0.45s ease 0.5s, scale 0.45s ease 0.5s;
+}
+.sala:not([data-quieto]) .zona-controles,
+.sala:not([data-quieto]) .zona-modo {
+  transition-delay: 0s;
+}
+@media (hover: hover) {
+  [data-quieto] .zona-controles {
+    opacity: 0;
+    scale: 0.96;
+    pointer-events: none;
+  }
+  [data-quieto] .zona-modo {
+    opacity: 0.45;
+  }
+  [data-quieto] .encabezado .desvanece {
+    opacity: 0;
+  }
+}
+
+/* Alguien sumó una tarea a la sala: la rayita de la bandeja toma el acento y se estira */
+.bandeja[data-nuevas] .bandeja-asa::before {
+  background-color: var(--brand) !important;
+  scale: 1.75 1 !important;
+}
+
 /* Bandeja: lo recién creado entra deslizando desde arriba (solo opacidad y desplazamiento) */
 @keyframes bandeja-llega {
   from {

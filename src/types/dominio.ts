@@ -52,6 +52,18 @@ export interface UsuarioEnSala {
 }
 
 /**
+ * Nota rápida de la sala (post-it). Vive en el navegador (`localStorage`), es la
+ * misma en todas las salas y sigue siendo nota aunque se pase a un tema.
+ */
+export interface NotaSesion {
+  id: string;
+  texto: string;
+  hora: string;           // "18:31", cuando se anotó
+  fase: string;           // «Pomodoro», «Descanso corto»… en la que se anotó
+  temaId?: string | null; // null o sin definir = sin tema
+}
+
+/**
  * Tarea persistida en la tabla `tasks` de Supabase.
  *
  * Coincide estructuralmente con el `schema` (zod) que valida el `DataTable` en
@@ -158,4 +170,6 @@ export interface EstadoMusicaSala {
   url: string;
   isPlaying: boolean;
   updatedAt?: string;
+  /** Nombre de quien puso el video (para «La puso Ana»). */
+  puestaPor?: string;
 }

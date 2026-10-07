@@ -14,24 +14,21 @@ const Login = () => {
 	if (!cargando && user && !user.isAnonymous) return <Navigate to={volverA} replace />
 
 	return (
-		<div className="relative flex min-h-svh w-full flex-col items-center justify-center gap-8 p-6 md:p-10">
+		<main className="relative flex min-h-svh w-full flex-col items-center justify-center px-5 pt-10 pb-14">
 			<Link
 				to={volverA}
-				className="absolute top-4 left-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+				className="absolute top-4 left-5 inline-flex items-center gap-1.5 py-1.5 text-[0.875rem] text-muted-foreground hover:text-foreground md:left-8"
 			>
-				<IconArrowLeft className="size-4" />
+				<IconArrowLeft className="size-[0.9375rem]" />
 				Seguir sin cuenta
 			</Link>
-			<div className="flex w-full max-w-[23.75rem] flex-col gap-8">
-				<Link to="/" className="flex items-center gap-2 self-center">
-					<div className="flex aspect-square size-8 items-center justify-center rounded-lg text-primary">
-						<IconInnerShadowTop className="size-5" />
-					</div>
-					<span className="font-semibold text-lg">Doro</span>
+			<div className="flex w-[min(100%,23.75rem)] flex-col gap-[1.375rem]">
+				<Link to="/" aria-label="Doro, inicio" className="grid place-items-center">
+					<IconInnerShadowTop className="size-10 text-brand" />
 				</Link>
 				<LoginForm conProgreso={user?.isAnonymous ?? false} volverA={volverA} />
 			</div>
-		</div>
+		</main>
 	)
 }
 

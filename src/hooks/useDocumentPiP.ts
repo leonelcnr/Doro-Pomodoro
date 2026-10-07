@@ -50,15 +50,19 @@ export function useDocumentPiP() {
                 }
             });
 
-            // Copiamos las clases del elemento raíz para conservar el tema (ej: dark mode de Tailwind)
-            ventana.document.documentElement.className = document.documentElement.className;
-            ventana.document.documentElement.style.cssText = document.documentElement.style.cssText;
-
-            // Mantenemos el tema sincronizado mediante un MutationObserver
-            const observador = new MutationObserver(() => {
-                ventana.document.documentElement.className = document.documentElement.className;
-                ventana.document.documentElement.style.cssText = document.documentElement.style.cssText;
-            });
+            // Copiamos el tema (clase) y el color de acento (data-acento) del elemento raíz,
+            // y los mantenemos sincronizados mediante un MutationObserver
+            const copiarTema = () => {
+                const origen = document.documentElement;
+                const destino = ventana.document.documentElement;
+                destino.className = origen.className;
+                destino.style.cssText = origen.style.cssText;
+                const acento = origen.getAttribute('data-acento');
+                if (acento) destino.setAttribute('data-acento', acento);
+                else destino.removeAttribute('data-acento');
+            };
+            copiarTema();
+            const observador = new MutationObserver(copiarTema);
             observador.observe(document.documentElement, { attributes: true });
 
             establecerVentanaPiP(ventana);
