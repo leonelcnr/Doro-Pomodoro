@@ -21,11 +21,9 @@ import { useAuth } from "@/features/auth/context/useAuth";
 import { esUuid } from "@/lib/uuid";
 import type { Invitacion } from "@/types/dominio";
 
-// Una invitación es válida si no expiró y todavía le quedan usos disponibles
+// Una invitación es válida si no expiró (no tiene tope de usos: las salas son espontáneas)
 function InvitacionValida(inv: Invitacion) {
-    const noExpirada = !inv.expires_at || new Date(inv.expires_at).getTime() > Date.now();
-    const tieneUsos = inv.max_uses == null || inv.uses < inv.max_uses;
-    return noExpirada && tieneUsos;
+    return !inv.expires_at || new Date(inv.expires_at).getTime() > Date.now();
 }
 
 

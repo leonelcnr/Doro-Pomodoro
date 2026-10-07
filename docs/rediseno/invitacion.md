@@ -56,7 +56,7 @@ Lo que cambia respecto de la recomendación (4):
 ### Arreglado (2026-10-06)
 
 - `parsearInvitacion` reconoce `/invitacion/XXXX`: pegar el link en el home ya funciona.
-- Migración `20261006150000_invitaciones_sin_tope_de_usos.sql`: `join_room` deja de mirar
+- Migración `20261007003452_invitaciones_sin_tope_de_usos.sql`: `join_room` deja de mirar
   `max_uses` y de contar usos (también acepta el código en minúsculas); `create_room`
   conserva `p_max_uses` en la firma pero lo ignora. El frontend ya no lee `max_uses` ni
   `uses`. Las columnas se borran en otra migración, cuando el frontend nuevo esté

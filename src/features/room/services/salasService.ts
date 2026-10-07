@@ -55,7 +55,7 @@ export async function crearSala(estadoInicial?: EstadoReloj): Promise<string> {
   const { data, error } = await supabase.rpc("create_room", {
     p_name: "Sala de estudio",
     p_is_public: false,
-    p_max_uses: null,
+    p_max_uses: null, // contrato de la RPC; join_room ya no mira el tope
     p_expires_minutes: null,
   });
   if (error) throw error;
@@ -95,7 +95,7 @@ export async function unirseASalaPorId(salaId: string): Promise<void> {
 export async function obtenerInvitacion(salaId: string): Promise<Invitacion | null> {
   const { data, error } = await supabase
     .from("room_invites")
-    .select("code, expires_at, max_uses, uses, created_at")
+    .select("code, expires_at, created_at")
     .eq("room_id", salaId)
     .order("created_at", { ascending: false })
     .limit(1);
