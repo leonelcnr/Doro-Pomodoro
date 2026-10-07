@@ -26,7 +26,7 @@ aprobación se pasa a la siguiente.
 | 1.4 | Dashboard | `/dashboard` | ✅ 3 · Resumen, Estudio y Tareas, con el Resumen como una cifra por vez y el índice de puntos que se vuelven íconos (11ª ronda · 1) (aprobado 2026-10-06) | [Dashboard](https://claude.ai/artifact/LHuwohFifzRF4xxXYB7AqJ) |
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ✅ 1 · Una sola puerta: se entra como anónimo y la cuenta es para guardar el progreso (aprobado 2026-10-06). Cambios de código por fases en `docs/rediseno/login.md` | [Login](https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23) |
-| 1.7 | Invitación | `/invitacion/:code` | ✅ 1 · Directo: el link te mete en la sala sin preguntar (aprobado 2026-10-06). 2 y 3 quedan para cuando haya sistema de amigos. Detalle en `docs/rediseno/invitacion.md` | [Invitación](https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm) |
+| 1.7 | Invitación | `/invitacion/:code` | ✅ 1 · Directo: el link te mete en la sala sin preguntar (aprobado 2026-10-06). 2 y 3 quedan para cuando haya sistema de amigos. Detalle y 4 pendientes para la Fase 3 en `docs/rediseno/invitacion.md` | [Invitación](https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm) |
 | 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ⏳ | — |
 | 1.9 | Estados de error y vacío | `ErrorPage`, 404 | ⏳ | — |
 

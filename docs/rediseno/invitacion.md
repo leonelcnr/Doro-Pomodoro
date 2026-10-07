@@ -62,6 +62,30 @@ Lo que cambia respecto de la recomendación (4):
   `uses`. Las columnas se borran en otra migración, cuando el frontend nuevo esté
   desplegado.
 
+## Pendiente para la Fase 3 (anotado 2026-10-06)
+
+Se hace cuando estén aprobados todos los bocetos, junto con el resto de la Fase 3.
+
+1. **Pasar la 1 · Directo al código** (`InvitacionPage`, que hoy ya te une sola):
+   - Mientras entra: el arco del anillo con «Entrando a la sala…», en vez de
+     «Procesando tu invitación…».
+   - Al llegar, un aviso: «Entraste a *Sala*. Te ven como *Invitado*», o «Volviste a
+     *Sala*» si ya eras miembro.
+   - Errores con las pantallas del boceto, no el mensaje crudo de Postgres: «Este link ya
+     no sirve» (venció) y «No encontramos esta sala» (no existe o se cerró), con el
+     renglón para pegar otro link e «Ir a Doro».
+   - Para distinguirlos, que `join_room` diga por qué falla (hoy tira la misma excepción
+     para los dos casos).
+2. **Que el anónimo no aparezca como «Usuario».** La presencia arma el nombre con el
+   email: leer primero `user_metadata.nombre` y dejar cambiarlo desde la sala. Toca
+   también sala y login: coordinar con esas pantallas.
+3. **Que las vistas previas de links no entren a la sala.** Con el link directo, la
+   vista previa de WhatsApp o Discord puede crear un anónimo. Unirse recién cuando corre
+   el JS en el navegador, o la protección contra bots de la Fase C del login.
+4. **Borrar las columnas `max_uses` y `uses`** de `room_invites` cuando el frontend sin
+   tope de usos esté en producción (el anterior todavía las lee). `create_room` puede
+   perder `p_max_uses` en la misma migración, si ya nadie lo manda.
+
 ## Primera ronda (publicada 2026-10-06)
 
 Mundo del home D4 y de la sala final: fondo neutro, un acento, líneas finas. Ajustes
