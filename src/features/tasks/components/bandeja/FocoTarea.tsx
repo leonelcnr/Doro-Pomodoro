@@ -3,6 +3,7 @@ import { Check, X } from "lucide-react"
 import { tipoDe } from "@/features/tasks/avance"
 import { cuandoCorto, diasHasta, estaRendido } from "@/features/tasks/bandeja"
 import { IconoTipo } from "@/features/tasks/components/IconosTareas"
+import { Regla } from "@/features/tasks/components/Regla"
 import { cn } from "@/lib/utils"
 import type { ItemChecklist, Tarea } from "@/types/dominio"
 
@@ -86,26 +87,7 @@ export function FocoTarea({ foco, nombreTema, onSoltar, onMarcarHecha, onCambiar
             </div>
         )
     } else if (lista.length) {
-        // La regla: un segmento por punto (o unidad), con su número debajo
-        detalle = (
-            <div role="group" aria-label={`${lista.filter((i) => i.hecho).length} de ${lista.length}`} className="box-content flex h-8 gap-[0.1875rem] pb-4">
-                {lista.map((item, i) => (
-                    <button
-                        key={item.id}
-                        type="button"
-                        aria-pressed={item.hecho}
-                        aria-label={`${i + 1}`}
-                        title={item.texto}
-                        onClick={() => alternar(item.id)}
-                        className="relative max-w-7 min-w-2 flex-1 basis-0 rounded-[2px] bg-border transition-[background-color,scale] duration-150 hover:bg-brand/35 active:scale-y-85 aria-pressed:bg-brand"
-                    >
-                        <span className="pointer-events-none absolute top-[calc(100%+0.25rem)] left-1/2 -translate-x-1/2 text-[0.65625rem] text-muted-foreground tabular-nums">
-                            {i + 1}
-                        </span>
-                    </button>
-                ))}
-            </div>
-        )
+        detalle = <Regla items={lista} nombre={tipo === "parcial" ? "Unidades" : "Puntos"} conNombres={tipo === "parcial"} onCambiar={(l) => onCambiarChecklist(foco, l)} className="h-8" />
     }
 
     return (

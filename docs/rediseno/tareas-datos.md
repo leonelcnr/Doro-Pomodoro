@@ -101,7 +101,8 @@ drop table public.calendar_events;
 
 Orden:
 1. ~~Aplicar la migración 1.~~ Hecho (2026-10-05).
-2. Desplegar el front nuevo, sin `src/features/calendar/`.
+2. Desplegar el front nuevo, sin `src/features/calendar/` (el código ya se borró el
+   2026-10-07; falta el deploy).
 3. Aplicar la migración 2.
 
 `sync-calendar` deja de funcionar con el `drop` hasta la Fase C. No pasa nada, porque ya no

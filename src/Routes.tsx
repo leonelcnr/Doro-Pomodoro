@@ -6,7 +6,7 @@
 //
 // Definición central de rutas de la app (react-router). Estructura anidada:
 //  - AuthProviderLayout: provee el contexto de autenticación a todo lo de adentro.
-//    - HomeLayout: páginas principales (inicio, dashboard, calendario, sala), con o sin cuenta.
+//    - HomeLayout: páginas principales (inicio, tareas, dashboard, sala), con o sin cuenta.
 //    - AuthLayout: la página de la cuenta (/login; /registro redirige ahí).
 //    - Páginas sueltas: invitación, términos y privacidad.
 //
@@ -27,7 +27,7 @@ import ErrorPage from "./pages/ErrorPage";
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const CalendarPage = lazy(() => import("./pages/CalendarPage"));
+const Tareas = lazy(() => import("./pages/TareasPage"));
 const Invitacion = lazy(() => import("./pages/InvitacionPage"));
 const Room = lazy(() => import("./pages/RoomPage"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -65,8 +65,10 @@ export const router = createBrowserRouter([
                 element: <HomeLayout />,
                 children: [
                     { index: true, element: conSuspense(<Home />) },
+                    { path: "tareas", element: conSuspense(<Tareas />) },
                     { path: "dashboard", element: conSuspense(<Dashboard />) },
-                    { path: "calendar", element: conSuspense(<CalendarPage />) },
+                    // El calendario viejo se fue: su lugar es la vista «Calendario» de Tareas
+                    { path: "calendar", element: <Navigate to="/tareas" replace /> },
                     { path: "room/:roomId", element: conSuspense(<Room />) },
                 ],
             },

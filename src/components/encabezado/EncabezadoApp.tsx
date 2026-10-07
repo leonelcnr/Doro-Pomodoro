@@ -17,12 +17,11 @@ import { useHoraActual } from "@/features/home/hooks/useHoraActual"
 import { cn } from "@/lib/utils"
 import { MenuCuenta } from "./MenuCuenta"
 
-// Secciones de la app. «Tareas» se suma cuando exista la pantalla nueva
-// (que también reemplaza a Calendario).
+// Secciones de la app. El calendario vive adentro de Tareas.
 const SECCIONES = [
     { ruta: "/", nombre: "Inicio" },
+    { ruta: "/tareas", nombre: "Tareas" },
     { ruta: "/dashboard", nombre: "Dashboard" },
-    { ruta: "/calendar", nombre: "Calendario" },
 ] as const
 
 interface EncabezadoAppProps {

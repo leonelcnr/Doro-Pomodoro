@@ -53,3 +53,18 @@ export function IconoDeTema({ icono, className }: { icono: IconoTema | "bandeja"
 export function IconoOrden({ className }: { className?: string }) {
     return <Svg className={className}><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M13 6h8M13 12h6M13 18h4" /></Svg>
 }
+
+/** La vista «Calendario» de Tareas. */
+export function IconoCalendario({ className }: { className?: string }) {
+    return <Svg className={className}><path d="M4 7h10M8 12h12M4 17h8" /></Svg>
+}
+
+/** Observaciones y notas: el papelito con la esquina doblada. */
+export function IconoNota({ className }: { className?: string }) {
+    return (
+        <Svg className={className}>
+            <path d="M4.5 6A1.5 1.5 0 0 1 6 4.5h12A1.5 1.5 0 0 1 19.5 6v8l-5.5 5.5H6A1.5 1.5 0 0 1 4.5 18z" />
+            <path d="M19.5 14H15.5a1.5 1.5 0 0 0-1.5 1.5v4" />
+        </Svg>
+    )
+}
