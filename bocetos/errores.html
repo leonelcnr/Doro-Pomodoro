@@ -1,0 +1,907 @@
+<meta charset="utf-8">
+<title>Errores y vacíos de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Errores y vacíos de Doro, primera ronda. ErrorPage, 404, sin conexión, sala que no está y los estados vacíos de Tareas, Dashboard y la bandeja. Mundo del home D4 y de la invitación: fondo neutro, un acento, líneas finas. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --caja: oklch(0.955 0.004 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklab, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --salida: cubic-bezier(.16,1,.3,1);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285); --caja: oklch(0.13 0.004 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285); --caja: oklch(0.13 0.004 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285); --caja: oklch(0.10 0.003 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.resumen b { color: var(--fg); font-weight: 500; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 760px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+.cuerpo { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; position: relative; z-index: 2; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.cuenta-tb { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tenue); }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--campo); border: 2px solid var(--bg); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--fg); position: relative; flex-shrink: 0; transition: opacity .4s; }
+.avatar svg { width: 15px; height: 15px; color: var(--tenue); }
+.avatar.yo { background: var(--acento-suave); border-color: var(--bg); box-shadow: 0 0 0 1px color-mix(in oklch, var(--acento) 35%, var(--linea)); }
+.avatar[data-nombre]:hover::after { content: attr(data-nombre); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 6px; white-space: nowrap; z-index: 5; }
+.avatares { display: flex; }
+.avatares .avatar + .avatar { margin-left: -8px; }
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); max-width: calc(100% - 32px); text-align: center; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+.entra { animation: fundido .35s ease both; }
+@keyframes fundido { from { opacity: .15; } }
+
+.btn-link { border: 0; background: none; padding: 0; font: inherit; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; cursor: pointer; }
+.btn-link:hover { color: var(--fg); text-decoration-color: currentColor; }
+.btn-acento { height: 46px; padding: 0 22px; border: 0; border-radius: 10px; background: var(--acento); color: var(--acento-fg); font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background-color .15s; }
+.btn-acento:hover { background: color-mix(in oklch, var(--acento) 88%, var(--fg)); }
+.btn-acento svg { width: 16px; height: 16px; }
+.btn-texto { border: 0; background: none; padding: 0; font: inherit; font-weight: 500; color: var(--acento); }
+.btn-texto:hover { text-decoration: underline; text-underline-offset: 3px; }
+.d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 42px; font-size: 15px; transition: border-color .2s; border-radius: 0; }
+.d-linea:focus { outline: none; border-color: var(--acento); }
+.d-linea::placeholder { color: var(--tenue); }
+
+/* ───────── El anillo del home (D4) ───────── */
+.d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; padding: 32px 20px 88px; text-align: center; }
+.d-anillo { position: relative; width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; max-width: 100%; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; border: 0; background: none; padding: 0; color: inherit; }
+button.d-anillo:hover .relleno { fill: color-mix(in oklch, var(--superficie) 70%, var(--campo)); }
+.d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.d-anillo .pista-anillo { stroke: var(--linea); }
+.d-anillo .arco { stroke: var(--acento); }
+.d-anillo .relleno { fill: var(--superficie); transition: fill .2s; }
+.d-anillo .arco.tenue { stroke: var(--tenue); }
+.d-anillo.gira .arco { transform-origin: 100px 100px; animation: girar 2.4s linear infinite; }
+.d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 0 16%; }
+.d-texto strong { font-size: clamp(20px, 3.4cqi, 26px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.d-texto span { font-size: 13px; color: var(--tenue); }
+.d-unirse { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(100%, 360px); }
+.d-unirse label { font-size: 13.5px; color: var(--tenue); }
+.d-pie { margin: -12px 0 0; font-size: 13.5px; color: var(--tenue); max-width: 40ch; text-wrap: balance; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+/* Una línea que avisa, en su lugar (3): sin caja, sin color, se cierra */
+.linea-aviso { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: nowrap; margin: 0 20px; padding: 10px 0; border-bottom: 1px solid var(--linea); font-size: 13.5px; color: var(--tenue); text-align: center; animation: fundido .4s ease both; }
+@container app (min-width: 720px) { .linea-aviso { margin: 0 32px; } }
+.linea-aviso > span:not(.punto) { flex: 0 1 auto; min-width: 0; text-wrap: balance; }
+.linea-aviso .cerrar, .linea-aviso .punto { flex-shrink: 0; }
+.linea-aviso b { color: var(--fg); font-weight: 500; }
+.linea-aviso .cerrar { border: 0; background: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 6px; color: var(--tenue); padding: 0; }
+.linea-aviso .cerrar:hover { background: var(--campo); color: var(--fg); }
+.linea-aviso .cerrar svg { width: 14px; height: 14px; }
+.linea-aviso .punto { background: var(--tenue); }
+.linea-aviso.se-va { opacity: 0; transition: opacity .5s; }
+
+/* ───────── Cargando: el arco que gira ───────── */
+.carga { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px 20px 104px; text-align: center; }
+.carga svg { width: 56px; height: 56px; }
+.carga .pista-anillo, .giro .pista-anillo { stroke: var(--linea); }
+.carga .arco, .giro .arco { stroke: var(--acento); transform-origin: 50% 50%; animation: girar 1.1s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.carga p { margin: 0; color: var(--tenue); font-size: 14.5px; }
+.giro { width: 16px; height: 16px; vertical-align: -3px; }
+
+/* ───────── La sala (de la sala final), simplificada ───────── */
+.s-main { container: zona / inline-size; --tam: 17cqi; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 104px; position: relative; }
+.zona { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "modo modo" "reloj reloj" "izq der"; align-items: center; gap: 10px 8px; }
+@container zona (min-width: 700px) { .zona { grid-template-columns: 1fr auto 1fr; grid-template-areas: ". modo ." "izq reloj der"; gap: 6px clamp(28px, 5cqi, 64px); } }
+.ctrl { display: flex; gap: 6px; grid-area: izq; justify-self: end; margin-top: 18px; }
+.ctrl.der { grid-area: der; justify-self: start; }
+@container zona (min-width: 700px) { .ctrl { margin-top: 0; } }
+.ic { width: 40px; height: 40px; border-radius: 10px; border: 1px solid transparent; background: none; color: var(--tenue); display: grid; place-items: center; padding: 0; transition: background-color .2s, color .2s; }
+.ic:hover { background: var(--campo); color: var(--fg); }
+.ic svg { width: 19px; height: 19px; }
+.ic.chico { width: 32px; height: 32px; border-radius: 8px; }
+.ic.chico svg { width: 17px; height: 17px; }
+.ic.play { background: none; border-color: var(--linea); color: var(--fg); }
+.modo { grid-area: modo; justify-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); }
+.punto { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.corre .modo .punto { animation: latido 2.4s ease-in-out infinite; }
+@keyframes latido { 50% { transform: scale(.55); opacity: .6; } }
+.reloj { grid-area: reloj; justify-self: center; display: flex; align-items: center; font-size: clamp(56px, var(--tam), 184px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; user-select: none; }
+.dos-puntos { display: inline-flex; flex-direction: column; gap: .2em; margin: 0 .14em; }
+.dos-puntos i { width: .1em; height: .1em; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 70%, transparent); }
+.salir { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; margin-left: -10px; border: 0; background: none; border-radius: 8px; color: var(--tenue); font-size: 14px; }
+.salir:hover { color: var(--fg); background: var(--campo); }
+.salir svg { width: 17px; height: 17px; }
+.en-sala { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; display: none; }
+@container app (min-width: 600px) { .en-sala { display: inline; } }
+/* Sin conexión en su lugar: los demás se atenúan (no sabemos si siguen) */
+.sin-red .avatares .avatar:not(.yo) { opacity: .35; }
+
+/* ───────── Errores en columna (como los de la invitación) ───────── */
+.er-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px 88px; }
+.er-col { width: min(100%, 380px); display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.er-ic { width: 44px; height: 44px; color: var(--tenue); }
+.er-tit { margin: 0; font-size: clamp(24px, 4cqi, 30px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+.er-txt { margin: -6px 0 8px; color: var(--tenue); font-size: 15px; text-wrap: balance; }
+.er-col .d-unirse { width: 100%; margin-top: 8px; }
+.er-col .btn-acento { min-width: 200px; }
+.er-chica { font-size: 13px; color: var(--tenue); margin: 0; }
+details.detalle { font-size: 13px; color: var(--tenue); width: 100%; }
+details.detalle summary { cursor: pointer; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+details.detalle summary::-webkit-details-marker { display: none; }
+details.detalle summary::after { content: "›"; transition: transform .2s; }
+details.detalle[open] summary::after { transform: rotate(90deg); }
+details.detalle pre { text-align: left; margin: 10px 0 0; font-size: 11.5px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; }
+
+/* ───────── Páginas con contenido (Tareas y Dashboard) ───────── */
+.pg { flex: 1; display: flex; flex-direction: column; padding: 20px clamp(20px, 7cqi, 120px) 64px; min-width: 0; }
+.pg-frase { margin: 8px 0 12px; font-size: clamp(24px, 4.2cqi, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.pg-frase span { color: var(--tenue); font-weight: 500; }
+.avance { height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
+.avance i { display: block; height: 100%; width: 0; background: var(--acento); }
+.pestanas { display: flex; gap: 22px; margin: 20px 0 24px; border-bottom: 1px solid var(--linea); flex-wrap: wrap; align-items: end; }
+.pestanas button { border: 0; background: none; padding: 8px 0; margin-bottom: -1px; color: var(--tenue); font-size: 14.5px; border-bottom: 2px solid transparent; }
+.pestanas button[aria-current] { color: var(--fg); border-color: var(--fg); font-weight: 500; }
+.pestanas .der { margin-left: auto; display: flex; gap: 14px; }
+.pestanas .der button { font-size: 13px; }
+
+/* Tareas: las cajas de los temas (S2: cajas oscuras) */
+.cajas { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+.caja { position: relative; min-height: 132px; border-radius: 14px; background: var(--caja); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; text-align: left; border: 1px solid transparent; color: inherit; }
+button.caja:hover { border-color: var(--linea); }
+.caja h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+.caja p { margin: 0; font-size: 13px; color: var(--tenue); }
+.caja .avance { margin-top: auto; }
+.caja.nueva { background: none; border: 1px dashed color-mix(in oklch, var(--tenue) 45%, var(--linea)); justify-content: center; }
+.caja.nueva .d-linea { text-align: left; font-size: 15.5px; font-weight: 500; }
+.caja.nueva .d-linea::placeholder { font-weight: 400; }
+.caja.eco { background: none; border: 1px dashed var(--linea); opacity: .55; pointer-events: none; }
+.caja.eco i { display: block; height: 10px; border-radius: 4px; background: var(--linea); width: 55%; }
+.caja.eco i + i { width: 30%; height: 8px; }
+.caja.eco .avance { opacity: .8; }
+.pista-caja { font-size: 12.5px; color: var(--tenue); }
+
+/* Dashboard: una cifra por vez */
+.cifra { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding: 12px 0 8px; }
+.cifra-tit { display: inline-flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin: 0; }
+.cifra-tit svg { width: 20px; height: 20px; color: var(--acento); }
+.cifra-num { font-size: clamp(56px, 11cqi, 104px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: color-mix(in oklch, var(--fg) 52%, var(--bg)); }
+.cifra-num small { font-size: .38em; letter-spacing: -0.02em; margin-left: .15em; }
+.cifra-frase { margin: 0; color: var(--tenue); max-width: 42ch; text-wrap: balance; }
+.cifra-frase b { color: var(--acento); font-weight: 500; }
+.mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: min(100%, 340px); margin-top: 14px; position: relative; }
+.mini::before { content: ""; position: absolute; left: 0; right: 0; top: 18px; border-top: 1px dashed var(--linea); }
+.mini span { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; color: var(--tenue); }
+.mini span::before { content: ""; width: 100%; height: 56px; border-bottom: 2px solid var(--linea); }
+.mini span.hoy { color: var(--fg); font-weight: 500; }
+.mini span.hoy::before { border-color: var(--acento); }
+.mini-meta { font-size: 11.5px; color: var(--tenue); width: min(100%, 340px); text-align: right; margin-top: -4px; }
+.indice-dash { display: flex; justify-content: center; gap: 12px; padding: 18px 0 0; }
+.indice-dash i { width: 6px; height: 6px; border-radius: 50%; background: var(--linea); }
+.indice-dash i:first-child { background: var(--acento); }
+.cuenta-nota { font-size: 13px; color: var(--tenue); margin: 6px 0 0; }
+
+/* ───────── La bandeja de la sala (T43) ───────── */
+.app.con-bandeja .s-main { padding-bottom: 330px; }
+.bandeja { position: absolute; left: 50%; bottom: 0; z-index: 5; width: min(100%, 620px); height: 300px; transform: translateX(-50%); display: flex; flex-direction: column; border: 1px solid var(--linea); border-bottom: 0; border-radius: 18px 18px 0 0; background: var(--superficie); box-shadow: var(--sombra); }
+.bandeja::before { content: ""; display: block; width: 32px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: var(--linea); flex-shrink: 0; }
+.ba-cab { display: flex; align-items: center; gap: 4px; padding: 6px 12px 6px 20px; flex-shrink: 0; }
+.ba-cab h3 { margin: 0 auto 0 0; font-size: 15px; font-weight: 600; }
+.ba-cuerpo { flex: 1; overflow: auto; padding: 4px 20px 20px; min-height: 0; display: flex; flex-direction: column; }
+.ba-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding-bottom: 8px; }
+.ba-col svg.er-ic { width: 32px; height: 32px; }
+.ba-col strong { font-size: 16px; font-weight: 600; }
+.ba-col p { margin: 0 0 4px; font-size: 13.5px; color: var(--tenue); }
+.ba-col .d-linea { max-width: 320px; }
+.ba-anillo { display: flex; align-items: center; gap: 14px; text-align: left; }
+.ba-anillo svg { width: 52px; height: 52px; transform: rotate(-90deg); flex-shrink: 0; }
+.ba-anillo .pista-anillo { stroke: var(--linea); }
+.tl { display: grid; grid-template-columns: 56px 1fr; column-gap: 12px; }
+.tl-dia { position: relative; font-size: 12.5px; color: var(--tenue); padding-top: 11px; }
+.tl-dia.marca-dia { color: var(--fg); font-weight: 500; }
+.tl-dia.marca-dia::after { content: ""; position: absolute; right: -9px; top: 18px; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.tl-ren { display: flex; align-items: center; gap: 12px; min-height: 42px; border-left: 1px solid var(--linea); padding-left: 16px; font-size: 14.5px; }
+.tl-ren .check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid color-mix(in oklch, var(--tenue) 60%, var(--linea)); flex-shrink: 0; }
+.tl-ren .d-linea { text-align: left; height: 34px; font-size: 14.5px; }
+.tl-ren.hueco .d-linea { border-bottom-style: dashed; border-color: color-mix(in oklch, var(--tenue) 45%, var(--linea)); }
+.tl-ren.hueco .d-linea:focus { border-bottom-style: solid; border-color: var(--acento); }
+.tl-ren.eco { opacity: .5; }
+.tl-ren.eco i { display: block; height: 8px; width: 40%; border-radius: 4px; background: var(--linea); }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+td.elegida, th.elegida { background: var(--acento-suave); padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p, .recomendacion li { color: var(--tenue); max-width: 64ch; }
+.recomendacion p { margin: 0 0 12px; }
+.recomendacion ul { margin: 0 0 12px; padding-left: 18px; }
+.recomendacion li + li { margin-top: 6px; }
+.recomendacion b { color: var(--fg); font-weight: 600; }
+pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.2 3.8-4.8 7-4.8s5.8 1.6 7 4.8"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-compartir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
+  <symbol id="i-musica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-reiniciar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-pip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="12" width="6" height="4" rx="1" fill="currentColor"/></symbol>
+  <symbol id="i-ajustes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-cartel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="M12 3v3"/><path d="M18 6a2 2 0 0 1 1.387.56l2.307 2.22a1 1 0 0 1 0 1.44l-2.307 2.22A2 2 0 0 1 18 13H6a2 2 0 0 1-1.387-.56l-2.306-2.22a1 1 0 0 1 0-1.44l2.306-2.22A2 2 0 0 1 6 6z"/></symbol>
+  <symbol id="i-trabado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/><path d="M12 8v4.5"/><path d="M12 16.2h.01"/></symbol>
+  <symbol id="i-sin-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-puerta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21h14"/><path d="M7 21V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V21"/><circle cx="14" cy="12.5" r=".8" fill="currentColor"/></symbol>
+  <symbol id="i-cajas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><path d="M17.25 14.5v5.5M14.5 17.25H20" /></symbol>
+  <symbol id="i-grafico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-lista" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="4" height="4" rx="1"/><path d="M11 6h9.5"/><rect x="3.5" y="15" width="4" height="4" rx="1"/><path d="M11 17h9.5"/></symbol>
+  <symbol id="i-grilla" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-flecha-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-flecha-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Errores y vacíos de Doro</h1>
+    <p><b>Lo que se ve cuando algo falla o todavía no hay nada.</b> Hoy no hay página 404: cualquier dirección que no existe cae en <code>ErrorPage</code> («Algo salió mal» y «Recargar», que no arregla nada). Si se rompe una página, se va también el encabezado. La sala muestra el mensaje crudo del error, y cuando se corta la conexión no se ve nada.</p>
+    <p>Las cuatro maquetas muestran el mismo caso: elegilo en <b>«Pantalla»</b>. En los vacíos <b>se puede escribir</b> (un tema, una tarea) y la pantalla se llena; «Sin conexión» vuelve sola a los 6 s. <b>«Mostrar otra vez»</b> repite el caso desde el principio. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Pantalla</span>
+      <div class="segmentado" id="caso" role="group" aria-label="Caso"><button type="button" data-v="p404">No existe</button><button type="button" data-v="error">Algo se trabó</button><button type="button" data-v="red">Sin conexión</button><button type="button" data-v="sala">Sala que no está</button><button type="button" data-v="tareas">Tareas vacías</button><button type="button" data-v="dash">Dashboard vacío</button><button type="button" data-v="bandeja">Bandeja vacía</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Quién</span>
+      <div class="segmentado" id="quien" role="group" aria-label="Quién usa la app"><button type="button" data-v="nuevo">Anónimo</button><button type="button" data-v="cuenta">Con cuenta</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="r1" data-v="r1">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">1</span><span class="nombre">La columna</span></h2>
+        <p class="resumen">Cada caso es <b>una columna al centro</b>: un ícono de línea, el título, una frase y una acción. Es el molde de los errores de la invitación, y los vacíos lo repiten con la entrada para crear lo primero.</p>
+        <p class="enfoque">Lo primero: <b>qué pasó y qué hacer</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Un solo molde para todo, ya aprobado en la invitación.</li><li>Un componente (<code>EstadoColumna</code>) y listo.</li><li>Se lee de un vistazo, también en el celular.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>En los vacíos tapa la pantalla: no ves cómo va a quedar.</li><li>Sin conexión tapa el reloj, que podría seguir andando.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r2" data-v="r2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">2</span><span class="nombre">El anillo</span></h2>
+        <p class="resumen">El anillo del home <b>cuenta lo que pasa</b>: punteado en el 404, cortado si algo se trabó, girando sin conexión, en cero en lo vacío. <b>El centro del anillo es el botón</b>, como «Crear sala» en el home.</p>
+        <p class="enfoque">Lo primero: <b>que se reconozca Doro aunque algo falle</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Identidad: cada estado tiene la misma forma que el home.</li><li>Un botón enorme, cómodo con el dedo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un anillo en cero parece avance: «0 %» se lee como un dato.</li><li>En la bandeja no entra; queda un anillo chico que no dice nada.</li><li>Mucho gesto para un error.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r3" data-v="r3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">3</span><span class="nombre">En su lugar</span></h2>
+        <p class="resumen">No hay pantalla de error ni de vacío: <b>queda la de siempre, y lo que falta se dice donde iría</b>. El 404 te deja en el inicio con una línea; sin conexión, el reloj sigue; los vacíos muestran la forma en línea punteada y se llenan ahí mismo.</p>
+        <p class="enfoque">Lo primero: <b>no cortar lo que estabas haciendo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj nunca se corta por la conexión.</li><li>El vacío enseña la forma: la primera caja se crea donde va.</li><li>El encabezado queda siempre.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El 404 que te lleva al inicio esconde el error: quien escribió mal no ve bien qué pasó.</li><li>Una línea de aviso se puede pasar por alto.</li><li>Más trabajo: un <code>errorElement</code> por ruta.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r4" data-v="r4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">4</span><span class="nombre">Según qué se corta</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen"><b>La columna (1) para lo que corta el camino</b>: el 404, «algo se trabó» y la sala que no está. <b>En su lugar (3) para lo que no lo corta</b>: la conexión y los vacíos.</p>
+        <p class="enfoque">Lo primero: <b>que el tamaño del aviso sea el del problema</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Los errores son los de la invitación: una sola familia.</li><li>El reloj y la estructura nunca se tapan.</li><li>Un vacío nunca es un cartel muerto: se escribe ahí.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos moldes en vez de uno (aunque con la misma tipografía y las mismas líneas).</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Caso</th><th>1 · La columna</th><th>2 · El anillo</th><th>3 · En su lugar</th><th class="elegida">4 · Según qué se corta</th></tr></thead>
+        <tbody>
+          <tr><td>No existe (404)</td><td>«Esta página no existe» e «Ir al inicio»</td><td>Anillo punteado: «Ir al inicio»</td><td>Te lleva al inicio con una línea</td><td class="elegida">Columna, con el encabezado</td></tr>
+          <tr><td>Algo se trabó</td><td>«Recargar»; el detalle, plegado</td><td>Anillo cortado: «Recargar»</td><td>Solo el área de la página; queda el encabezado</td><td class="elegida">Columna, en el área de la página</td></tr>
+          <tr><td>Sin conexión</td><td>Tapa todo hasta que vuelve</td><td>Anillo que gira; tapa todo</td><td>Una línea; el reloj sigue</td><td class="elegida">Una línea; el reloj sigue</td></tr>
+          <tr><td>Sala que no está</td><td>Como el error de la invitación</td><td>Anillo: «Crear una sala»</td><td>Inicio con una línea</td><td class="elegida">Como el error de la invitación</td></tr>
+          <tr><td>Vacíos</td><td>Columna con la entrada</td><td>Anillo en cero</td><td>La forma punteada; se escribe donde va</td><td class="elegida">La forma punteada</td></tr>
+          <tr><td>Trabajo</td><td>Un componente</td><td>Un componente con el SVG del anillo</td><td>Un <code>errorElement</code> por ruta y un vacío por pantalla</td><td class="elegida">Los dos, pero sin el anillo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Recomendación: 4 · Según qué se corta</h3>
+        <p><b>Un error que corta el camino merece una pantalla; uno que no lo corta, una línea.</b> El 404, la sala que no está y «algo se trabó» te dejan sin nada que hacer en esa página: ahí va la columna de la invitación, con una sola acción. La conexión y los vacíos no te frenan: la pantalla sigue siendo útil, así que el aviso va donde falta y no tapa nada.</p>
+        <p><b>Sin conexión, el reloj sigue.</b> Es local; cuando vuelve la conexión se sincroniza con la sala. Tapar el reloj por un corte de 5 s sería el peor caso de la app.</p>
+        <p><b>Los vacíos se escriben donde van.</b> La caja punteada del primer tema, el renglón punteado de «Hoy» en la bandeja y el dashboard en cero con la frase que dice qué va a aparecer. Nada de «0 %»: en el dashboard la cifra va en gris tenue para que no se lea como un dato.</p>
+        <p><b>Lo descartaría:</b> el anillo (2) para errores. El anillo es la acción principal del home; usarlo para «algo se rompió» le quita fuerza.</p>
+        <p><b>El fondo:</b> liso, como se decidió. Con puntos, la columna del error queda flotando sobre la trama y se lee peor.</p>
+        <h4>Textos</h4>
+        <ul>
+          <li><b>404:</b> «Esta página no existe», con la dirección en gris. Si parece un link de sala (<code>/sala/…</code>, <code>/invite/…</code>), el renglón «¿Te pasaron un link?» del home.</li>
+          <li><b>Error:</b> «Algo se trabó» y «Recargá y seguí: lo que guardaste no se pierde». El detalle técnico, plegado.</li>
+          <li><b>Sala:</b> los mismos textos que el error de la invitación («No encontramos esta sala»), con «Crear una sala» como acción.</li>
+        </ul>
+        <h4>Qué encontré en el código</h4>
+        <ul>
+          <li><b>No hay ruta 404.</b> Una dirección desconocida llega a <code>ErrorPage</code> como un <code>ErrorResponse</code> 404 (no un <code>Error</code>), y se ve «Algo salió mal» con «Recargar». Falta <code>path: "*"</code>.</li>
+          <li><b><code>ErrorPage</code> es el <code>errorElement</code> de la raíz</b> (<code>AuthProviderLayout</code>): si se rompe el dashboard, se va el encabezado entero. Con otro <code>errorElement</code> en <code>HomeLayout</code>, el error queda solo en el área de la página.</li>
+          <li><b>La recarga por chunk viejo está bien hecha</b> (una vez por minuto, silenciosa). Queda igual.</li>
+          <li><b>La sala muestra el error crudo</b> (<code>e.message</code>) y, con un id malformado, «El identificador de la sala no es válido». Los dos van a «No encontramos esta sala».</li>
+          <li><b>Sin conexión no hay nada:</b> el canal de la sala se cae en silencio. <code>online</code>/<code>offline</code> del navegador más el estado del canal de Supabase (<code>CHANNEL_ERROR</code>, <code>TIMED_OUT</code>) alcanzan para la línea.</li>
+          <li><b>Vacíos de hoy:</b> <code>TareasVacias</code> (el <code>Empty</code> de shadcn con borde punteado y la sintaxis <code>!alta #estudio</code>, que se va con la pantalla nueva de Tareas); el dashboard no tiene vacío, muestra gráficos en cero; «Cargando invitación…» de la sala dice «Procesando tu invitación» aunque no haya invitación.</li>
+        </ul>
+      </div>
+      <div>
+        <pre><span class="c-com">// src/Routes.tsx · el 404 dentro del layout, para que quede el encabezado</span>
+{
+  element: &lt;HomeLayout /&gt;,
+  errorElement: &lt;ErrorPagina /&gt;,     <span class="c-com">// solo el área de la página</span>
+  children: [
+    { index: true, element: conSuspense(&lt;Home /&gt;) },
+    <span class="c-com">// …dashboard, tareas, sala</span>
+    { path: "*", element: &lt;NoEncontrada /&gt; },
+  ],
+},
+<span class="c-com">// ErrorPage (raíz) queda para lo que rompe hasta el layout,
+// con la recarga por chunk viejo como está hoy.</span></pre>
+        <pre><span class="c-com">// src/components/estados/EstadoColumna.tsx · presentacional</span>
+interface EstadoColumnaProps {
+  icono: LucideIcon;
+  titulo: string;
+  texto: ReactNode;
+  accion?: ReactNode;   <span class="c-com">// botón en acento</span>
+  pie?: ReactNode;      <span class="c-com">// «Ir al inicio», renglón del link, detalle</span>
+}
+
+<span class="c-com">// src/pages/NoEncontrada.tsx</span>
+&lt;EstadoColumna
+  icono={Signpost}
+  titulo="Esta página no existe"
+  texto={&lt;code&gt;{pathname}&lt;/code&gt;}
+  accion={&lt;Button asChild&gt;&lt;Link to="/"&gt;Ir al inicio&lt;/Link&gt;&lt;/Button&gt;}
+/&gt;</pre>
+        <pre><span class="c-com">// src/hooks/useConexion.ts · la línea de «Sin conexión»</span>
+export function useConexion(canal?: RealtimeChannel) {
+  const [enLinea, setEnLinea] = useState(navigator.onLine);
+  <span class="c-com">// online/offline del navegador + estado del canal:</span>
+  <span class="c-com">// CHANNEL_ERROR o TIMED_OUT también cuentan como sin conexión.</span>
+  …
+  return enLinea;
+}
+
+<span class="c-com">// En la sala: el reloj sigue local y se resincroniza al volver.</span>
+{!enLinea &amp;&amp; &lt;LineaAviso&gt;Sin conexión. El reloj sigue…&lt;/LineaAviso&gt;}</pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+    caso: v => raiz.dataset.caso = v,
+    quien: v => raiz.dataset.quien = v,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", caso: "p404", quien: "nuevo" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    const clave = ["caso", "quien"].includes(id) ? "doro-err-" + id : "doro-d4-" + id;
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar(clave, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer(clave, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── El reloj de la sala: corre de verdad ── */
+  const SALA = "Parcial de Análisis II", RUTA = "/salas/parcial-analisis";
+  const OTROS = [["A", "Ana"], ["T", "Tomi"]];
+  const base = Date.now(), INICIO = 18 * 60 + 42;
+  const dos = n => String(n).padStart(2, "0");
+  const tic = () => {
+    const r = (((INICIO - Math.floor((Date.now() - base) / 1000)) % 1500) + 1500) % 1500 || 1500;
+    const mm = dos(Math.floor(r / 60)), ss = dos(r % 60);
+    document.querySelectorAll("[data-mm]").forEach(e => e.textContent = mm);
+    document.querySelectorAll("[data-ss]").forEach(e => e.textContent = ss);
+  };
+  setInterval(tic, 1000);
+
+  const esNuevo = () => raiz.dataset.quien !== "cuenta";
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const avatar = ([l, n], cls = "") => `<span class="avatar${cls}" data-nombre="${esc(n)}">${esc(l)}</span>`;
+  const anillo = (dentro, { tag = "button", data = "", arco = "", gira = false, pista = "" } = {}) =>
+    `<${tag} ${tag === "button" ? 'type="button"' : ""} class="d-anillo${gira ? " gira" : ""}" ${data}><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno" cx="100" cy="100" r="92"/><circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3" ${pista}/>${arco}</svg><span class="d-texto">${dentro}</span></${tag}>`;
+  const giro = `<svg class="giro" viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="22" fill="none" stroke-width="5"/><circle class="arco" cx="28" cy="28" r="22" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="104"/></svg>`;
+
+  /* ── Piezas comunes ── */
+  const cuenta = () => esNuevo() ? `<span class="cuenta-tb"><span class="desv">Entrar</span><span class="avatar">${ic("i-persona")}</span></span>` : `<span class="avatar yo" data-nombre="Leo">L</span>`;
+  const tb = (actual = "") => `<header class="tb"><a class="marca" href="#" data-inicio aria-label="Doro, inicio">${ic("i-logo")}<span class="desv">Doro</span></a>
+      <nav class="tb-nav desv">${["Inicio", "Tareas", "Dashboard"].map(n => `<a href="#" data-nada${n === actual ? ' aria-current="page"' : ""}>${n}</a>`).join("")}</nav>
+      <div class="tb-der"><span class="hora desv">${ahora()}</span>${cuenta()}</div></header>`;
+  /* El ErrorPage de la raíz no tiene encabezado: se rompió lo de afuera */
+  const tbMarca = () => `<header class="tb"><a class="marca" href="#" data-inicio aria-label="Doro, inicio">${ic("i-logo")}<span class="desv">Doro</span></a></header>`;
+  const lineaAviso = (html, cerrable = true) => `<div class="linea-aviso" role="status">${html}${cerrable ? `<button type="button" class="cerrar" data-cerrar aria-label="Cerrar el aviso">${ic("i-x")}</button>` : ""}</div>`;
+  const formLink = (label = "¿Te pasaron un link?") => `<form class="d-unirse" data-otro><label>${label}</label><input class="d-linea" placeholder="Pegalo acá y tocá Enter" autocomplete="off"></form>`;
+  const columna = (icono, titulo, texto, extra) => `<main class="er-main entra"><div class="er-col">${ic(icono, "er-ic")}<h1 class="er-tit">${titulo}</h1><p class="er-txt">${texto}</p>${extra}</div></main>`;
+  const detalle = `<details class="detalle"><summary>Ver el detalle</summary><pre>TypeError: Cannot read properties of undefined (reading 'nombre')
+    at FilaTarea (FilaTarea.tsx:42)
+    at BandejaTareas (BandejaTareas.tsx:118)</pre></details>`;
+
+  const home = (aviso = "") => `${tb("Inicio")}${aviso}
+    <main class="d-main entra">${anillo(`<strong>Crear sala</strong><span>Tu primera sesión</span>`, { data: "data-crear" })}${formLink()}</main>`;
+
+  const sala = ({ extra = "", sinRed = false, nueva = false } = {}) => {
+    const ot = nueva ? [] : OTROS;
+    return `<header class="tb">
+      <button type="button" class="salir" data-inicio aria-label="Salir de la sala">${ic("i-volver")}<span class="desv">Salir</span></button>
+      <div class="tb-der">
+        <span class="en-sala desv">${ot.length + 1} en la sala</span>
+        <span class="avatares">${ot.map(o => avatar(o)).join("")}<span class="avatar yo" data-nombre="${esNuevo() ? "Invitado" : "Leo"} (vos)">${esNuevo() ? "I" : "L"}</span></span>
+      </div></header>${extra}
+    <main class="s-main corre"><div class="zona">
+      <div class="modo"><span class="punto"></span>Pomodoro</div>
+      <div class="ctrl izq"><button type="button" class="ic" data-nada title="Compartir la sala">${ic("i-compartir")}</button><button type="button" class="ic" data-nada title="Música">${ic("i-musica")}</button><button type="button" class="ic" data-nada title="Reiniciar">${ic("i-reiniciar")}</button></div>
+      <div class="reloj" role="timer" aria-label="Tiempo de la sala"><span data-mm></span><span class="dos-puntos" aria-hidden="true"><i></i><i></i></span><span data-ss></span></div>
+      <div class="ctrl der"><button type="button" class="ic play" data-nada aria-label="Pausar">${ic("i-pausa")}</button><button type="button" class="ic" data-nada title="Ventana flotante">${ic("i-pip")}</button><button type="button" class="ic" data-nada title="Tiempos del reloj">${ic("i-ajustes")}</button></div>
+    </div></main>`;
+  };
+
+  /* ── Los casos ── */
+  const p404 = v => {
+    const ruta = `<code>${RUTA}</code>`;
+    if (v === "r1") return tb() + columna("i-cartel", "Esta página no existe", `${ruta} no lleva a ningún lado. Puede estar mal escrita o ser de una versión vieja de Doro.`,
+      `<button type="button" class="btn-acento" data-inicio>Ir al inicio</button>${formLink("¿Era un link de sala?")}`);
+    if (v === "r2") return `${tb()}<main class="d-main entra">${anillo(`<strong>Ir al inicio</strong><span>Esta página no existe</span>`, { data: "data-inicio", pista: 'stroke-dasharray="2 9" stroke-linecap="round"' })}<p class="d-pie">${ruta} no lleva a ningún lado.</p></main>`;
+    return home(lineaAviso(`<span><b>${RUTA}</b> no existe. Te dejamos en el inicio.</span>`));
+  };
+
+  const error = v => {
+    if (v === "r1") return tbMarca() + columna("i-trabado", "Algo se trabó", "Recargá y seguí: lo que guardaste no se pierde.",
+      `<button type="button" class="btn-acento" data-recargar>Recargar</button><button type="button" class="btn-link" data-inicio>Ir al inicio</button>${detalle}`);
+    if (v === "r2") return `${tbMarca()}<main class="d-main entra">${anillo(`<strong>Recargar</strong><span>Algo se trabó</span>`, { data: "data-recargar", arco: `<circle class="arco tenue" cx="100" cy="100" r="92" fill="none" stroke-width="3" stroke-dasharray="520 58" stroke-dashoffset="-29"/>`, pista: 'stroke="transparent" style="stroke:transparent"' })}<div class="d-pie"><button type="button" class="btn-link" data-inicio>Ir al inicio</button>${detalle}</div></main>`;
+    /* 3: el errorElement del layout deja el encabezado; la página es la que no cargó */
+    return `${tb("Dashboard")}<main class="pg entra"><nav class="pestanas"><button type="button" aria-current="page" data-nada>Resumen</button><button type="button" data-nada>Estudio</button><button type="button" data-nada>Tareas</button></nav>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:46ch"><p style="margin:0;font-size:17px;font-weight:600;letter-spacing:-0.01em">Esta parte no cargó.</p><p style="margin:-6px 0 0;color:var(--tenue);font-size:14.5px">Lo demás de Doro sigue andando. Recargá y seguí.</p><button type="button" class="btn-texto" data-recargar>Recargar</button>${detalle}</div></main>`;
+  };
+
+  const red = (v, el) => {
+    if (el._enLinea) return sala();
+    if (v === "r1") return tbMarca() + columna("i-sin-red", "Sin conexión", `Doro vuelve a intentar solo. <span data-cuenta></span>`,
+      `<button type="button" class="btn-acento" data-reintentar>Reintentar ahora</button>`);
+    if (v === "r2") return `${tbMarca()}<main class="d-main entra">${anillo(`<strong>Sin conexión</strong><span>Reintentando… <span data-cuenta></span></span>`, { data: "data-reintentar", gira: true, arco: `<circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="120 458"/>` })}<p class="d-pie">Tocá el anillo para probar ahora.</p></main>`;
+    return sala({ sinRed: true, extra: lineaAviso(`<span class="punto"></span><span><b>Sin conexión.</b> El reloj sigue; se sincroniza cuando vuelva.</span>`, false) });
+  };
+
+  const salaNo = v => {
+    if (v === "r1") return tb() + columna("i-puerta", "No encontramos esta sala", "Puede que el link esté mal copiado o que la sala se haya cerrado: las que quedan vacías se borran solas.",
+      `<button type="button" class="btn-acento" data-crear>Crear una sala</button>${formLink("¿Tenés otro link?")}`);
+    if (v === "r2") return `${tb()}<main class="d-main entra">${anillo(`<strong>Crear una sala</strong><span>Esa ya no existe</span>`, { data: "data-crear" })}${formLink("¿Tenés otro link?")}</main>`;
+    return home(lineaAviso(`<span>No encontramos <b>esa sala</b>: el link está mal o se cerró. Podés crear otra.</span>`));
+  };
+
+  /* Tareas: S2 con las cajas de los temas */
+  const cajaNueva = (ph = "Nuevo tema") => `<form class="caja nueva" data-tema><input class="d-linea" placeholder="${ph}" aria-label="Nombre del tema" maxlength="40" autocomplete="off"><span class="pista-caja">Enter para crear</span></form>`;
+  const tareasLlenas = el => `${tb("Tareas")}<main class="pg entra"><h1 class="pg-frase">Nada pendiente <span>en ${el._temas.length === 1 ? "un tema" : el._temas.length + " temas"}</span></h1><div class="avance"><i></i></div>
+      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Temas</button><button type="button" data-nada>Calendario</button></nav>
+      <div class="cajas">${el._temas.map(t => `<button type="button" class="caja" data-abrir><h3>${esc(t)}</h3><p>Todavía vacío</p><div class="avance"><i></i></div></button>`).join("")}${cajaNueva()}</div></main>`;
+  const tareas = (v, el) => {
+    if (el._temas.length) return tareasLlenas(el);
+    const form = `<form class="d-unirse" data-tema><label>Nombre del primer tema</label><input class="d-linea" placeholder="Por ejemplo, Análisis II" maxlength="40" autocomplete="off"></form>`;
+    if (v === "r1") return tb("Tareas") + columna("i-cajas", "Todavía no hay temas", "Un tema es una materia o un proyecto. Adentro van sus parciales, prácticos y tareas.", form);
+    if (v === "r2") return `${tb("Tareas")}<main class="d-main entra">${anillo(`<strong>Sin temas</strong><span>Un tema es una materia o un proyecto</span>`, { tag: "div" })}${form}</main>`;
+    const eco = `<div class="caja eco" aria-hidden="true"><i></i><i></i><div class="avance"></div></div>`;
+    return `${tb("Tareas")}<main class="pg entra"><h1 class="pg-frase">Nada pendiente <span>todavía</span></h1><div class="avance"><i></i></div>
+      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Temas</button><button type="button" data-nada>Calendario</button></nav>
+      <div class="cajas">${cajaNueva("Tu primer tema")}${eco}${eco}</div></main>`;
+  };
+
+  /* Dashboard: la cifra en cero, con la frase que dice qué va a aparecer */
+  const notaCuenta = () => esNuevo() ? `<p class="cuenta-nota">Se guarda en este navegador. <button type="button" class="btn-link" data-nada>Con una cuenta</button>, en todos lados.</p>` : "";
+  const dash = v => {
+    if (v === "r1") return tb("Dashboard") + columna("i-grafico", "Todavía no hay nada que contar", "Terminá tu primer pomodoro y acá vas a ver cuánto estudiás, si sos constante y cuándo rendís.",
+      `<button type="button" class="btn-acento" data-pomodoro>Empezar un pomodoro</button>${notaCuenta()}`);
+    if (v === "r2") return `${tb("Dashboard")}<main class="d-main entra">${anillo(`<strong>0 de 2 h</strong><span>Meta de hoy</span>`, { tag: "div", arco: `<circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578"/>` })}<div class="d-pie">Tu primer pomodoro lo empieza a llenar.<button type="button" class="btn-acento" data-pomodoro>Empezar un pomodoro</button>${notaCuenta()}</div></main>`;
+    const dias = ["L", "M", "M", "J", "V", "S", "D"];
+    return `${tb("Dashboard")}<main class="pg entra">
+      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Resumen</button><button type="button" data-nada>Estudio</button><button type="button" data-nada>Tareas</button>
+        <span class="der"><button type="button" aria-current="true" data-nada>Semana</button><button type="button" data-nada>30 días</button><button type="button" data-nada>Año</button></span></nav>
+      <section class="cifra"><h2 class="cifra-tit">${ic("i-reloj")}Esta semana</h2><div class="cifra-num">0<small>min</small></div>
+        <p class="cifra-frase">Todavía no hay sesiones. <b>Tu primer pomodoro</b> aparece acá, y con él la racha y tu mejor horario.</p>
+        <div class="mini" aria-hidden="true">${dias.map((d, i) => `<span${i === 1 ? ' class="hoy"' : ""}>${d}</span>`).join("")}</div><div class="mini-meta">Meta: 2 h por día</div>
+        <button type="button" class="btn-texto" data-pomodoro style="margin-top:10px">Empezar un pomodoro</button>${notaCuenta()}</section>
+      <div class="indice-dash" aria-hidden="true">${"<i></i>".repeat(9)}</div></main>`;
+  };
+
+  /* Bandeja de la sala (T43): línea de tiempo por fecha */
+  const bandejaCab = `<div class="ba-cab"><h3>Tareas</h3><button type="button" class="ic chico" data-nada title="Ver por tipo">${ic("i-grilla")}</button><button type="button" class="ic chico" data-nada title="Crear">${ic("i-mas")}</button></div>`;
+  const renglonNuevo = (ph) => `<form class="tl-ren hueco" data-item><span class="check" aria-hidden="true"></span><input class="d-linea" placeholder="${ph}" aria-label="Nueva tarea para hoy" maxlength="60" autocomplete="off"></form>`;
+  const bandeja = (v, el) => {
+    let cuerpo;
+    if (el._items.length) {
+      cuerpo = `<div class="tl"><div class="tl-dia marca-dia">Hoy</div><div>${el._items.map(t => `<div class="tl-ren"><span class="check" aria-hidden="true"></span>${esc(t)}</div>`).join("")}${renglonNuevo("Otra para hoy")}</div></div>`;
+    } else if (v === "r1") {
+      cuerpo = `<form class="ba-col" data-item>${ic("i-lista", "er-ic")}<strong>Nada pendiente</strong><p>Lo que anotes acá queda también en Tareas.</p><input class="d-linea" placeholder="Anotá algo y tocá Enter" aria-label="Nueva tarea" maxlength="60" autocomplete="off"></form>`;
+    } else if (v === "r2") {
+      cuerpo = `<form class="ba-col" data-item><div class="ba-anillo"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="24" fill="none" stroke-width="3"/></svg><div><strong>Nada pendiente</strong><p>0 de 0 para hoy</p></div></div><input class="d-linea" placeholder="Anotá algo y tocá Enter" aria-label="Nueva tarea" maxlength="60" autocomplete="off"></form>`;
+    } else {
+      cuerpo = `<div class="tl"><div class="tl-dia marca-dia">Hoy</div><div>${renglonNuevo("Anotá algo para hoy")}</div>
+        <div class="tl-dia" style="opacity:.8">Mañana</div><div class="tl-ren eco" aria-hidden="true"><span class="check"></span><i></i></div>
+        <div class="tl-dia" style="opacity:.8">Sin fecha</div><div class="tl-ren eco" aria-hidden="true"><span class="check"></span><i style="width:28%"></i></div></div>`;
+    }
+    return sala({ extra: "" }) + `<section class="bandeja" aria-label="Tareas de la sala">${bandejaCab}<div class="ba-cuerpo">${cuerpo}</div></section>`;
+  };
+
+  /* 4 elige el molde según qué se corta */
+  const MEZCLA = { p404: "r1", error: "r1", sala: "r1", red: "r3", tareas: "r3", dash: "r3", bandeja: "r3" };
+  const CASOS = { p404, error, red, sala: salaNo, tareas, dash, bandeja };
+
+  const pintar = (a, enfocar) => {
+    const el = a.el, v = a.v === "r4" ? MEZCLA[raiz.dataset.caso] : a.v;
+    let h;
+    if (el._fase === "carga") h = `${tbMarca()}<main class="carga entra" role="status"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="24" fill="none" stroke-width="3"/><circle class="arco" cx="28" cy="28" r="24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="113"/></svg><p>${el._cargaTxt}</p></main>`;
+    else if (el._fase === "home") h = home();
+    else if (el._fase === "sala") h = sala({ nueva: true });
+    else h = CASOS[raiz.dataset.caso](v, el);
+    a.cuerpo.innerHTML = h;
+    el.classList.toggle("con-bandeja", el._fase === "caso" && raiz.dataset.caso === "bandeja");
+    el.classList.toggle("sin-red", el._fase === "caso" && raiz.dataset.caso === "red" && !el._enLinea);
+    tic(); contar(a);
+    if (enfocar) a.cuerpo.querySelector(enfocar)?.focus();
+  };
+
+  /* Sin conexión: cuenta regresiva y vuelve sola a los 6 s */
+  const contar = a => {
+    const el = a.el, c = a.cuerpo.querySelectorAll("[data-cuenta]");
+    c.forEach(e => e.textContent = el._vuelve ? `Próximo intento en ${Math.max(1, Math.ceil((el._vuelve - Date.now()) / 1000))} s` : "");
+  };
+  setInterval(() => apps.forEach(contar), 500);
+  const reconectar = a => {
+    const el = a.el; clearTimeout(a._t); el._vuelve = 0; el._enLinea = true;
+    const v = a.v === "r4" ? MEZCLA.red : a.v;
+    if (v === "r3") {
+      const l = a.cuerpo.querySelector(".linea-aviso");
+      if (l) { l.classList.add("se-va"); setTimeout(() => pintar(a), 500); } else pintar(a);
+      el.classList.remove("sin-red");
+      avisar(el, "Conexión de vuelta. El reloj está al día");
+    } else { pintar(a); avisar(el, "Conexión de vuelta"); }
+  };
+
+  /* ── Montaje ── */
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2800); };
+
+  const mostrarCaso = a => {
+    const el = a.el; clearTimeout(a._t);
+    el._fase = "caso"; el._temas = []; el._items = []; el._enLinea = false; el._vuelve = 0;
+    el.querySelector(".aviso")?.classList.remove("ver");
+    if (raiz.dataset.caso === "red") { el._vuelve = Date.now() + 6000; a._t = setTimeout(() => reconectar(a), 6000); }
+    pintar(a);
+  };
+  const cargarY = (a, txt, luego, ms = 900) => { const el = a.el; clearTimeout(a._t); el._fase = "carga"; el._cargaTxt = txt; pintar(a); a._t = setTimeout(luego, ms); };
+
+  const conectar = a => {
+    const el = a.el;
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div>`);
+    el.addEventListener("submit", e => {
+      e.preventDefault();
+      const f = e.target, inp = f.querySelector("input"), t = inp ? inp.value.trim() : "";
+      if (f.matches("[data-otro]")) return avisar(el, "Acá se abre ese link (no es parte de este boceto)");
+      if (!t) return inp?.focus();
+      if (f.matches("[data-tema]")) { el._temas.push(t); pintar(a, ".caja.nueva input"); return avisar(el, `Tema «${t}» creado`); }
+      if (f.matches("[data-item]")) { el._items.push(t); return pintar(a, "[data-item] input"); }
+    });
+    el.addEventListener("click", e => {
+      if (e.target.closest("[data-cerrar]")) { const l = e.target.closest(".linea-aviso"); l.classList.add("se-va"); return setTimeout(() => l.remove(), 500); }
+      if (e.target.closest("[data-inicio]")) { e.preventDefault(); clearTimeout(a._t); el._fase = "home"; el.classList.remove("con-bandeja", "sin-red"); return pintar(a); }
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); }
+      if (e.target.closest("[data-nada]")) return avisar(el, "Esto es de la pantalla aprobada; acá no hace nada");
+      if (e.target.closest("[data-abrir]")) return avisar(el, "Acá se abre el tema, como en el boceto de Tareas");
+      if (e.target.closest("[data-recargar]")) return cargarY(a, "Recargando…", () => { el._fase = "home"; pintar(a); avisar(el, "Todo en orden"); });
+      if (e.target.closest("[data-reintentar]")) return cargarY(a, "Buscando conexión…", () => { el._fase = "caso"; reconectar(a); }, 1200);
+      if (e.target.closest("[data-crear]")) return cargarY(a, "Creando la sala…", () => { el._fase = "sala"; pintar(a); avisar(el, "Sala creada. Compartí el link para invitar"); });
+      if (e.target.closest("[data-pomodoro]")) return avisar(el, "Acá arranca el reloj del home");
+    });
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+  opciones.forEach(op => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    const cuerpo = document.createElement("div"); cuerpo.className = "cuerpo"; el.appendChild(cuerpo);
+    const a = { v, el, cuerpo };
+    apps.push(a);
+    conectar(a);
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <button type="button" class="btn-completa" data-repetir>Mostrar otra vez</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    bm.querySelector("[data-repetir]").addEventListener("click", () => mostrarCaso(a));
+    mostrarCaso(a);
+  });
+  document.getElementById("caso").addEventListener("click", e => { if (e.target.closest("button")) apps.forEach(mostrarCaso); });
+  document.getElementById("quien").addEventListener("click", e => { if (e.target.closest("button")) apps.forEach(a => pintar(a)); });
+  setInterval(() => document.querySelectorAll(".tb .hora").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic("i-contraer")}</button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra">${ic("i-x")}</button>`;
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisoMando("Barra escondida. H o la esquina de abajo a la derecha la traen");
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  const ajustesBarra = document.querySelector(".ajustes");
+  document.addEventListener("keydown", e => {
+    if (actual || e.key.toLowerCase() !== "h" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    ajustesBarra.hidden = !ajustesBarra.hidden;
+  });
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>
