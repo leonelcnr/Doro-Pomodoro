@@ -1283,24 +1283,6 @@ span.tt-tit { cursor: default; }
 .sumar svg { width: 17px; height: 17px; }
 .vacio-m { color: var(--tenue); font-size: 13px; margin: 6px 0 2px; }
 .pop .scroll-m { max-height: var(--alto-max, 300px); overflow-y: auto; margin-right: -8px; padding-right: 8px; scrollbar-width: thin; }
-/* 20ª ronda */
-.seccion { border-top: 1px solid var(--linea); padding-top: 12px; margin-top: 12px; }
-.pop-tit .quien { margin-left: 8px; letter-spacing: 0; text-transform: none; font-weight: 400; font-size: 12px; opacity: .8; }
-.cabeza-m { margin-bottom: 0; }
-.seccion .para-sala { border-top: 0; margin-top: 0; }
-.cambiar-campo { margin-top: 4px; }
-.suena .b[aria-pressed="true"][data-cambiar] { background: var(--campo); color: var(--fg); }
-.sonidos-ventana { max-height: 172px; overflow-y: auto; scrollbar-width: thin; mask-image: linear-gradient(#000 82%, transparent); padding-bottom: 14px; }
-.pop.ancho { width: min(620px, calc(100cqi - 32px)); }
-.dos-col { display: grid; grid-template-columns: 1fr 1.1fr; gap: 0 22px; }
-.dos-col > :last-child { border-left: 1px solid var(--linea); padding-left: 22px; }
-.dos-col .sonidos { grid-template-columns: repeat(5, 1fr); }
-@container zona (max-width: 699px) {
-  .pop.ancho { width: min(320px, calc(100cqi - 32px)); }
-  .dos-col { grid-template-columns: 1fr; }
-  .dos-col > :last-child { border-left: 0; padding-left: 0; }
-  .dos-col .sonidos { grid-template-columns: repeat(4, 1fr); }
-}
 /* 19ª ronda */
 .tit-acc { display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; }
 .es-mia { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--tenue); letter-spacing: 0; text-transform: none; font-weight: 500; }
@@ -1495,56 +1477,50 @@ span.tt-tit { cursor: default; }
     </div>
   </div>
 
-  <header class="ronda" id="ronda-20">
-    <h2>20ª ronda: M4 sin buscador, todo junto y con el video que se cambia</h2>
-    <p>Las tres variantes parten de <b>M4</b> y tienen tres cosas en común:</p>
-    <ul>
-      <li><b>No hay nada para guardar.</b> La última mezcla queda en localStorage y vuelve sola al entrar a la sala. Probalo con <b>Volver a entrar</b>.</li>
-      <li><b>No hay buscador:</b> los sonidos van todos juntos en una grilla, como antes.</li>
-      <li><b>El panel tiene dos partes que no se mezclan:</b> lo tuyo (el ambiente, que suena solo para vos) y lo de la sala (el video, que suena para los 3).</li>
-    </ul>
-    <p>Lo que cambia entre ellas es cómo entran muchos sonidos, que podés ver con <b>Sonidos 12 · 30</b>, y cómo se pone otro video cuando ya hay uno sonando, que podés ver con <b>Ana pone música</b>. La 19ª ronda quedó en <code>bocetos/sala-ronda19.html</code>.</p>
+  <header class="ronda" id="ronda-19">
+    <h2>19ª ronda: la música, sin «Solo yo» y con muchos sonidos</h2>
+    <p>Elegiste <b>C1</b> para los tiempos: el engranaje ya lo abre en las tres. La música junta M2 y M3. El panel abre en lo que suena, con «Pausar todo» y «Silenciar para mí»; después vienen los sonidos, y abajo de todo, en una línea, el video para la sala. «Solo yo» no está más. Cada variante prueba una manera de que los sonidos no se vuelvan una botonera y una manera de recordar tu mezcla. Usá <b>Sonidos 12 · 30</b> en los ajustes para ver cómo escalan, y <b>Volver a entrar</b> para ver qué recuerda cada una. La 18ª ronda quedó en <code>bocetos/sala-ronda18.html</code>.</p>
   </header>
 
-  <section class="opcion" id="m7" data-v="t43" data-dlg="m7">
+  <section class="opcion" id="m4" data-v="t43" data-dlg="m4">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">M7</span><span class="nombre">Música · Todo junto, se despliega</span><span class="recomendada">Recomendada</span></h2>
-        <p class="resumen">Con 12 sonidos se ven todos, como antes. Si un día hay más, se ven las dos primeras filas, con los que más usás adelante, y «Ver los 30» despliega el resto en la misma grilla, sin otra vista ni familias. El video de la sala tiene un botón para cambiarlo: pegás otro link y lo reemplaza para los 3.</p>
+        <h2><span class="letra">M4</span><span class="nombre">Música · Los tuyos primero</span><span class="recomendada">Recomendada</span></h2>
+        <p class="resumen">La grilla muestra siempre 7 sonidos, los que más usás, y una octava casilla «Todos». Ahí se despliegan todos agrupados por familia, con un buscador. Al volver a entrar a la sala sigue sonando tu última mezcla. Si no querés que pase, lo apagás con el interruptor de abajo.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Hoy se ve igual que antes. La escala solo aparece cuando hace falta.</li><li>Cambiar el video es un paso, sin sacarlo primero.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Con 30 desplegados, el panel se hace largo y hay que scrollear.</li><li>Con muchos sonidos, el orden por uso mueve las casillas de lugar entre una vez y otra.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El panel mide lo mismo con 12 sonidos que con 100.</li><li>No tenés que guardar nada: vuelve solo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un sonido nuevo queda a un toque de más hasta que lo usás.</li><li>La grilla se reordena con el uso, aunque solo al abrir el panel y nunca mientras lo tenés abierto.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="m8" data-v="t43" data-dlg="m8">
+  <section class="opcion" id="m5" data-v="t43" data-dlg="m5">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">M8</span><span class="nombre">Música · Todo junto, con scroll adentro</span></h2>
-        <p class="resumen">La grilla siempre tiene todos los sonidos, en un orden fijo, dentro de una ventana de tres filas que se scrollea. El panel nunca crece. El campo del link de la sala está siempre a la vista: si ya suena algo, dice «Pegá otro para cambiarlo».</p>
+        <h2><span class="letra">M5</span><span class="nombre">Música · Por familias</span></h2>
+        <p class="resumen">Los sonidos se reparten en pestañas por familia: Agua, Naturaleza, Lugares, Ruidos y Música. Ninguna pasa de dos filas. Un punto marca la pestaña que tiene algo prendido. La mezcla se guarda a mano, una sola, como «Mi mezcla», y esa es la que suena al entrar.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Cada sonido está siempre en el mismo lugar.</li><li>Cambiar el video es pegar y listo, sin botones.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Un scroll dentro de otro scroll, cuando el panel no entra.</li><li>El campo siempre visible ocupa lugar aunque casi no se use.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Todo está siempre en el mismo lugar.</li><li>Sabés qué va a sonar al entrar, porque lo elegiste vos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Para mezclar agua con ruido hay que cambiar de pestaña.</li><li>Si nunca guardás, no recuerda nada.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco"><div class="app" data-app></div></div>
   </section>
 
-  <section class="opcion" id="m9" data-v="t43" data-dlg="m9">
+  <section class="opcion" id="m6" data-v="t43" data-dlg="m6">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">M9</span><span class="nombre">Música · Panel ancho, dos columnas</span></h2>
-        <p class="resumen">En pantalla grande el panel se abre a lo ancho. A la izquierda va lo que suena (tu mezcla y el video de la sala, que se cambia igual que en M7); a la derecha, todos los sonidos juntos, de 5 en fondo. En el móvil vuelve a ser una sola columna.</p>
+        <h2><span class="letra">M6</span><span class="nombre">Música · Mezclas y buscador</span></h2>
+        <p class="resumen">Lo que se elige es la mezcla y no el sonido: Tormenta, Cafetería, Orilla, las que guardes con nombre, y arriba de todas «La última vez». Los sonidos sueltos se buscan escribiendo, y la grilla completa queda detrás de «Ver todos». Al entrar no suena nada: tu última mezcla queda a un toque.</p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La separación se ve de un vistazo: lo que suena y lo que podés sumar.</li><li>Entran el doble de sonidos por pantalla, 5 por fila, y el panel queda bajo.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Tapa más reloj mientras está abierto.</li><li>Son dos diseños, el ancho y el angosto, para mantener.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>Un toque arma una mezcla de tres sonidos.</li><li>Escala a cientos de sonidos sin cambiar de forma.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Hay que elegir y nombrar las mezclas que trae la app.</li><li>Lo que más se usa, sumar un sonido suelto, queda más lejos.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -1552,42 +1528,43 @@ span.tt-tit { cursor: default; }
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>20ª ronda · comparación</h2>
+    <h2>19ª ronda · comparación</h2>
     <div class="tabla-envoltura">
       <table>
-        <thead><tr><th>Variante</th><th>Con 12 sonidos</th><th>Con 30</th><th>Cambiar el video</th><th>Riesgo</th></tr></thead>
+        <thead><tr><th>Variante</th><th>Con 30 sonidos</th><th>Prender uno</th><th>Qué recuerda</th><th>Al entrar</th></tr></thead>
         <tbody>
-          <tr class="elegida"><td>M7 · Se despliega</td><td>Todos, como antes</td><td>8 + «Ver los 30»</td><td>Botón → pegar otro</td><td>Panel largo desplegado</td></tr>
-          <tr><td>M8 · Scroll adentro</td><td>Todos, como antes</td><td>Ventana de 3 filas</td><td>Campo siempre visible</td><td>Scroll dentro de scroll</td></tr>
-          <tr><td>M9 · Dos columnas</td><td>Todos, de 5 en fondo</td><td>Todos, 6 filas (algo de scroll)</td><td>Botón → pegar otro</td><td>Tapa más reloj</td></tr>
+          <tr class="elegida"><td>M4 · Los tuyos primero</td><td>7 a la vista + «Todos»</td><td>1 toque (2 si es raro)</td><td>Tu última mezcla y lo que más usás</td><td>Suena sola (se puede apagar)</td></tr>
+          <tr><td>M5 · Por familias</td><td>5 pestañas de hasta 8</td><td>Pestaña + toque</td><td>Una mezcla guardada a mano</td><td>Suena «Mi mezcla»</td></tr>
+          <tr><td>M6 · Mezclas</td><td>Mezclas + buscador</td><td>Escribir o «Ver todos»</td><td>La última y las que nombres</td><td>Nada; la última a un toque</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion" style="margin-bottom:0">
       <div>
-        <h3>Recomiendo M7</h3>
-        <p><b>Con los 12 sonidos de hoy se ve exactamente como antes</b>, todos juntos, y lo único nuevo es que el panel separa lo tuyo de lo de la sala. La forma de escalar no aparece hasta que hace falta. Si algún día son 30, se ven dos filas con los que más usás y el resto se despliega en la misma grilla, sin una vista aparte.</p>
-        <p><b>El video:</b> el botón de cambiar va al lado de silenciar y sacar, y abre el campo justo debajo. Lo prefiero a tener el campo siempre a la vista (M8), porque cambiar el video pasa pocas veces por sesión.</p>
-        <p><b>La mezcla:</b> se guarda en cada cambio y vuelve al entrar, sin interruptor ni botón. Si apagás todo, también se recuerda el silencio.</p>
+        <h3>Recomiendo M4</h3>
+        <p><b>Porque no te pide nada.</b> Nadie va a guardar una mezcla, por la misma razón que nadie iba a pegar un link para escucharlo solo: si ya está sonando lo que te gusta, la app puede recordarlo por su cuenta. Que vuelva sola es lo que querías con «la última que se usó», y el interruptor cubre al que prefiere entrar en silencio.</p>
+        <p><b>Escala sin cambiar de forma:</b> 7 casillas, siempre las tuyas, y «Todos» con buscador para el resto. Con 12 sonidos casi no se nota. Con 30 o con 100, el panel mide lo mismo.</p>
+        <p><b>Lo que tomaría de las otras:</b> los nombres de familia de M5 como títulos dentro de «Todos» (ya están), y si un día hay muchos sonidos, las mezclas hechas de M6 como un renglón arriba de la grilla.</p>
+        <p><b>Sobre «Para la sala»:</b> lo dejé, abajo y en una línea, porque compartir un video con los 3 es justamente lo que da la sala. Si te parece que tampoco se usa, se va igual que «Solo yo».</p>
       </div>
-      <pre><span class="c-com">// src/features/room/hooks/useMezclaAmbiente.ts</span>
-const CLAVE = "doro-mezcla";   <span class="c-com">// { ultima: {rain: 45, fire: 25}, usos: {rain: 12} }</span>
+      <pre><span class="c-com">// src/features/room/hooks/useMezclaAmbiente.ts (M4)</span>
+const CLAVE = "doro-mezcla";            <span class="c-com">// { ultima: {rain: 45, fire: 25}, usos: {rain: 12}, retomar: true }</span>
 
 export function useMezclaAmbiente() {
-  const [volumenes, setVolumenes] = useState(() =&gt; leerMezcla().ultima);
-  useEffect(() =&gt; {
-    try {
-      const g = leerMezcla();
-      localStorage.setItem(CLAVE, JSON.stringify({ ...g, ultima: volumenes }));
-    } catch {}
-  }, [volumenes]);
-  …
-}
+  const [guardado, setGuardado] = useState(leerMezcla);
+  const [volumenes, setVolumenes] = useState(
+    () =&gt; guardado.retomar ? guardado.ultima : {});
 
-<span class="c-com">// Cambiar el video: el mismo RPC, pisa music_state para todos</span>
-&lt;RenglonSala estado={estadoSala}
-  alCambiar={url =&gt; ponerMusicaSala(salaId, url)}
-  alSilenciar={() =&gt; setSalaSilenciada(s =&gt; !s)} /&gt;</pre>
+  useEffect(() =&gt; {
+    const siguiente = { ...guardado, ultima: volumenes };
+    try { localStorage.setItem(CLAVE, JSON.stringify(siguiente)); } catch {}
+  }, [volumenes, guardado]);
+
+  <span class="c-com">// el orden se calcula al abrir el panel, no en cada toque</span>
+  const ordenar = () =&gt; [...SONIDOS].sort(
+    (a, b) =&gt; (guardado.usos[b.id] ?? 0) - (guardado.usos[a.id] ?? 0));
+  …
+}</pre>
     </div>
   </section>
 </div>
@@ -2051,7 +2028,7 @@ export function useMezclaAmbiente() {
       if (dlg === "c3") editar(true);
     }
 
-    /* Música: m0 es el panel de hoy; m7–m9 lo reemplazan */
+    /* Música: m0 es el panel de hoy; m4–m6 lo reemplazan */
     const pop = $("[data-pop]"), btnM = $("[data-musica]");
     if (dlgM === "m0") {
       const abrirPop = hacerPop(pop, btnM);
@@ -2072,93 +2049,110 @@ export function useMezclaAmbiente() {
       s.musicaAjena = () => { btnM.dataset.suena = ""; avisar("Ana puso música para la sala"); };
       void abrirPop;
     } else {
-      /* 20ª ronda: los 12 sonidos reales (con 1) y 18 de muestra para ver cómo escala */
+      /* 19ª ronda: los 12 sonidos reales (con 1) y 18 de muestra para ver cómo escala */
       const CATALOGO = [
-        ["rain", "Lluvia", "s-lluvia", 1], ["fire", "Fogata", "s-fogata", 1], ["ocean", "Océano", "s-oceano", 1], ["thunder", "Truenos", "s-truenos", 1],
-        ["people", "Personas", "s-personas", 1], ["traffic", "Tráfico", "s-trafico", 1], ["train", "Tren", "s-tren", 1], ["keyboard", "Teclado", "s-teclado", 1],
-        ["birds", "Pájaros", "s-pajaros", 1], ["brown_noise", "Ruido marrón", "s-marron", 1], ["jazz", "Jazz", "i-musica", 1], ["underwater", "Subacuático", "s-agua", 1],
-        ["rio", "Río", "s-rio"], ["cascada", "Cascada", "s-cascada"], ["techo", "Lluvia en el techo", "s-casa"], ["viento", "Viento", "s-viento"],
-        ["bosque", "Bosque", "s-arbol"], ["grillos", "Grillos", "s-luna"], ["hojas", "Hojas secas", "s-hoja"], ["biblioteca", "Biblioteca", "s-libro"],
-        ["avion", "Avión", "s-avion"], ["oficina", "Oficina", "s-maletin"], ["lavarropas", "Lavarropas", "s-lavarropas"], ["blanco", "Ruido blanco", "s-estatica"],
-        ["rosa", "Ruido rosa", "s-marron"], ["ventilador", "Ventilador", "s-ventilador"], ["tictac", "Tic tac", "s-reloj"], ["piano", "Piano", "s-piano"],
-        ["lofi", "Lofi", "s-disco"], ["cuencos", "Cuencos", "s-cuenco"]];
-      const VISIBLES = 8;
-      const disponibles = () => nSonidos === "30" ? CATALOGO : CATALOGO.filter(x => x[3]);
+        ["rain", "Lluvia", "s-lluvia", "agua", 1], ["ocean", "Océano", "s-oceano", "agua", 1], ["thunder", "Truenos", "s-truenos", "agua", 1], ["underwater", "Subacuático", "s-agua", "agua", 1],
+        ["rio", "Río", "s-rio", "agua"], ["cascada", "Cascada", "s-cascada", "agua"], ["techo", "Lluvia en el techo", "s-casa", "agua"],
+        ["fire", "Fogata", "s-fogata", "naturaleza", 1], ["birds", "Pájaros", "s-pajaros", "naturaleza", 1], ["viento", "Viento", "s-viento", "naturaleza"],
+        ["bosque", "Bosque", "s-arbol", "naturaleza"], ["grillos", "Grillos", "s-luna", "naturaleza"], ["hojas", "Hojas secas", "s-hoja", "naturaleza"],
+        ["people", "Personas", "s-personas", "lugares", 1], ["traffic", "Tráfico", "s-trafico", "lugares", 1], ["train", "Tren", "s-tren", "lugares", 1], ["keyboard", "Teclado", "s-teclado", "lugares", 1],
+        ["biblioteca", "Biblioteca", "s-libro", "lugares"], ["avion", "Avión", "s-avion", "lugares"], ["oficina", "Oficina", "s-maletin", "lugares"], ["lavarropas", "Lavarropas", "s-lavarropas", "lugares"],
+        ["brown_noise", "Ruido marrón", "s-marron", "ruido", 1], ["blanco", "Ruido blanco", "s-estatica", "ruido"], ["rosa", "Ruido rosa", "s-marron", "ruido"],
+        ["ventilador", "Ventilador", "s-ventilador", "ruido"], ["tictac", "Tic tac", "s-reloj", "ruido"],
+        ["jazz", "Jazz", "i-musica", "musica", 1], ["piano", "Piano", "s-piano", "musica"], ["lofi", "Lofi", "s-disco", "musica"], ["cuencos", "Cuencos", "s-cuenco", "musica"]];
+      const FAMILIAS = [["agua", "Agua"], ["naturaleza", "Naturaleza"], ["lugares", "Lugares"], ["ruido", "Ruidos"], ["musica", "Música"]];
+      const MEZCLAS = [["Tormenta", { rain: 50, thunder: 35, fire: 30 }], ["Cafetería", { people: 45, jazz: 30 }], ["Orilla", { ocean: 50, birds: 25 }], ["Teclas y ruido", { keyboard: 30, brown_noise: 35 }]];
+      const disponibles = () => nSonidos === "30" ? CATALOGO : CATALOGO.filter(x => x[4]);
       const porId = id => CATALOGO.find(x => x[0] === id);
-      /* La mezcla vive en localStorage, por variante (en la app sería una sola clave) */
+      /* Lo que se recuerda vive en localStorage, por variante (en la app sería una sola clave) */
       const clave = k => `doro-sala-${dlgM}-${k}`;
       const leerJ = (k, d) => { try { return JSON.parse(leer(clave(k), "")) ?? d; } catch (e) { return d; } };
       const guardarJ = (k, v) => guardar(clave(k), JSON.stringify(v));
       const limpia = v => Object.fromEntries(Object.entries(v || {}).filter(([id, n]) => n > 0 && disponibles().some(x => x[0] === id)));
       const ids = v => Object.keys(limpia(v));
+      const igual = (a, b) => { const x = ids(a), y = ids(b); return x.length > 0 && x.length === y.length && x.every(id => y.includes(id)); };
       const enLista = l => l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + " y " + l.at(-1);
       const nombres = v => enLista(ids(v).map(id => porId(id)[1]));
+      const sinTilde = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-      const mu = { vol: {}, pausa: false, sala: null, paraSala: false, cambiando: false, txt: "", verTodos: false, orden: [] };
-      const pref = { usos: leerJ("usos", {}), ultima: leerJ("ultima", null) };
+      const mu = { vol: {}, pausa: false, sala: null, vista: "grilla", q: "", paraSala: false, txt: "", fam: null, nombrando: false, nombre: "", verTodos: false, orden: [], lista: [] };
+      const pref = { retomar: leer(clave("retomar"), "1") === "1", usos: leerJ("usos", {}), mia: leerJ("mia", null), mezclas: leerJ("mezclas", []), ultima: leerJ("ultima", null) };
       const activos = () => disponibles().filter(([id]) => mu.vol[id] > 0);
       const algoSuena = () => !mu.pausa && (activos().length || (mu.sala && !mu.sala.callada));
       const marcar = () => { algoSuena() ? btnM.dataset.suena = "" : delete btnM.dataset.suena; };
-      /* Cada cambio queda guardado, también el silencio: no hay nada que guardar a mano */
-      const cambio = () => { pref.ultima = limpia(mu.vol); guardarJ("ultima", pref.ultima); };
-      /* M7 pone adelante lo que más usás; se calcula al abrir el panel, nunca con el panel abierto */
-      const ordenar = () => {
-        const u = pref.usos, l = disponibles().map(x => x[0]);
-        mu.orden = dlgM === "m7" && l.length > 12 ? l.sort((a, b) => (u[b] || 0) - (u[a] || 0)) : l;
-      };
+      /* M4 recuerda también el silencio; M6 solo la última mezcla que sonó */
+      const cambio = () => { const v = limpia(mu.vol); if (dlgM === "m4" || Object.keys(v).length) { pref.ultima = v; guardarJ("ultima", v); } };
+      /* El orden por uso se calcula al abrir el panel, nunca con el panel abierto */
+      const ordenar = () => { const u = pref.usos; mu.orden = disponibles().map(x => x[0]).sort((a, b) => (u[b] || 0) - (u[a] || 0)); };
 
       const casilla = ([id, n, i]) => `<button type="button" class="son" data-son="${id}" aria-pressed="${mu.vol[id] > 0}" title="${n}">${icU(i)}<span>${n}</span></button>`;
       const grillaDe = l => `<div class="sonidos">${l.map(casilla).join("")}</div>`;
-      const mezcla = () => activos().length ? `<div class="mezcla" style="border:0;margin:0 0 6px;padding:0">${activos().map(([id, n, i]) => `<label class="mez">${icU(i)}<span>${n}</span><input type="range" min="1" max="100" value="${mu.vol[id]}" data-mvol="${id}" aria-label="Volumen de ${n}"><button type="button" class="apagar" data-son-off="${id}" aria-label="Apagar ${n}">${icU("i-x")}</button></label>`).join("")}</div>` : "";
-      const sec = (tit, quien, acc, cont) => `<section class="seccion"><p class="pop-tit"><span>${tit}<span class="quien">${quien}</span></span>${acc ? `<span class="tit-acc">${acc}</span>` : ""}</p>${cont}</section>`;
-
-      /* La sala: el renglón de lo que suena y, en M7 y M9, un botón para poner otro */
-      const conBoton = dlgM !== "m8";
-      const renglonSala = () => `<div class="suena${mu.sala.callada ? " callada" : ""}">${icU("i-persona")}<div class="suena-txt"><b>${mu.sala.titulo}</b><small>${mu.sala.quien === "vos" ? "La pusiste vos" : "La puso " + mu.sala.quien}</small></div>
-        ${conBoton ? `<button type="button" class="b" data-cambiar aria-pressed="${mu.cambiando}" title="Poner otro video" aria-label="Poner otro video">${icU("i-enlace")}</button>` : ""}
+      const sinResultado = `<p class="vacio-m">No hay un sonido con ese nombre.</p>`;
+      const porFamilia = l => FAMILIAS.map(([f, n]) => { const d = l.filter(x => x[3] === f); return d.length ? `<p class="pop-tit familia">${n}</p>${grillaDe(d)}` : ""; }).join("") || sinResultado;
+      const filtrar = () => { const q = sinTilde(mu.q.trim()); return q ? disponibles().filter(x => sinTilde(x[1]).includes(q)) : disponibles(); };
+      const buscador = () => `<input class="linea" data-f="buscar" type="search" placeholder="Buscar entre ${disponibles().length} sonidos" aria-label="Buscar un sonido" value="${esc(mu.q)}" autocomplete="off">`;
+      const mezcla = () => activos().length ? `<div class="mezcla" style="border:0;margin:0;padding:0">${activos().map(([id, n, i]) => `<label class="mez">${icU(i)}<span>${n}</span><input type="range" min="1" max="100" value="${mu.vol[id]}" data-mvol="${id}" aria-label="Volumen de ${n}"><button type="button" class="apagar" data-son-off="${id}" aria-label="Apagar ${n}">${icU("i-x")}</button></label>`).join("")}</div>` : "";
+      const renglonSala = () => mu.sala ? `<div class="suena${mu.sala.callada ? " callada" : ""}">${icU("i-persona")}<div class="suena-txt"><b>${mu.sala.titulo}</b><small>Para la sala · ${mu.sala.quien === "vos" ? "la pusiste vos" : "la puso " + mu.sala.quien}</small></div>
         <button type="button" class="b" data-callar aria-pressed="${!!mu.sala.callada}" title="${mu.sala.callada ? "Volver a escucharla" : "Silenciar para mí"}" aria-label="${mu.sala.callada ? "Volver a escucharla" : "Silenciar para mí"}">${icU(mu.sala.callada ? "i-callar" : "i-volumen")}</button>
-        <button type="button" class="b" data-quitar aria-label="Sacarlo para todos" title="Sacarlo para todos">${icU("i-x")}</button></div>`;
-      const campo = ph => `<input class="linea" data-f="link" placeholder="${ph}" aria-label="${ph}" value="${esc(mu.txt)}" autocomplete="off">`;
-      const parteSala = () => {
-        if (!conBoton) return (mu.sala ? renglonSala() : "") + campo(mu.sala ? "Pegá otro link de YouTube para cambiarlo" : "Pegá un link de YouTube");
-        if (mu.sala) return renglonSala() + (mu.cambiando ? `<div class="cambiar-campo">${campo("Pegá otro link de YouTube")}<p class="ayuda">Reemplaza ${mu.sala.quien === "vos" ? "el tuyo" : "el de " + mu.sala.quien} para los 3.</p></div>` : "");
-        return mu.paraSala ? `${campo("Pegá un link de YouTube")}<p class="ayuda">Suena sincronizado para los 3.</p>`
-          : `<button type="button" class="para-sala" data-para-sala>${icU("i-enlace")}Poner un video</button>`;
-      };
+        <button type="button" class="b" data-quitar aria-label="Sacarla para todos" title="Sacarla para todos">${icU("i-x")}</button></div>` : "";
+      const sonando = extra => (activos().length || mu.sala)
+        ? `<p class="pop-tit">Sonando<span class="tit-acc">${extra}<button type="button" class="btn-texto" data-pausa>${icU(mu.pausa ? "i-play" : "i-pausa")}${mu.pausa ? "Seguir" : "Pausar todo"}</button></span></p>
+          <div style="${mu.pausa ? "opacity:.5" : ""}">${mezcla()}${renglonSala()}</div>`
+        : `<p class="pop-tit">No suena nada</p>`;
+      /* «Solo yo» no está más: el único link es el de la sala, en una línea al pie */
+      const paraLaSala = () => mu.sala ? "" : mu.paraSala
+        ? `<div class="bloque para-sala-campo"><input class="linea" data-f="link" placeholder="Pegá un link de YouTube" aria-label="Link de YouTube para la sala" value="${esc(mu.txt)}" autocomplete="off"><p class="ayuda">Suena sincronizado para los 3.</p></div>`
+        : `<button type="button" class="para-sala" data-para-sala>${icU("i-enlace")}Poner un video para la sala</button>`;
       const pegar = v => {
         if (!/youtu/i.test(v)) return avisar(/spotify/i.test(v) ? "La sala sincroniza solo YouTube" : "Ese link no es de YouTube");
-        const habia = !!mu.sala;
-        const titulo = ["Lofi hip hop · radio para estudiar", "Jazz para estudiar · en vivo"].find(t => t !== mu.sala?.titulo);
-        mu.sala = { titulo, quien: "vos", callada: false };
-        mu.txt = ""; mu.paraSala = false; mu.cambiando = false; mu.pausa = false;
-        pintarM(); avisar(habia ? "Cambió el video para los 3" : "Suena para los 3");
+        mu.sala = { titulo: "Lofi hip hop · radio para estudiar", quien: "vos", callada: false };
+        mu.txt = ""; mu.paraSala = false; mu.pausa = false; pintarM(); avisar("Suena para los 3");
+      };
+      const guardarMezcla = () => {
+        const nombre = mu.nombre.trim() || `Mezcla ${pref.mezclas.length + 1}`;
+        pref.mezclas.unshift({ nombre, vol: limpia(mu.vol) }); guardarJ("mezclas", pref.mezclas);
+        mu.nombrando = false; mu.nombre = ""; pintarM(); avisar(`Guardada: ${nombre}`);
       };
 
       const pintarM = () => {
         const ae = document.activeElement, fF = pop.contains(ae) ? ae.dataset.f : null, pos = fF ? ae.selectionStart : 0;
-        const total = disponibles().length, hay = activos().length || mu.sala;
-        const pausa = hay ? `<button type="button" class="btn-texto" data-pausa>${icU(mu.pausa ? "i-play" : "i-pausa")}${mu.pausa ? "Seguir" : "Pausar todo"}</button>` : "";
-        const atenuar = h => mu.pausa ? `<div style="opacity:.5">${h}</div>` : h;
-        let h = "";
-        if (dlgM === "m7") {
-          const recorta = total > 12 && !mu.verTodos;
-          const ver = total > 12 ? `<button type="button" class="btn-texto" data-ver-todos aria-expanded="${mu.verTodos}">${mu.verTodos ? "Ver menos" : `Ver los ${total}`}</button>` : "";
-          h = sec("Ambiente", "solo vos", ver, atenuar(mezcla()) + grillaDe((recorta ? mu.orden.slice(0, VISIBLES) : mu.orden).map(porId)))
-            + sec("Para la sala", "los 3", "", atenuar(parteSala()));
+        let extra = "", cuerpo = "";
+        const hay = activos().length || mu.sala;
+        if (dlgM === "m4") {
+          if (mu.vista === "todos") {
+            cuerpo = `<div class="bloque"><p class="pop-tit">Todos los sonidos<button type="button" class="btn-texto" data-vista="grilla">${icU("i-volver")}Volver</button></p>${buscador()}${porFamilia(filtrar())}</div>`;
+          } else {
+            const siete = mu.orden.filter(id => disponibles().some(x => x[0] === id)).slice(0, 7).map(porId);
+            cuerpo = `<div class="bloque">${hay ? `<p class="pop-tit">Ambiente</p>` : ""}<div class="sonidos">${siete.map(casilla).join("")}<button type="button" class="son todos" data-vista="todos" title="Todos los sonidos">${icU("i-cuadros")}<span>Todos · ${disponibles().length}</span></button></div></div>`;
+          }
+          cuerpo += paraLaSala() + `<div class="pie-m"><span>Al entrar, retomar esta mezcla</span><button type="button" class="interruptor" role="switch" aria-checked="${pref.retomar}" data-retomar aria-label="Al entrar, retomar esta mezcla"></button></div>`;
         }
-        if (dlgM === "m8") {
-          h = sec("Ambiente", "solo vos", "", atenuar(mezcla()) + `<div class="sonidos-ventana" tabindex="-1">${grillaDe(mu.orden.map(porId))}</div>`)
-            + sec("Para la sala", "los 3", "", atenuar(parteSala()));
+        if (dlgM === "m5") {
+          const fams = FAMILIAS.filter(([f]) => disponibles().some(x => x[3] === f));
+          if (!fams.some(([f]) => f === mu.fam)) mu.fam = (fams.find(([f]) => activos().some(x => x[3] === f)) || fams[0])[0];
+          const tieneMia = pref.mia && ids(pref.mia).length, esMia = tieneMia && igual(mu.vol, pref.mia);
+          if (activos().length) extra = esMia ? `<span class="es-mia">${icU("i-tilde")}Tu mezcla</span>` : `<button type="button" class="btn-texto" data-guardar-mia>Guardar</button>`;
+          if (tieneMia && !esMia) cuerpo += `<div class="suena mia">${icU("i-musica")}<div class="suena-txt"><b>Mi mezcla</b><small>${nombres(pref.mia)}</small></div><button type="button" class="btn-texto" data-poner-mia>Poner</button></div>`;
+          cuerpo += `<div class="bloque"><div class="pestanas familias" role="tablist" aria-label="Familias de sonidos">${fams.map(([f, n]) => `<button type="button" role="tab" data-fam="${f}" aria-selected="${mu.fam === f}"${activos().some(x => x[3] === f) ? ` class="nuevas"` : ""}>${n}</button>`).join("")}</div>${grillaDe(disponibles().filter(x => x[3] === mu.fam))}</div>`;
+          cuerpo += paraLaSala() + `<p class="ayuda pie-txt">${tieneMia ? "«Mi mezcla» suena sola al entrar a cualquier sala." : "Guardá una mezcla y va a sonar sola al entrar."}</p>`;
         }
-        if (dlgM === "m9") {
-          h = `<div class="dos-col"><div>${sec("Sonando", "", "", atenuar(mezcla() || `<p class="vacio-m">Tocá un sonido para prenderlo.</p>`))}${sec("Para la sala", "los 3", "", atenuar(parteSala()))}</div>`
-            + `${sec("Ambiente", "solo vos", "", grillaDe(mu.orden.map(porId)))}</div>`;
+        if (dlgM === "m6") {
+          mu.lista = [];
+          if (pref.ultima && ids(pref.ultima).length) mu.lista.push(["La última vez", pref.ultima, "ultima"]);
+          pref.mezclas.forEach((m, i) => ids(m.vol).length && mu.lista.push([m.nombre, m.vol, "g" + i]));
+          MEZCLAS.forEach(([n, v], i) => mu.lista.push([n, v, "p" + i]));
+          const deLista = mu.lista.some(([n, v, k]) => k !== "ultima" && igual(mu.vol, v));
+          if (activos().length && !mu.nombrando && !deLista) extra = `<button type="button" class="btn-texto" data-guardar>Guardar</button>`;
+          if (mu.nombrando) cuerpo += `<div class="bloque"><input class="linea" data-f="nombre" placeholder="Nombre de la mezcla" aria-label="Nombre de la mezcla" value="${esc(mu.nombre)}" autocomplete="off"><p class="ayuda">Enter para guardar ${nombres(mu.vol)}.</p></div>`;
+          cuerpo += `<div class="bloque"><p class="pop-tit">Mezclas</p><div class="lista-mezclas" role="radiogroup" aria-label="Mezclas">${mu.lista.map(([n, v, k]) => `<button type="button" class="ritmo" role="radio" aria-checked="${igual(mu.vol, v)}" data-mezcla="${k}"><span class="marca"></span><span class="nom">${esc(n)}</span><span class="cifras">${nombres(v)}</span></button>`).join("")}</div></div>`;
+          const q = mu.q.trim();
+          cuerpo += `<div class="bloque"><p class="pop-tit">Sonidos sueltos${q ? "" : `<button type="button" class="btn-texto" data-ver-todos aria-expanded="${mu.verTodos}">${mu.verTodos ? "Ocultar" : `Ver todos · ${disponibles().length}`}</button>`}</p>${buscador()}${q ? (filtrar().length ? grillaDe(filtrar()) : sinResultado) : mu.verTodos ? porFamilia(disponibles()) : ""}</div>`;
+          cuerpo += paraLaSala();
         }
-        pop.innerHTML = `<div class="scroll-m"><p class="pop-tit cabeza-m">Música${pausa ? `<span class="tit-acc">${pausa}</span>` : ""}</p>${h}</div>`;
+        pop.innerHTML = `<div class="scroll-m">${sonando(extra)}${cuerpo}</div>`;
         if (fF) { const el = pop.querySelector(`[data-f="${fF}"]`); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch (e) {} } }
         marcar();
       };
-      pop.classList.toggle("ancho", dlgM === "m9");
       /* Un solo manejador para todo lo que se pinta adentro */
       pop.addEventListener("click", e => {
         const b = e.target.closest("button"); if (!b) return;
@@ -2169,13 +2163,23 @@ export function useMezclaAmbiente() {
           mu.vol[d.son] = prender ? 50 : 0; mu.pausa = false;
           if (prender) { pref.usos[d.son] = (pref.usos[d.son] || 0) + 1; guardarJ("usos", pref.usos); }
           cambio();
+          if (mu.q) foco = "buscar";
         }
         else if (d.sonOff) { mu.vol[d.sonOff] = 0; cambio(); }
-        else if (d.quitar != null) { mu.sala = null; mu.cambiando = false; }
+        else if (d.quitar != null) mu.sala = null;
         else if (d.callar != null) mu.sala.callada = !mu.sala.callada;
-        else if (d.cambiar != null) { mu.cambiando = !mu.cambiando; mu.txt = ""; if (mu.cambiando) foco = "link"; }
         else if (d.pausa != null) mu.pausa = !mu.pausa;
+        else if (d.vista) { mu.vista = d.vista; mu.q = ""; if (d.vista === "todos") foco = "buscar"; }
         else if (d.paraSala != null) { mu.paraSala = true; foco = "link"; }
+        else if (d.retomar != null) { pref.retomar = !pref.retomar; guardar(clave("retomar"), pref.retomar ? "1" : "0"); }
+        else if (d.fam) mu.fam = d.fam;
+        else if (d.guardarMia != null) { pref.mia = limpia(mu.vol); guardarJ("mia", pref.mia); avisar("Guardada como tu mezcla"); }
+        else if (d.ponerMia != null) { mu.vol = { ...limpia(pref.mia) }; mu.pausa = false; }
+        else if (d.mezcla) {
+          const m = mu.lista.find(x => x[2] === d.mezcla);
+          mu.vol = igual(mu.vol, m[1]) ? {} : { ...limpia(m[1]) }; mu.pausa = false; cambio();
+        }
+        else if (d.guardar != null) { mu.nombrando = true; foco = "nombre"; }
         else if (d.verTodos != null) mu.verTodos = !mu.verTodos;
         else return;
         pintarM();
@@ -2184,34 +2188,45 @@ export function useMezclaAmbiente() {
       pop.addEventListener("input", e => {
         const t = e.target;
         if (t.dataset.mvol) { mu.vol[t.dataset.mvol] = +t.value; marcar(); cambio(); return; }
+        if (t.dataset.f === "buscar") { mu.q = t.value; pintarM(); }
         if (t.dataset.f === "link") mu.txt = t.value;
+        if (t.dataset.f === "nombre") mu.nombre = t.value;
       });
       pop.addEventListener("keydown", e => {
-        if (e.key === "Enter" && e.target.dataset.f === "link" && e.target.value.trim()) pegar(e.target.value.trim());
+        if (e.key !== "Enter") return;
+        const f = e.target.dataset.f, v = e.target.value?.trim();
+        if (f === "link" && v) pegar(v);
+        if (f === "nombre") guardarMezcla();
+        /* En el buscador, Enter prende el único resultado */
+        if (f === "buscar" && v) { const r = filtrar(); if (r.length === 1) pop.querySelector(`[data-son="${r[0][0]}"]`)?.click(); }
       });
       s.musicaAjena = () => {
-        mu.sala = { titulo: "Café jazz · tres horas", quien: "Ana", callada: false }; mu.pausa = false; mu.paraSala = false; mu.cambiando = false;
+        mu.sala = { titulo: "Café jazz · tres horas", quien: "Ana", callada: false }; mu.pausa = false; mu.paraSala = false;
         pintarM(); avisar("Ana puso música para la sala");
       };
-      /* Entrar a la sala: vuelve la última mezcla, siempre */
+      /* Entrar a la sala: lo que cada variante recuerda */
       const entrar = primera => {
-        Object.assign(mu, { pausa: false, paraSala: false, cambiando: false, txt: "", verTodos: false });
+        Object.assign(mu, { pausa: false, vista: "grilla", q: "", paraSala: false, txt: "", nombrando: false, nombre: "", verTodos: false, fam: null });
         if (mu.sala) mu.sala.callada = false;
         ordenar();
-        let v = pref.ultima || {};
+        const nada = dlgM === "m5" ? pref.mia === null : pref.ultima === null;
+        let v = {}, msg = "Entraste a la sala: no suena nada";
+        if (dlgM === "m4" && pref.retomar && ids(pref.ultima).length) { v = pref.ultima; msg = `Volvió tu mezcla: ${nombres(v)}`; }
+        if (dlgM === "m5" && ids(pref.mia).length) { v = pref.mia; msg = `Suena tu mezcla: ${nombres(v)}`; }
+        if (dlgM === "m6" && ids(pref.ultima).length) msg = "Tu última mezcla quedó a un toque, en Mezclas";
         /* La primera vez, algo sonando para que se vea el panel en uso */
-        if (primera && pref.ultima === null) v = { rain: 45, fire: 25 };
+        if (primera && nada) v = { rain: 45, fire: 25 };
         mu.vol = { ...limpia(v) };
-        if (primera && pref.ultima === null) cambio();
+        if (primera && nada && dlgM !== "m5") cambio();
         pintarM();
-        if (!primera) avisar(ids(mu.vol).length ? `Volvió tu mezcla: ${nombres(mu.vol)}` : "Entraste a la sala: no suena nada", 2800);
+        if (!primera) avisar(msg, 2800);
       };
       s.reentrar = () => entrar(false);
-      s.reiniciarSonidos = () => { mu.vol = limpia(mu.vol); ordenar(); pintarM(); };
+      s.reiniciarSonidos = () => { mu.vol = limpia(mu.vol); ordenar(); mu.fam = null; pintarM(); };
       mu.sala = { titulo: "Café jazz · tres horas", quien: "Ana", callada: false };
       entrar(true);
       const abrirM = hacerPop(pop, btnM);
-      btnM.addEventListener("click", () => { if (pop.classList.contains("abierto")) { ordenar(); mu.verTodos = false; pintarM(); } });
+      btnM.addEventListener("click", () => { if (pop.classList.contains("abierto")) { ordenar(); mu.vista = "grilla"; mu.q = ""; pintarM(); } });
       if (dlg === dlgM) abrirM(true);
     }
 

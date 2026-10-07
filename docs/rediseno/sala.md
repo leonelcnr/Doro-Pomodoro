@@ -451,13 +451,39 @@ Recomendé **M4** porque no pide nada: guardar a mano choca con la misma razón 
 se fue «Solo yo». «Para la sala» quedó como una línea al pie. Si tampoco se usa, se va.
 La 18ª quedó en `bocetos/sala-ronda18.html`.
 
+### 20ª ronda (2026-10-06): M4 sin buscador, todo junto, video que se cambia
+
+**Leo eligió M4, con estas observaciones:**
+- **Nada de «guardar» la mezcla:** la última se guarda sola en localStorage y vuelve
+  siempre. Se fue el interruptor «Al entrar, retomar».
+- **Con un video de la sala cargado no había cómo poner otro** sin sacarlo primero, y eso
+  confunde.
+- **El buscador suma complejidad**, y las partes del panel no estaban bien separadas.
+  Le gustaba más con todos los sonidos juntos, como antes.
+
+**Base común:** el panel tiene arriba «Música» con «Pausar todo». Debajo van dos partes
+separadas por una línea: **Ambiente · solo vos** (los volúmenes y la grilla) y **Para la
+sala · los 3** (el video). No hay buscador ni familias.
+
+- **M7 · Todo junto, se despliega** (recomendada): con 12 sonidos se ven todos, como antes.
+  Con más de 12 se ven 8, con los más usados adelante, y «Ver los 30» despliega el resto
+  en la misma grilla. El renglón del video suma un botón de link, «Poner otro video», que
+  abre el campo debajo y reemplaza el video para los 3.
+- **M8 · Todo junto, scroll adentro:** la grilla, en un orden fijo, va en una ventana de
+  tres filas que se scrollea. El campo de link está siempre visible: si ya suena algo, el
+  texto dice «Pegá otro… para cambiarlo».
+- **M9 · Panel ancho, dos columnas:** a la izquierda lo que suena (mezcla y sala), a la
+  derecha todos los sonidos, 5 por fila. En el móvil queda en una columna.
+
+La 19ª quedó en `bocetos/sala-ronda19.html`.
+
 ## Dónde retomamos
 
 **Bandeja de tareas: cerrada con T43.** Notas: decididas (globales, sin tope, con tema
 opcional sin dejar de ser notas).
 
-**Tiempos: C1, elegida.** Falta elegir la música en la **19ª ronda**, entre M4, M5 y M6
-(recomendé M4). Con eso se cierra la sala.
+**Tiempos: C1, elegida.** Música: Leo eligió M4 en la 19ª ronda y las observaciones van
+en la **20ª**. Falta elegir entre M7, M8 y M9 (recomendé M7). Con eso se cierra la sala.
 
 ## Propuestas transversales
 
