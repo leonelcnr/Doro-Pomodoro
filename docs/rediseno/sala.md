@@ -453,6 +453,8 @@ La 18ª quedó en `bocetos/sala-ronda18.html`.
 
 ### 20ª ronda (2026-10-06): M4 sin buscador, todo junto, video que se cambia
 
+**FINAL: M7 · Todo junto, se despliega.**
+
 **Leo eligió M4, con estas observaciones:**
 - **Nada de «guardar» la mezcla:** la última se guarda sola en localStorage y vuelve
   siempre. Se fue el interruptor «Al entrar, retomar».
@@ -482,8 +484,22 @@ La 19ª quedó en `bocetos/sala-ronda19.html`.
 **Bandeja de tareas: cerrada con T43.** Notas: decididas (globales, sin tope, con tema
 opcional sin dejar de ser notas).
 
-**Tiempos: C1, elegida.** Música: Leo eligió M4 en la 19ª ronda y las observaciones van
-en la **20ª**. Falta elegir entre M7, M8 y M9 (recomendé M7). Con eso se cierra la sala.
+**SALA CERRADA (2026-10-06).** Decisiones finales:
+- **Vista:** 4 · Queda el lápiz.
+- **Bandeja de tareas:** T43 · Línea de tiempo.
+- **Diálogo de tiempos:** C1 · Renglones con − y +. Se aplica sin «Guardar» y avisa
+  «Cambia el reloj de los 3».
+- **Diálogo de música: M7 · Todo junto, se despliega.**
+  - El panel se divide en «Música» con «Pausar todo», **Ambiente · solo vos** y
+    **Para la sala · los 3**.
+  - Los sonidos van todos juntos en la grilla. Si son más de 12, se ven 8 (los más
+    usados) y «Ver los N» despliega el resto en la misma grilla. No hay buscador ni familias.
+  - La última mezcla se guarda en localStorage en cada cambio y vuelve sola al entrar.
+    No hay botón ni interruptor.
+  - El video de la sala tiene «Poner otro video», «Silenciar para mí» (local, no toca
+    `music_state`) y «Sacarlo para todos». «Solo yo» no existe más.
+
+Sigue la Fase 2/3 del plan: aplicarlo al código.
 
 ## Propuestas transversales
 
