@@ -88,10 +88,22 @@ El problema 2 (la ventana queda en blanco al salir de la sala) se le explicó co
 la propuesta es que **se cierre sola al salir** (una línea en `TimerDisplay`). Que siga
 mostrando el reloj fuera de la sala queda descartado por ahora.
 
-## Dónde retomamos
+## Decisión (2026-10-06): 6 · Un poco más grande
 
-Falta que Leo elija el tamaño (5, 6 o 7) y confirme que la ventana se cierre al salir de la
-sala. Con eso se cierra la pantalla.
+Aprobada. La ventana de hoy con Geist y el acento, y la hora un 20 % más grande.
+
+## Pendiente para la Fase 3
+
+1. `FloatingTimer.css`: hora en `clamp(2rem, min(38cqmin, 27cqw), 6rem)` y, en la forma
+   compacta, `min(23cqw, 57cqh)`.
+2. `FloatingTimer.tsx`: sacar `font-mono` de la raíz; el punto y la barrita en el acento
+   (`bg-primary`) en vez de `PUNTO_MODO` / `BARRA_MODO`. Los dos puntos redondos de la sala.
+3. `useDocumentPiP`: copiar también `data-acento` al abrir y en el `MutationObserver`.
+4. `TimerDisplay`: la pestaña de la sala con el reloj apagado, «En la ventana flotante» y
+   «Traerlo acá», en vez del ícono y el párrafo.
+5. `TimerDisplay`: cerrar la ventana al salir de la sala
+   (`useEffect(() => () => cerrarPiP(), [cerrarPiP])`). Propuesto; Leo no lo objetó.
+6. Borrar `pip-active-body` (no tiene CSS).
 
 ## Propuestas transversales
 
