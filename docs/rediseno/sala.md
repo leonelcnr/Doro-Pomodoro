@@ -422,14 +422,42 @@ y tres para la música:
 
 La 17ª quedó en `bocetos/sala-ronda17.html`.
 
+### 19ª ronda (2026-10-06): la música, sin «Solo yo» y con muchos sonidos
+
+**Decisiones de Leo sobre la 18ª:**
+- **Tiempos: C1** (renglones con − y +, sin «Guardar»). Es la elegida.
+- **Música:** queda entre M2 y M3. **«Solo yo» se va:** nadie busca algo, copia el link
+  y lo pega para escucharlo solo cuando ya lo tiene abierto en otro lado.
+- Pide que los sonidos **no se vuelvan una botonera** si un día son muchos.
+- Pide **recordar la mezcla**, sea una predeterminada o la última que se usó (localStorage).
+
+**Base común:** el panel abre en lo que suena (de M3), con «Pausar todo» y «Silenciar para
+mí». Debajo van los sonidos y al pie, en una línea, «Poner un video para la sala»
+(solo YouTube). Ajuste nuevo **Sonidos 12 · 30**: 12 son los reales y 18 de muestra, en
+cinco familias. Botón **«Volver a entrar»**: simula entrar de nuevo con lo guardado.
+
+- **M4 · Los tuyos primero** (recomendada): la grilla muestra 7 sonidos, ordenados por
+  cuánto los usás (el orden se recalcula al abrir el panel, nunca con el panel abierto), y
+  una octava casilla «Todos · N» con buscador y familias. Al entrar vuelve sola la
+  última mezcla, y un interruptor la apaga.
+- **M5 · Por familias:** pestañas Agua, Naturaleza, Lugares, Ruidos y Música, cada una de
+  hasta dos filas. Un punto marca la que tiene algo prendido. Se guarda una sola «Mi mezcla»
+  a mano, y esa suena al entrar.
+- **M6 · Mezclas y buscador:** se elige la mezcla (Tormenta, Cafetería, Orilla, Teclas y
+  ruido, las que guardes con nombre) y arriba de todas aparece «La última vez». Los sonidos
+  sueltos se buscan escribiendo o con «Ver todos». Al entrar no suena nada.
+
+Recomendé **M4** porque no pide nada: guardar a mano choca con la misma razón por la que
+se fue «Solo yo». «Para la sala» quedó como una línea al pie. Si tampoco se usa, se va.
+La 18ª quedó en `bocetos/sala-ronda18.html`.
+
 ## Dónde retomamos
 
 **Bandeja de tareas: cerrada con T43.** Notas: decididas (globales, sin tope, con tema
 opcional sin dejar de ser notas).
 
-Quedan dos detalles antes de cerrar la sala del todo, bocetados en la **18ª ronda**
-(recomendé C1 y M3): falta que Leo elija el **diálogo de configuraciones** (C1–C3) y el
-**de música** (M1–M3).
+**Tiempos: C1, elegida.** Falta elegir la música en la **19ª ronda**, entre M4, M5 y M6
+(recomendé M4). Con eso se cierra la sala.
 
 ## Propuestas transversales
 
