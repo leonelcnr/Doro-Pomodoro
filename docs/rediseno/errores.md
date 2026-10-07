@@ -65,14 +65,45 @@ conexión andan. Corregido antes de publicar: en el celular la línea de aviso p
 el punto en renglones sueltos; el placeholder de la primera caja se cortaba; la cifra en
 cero del dashboard y los días fantasma de la bandeja tenían poco contraste.
 
-## Para la Fase 3 (si se elige 4)
+## Decisión (2026-10-06): 4 · Según qué se corta
+
+Leo eligió la 4: la columna de los errores de la invitación para lo que corta el camino
+(404, «algo salió mal», sala que no está) y «en su lugar» para la conexión y los vacíos.
+Observaciones de Leo:
+- **El error no muestra el detalle técnico.** Solo «Algo salió mal», «Recargá y seguí: lo
+  que guardaste no se pierde», «Recargar» e «Ir al inicio». El detalle va a la consola,
+  como hoy.
+- **Los vacíos tienen que ser las pantallas aprobadas**, no una versión aproximada.
+
+### 2ª ronda (publicada 2026-10-06)
+
+- El error, sin «Ver el detalle»; título «Algo salió mal». En la 4 la columna queda con el
+  encabezado (el `errorElement` de `HomeLayout`).
+- **Tareas vacía** sobre S2: la frase en dos renglones («Todavía no hay temas / Arrancá por
+  una materia.»), la barra, «Temas | Calendario» y la grilla de cajas oscuras con la caja
+  punteada de «Nuevo tema» abierta para escribir; dos cajas fantasma muestran la forma. Al
+  crear, aparece la caja del tema y la de «Nuevo tema» queda al final, como en S2.
+- **Dashboard vacío** sobre el aprobado: período con las flechas (deshabilitadas, no hay
+  semana anterior), Resumen / Estudio / Tareas, Semana / 30 días / Año, la cifra «0 h» en
+  gris, la frase («Todavía no estudiaste esta semana. Tu primer pomodoro aparece acá.»), las
+  barras vacías con la línea de la meta y el índice de nueve puntos.
+- **Bandeja vacía** sobre T43: el asa («Siguiente: nada todavía», «0 pendientes»), «Mías |
+  De la sala» y, donde va el foco, el renglón punteado para anotar lo primero (con el botón
+  que abre «Crear»). Con una tarea, vuelve a ser la bandeja de siempre: el foco con su texto
+  y «Sigue …».
+
+Revisado en Chrome headless a 1280 px en claro y a 390 px en oscuro, los siete casos en las
+cuatro opciones: sin errores de JS. Se acortó el placeholder de la bandeja, que en el celular
+se cortaba.
+
+## Para la Fase 3
 
 - `{ path: "*", element: <NoEncontrada /> }` dentro de `HomeLayout`, para que quede el
   encabezado.
 - Un `errorElement` en `HomeLayout` que muestre la columna solo en el área de la página;
   `ErrorPage` queda en la raíz para lo que rompe hasta el layout, con la recarga por chunk.
 - Componente presentacional `EstadoColumna` (ícono, título, texto, acción, pie) para el
-  404, el error, la sala y los errores de la invitación.
+  404, el error, la sala y los errores de la invitación. Sin detalle técnico en pantalla.
 - `useConexion(canal?)`: `online`/`offline` del navegador más el estado del canal de
   Supabase (`CHANNEL_ERROR`, `TIMED_OUT`). En la sala, la línea de aviso; el reloj sigue
   local y se resincroniza al volver.

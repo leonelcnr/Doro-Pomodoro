@@ -31,7 +31,7 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `sala-ronda6.html` | Sala con la base A + F + I, las notas Q, R, U y la 6ª ronda (V–Z), guardada como referencia. | — |
 | `sala-ronda5.html` | Sala completa hasta la 5ª ronda (A–U), guardada como referencia. | — |
 | `invitacion.html` | Invitación (`/invitacion/:code`), 1ª ronda: 1 Directo, 2 Una puerta, 3 La sala detrás, 4 El reloj primero, y los errores. | https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm |
-| `errores.html` | Errores y vacíos (404, algo se trabó, sin conexión, sala que no está, vacíos de Tareas, Dashboard y bandeja), 1ª ronda: 1 La columna, 2 El anillo, 3 En su lugar, 4 Según qué se corta. | https://claude.ai/artifact/63CSJ5pWGe59DSRqai98tV |
+| `errores.html` | Errores y vacíos (404, algo se trabó, sin conexión, sala que no está, vacíos de Tareas, Dashboard y bandeja), **aprobado** (2026-10-06): 4 · Según qué se corta; 2ª ronda con los vacíos sobre las pantallas aprobadas. 1 a 3 quedan como referencia. | https://claude.ai/artifact/63CSJ5pWGe59DSRqai98tV |
 | `reloj-flotante.html` | Reloj flotante (Document PiP), **aprobado** (2026-10-06): 6 · Un poco más grande, la ventana de hoy con Geist y el acento. 5 y 7 quedan como referencia. | https://claude.ai/artifact/4HJ5JfVQQSLfVEaJHcUzzc |
 | `reloj-flotante-ronda1.html` | Reloj flotante, 1ª ronda (1 La sala en chico, 2 Solo los números, 3 El anillo, 4 Crece con la ventana), guardada como referencia. | — |
 | `primary-violeta-zinc.html` | `--primary`: violeta de hoy, violeta unificado y zinc (Fase 2 del plan). | https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd |

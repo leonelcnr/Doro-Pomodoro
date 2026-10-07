@@ -240,87 +240,114 @@ button.d-anillo:hover .relleno { fill: color-mix(in oklch, var(--superficie) 70%
 .er-col .d-unirse { width: 100%; margin-top: 8px; }
 .er-col .btn-acento { min-width: 200px; }
 .er-chica { font-size: 13px; color: var(--tenue); margin: 0; }
-details.detalle { font-size: 13px; color: var(--tenue); width: 100%; }
-details.detalle summary { cursor: pointer; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
-details.detalle summary::-webkit-details-marker { display: none; }
-details.detalle summary::after { content: "›"; transition: transform .2s; }
-details.detalle[open] summary::after { transform: rotate(90deg); }
-details.detalle pre { text-align: left; margin: 10px 0 0; font-size: 11.5px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; }
 
-/* ───────── Páginas con contenido (Tareas y Dashboard) ───────── */
-.pg { flex: 1; display: flex; flex-direction: column; padding: 20px clamp(20px, 7cqi, 120px) 64px; min-width: 0; }
-.pg-frase { margin: 8px 0 12px; font-size: clamp(24px, 4.2cqi, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
-.pg-frase span { color: var(--tenue); font-weight: 500; }
-.avance { height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
-.avance i { display: block; height: 100%; width: 0; background: var(--acento); }
-.pestanas { display: flex; gap: 22px; margin: 20px 0 24px; border-bottom: 1px solid var(--linea); flex-wrap: wrap; align-items: end; }
-.pestanas button { border: 0; background: none; padding: 8px 0; margin-bottom: -1px; color: var(--tenue); font-size: 14.5px; border-bottom: 2px solid transparent; }
-.pestanas button[aria-current] { color: var(--fg); border-color: var(--fg); font-weight: 500; }
-.pestanas .der { margin-left: auto; display: flex; gap: 14px; }
-.pestanas .der button { font-size: 13px; }
+/* ───────── Tareas, como S2 (cajas oscuras) ───────── */
+.ta-main { flex: 1; display: flex; flex-direction: column; padding: 40px clamp(20px, 7cqi, 120px) 64px; min-width: 0; }
+.a-centro { margin: 0 auto auto; width: 100%; max-width: 1080px; display: flex; flex-direction: column; gap: 36px; }
+.a-cab { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+.a-cab .linea-av { width: min(100%, 360px); }
+.frase { margin: 0; font-size: clamp(22px, 3.4cqi, 32px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.15; text-wrap: balance; }
+.frase .r { display: block; color: var(--tenue); font-weight: 400; }
+.linea-av { display: block; width: 100%; height: 2px; background: var(--linea); border-radius: 2px; overflow: hidden; }
+.linea-av.gruesa { height: 4px; border-radius: 4px; }
+.vistas { display: flex; gap: 20px; font-size: 14px; }
+.vistas button { border: 0; background: none; padding: 0 0 6px; color: var(--tenue); border-bottom: 1.5px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
+.vistas button svg { width: 15px; height: 15px; }
+.vistas button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+.cajas-temas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 232px), 1fr)); gap: 14px; }
+.caja-tema { display: flex; flex-direction: column; gap: 12px; min-height: 150px; min-width: 0; padding: 18px 18px 16px; border: 1px solid var(--linea); border-radius: 12px; background: var(--caja); text-align: left; color: inherit; transition: border-color .2s, box-shadow .25s; }
+button.caja-tema:hover { border-color: color-mix(in oklch, var(--tenue) 60%, var(--linea)); box-shadow: var(--sombra); }
+.ct-cab { display: flex; align-items: center; gap: 10px; font-size: 15.5px; font-weight: 500; min-width: 0; }
+.ct-cab svg { width: 18px; height: 18px; color: var(--tenue); flex-shrink: 0; }
+.ct-cab .num { margin-left: auto; font-weight: 400; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.ct-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ct-frase { font-size: 13.5px; color: var(--tenue); flex: 1; line-height: 1.4; }
+.caja-tema.nueva { border-style: dashed; border-color: color-mix(in oklch, var(--tenue) 45%, var(--linea)); background: transparent; justify-content: center; }
+.caja-tema.nueva .d-linea { text-align: left; font-size: 15.5px; font-weight: 500; }
+.caja-tema.nueva .d-linea::placeholder { font-weight: 400; }
+.caja-tema.nueva .ct-frase { flex: 0; font-size: 12.5px; }
+.caja-tema.eco { background: transparent; border-style: dashed; opacity: .5; pointer-events: none; }
+.caja-tema.eco i { display: block; height: 10px; width: 55%; border-radius: 4px; background: var(--linea); }
+.caja-tema.eco i + i { width: 80%; height: 8px; margin-top: auto; }
 
-/* Tareas: las cajas de los temas (S2: cajas oscuras) */
-.cajas { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
-.caja { position: relative; min-height: 132px; border-radius: 14px; background: var(--caja); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; text-align: left; border: 1px solid transparent; color: inherit; }
-button.caja:hover { border-color: var(--linea); }
-.caja h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
-.caja p { margin: 0; font-size: 13px; color: var(--tenue); }
-.caja .avance { margin-top: auto; }
-.caja.nueva { background: none; border: 1px dashed color-mix(in oklch, var(--tenue) 45%, var(--linea)); justify-content: center; }
-.caja.nueva .d-linea { text-align: left; font-size: 15.5px; font-weight: 500; }
-.caja.nueva .d-linea::placeholder { font-weight: 400; }
-.caja.eco { background: none; border: 1px dashed var(--linea); opacity: .55; pointer-events: none; }
-.caja.eco i { display: block; height: 10px; border-radius: 4px; background: var(--linea); width: 55%; }
-.caja.eco i + i { width: 30%; height: 8px; }
-.caja.eco .avance { opacity: .8; }
-.pista-caja { font-size: 12.5px; color: var(--tenue); }
-
-/* Dashboard: una cifra por vez */
-.cifra { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding: 12px 0 8px; }
-.cifra-tit { display: inline-flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin: 0; }
-.cifra-tit svg { width: 20px; height: 20px; color: var(--acento); }
-.cifra-num { font-size: clamp(56px, 11cqi, 104px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: color-mix(in oklch, var(--fg) 52%, var(--bg)); }
-.cifra-num small { font-size: .38em; letter-spacing: -0.02em; margin-left: .15em; }
-.cifra-frase { margin: 0; color: var(--tenue); max-width: 42ch; text-wrap: balance; }
-.cifra-frase b { color: var(--acento); font-weight: 500; }
-.mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: min(100%, 340px); margin-top: 14px; position: relative; }
-.mini::before { content: ""; position: absolute; left: 0; right: 0; top: 18px; border-top: 1px dashed var(--linea); }
-.mini span { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; color: var(--tenue); }
-.mini span::before { content: ""; width: 100%; height: 56px; border-bottom: 2px solid var(--linea); }
-.mini span.hoy { color: var(--fg); font-weight: 500; }
-.mini span.hoy::before { border-color: var(--acento); }
-.mini-meta { font-size: 11.5px; color: var(--tenue); width: min(100%, 340px); text-align: right; margin-top: -4px; }
-.indice-dash { display: flex; justify-content: center; gap: 12px; padding: 18px 0 0; }
-.indice-dash i { width: 6px; height: 6px; border-radius: 50%; background: var(--linea); }
+/* ───────── Dashboard, como el aprobado (una cifra por vez) ───────── */
+.db-main { flex: 1; display: flex; flex-direction: column; padding: 16px 20px 20px; min-width: 0; }
+@container app (min-width: 720px) { .db-main { padding-inline: 32px; } }
+.per-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px; }
+.per-izq { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.flechas { display: inline-flex; gap: 4px; }
+.flechas button { width: 30px; height: 30px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; display: grid; place-items: center; color: var(--fg); padding: 0; }
+.flechas button:disabled { color: color-mix(in oklch, var(--tenue) 45%, var(--linea)); background: none; cursor: default; }
+.flechas svg { width: 15px; height: 15px; }
+.per-titulo { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; }
+.per-titulo span { color: var(--tenue); font-weight: 400; font-size: 14.5px; letter-spacing: 0; margin-left: 8px; white-space: nowrap; }
+.per-der { display: flex; align-items: center; gap: 12px 28px; flex-wrap: wrap; }
+.rangos { display: flex; gap: 22px; }
+.rangos button { border: 0; background: none; padding: 0 0 9px; font-size: 14px; color: var(--tenue); border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
+.rangos button svg { width: 15px; height: 15px; }
+.rangos button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); font-weight: 500; }
+.cifra { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; padding: 24px 0 8px; }
+.cifra-tit { display: inline-flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin: 0; }
+.cifra-tit svg { width: 20px; height: 20px; color: var(--tenue); }
+.cifra-num { font-size: clamp(64px, 11cqi, 96px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: color-mix(in oklch, var(--fg) 52%, var(--bg)); }
+.cifra-frase { margin: 0; font-size: 17px; color: var(--tenue); max-width: 34ch; text-wrap: balance; }
+.cifra-frase b { color: var(--fg); font-weight: 600; }
+.barras7 { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); gap: 0 clamp(10px, 3cqi, 30px); width: min(100%, 480px); margin-top: 18px; }
+.barras7::before { content: ""; position: absolute; left: 0; right: 0; top: 30px; border-top: 1px dashed color-mix(in oklch, var(--tenue) 60%, var(--linea)); }
+.barras7 span { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 12.5px; color: var(--tenue); }
+.barras7 span::before { content: ""; width: 100%; height: 72px; border-bottom: 1px solid var(--linea); }
+.barras7 span.hoy { color: var(--fg); font-weight: 600; }
+.indice-dash { display: flex; justify-content: center; gap: 36px; padding: 20px 0 6px; }
+.indice-dash i { width: 4px; height: 4px; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 60%, var(--linea)); }
 .indice-dash i:first-child { background: var(--acento); }
-.cuenta-nota { font-size: 13px; color: var(--tenue); margin: 6px 0 0; }
+.cuenta-nota { font-size: 13px; color: var(--tenue); margin: 4px 0 0; }
 
-/* ───────── La bandeja de la sala (T43) ───────── */
+/* «Esta parte no cargó» (3): el área de la página, con el encabezado y la cabecera intactos */
+.no-cargo { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding-bottom: 48px; }
+.no-cargo p { margin: 0; color: var(--tenue); }
+.no-cargo strong { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+
+/* ───────── La bandeja de la sala, como T43 ───────── */
 .app.con-bandeja .s-main { padding-bottom: 330px; }
-.bandeja { position: absolute; left: 50%; bottom: 0; z-index: 5; width: min(100%, 620px); height: 300px; transform: translateX(-50%); display: flex; flex-direction: column; border: 1px solid var(--linea); border-bottom: 0; border-radius: 18px 18px 0 0; background: var(--superficie); box-shadow: var(--sombra); }
-.bandeja::before { content: ""; display: block; width: 32px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: var(--linea); flex-shrink: 0; }
-.ba-cab { display: flex; align-items: center; gap: 4px; padding: 6px 12px 6px 20px; flex-shrink: 0; }
-.ba-cab h3 { margin: 0 auto 0 0; font-size: 15px; font-weight: 600; }
-.ba-cuerpo { flex: 1; overflow: auto; padding: 4px 20px 20px; min-height: 0; display: flex; flex-direction: column; }
-.ba-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding-bottom: 8px; }
-.ba-col svg.er-ic { width: 32px; height: 32px; }
-.ba-col strong { font-size: 16px; font-weight: 600; }
-.ba-col p { margin: 0 0 4px; font-size: 13.5px; color: var(--tenue); }
+.bandeja { position: absolute; left: 50%; bottom: 0; z-index: 10; width: min(calc(100% - 24px), 560px); max-height: 300px; display: flex; flex-direction: column; background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra); transform: translateX(-50%); }
+.asa { position: relative; flex-shrink: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px 20px 0; border: 0; background: none; text-align: left; font-size: 14px; border-radius: 16px 16px 0 0; }
+.asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 32px; height: 4px; border-radius: 4px; background: var(--linea); transform: translateX(-50%); }
+.sig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sig b { font-weight: 500; }
+.tenue { color: var(--tenue); }
+.cuenta-asa { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--tenue); font-size: 13px; font-variant-numeric: tabular-nums; }
+.cuenta-asa svg { width: 16px; height: 16px; }
+.ba-cuerpo { padding: 4px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.ba-pest { display: flex; gap: 18px; border-bottom: 1px solid var(--linea); }
+.ba-pest button { border: 0; background: none; padding: 6px 0 9px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-size: 13.5px; color: var(--tenue); display: inline-flex; align-items: center; gap: 6px; }
+.ba-pest button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--acento); }
+.ba-pest .n { font-variant-numeric: tabular-nums; color: var(--tenue); font-size: 12.5px; }
+.tt-foco { background: var(--campo); border-radius: 14px; padding: 14px 16px; }
+.tt-foco-vacio { margin: 0; font-size: 13.5px; color: var(--tenue); text-align: center; padding: 8px 12px; }
+.tt-foco.hueco { background: none; border: 1px dashed color-mix(in oklch, var(--tenue) 45%, var(--linea)); padding: 2px 8px 2px 14px; }
+.tt-alta-in { display: flex; align-items: center; gap: 10px; min-height: 46px; color: var(--tenue); }
+.tt-alta-in > svg { width: 18px; height: 18px; flex-shrink: 0; }
+.tt-alta-in input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14.5px; padding: 10px 0; }
+.tt-alta-in input::placeholder { color: var(--tenue); }
+.tt-mas { width: 26px; height: 26px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; flex-shrink: 0; }
+.tt-mas:hover { background: var(--campo); color: var(--fg); }
+.tt-mas svg { width: 15px; height: 15px; }
+.tt-nota { margin: 0; font-size: 12.5px; color: var(--tenue); text-align: center; }
+.tt-plegado { display: flex; align-items: center; gap: 6px; }
+.tt-ver-todo { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid var(--linea); background: none; border-radius: 10px; font-size: 14px; text-align: left; }
+.tt-ver-todo:hover { background: var(--campo); }
+.tt-ver-todo .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tt-ver-todo small { color: var(--tenue); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.tt-ver-todo svg { width: 16px; height: 16px; color: var(--tenue); }
+.tt-plegado .tt-mas { width: 44px; height: 44px; border-radius: 10px; }
+.ba-col { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 6px 0 4px; }
+.ba-col svg.er-ic { width: 30px; height: 30px; }
+.ba-col strong { font-size: 15.5px; font-weight: 600; }
+.ba-col p { margin: 0 0 2px; font-size: 13.5px; color: var(--tenue); }
 .ba-col .d-linea { max-width: 320px; }
 .ba-anillo { display: flex; align-items: center; gap: 14px; text-align: left; }
 .ba-anillo svg { width: 52px; height: 52px; transform: rotate(-90deg); flex-shrink: 0; }
 .ba-anillo .pista-anillo { stroke: var(--linea); }
-.tl { display: grid; grid-template-columns: 56px 1fr; column-gap: 12px; }
-.tl-dia { position: relative; font-size: 12.5px; color: var(--tenue); padding-top: 11px; }
-.tl-dia.marca-dia { color: var(--fg); font-weight: 500; }
-.tl-dia.marca-dia::after { content: ""; position: absolute; right: -9px; top: 18px; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
-.tl-ren { display: flex; align-items: center; gap: 12px; min-height: 42px; border-left: 1px solid var(--linea); padding-left: 16px; font-size: 14.5px; }
-.tl-ren .check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid color-mix(in oklch, var(--tenue) 60%, var(--linea)); flex-shrink: 0; }
-.tl-ren .d-linea { text-align: left; height: 34px; font-size: 14.5px; }
-.tl-ren.hueco .d-linea { border-bottom-style: dashed; border-color: color-mix(in oklch, var(--tenue) 45%, var(--linea)); }
-.tl-ren.hueco .d-linea:focus { border-bottom-style: solid; border-color: var(--acento); }
-.tl-ren.eco { opacity: .5; }
-.tl-ren.eco i { display: block; height: 8px; width: 40%; border-radius: 4px; background: var(--linea); }
 
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
@@ -367,6 +394,12 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
   <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-flecha-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-flecha-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-libro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h10M4 17h6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-tendencia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></symbol>
+  <symbol id="i-abajo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arriba" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></symbol>
   <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
   <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
@@ -380,6 +413,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
   <header class="cabecera">
     <h1>Errores y vacíos de Doro</h1>
     <p><b>Lo que se ve cuando algo falla o todavía no hay nada.</b> Hoy no hay página 404: cualquier dirección que no existe cae en <code>ErrorPage</code> («Algo salió mal» y «Recargar», que no arregla nada). Si se rompe una página, se va también el encabezado. La sala muestra el mensaje crudo del error, y cuando se corta la conexión no se ve nada.</p>
+    <p><b style="color:var(--fg)">Elegida (Leo, 2026-10-06): 4 · Según qué se corta.</b> 2ª ronda: «Algo salió mal» sin el detalle técnico (solo «Recargar» e «Ir al inicio»), y los vacíos de Tareas, Dashboard y la bandeja sobre las pantallas aprobadas (S2, el Resumen y T43). 1 a 3 quedan como referencia.</p>
     <p>Las cuatro maquetas muestran el mismo caso: elegilo en <b>«Pantalla»</b>. En los vacíos <b>se puede escribir</b> (un tema, una tarea) y la pantalla se llena; «Sin conexión» vuelve sola a los 6 s. <b>«Mostrar otra vez»</b> repite el caso desde el principio. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
@@ -387,7 +421,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
       <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Pantalla</span>
-      <div class="segmentado" id="caso" role="group" aria-label="Caso"><button type="button" data-v="p404">No existe</button><button type="button" data-v="error">Algo se trabó</button><button type="button" data-v="red">Sin conexión</button><button type="button" data-v="sala">Sala que no está</button><button type="button" data-v="tareas">Tareas vacías</button><button type="button" data-v="dash">Dashboard vacío</button><button type="button" data-v="bandeja">Bandeja vacía</button></div></div>
+      <div class="segmentado" id="caso" role="group" aria-label="Caso"><button type="button" data-v="p404">No existe</button><button type="button" data-v="error">Algo salió mal</button><button type="button" data-v="red">Sin conexión</button><button type="button" data-v="sala">Sala que no está</button><button type="button" data-v="tareas">Tareas vacías</button><button type="button" data-v="dash">Dashboard vacío</button><button type="button" data-v="bandeja">Bandeja vacía</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Quién</span>
       <div class="segmentado" id="quien" role="group" aria-label="Quién usa la app"><button type="button" data-v="nuevo">Anónimo</button><button type="button" data-v="cuenta">Con cuenta</button></div></div>
     <div class="ajuste"><span class="ajuste-nombre">Barra</span>
@@ -422,7 +456,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
     <div class="opcion-cabeza">
       <div>
         <h2><span class="letra">2</span><span class="nombre">El anillo</span></h2>
-        <p class="resumen">El anillo del home <b>cuenta lo que pasa</b>: punteado en el 404, cortado si algo se trabó, girando sin conexión, en cero en lo vacío. <b>El centro del anillo es el botón</b>, como «Crear sala» en el home.</p>
+        <p class="resumen">El anillo del home <b>cuenta lo que pasa</b>: punteado en el 404, cortado si algo salió mal, girando sin conexión, en cero en lo vacío. <b>El centro del anillo es el botón</b>, como «Crear sala» en el home.</p>
         <p class="enfoque">Lo primero: <b>que se reconozca Doro aunque algo falle</b></p>
       </div>
       <div class="notas">
@@ -453,8 +487,8 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
   <section class="opcion" id="r4" data-v="r4">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">4</span><span class="nombre">Según qué se corta</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen"><b>La columna (1) para lo que corta el camino</b>: el 404, «algo se trabó» y la sala que no está. <b>En su lugar (3) para lo que no lo corta</b>: la conexión y los vacíos.</p>
+        <h2><span class="letra">4</span><span class="nombre">Según qué se corta</span><span class="marca-rec">Elegida</span></h2>
+        <p class="resumen"><b>La columna (1) para lo que corta el camino</b>: el 404, «algo salió mal» y la sala que no está. <b>En su lugar (3) para lo que no lo corta</b>: la conexión y los vacíos.</p>
         <p class="enfoque">Lo primero: <b>que el tamaño del aviso sea el del problema</b></p>
       </div>
       <div class="notas">
@@ -473,7 +507,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
         <thead><tr><th>Caso</th><th>1 · La columna</th><th>2 · El anillo</th><th>3 · En su lugar</th><th class="elegida">4 · Según qué se corta</th></tr></thead>
         <tbody>
           <tr><td>No existe (404)</td><td>«Esta página no existe» e «Ir al inicio»</td><td>Anillo punteado: «Ir al inicio»</td><td>Te lleva al inicio con una línea</td><td class="elegida">Columna, con el encabezado</td></tr>
-          <tr><td>Algo se trabó</td><td>«Recargar»; el detalle, plegado</td><td>Anillo cortado: «Recargar»</td><td>Solo el área de la página; queda el encabezado</td><td class="elegida">Columna, en el área de la página</td></tr>
+          <tr><td>Algo salió mal</td><td>«Recargar» e «Ir al inicio»</td><td>Anillo cortado: «Recargar»</td><td>Solo el área de la página; queda el encabezado</td><td class="elegida">Columna, en el área de la página</td></tr>
           <tr><td>Sin conexión</td><td>Tapa todo hasta que vuelve</td><td>Anillo que gira; tapa todo</td><td>Una línea; el reloj sigue</td><td class="elegida">Una línea; el reloj sigue</td></tr>
           <tr><td>Sala que no está</td><td>Como el error de la invitación</td><td>Anillo: «Crear una sala»</td><td>Inicio con una línea</td><td class="elegida">Como el error de la invitación</td></tr>
           <tr><td>Vacíos</td><td>Columna con la entrada</td><td>Anillo en cero</td><td>La forma punteada; se escribe donde va</td><td class="elegida">La forma punteada</td></tr>
@@ -484,8 +518,8 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
 
     <div class="recomendacion">
       <div>
-        <h3>Recomendación: 4 · Según qué se corta</h3>
-        <p><b>Un error que corta el camino merece una pantalla; uno que no lo corta, una línea.</b> El 404, la sala que no está y «algo se trabó» te dejan sin nada que hacer en esa página: ahí va la columna de la invitación, con una sola acción. La conexión y los vacíos no te frenan: la pantalla sigue siendo útil, así que el aviso va donde falta y no tapa nada.</p>
+        <h3>Elegida: 4 · Según qué se corta (Leo, 2026-10-06)</h3>
+        <p><b>Un error que corta el camino merece una pantalla; uno que no lo corta, una línea.</b> El 404, la sala que no está y «algo salió mal» te dejan sin nada que hacer en esa página: ahí va la columna de la invitación, con una sola acción. La conexión y los vacíos no te frenan: la pantalla sigue siendo útil, así que el aviso va donde falta y no tapa nada.</p>
         <p><b>Sin conexión, el reloj sigue.</b> Es local; cuando vuelve la conexión se sincroniza con la sala. Tapar el reloj por un corte de 5 s sería el peor caso de la app.</p>
         <p><b>Los vacíos se escriben donde van.</b> La caja punteada del primer tema, el renglón punteado de «Hoy» en la bandeja y el dashboard en cero con la frase que dice qué va a aparecer. Nada de «0 %»: en el dashboard la cifra va en gris tenue para que no se lea como un dato.</p>
         <p><b>Lo descartaría:</b> el anillo (2) para errores. El anillo es la acción principal del home; usarlo para «algo se rompió» le quita fuerza.</p>
@@ -493,7 +527,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
         <h4>Textos</h4>
         <ul>
           <li><b>404:</b> «Esta página no existe», con la dirección en gris. Si parece un link de sala (<code>/sala/…</code>, <code>/invite/…</code>), el renglón «¿Te pasaron un link?» del home.</li>
-          <li><b>Error:</b> «Algo se trabó» y «Recargá y seguí: lo que guardaste no se pierde». El detalle técnico, plegado.</li>
+          <li><b>Error:</b> «Algo salió mal» y «Recargá y seguí: lo que guardaste no se pierde», con «Recargar» e «Ir al inicio». Sin detalle técnico: va a la consola, como hoy.</li>
           <li><b>Sala:</b> los mismos textos que el error de la invitación («No encontramos esta sala»), con «Crear una sala» como acción.</li>
         </ul>
         <h4>Qué encontré en el código</h4>
@@ -525,7 +559,7 @@ interface EstadoColumnaProps {
   titulo: string;
   texto: ReactNode;
   accion?: ReactNode;   <span class="c-com">// botón en acento</span>
-  pie?: ReactNode;      <span class="c-com">// «Ir al inicio», renglón del link, detalle</span>
+  pie?: ReactNode;      <span class="c-com">// «Ir al inicio» o el renglón del link</span>
 }
 
 <span class="c-com">// src/pages/NoEncontrada.tsx</span>
@@ -635,9 +669,6 @@ export function useConexion(canal?: RealtimeChannel) {
   const lineaAviso = (html, cerrable = true) => `<div class="linea-aviso" role="status">${html}${cerrable ? `<button type="button" class="cerrar" data-cerrar aria-label="Cerrar el aviso">${ic("i-x")}</button>` : ""}</div>`;
   const formLink = (label = "¿Te pasaron un link?") => `<form class="d-unirse" data-otro><label>${label}</label><input class="d-linea" placeholder="Pegalo acá y tocá Enter" autocomplete="off"></form>`;
   const columna = (icono, titulo, texto, extra) => `<main class="er-main entra"><div class="er-col">${ic(icono, "er-ic")}<h1 class="er-tit">${titulo}</h1><p class="er-txt">${texto}</p>${extra}</div></main>`;
-  const detalle = `<details class="detalle"><summary>Ver el detalle</summary><pre>TypeError: Cannot read properties of undefined (reading 'nombre')
-    at FilaTarea (FilaTarea.tsx:42)
-    at BandejaTareas (BandejaTareas.tsx:118)</pre></details>`;
 
   const home = (aviso = "") => `${tb("Inicio")}${aviso}
     <main class="d-main entra">${anillo(`<strong>Crear sala</strong><span>Tu primera sesión</span>`, { data: "data-crear" })}${formLink()}</main>`;
@@ -667,13 +698,12 @@ export function useConexion(canal?: RealtimeChannel) {
     return home(lineaAviso(`<span><b>${RUTA}</b> no existe. Te dejamos en el inicio.</span>`));
   };
 
-  const error = v => {
-    if (v === "r1") return tbMarca() + columna("i-trabado", "Algo se trabó", "Recargá y seguí: lo que guardaste no se pierde.",
-      `<button type="button" class="btn-acento" data-recargar>Recargar</button><button type="button" class="btn-link" data-inicio>Ir al inicio</button>${detalle}`);
-    if (v === "r2") return `${tbMarca()}<main class="d-main entra">${anillo(`<strong>Recargar</strong><span>Algo se trabó</span>`, { data: "data-recargar", arco: `<circle class="arco tenue" cx="100" cy="100" r="92" fill="none" stroke-width="3" stroke-dasharray="520 58" stroke-dashoffset="-29"/>`, pista: 'stroke="transparent" style="stroke:transparent"' })}<div class="d-pie"><button type="button" class="btn-link" data-inicio>Ir al inicio</button>${detalle}</div></main>`;
+  const error = (v, el, mezcla) => {
+    if (v === "r1") return (mezcla ? tb() : tbMarca()) + columna("i-trabado", "Algo salió mal", "Recargá y seguí: lo que guardaste no se pierde.",
+      `<button type="button" class="btn-acento" data-recargar>Recargar</button><button type="button" class="btn-link" data-inicio>Ir al inicio</button>`);
+    if (v === "r2") return `${tbMarca()}<main class="d-main entra">${anillo(`<strong>Recargar</strong><span>Algo salió mal</span>`, { data: "data-recargar", arco: `<circle class="arco tenue" cx="100" cy="100" r="92" fill="none" stroke-width="3" stroke-dasharray="520 58" stroke-dashoffset="-29"/>`, pista: 'stroke="transparent" style="stroke:transparent"' })}<div class="d-pie"><button type="button" class="btn-link" data-inicio>Ir al inicio</button></div></main>`;
     /* 3: el errorElement del layout deja el encabezado; la página es la que no cargó */
-    return `${tb("Dashboard")}<main class="pg entra"><nav class="pestanas"><button type="button" aria-current="page" data-nada>Resumen</button><button type="button" data-nada>Estudio</button><button type="button" data-nada>Tareas</button></nav>
-      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:46ch"><p style="margin:0;font-size:17px;font-weight:600;letter-spacing:-0.01em">Esta parte no cargó.</p><p style="margin:-6px 0 0;color:var(--tenue);font-size:14.5px">Lo demás de Doro sigue andando. Recargá y seguí.</p><button type="button" class="btn-texto" data-recargar>Recargar</button>${detalle}</div></main>`;
+    return `${tb("Dashboard")}<main class="db-main entra">${cabDash()}<section class="no-cargo"><strong>Algo salió mal</strong><p>Recargá y seguí: lo que guardaste no se pierde.</p><button type="button" class="btn-texto" data-recargar>Recargar</button></section></main>`;
   };
 
   const red = (v, el) => {
@@ -691,56 +721,61 @@ export function useConexion(canal?: RealtimeChannel) {
     return home(lineaAviso(`<span>No encontramos <b>esa sala</b>: el link está mal o se cerró. Podés crear otra.</span>`));
   };
 
-  /* Tareas: S2 con las cajas de los temas */
-  const cajaNueva = (ph = "Nuevo tema") => `<form class="caja nueva" data-tema><input class="d-linea" placeholder="${ph}" aria-label="Nombre del tema" maxlength="40" autocomplete="off"><span class="pista-caja">Enter para crear</span></form>`;
-  const tareasLlenas = el => `${tb("Tareas")}<main class="pg entra"><h1 class="pg-frase">Nada pendiente <span>en ${el._temas.length === 1 ? "un tema" : el._temas.length + " temas"}</span></h1><div class="avance"><i></i></div>
-      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Temas</button><button type="button" data-nada>Calendario</button></nav>
-      <div class="cajas">${el._temas.map(t => `<button type="button" class="caja" data-abrir><h3>${esc(t)}</h3><p>Todavía vacío</p><div class="avance"><i></i></div></button>`).join("")}${cajaNueva()}</div></main>`;
+  /* Tareas, como S2: la frase, la barra, «Temas | Calendario» y las cajas */
+  const lineaAv = (p, cls = "") => `<span class="linea-av${cls ? " " + cls : ""}"><span style="display:block;height:100%;width:${p}%;background:var(--acento)"></span></span>`;
+  const vistasSel = () => `<div class="vistas" role="group" aria-label="Vista"><button type="button" aria-pressed="true" data-nada>${ic("i-grilla")}Temas</button><button type="button" aria-pressed="false" data-nada>${ic("i-cal")}Calendario</button></div>`;
+  const cabTareas = (f1, f2) => `<div class="a-cab"><h1 class="frase">${f1}<span class="r">${f2}</span></h1>${lineaAv(0, "gruesa")}${vistasSel()}</div>`;
+  const cajaNueva = (ph = "Nuevo tema") => `<form class="caja-tema nueva" data-tema><input class="d-linea" placeholder="${ph}" aria-label="Nombre del tema" maxlength="40" autocomplete="off"><span class="ct-frase">Una materia o un proyecto. Enter para crear.</span></form>`;
+  const tareasLlenas = el => `${tb("Tareas")}<main class="ta-main"><div class="a-centro entra">${cabTareas("Nada pendiente", `en ${el._temas.length === 1 ? "tu tema" : `tus ${el._temas.length} temas`}.`)}
+      <div class="cajas-temas">${el._temas.map(t => `<button type="button" class="caja-tema" data-abrir><span class="ct-cab">${ic("i-libro")}<span class="ct-n">${esc(t)}</span><span class="num">0 %</span></span>${lineaAv(0)}<span class="ct-frase">Todavía vacío</span></button>`).join("")}${cajaNueva()}</div></div></main>`;
   const tareas = (v, el) => {
     if (el._temas.length) return tareasLlenas(el);
     const form = `<form class="d-unirse" data-tema><label>Nombre del primer tema</label><input class="d-linea" placeholder="Por ejemplo, Análisis II" maxlength="40" autocomplete="off"></form>`;
     if (v === "r1") return tb("Tareas") + columna("i-cajas", "Todavía no hay temas", "Un tema es una materia o un proyecto. Adentro van sus parciales, prácticos y tareas.", form);
     if (v === "r2") return `${tb("Tareas")}<main class="d-main entra">${anillo(`<strong>Sin temas</strong><span>Un tema es una materia o un proyecto</span>`, { tag: "div" })}${form}</main>`;
-    const eco = `<div class="caja eco" aria-hidden="true"><i></i><i></i><div class="avance"></div></div>`;
-    return `${tb("Tareas")}<main class="pg entra"><h1 class="pg-frase">Nada pendiente <span>todavía</span></h1><div class="avance"><i></i></div>
-      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Temas</button><button type="button" data-nada>Calendario</button></nav>
-      <div class="cajas">${cajaNueva("Tu primer tema")}${eco}${eco}</div></main>`;
+    const eco = `<div class="caja-tema eco" aria-hidden="true"><i></i><span class="linea-av"></span><i></i></div>`;
+    return `${tb("Tareas")}<main class="ta-main"><div class="a-centro entra">${cabTareas("Todavía no hay temas", "Arrancá por una materia.")}
+      <div class="cajas-temas">${cajaNueva("Tu primer tema")}${eco}${eco}</div></div></main>`;
   };
 
-  /* Dashboard: la cifra en cero, con la frase que dice qué va a aparecer */
+  /* Dashboard, como el aprobado: período, pestañas, rango y una cifra por vez */
   const notaCuenta = () => esNuevo() ? `<p class="cuenta-nota">Se guarda en este navegador. <button type="button" class="btn-link" data-nada>Con una cuenta</button>, en todos lados.</p>` : "";
+  const cabDash = () => `<div class="per-cab"><div class="per-izq"><span class="flechas"><button type="button" disabled aria-label="Semana anterior">${ic("i-flecha-i")}</button><button type="button" disabled aria-label="Semana siguiente">${ic("i-flecha-d")}</button></span><h1 class="per-titulo">Esta semana<span>del 5 al 11 oct</span></h1></div>
+      <div class="per-der"><nav class="rangos" aria-label="Qué ver"><button type="button" aria-pressed="true" data-nada>${ic("i-grafico")}Resumen</button><button type="button" aria-pressed="false" data-nada>${ic("i-reloj")}Estudio</button><button type="button" aria-pressed="false" data-nada>${ic("i-check")}Tareas</button></nav>
+        <div class="segmentado" role="group" aria-label="Período"><button type="button" aria-pressed="true" data-nada>Semana</button><button type="button" aria-pressed="false" data-nada>30 días</button><button type="button" aria-pressed="false" data-nada>Año</button></div></div></div>`;
   const dash = v => {
     if (v === "r1") return tb("Dashboard") + columna("i-grafico", "Todavía no hay nada que contar", "Terminá tu primer pomodoro y acá vas a ver cuánto estudiás, si sos constante y cuándo rendís.",
       `<button type="button" class="btn-acento" data-pomodoro>Empezar un pomodoro</button>${notaCuenta()}`);
     if (v === "r2") return `${tb("Dashboard")}<main class="d-main entra">${anillo(`<strong>0 de 2 h</strong><span>Meta de hoy</span>`, { tag: "div", arco: `<circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578"/>` })}<div class="d-pie">Tu primer pomodoro lo empieza a llenar.<button type="button" class="btn-acento" data-pomodoro>Empezar un pomodoro</button>${notaCuenta()}</div></main>`;
     const dias = ["L", "M", "M", "J", "V", "S", "D"];
-    return `${tb("Dashboard")}<main class="pg entra">
-      <nav class="pestanas"><button type="button" aria-current="page" data-nada>Resumen</button><button type="button" data-nada>Estudio</button><button type="button" data-nada>Tareas</button>
-        <span class="der"><button type="button" aria-current="true" data-nada>Semana</button><button type="button" data-nada>30 días</button><button type="button" data-nada>Año</button></span></nav>
-      <section class="cifra"><h2 class="cifra-tit">${ic("i-reloj")}Esta semana</h2><div class="cifra-num">0<small>min</small></div>
-        <p class="cifra-frase">Todavía no hay sesiones. <b>Tu primer pomodoro</b> aparece acá, y con él la racha y tu mejor horario.</p>
-        <div class="mini" aria-hidden="true">${dias.map((d, i) => `<span${i === 1 ? ' class="hoy"' : ""}>${d}</span>`).join("")}</div><div class="mini-meta">Meta: 2 h por día</div>
-        <button type="button" class="btn-texto" data-pomodoro style="margin-top:10px">Empezar un pomodoro</button>${notaCuenta()}</section>
+    return `${tb("Dashboard")}<main class="db-main entra">${cabDash()}
+      <section class="cifra"><h2 class="cifra-tit">${ic("i-tendencia")}Esta semana</h2><div class="cifra-num">0 h</div>
+        <p class="cifra-frase">Todavía no estudiaste esta semana. <b>Tu primer pomodoro</b> aparece acá.</p>
+        <div class="barras7" aria-hidden="true">${dias.map((d, i) => `<span${i === 1 ? ' class="hoy"' : ""}>${d}</span>`).join("")}</div>
+        <button type="button" class="btn-texto" data-pomodoro style="margin-top:14px">Empezar un pomodoro</button>${notaCuenta()}</section>
       <div class="indice-dash" aria-hidden="true">${"<i></i>".repeat(9)}</div></main>`;
   };
 
-  /* Bandeja de la sala (T43): línea de tiempo por fecha */
-  const bandejaCab = `<div class="ba-cab"><h3>Tareas</h3><button type="button" class="ic chico" data-nada title="Ver por tipo">${ic("i-grilla")}</button><button type="button" class="ic chico" data-nada title="Crear">${ic("i-mas")}</button></div>`;
-  const renglonNuevo = (ph) => `<form class="tl-ren hueco" data-item><span class="check" aria-hidden="true"></span><input class="d-linea" placeholder="${ph}" aria-label="Nueva tarea para hoy" maxlength="60" autocomplete="off"></form>`;
+  /* La bandeja de la sala, como T43: el asa, «Mías | De la sala», el foco y lo que sigue */
   const bandeja = (v, el) => {
+    const n = el._items.length;
+    const asa = `<div class="asa"><span class="sig"><span class="tenue">Siguiente:</span> <b>${n ? esc(el._items[0]) : "nada todavía"}</b></span><span class="cuenta-asa">${n} pendiente${n === 1 ? "" : "s"}${ic("i-abajo")}</span></div>`;
+    const pest = `<div class="ba-pest" role="tablist"><button type="button" role="tab" aria-selected="true" data-nada>Mías <span class="n">${n}</span></button><button type="button" role="tab" aria-selected="false" data-nada>De la sala <span class="n">0</span></button></div>`;
+    const alta = ph => `<form class="tt-alta-in" data-item>${ic("i-mas")}<input placeholder="${ph}" aria-label="Nueva tarea" maxlength="60" autocomplete="off"><button type="button" class="tt-mas" data-nada title="Parcial, práctico o informe" aria-label="Más opciones">${ic("i-ajustes")}</button></form>`;
     let cuerpo;
-    if (el._items.length) {
-      cuerpo = `<div class="tl"><div class="tl-dia marca-dia">Hoy</div><div>${el._items.map(t => `<div class="tl-ren"><span class="check" aria-hidden="true"></span>${esc(t)}</div>`).join("")}${renglonNuevo("Otra para hoy")}</div></div>`;
+    if (n) {
+      cuerpo = `<div class="tt-foco"><p class="tt-foco-vacio">¿En qué vas a estar? Tocá algo de la lista y queda acá, con su regla a mano.</p></div>
+        <div class="tt-plegado"><button type="button" class="tt-ver-todo" data-nada><span class="tenue">Sigue</span><span class="t">${esc(el._items[0])}</span><small>${n}</small>${ic("i-arriba")}</button><button type="button" class="tt-mas" data-nada aria-label="Crear">${ic("i-mas")}</button></div>
+        <div class="tt-foco hueco">${alta("Otra tarea…")}</div>`;
     } else if (v === "r1") {
       cuerpo = `<form class="ba-col" data-item>${ic("i-lista", "er-ic")}<strong>Nada pendiente</strong><p>Lo que anotes acá queda también en Tareas.</p><input class="d-linea" placeholder="Anotá algo y tocá Enter" aria-label="Nueva tarea" maxlength="60" autocomplete="off"></form>`;
     } else if (v === "r2") {
       cuerpo = `<form class="ba-col" data-item><div class="ba-anillo"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="24" fill="none" stroke-width="3"/></svg><div><strong>Nada pendiente</strong><p>0 de 0 para hoy</p></div></div><input class="d-linea" placeholder="Anotá algo y tocá Enter" aria-label="Nueva tarea" maxlength="60" autocomplete="off"></form>`;
     } else {
-      cuerpo = `<div class="tl"><div class="tl-dia marca-dia">Hoy</div><div>${renglonNuevo("Anotá algo para hoy")}</div>
-        <div class="tl-dia" style="opacity:.8">Mañana</div><div class="tl-ren eco" aria-hidden="true"><span class="check"></span><i></i></div>
-        <div class="tl-dia" style="opacity:.8">Sin fecha</div><div class="tl-ren eco" aria-hidden="true"><span class="check"></span><i style="width:28%"></i></div></div>`;
+      /* En su lugar: donde va el foco, el renglón para anotar lo primero */
+      cuerpo = `<div class="tt-foco hueco">${alta("Anotá lo primero…")}</div><p class="tt-nota">Queda también en Tareas. El botón de la derecha crea un parcial, práctico o informe.</p>`;
     }
-    return sala({ extra: "" }) + `<section class="bandeja" aria-label="Tareas de la sala">${bandejaCab}<div class="ba-cuerpo">${cuerpo}</div></section>`;
+    return sala() + `<section class="bandeja" aria-label="Tareas">${asa}<div class="ba-cuerpo">${pest}${cuerpo}</div></section>`;
   };
 
   /* 4 elige el molde según qué se corta */
@@ -753,7 +788,7 @@ export function useConexion(canal?: RealtimeChannel) {
     if (el._fase === "carga") h = `${tbMarca()}<main class="carga entra" role="status"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="24" fill="none" stroke-width="3"/><circle class="arco" cx="28" cy="28" r="24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="113"/></svg><p>${el._cargaTxt}</p></main>`;
     else if (el._fase === "home") h = home();
     else if (el._fase === "sala") h = sala({ nueva: true });
-    else h = CASOS[raiz.dataset.caso](v, el);
+    else h = CASOS[raiz.dataset.caso](v, el, a.v === "r4");
     a.cuerpo.innerHTML = h;
     el.classList.toggle("con-bandeja", el._fase === "caso" && raiz.dataset.caso === "bandeja");
     el.classList.toggle("sin-red", el._fase === "caso" && raiz.dataset.caso === "red" && !el._enLinea);
@@ -820,7 +855,7 @@ export function useConexion(canal?: RealtimeChannel) {
   };
 
   const opciones = [...document.querySelectorAll(".opcion")];
-  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Elegida</a>`;
   opciones.forEach(op => {
     const v = op.dataset.v, el = op.querySelector("[data-app]");
     const cuerpo = document.createElement("div"); cuerpo.className = "cuerpo"; el.appendChild(cuerpo);

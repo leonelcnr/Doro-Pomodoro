@@ -28,7 +28,7 @@ aprobación se pasa a la siguiente.
 | 1.6 | Login y registro | `/login`, `/registro` | ✅ 1 · Una sola puerta: se entra como anónimo y la cuenta es para guardar el progreso (aprobado 2026-10-06). Cambios de código por fases en `docs/rediseno/login.md` | [Login](https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23) |
 | 1.7 | Invitación | `/invitacion/:code` | ✅ 1 · Directo: el link te mete en la sala sin preguntar (aprobado 2026-10-06). 2 y 3 quedan para cuando haya sistema de amigos. Detalle y 4 pendientes para la Fase 3 en `docs/rediseno/invitacion.md` | [Invitación](https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm) |
 | 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ✅ 6 · Un poco más grande: la ventana de hoy con Geist, el acento y la hora un 20 % más grande; la pestaña de la sala con el reloj apagado (aprobado 2026-10-06). Pendientes para la Fase 3 en `docs/rediseno/reloj-flotante.md` | [Reloj flotante](https://claude.ai/artifact/4HJ5JfVQQSLfVEaJHcUzzc) |
-| 1.9 | Estados de error y vacío | `ErrorPage`, 404 | 🔄 1ª ronda: 1 La columna, 2 El anillo, 3 En su lugar, 4 Según qué se corta (recomendada). Detalle en `docs/rediseno/errores.md` | [Errores](https://claude.ai/artifact/63CSJ5pWGe59DSRqai98tV) |
+| 1.9 | Estados de error y vacío | `ErrorPage`, 404 | ✅ 4 · Según qué se corta: la columna de la invitación para 404, error y sala que no está; en su lugar para la conexión y los vacíos (aprobado 2026-10-06). Detalle en `docs/rediseno/errores.md` | [Errores](https://claude.ai/artifact/63CSJ5pWGe59DSRqai98tV) |
 
 Términos y privacidad quedan afuera: son texto legal y solo necesitan heredar la
 tipografía y los tokens nuevos.
