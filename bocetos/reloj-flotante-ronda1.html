@@ -227,49 +227,67 @@ html.en-completa, html.en-completa body { overflow: hidden; }
   .rf-borde { display: block; }
 }
 
-/* ═════════ 2ª ronda: la de hoy, con Geist y el acento ═════════
-   Misma estructura que FloatingTimer.tsx/.css: una sola caja (.rf-contenido)
-   que en grande es columna y por debajo de 256 × 159 se vuelve fila. */
-.vh { cursor: pointer; }
-/* Como hoy: la hora no cambia de tono en pausa y el punto no late */
-.vh.pausa .rf-hora { color: var(--fg); }
-.vh .rf-punto, .vh.pausa .rf-punto { animation: none; background: var(--acento); }
-.rf-contenido { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.rf-x { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; background: none; border-radius: 8px; color: var(--tenue); display: grid; place-items: center; padding: 0; }
-.rf-x:hover { background: var(--campo); color: var(--fg); }
-.rf-x svg { width: 16px; height: 16px; }
-.rf-fase { margin-bottom: 16px; }
-.vh .rf-modo { font-size: 10px; }
-.vh .rf-hora { font-size: var(--tam-hora); gap: 0; }
-.rf-redondo { margin-top: 24px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid transparent; background: var(--acento); color: var(--acento-fg); display: grid; place-items: center; padding: 0; box-shadow: var(--sombra); transition: transform .15s, background-color .2s, color .2s, border-color .2s; }
-.rf-redondo:hover { transform: scale(1.05); }
-.rf-redondo:active { transform: scale(.95); }
-.corre .rf-redondo { background: var(--bg); border-color: var(--linea); color: var(--fg); }
-.rf-redondo svg { width: 20px; height: 20px; }
-.rf-redondo .i-play { margin-left: 2px; }
-.rf-redondo .i-pausa, .corre .rf-redondo .i-play { display: none; }
-.corre .rf-redondo .i-pausa { display: block; }
-/* El progreso: lo que queda de la fase, como hoy; solo en la forma compacta */
-.rf-progreso { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--linea); display: none; }
-.rf-progreso i { display: block; height: 100%; width: calc(var(--q, 1) * 100%); background: var(--acento); transition: width 1s linear; }
-.crono .rf-progreso, .sin-progreso .rf-progreso { visibility: hidden; }
+/* ───────── 1 · La sala en chico ───────── */
+.v1 .rf-normal { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: min(7cqh, 22px); padding: 12px; }
+.v1 .rf-hora { font-size: clamp(26px, min(25cqw, 30cqh), 150px); }
 
-/* Tamaño de la hora: hoy y dos pasos más */
-.t-hoy  { --tam-hora: clamp(1.75rem, 32cqmin, 4.5rem);            --tam-mini: min(21cqw, 52cqh); }
-.t-mas  { --tam-hora: clamp(2rem, min(38cqmin, 27cqw), 6rem);    --tam-mini: min(23cqw, 57cqh); }
-.t-mucho{ --tam-hora: clamp(2rem, min(44cqmin, 30cqw), 7.5rem);  --tam-mini: min(25cqw, 62cqh); }
+/* ───────── 2 · Solo los números ───────── */
+.v2 .rf-normal { position: absolute; inset: 0; display: grid; place-items: center; }
+.v2 .rf-hora { font-size: min(26cqw, 62cqh); }
+.v2 .rf-borde { display: block; }
+.v2 .rf-arriba, .v2 .rf-abajo { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .3s ease .2s, transform .4s var(--salida) .2s; pointer-events: none; }
+.v2 .rf-arriba { top: 10px; transform: translateY(-4px); }
+.v2 .rf-abajo { bottom: 12px; transform: translateY(4px); }
+.v2 .reloj-flotante:is(:hover, :focus-within) :is(.rf-arriba, .rf-abajo) { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+.v2 .reloj-flotante:is(:hover, :focus-within) .rf-normal .rf-hora { transform: scale(.74); }
+:root[data-tactil] .v2 :is(.rf-arriba, .rf-abajo) { opacity: 1; transform: none; pointer-events: auto; }
+:root[data-tactil] .v2 .rf-normal .rf-hora { transform: scale(.74); }
+@container pip (max-height: 189px) { .v2 .rf-arriba { display: none; } }
 
-@container pip ((max-width: 255px) or (max-height: 158px)) {
-  .rf-contenido { flex-direction: row; gap: 8px; padding: 0 12px; }
-  .vh .rf-modo span, .rf-x { display: none; }
-  .rf-fase { margin: 0; }
-  .vh .rf-hora { font-size: var(--tam-mini); }
-  .rf-redondo { margin: 0; width: 26px; height: 26px; background: none; box-shadow: none; border-color: transparent; color: var(--tenue); }
-  .corre .rf-redondo { background: none; border-color: transparent; color: var(--tenue); }
-  .rf-redondo:hover { transform: none; color: var(--fg); }
-  .rf-redondo svg { width: 12px; height: 12px; }
-  .rf-progreso { display: block; }
+/* ───────── 3 · El anillo ───────── */
+.v3 .rf-normal { position: absolute; inset: 0; display: grid; place-items: center; }
+.v3 .rf-anillo { --d: min(84cqw, 82cqh); position: relative; width: var(--d); aspect-ratio: 1; border: 0; padding: 0; background: none; border-radius: 50%; display: grid; place-items: center; color: inherit; }
+.v3 .rf-anillo svg.aro { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.v3 .aro .pista-aro { stroke: var(--linea); }
+.v3 .aro .arco { stroke: var(--acento); transition: stroke-dashoffset 1s linear; }
+.v3 .aro .relleno { fill: var(--superficie); transition: fill .25s; }
+.v3 .rf-anillo:hover .relleno { fill: var(--acento-suave); }
+.pausa.v3 .aro .arco, .pausa .v3 .aro .arco { stroke: var(--tenue); }
+.v3 .rf-adentro { position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(var(--d) * .05); }
+.v3 .rf-adentro .rf-hora { font-size: calc(var(--d) / 4.3); }
+.v3 .rf-adentro .rf-modo { font-size: max(9px, calc(var(--d) / 20)); }
+.v3 .rf-glifo { width: calc(var(--d) / 11); height: calc(var(--d) / 11); color: var(--tenue); opacity: 0; transition: opacity .2s; }
+.v3 .rf-glifo svg { width: 100%; height: 100%; }
+.v3 .rf-glifo .i-pausa, .corre .v3 .rf-glifo .i-play, .v3.corre .rf-glifo .i-play { display: none; }
+.corre .v3 .rf-glifo .i-pausa { display: block; }
+.v3 .rf-anillo:is(:hover, :focus-visible) .rf-glifo { opacity: 1; }
+:root[data-tactil] .v3 .rf-glifo { opacity: 1; }
+/* Ancha y baja: el anillo quedaría chiquito; se va y queda la hora con el hilo al pie */
+.v3 .rf-plano { display: none; }
+@container pip (min-aspect-ratio: 17/10) {
+  .v3 .rf-anillo { display: none; }
+  .v3 .rf-plano { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .v3 .rf-plano .rf-hora { font-size: min(20cqw, 50cqh); }
+  .v3 .rf-borde { display: block; }
 }
+
+/* ───────── 4 · Crece con la ventana ───────── */
+.v4 .rf-normal { position: absolute; inset: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 10px 12px 12px 14px; gap: 4px; }
+.v4 .rf-sup { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; }
+.v4 .rf-centro { display: grid; place-items: center; min-height: 0; }
+.v4 .rf-hora { font-size: clamp(26px, min(24cqw, 27cqh), 150px); }
+.v4 .rf-pie { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.v4 .rf-foco { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: 13px; color: var(--fg); }
+.v4 .rf-foco .k { font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); flex-shrink: 0; }
+.v4 .rf-foco .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.v4 .rf-sala { display: none; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid var(--linea); font-size: 12.5px; color: var(--tenue); min-width: 0; }
+.v4 .rf-sala .avatar { width: 24px; height: 24px; font-size: 10.5px; }
+.v4 .rf-sala .despues { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.v4 .rf-sala .despues b { color: var(--fg); font-weight: 500; }
+@container pip (max-height: 209px) { .v4 .rf-pie { display: none; } }
+@container pip (min-height: 330px) and (min-width: 280px) { .v4 .rf-sala { display: flex; } .v4 .rf-normal { padding: 12px 14px 14px 16px; } }
+@container pip (max-width: 279px) { .v4 .rf-sala .despues { display: none; } }
+
 /* ───────── Cierre ───────── */
 .cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
 .cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
@@ -315,7 +333,7 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
   <header class="cabecera">
     <h1>Reloj flotante de Doro</h1>
     <p><b>La ventanita que queda encima de todo</b> cuando tocás «Ventana flotante» en la sala (Document Picture-in-Picture). Sirve para ver el reloj mientras estudiás en otra cosa: el PDF, el editor, otra pestaña. Hoy usa fuente mono, un color por fase (rojo, verde, azul), un botón redondo con sombra y una X propia, y tocar cualquier parte de la ventana pausa el reloj.</p>
-    <p><b>2ª ronda.</b> Queda la ventana de hoy (cómo crece y se achica, el botón redondo, la X, pausar tocando cualquier parte), con la Geist y el color de acento de la 1ª ronda. Lo único que cambia entre 5, 6 y 7 es el tamaño de la hora. La ventana se arrastra por su barra y se agranda desde la esquina; la medida es la del contenido. <b>«Saltar al final»</b> deja 4 segundos para ver el cambio de fase. <b>H</b> esconde la barra de ajustes.</p>
+    <p>En cada maqueta, <b>la ventana se arrastra por su barra y se agranda desde la esquina</b>, o con los tamaños de arriba; la medida es la del contenido, la que mide el código. Adentro todo se acomoda con <b>container queries</b>, la misma técnica de <code>FloatingTimer.css</code>. El reloj es el mismo en las cuatro, como el de una sala: tocá play en una y se mueve en todas. <b>«Saltar al final»</b> deja 4 segundos para ver el cambio de fase. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
   </header>
   <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
     <div class="ajuste"><span class="ajuste-nombre">Tema</span>
@@ -339,48 +357,64 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
 
   <nav class="indice" aria-label="Bocetos" id="indice"></nav>
 
-  <section class="opcion" id="r5" data-v="t-hoy">
+  <section class="opcion" id="r1" data-v="v1">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">5</span><span class="nombre">Como hoy</span></h2>
-        <p class="resumen">El de hoy con <b>Geist y el color de acento</b>, nada más. Mismo tamaño de hora, mismo botón redondo, misma X, se pausa tocando cualquier parte y se vuelve fila por debajo de 256 × 159.</p>
-        <p class="enfoque">Hora: <b>hasta 72 px</b> (la de hoy, de referencia)</p>
+        <h2><span class="letra">1</span><span class="nombre">La sala en chico</span></h2>
+        <p class="resumen">La de hoy pasada al idioma de la sala: <b>el punto y la fase arriba, el reloj, el hilo y el play</b>. Sin colores por fase, sin mono, sin X propia (la ventana ya trae la suya). Solo el play pausa.</p>
+        <p class="enfoque">Lo primero: <b>que sea la misma sala</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué cambia</h3><ul><li>Geist en vez de mono, con los dos puntos redondos de la sala.</li><li>El punto y el hilo en el acento elegido, no un color por fase.</li></ul></div>
-        <div><h3>Qué queda igual</h3><ul><li>Cómo crece y se achica, el botón, la X y tocar para pausar.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El cambio más chico: es la de hoy, ordenada.</li><li>Se reconoce al instante: mismo punto, mismos dos puntos, mismo hilo.</li><li>Ya no se pausa sin querer al tocar la ventana para moverla.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Tres cosas apiladas en una ventana chica: el reloj no llega a ser grande.</li><li>No aprovecha que la ventana puede crecer.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco" data-marco></div>
   </section>
 
-  <section class="opcion" id="r6" data-v="t-mas">
+  <section class="opcion" id="r2" data-v="v2">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">6</span><span class="nombre">Un poco más grande</span><span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">Igual que 5, con la hora <b>un 20 % más grande</b>: en el tamaño normal pasa de 72 a unos 86 px. Achicada, la fila también crece un poco.</p>
-        <p class="enfoque">Hora: <b>hasta 96 px</b>, sin pasarse del ancho</p>
+        <h2><span class="letra">2</span><span class="nombre">Solo los números</span></h2>
+        <p class="resumen"><b>La ventana es el reloj</b>: los números la llenan y el hilo corre por el borde de abajo. Al pasar el mouse, los números se achican y aparecen la fase arriba y el play abajo. En pausa, los números bajan de tono.</p>
+        <p class="enfoque">Lo primero: <b>leerlo de reojo, de lejos</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Se lee mejor de reojo sin que el botón quede apretado.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Nada visible; en ventanas muy angostas la cuida el ancho.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El reloj más grande posible en cualquier tamaño.</li><li>Nada que mirar salvo la hora: lo más calmo de las cuatro.</li><li>Es el «queda el reloj» de la sala, llevado a la ventana.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mouse encima no dice qué fase es: hay que fiarse del tono y del hilo.</li><li>En táctil los controles quedan siempre a la vista.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
     <div class="marco" data-marco></div>
   </section>
 
-  <section class="opcion" id="r7" data-v="t-mucho">
+  <section class="opcion" id="r3" data-v="v3">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">7</span><span class="nombre">Más grande</span></h2>
-        <p class="resumen">El paso siguiente: la hora <b>un 35 % más grande</b>, unos 96 px en el tamaño normal. Para ver hasta dónde se puede estirar.</p>
-        <p class="enfoque">Hora: <b>hasta 120 px</b></p>
+        <h2><span class="letra">3</span><span class="nombre">El anillo</span></h2>
+        <p class="resumen"><b>El anillo del home</b> rodea el reloj y se llena con la fase; tocarlo da play o pausa, como en la E de la sala. Si la ventana queda ancha y baja, el anillo se va y queda la hora con el hilo al pie.</p>
+        <p class="enfoque">Lo primero: <b>cuánto falta, de un vistazo</b></p>
       </div>
       <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>La hora se lee desde lejos.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>En el tamaño normal la hora casi toca los bordes y el botón queda cerca del pie.</li></ul></div>
+        <div><h3>Qué gana</h3><ul><li>El avance se lee sin leer números.</li><li>Une la ventana con el home: el mismo objeto.</li><li>Un solo blanco grande para tocar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un círculo en una ventana rectangular desperdicia las esquinas: los números quedan más chicos que en 2.</li><li>La sala final no tiene anillo (eligió el hilo): son dos objetos para lo mismo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco" data-marco></div>
+  </section>
+
+  <section class="opcion" id="r4" data-v="v4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">4</span><span class="nombre">Crece con la ventana</span></h2>
+        <p class="resumen">Usa el ancho: <b>fase a la izquierda y play a la derecha</b>, el reloj al medio y, abajo, <b>en qué estás</b> (el foco de la bandeja). Si agrandás la ventana aparece la sala: quién está y qué viene después. Si la achicás, se va de abajo hacia arriba.</p>
+        <p class="enfoque">Lo primero: <b>el reloj, y lo que estás haciendo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La ventana dice lo mismo que la sala: el reloj y el foco.</li><li>Cada tamaño tiene sentido; vos elegís cuánto ver.</li><li>Fase y play en una fila: el reloj sube de tamaño respecto de 1.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Más texto que las otras: una línea en el tamaño normal.</li><li>Necesita el foco y la presencia de la sala aunque no estés en la pestaña.</li></ul></div>
       </div>
     </div>
     <div class="barra-marco" data-barra></div>
@@ -388,34 +422,71 @@ pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea)
   </section>
 
   <section class="cierre" id="cierre">
-    <h2>Lo decidido y la recomendación</h2>
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Reloj flotante</th><th>Tamaño del reloj (320 × 240)</th><th>Se lee sin el mouse</th><th>Qué más dice</th><th>Achicada al mínimo</th><th>Cambio respecto de hoy</th></tr></thead>
+        <tbody>
+          <tr><td>1 · La sala en chico</td><td>Mediano</td><td>Fase, hora, avance</td><td>—</td><td>Punto · hora · play</td><td>Chico</td></tr>
+          <tr><td>2 · Solo los números</td><td>El más grande</td><td>Hora, avance; la fase no</td><td>—</td><td>Punto · hora · play</td><td>Chico</td></tr>
+          <tr><td>3 · El anillo</td><td>Chico</td><td>Fase, hora, avance (anillo)</td><td>—</td><td>Punto · hora · play</td><td>Mediano</td></tr>
+          <tr class="elegida"><td>4 · Crece con la ventana</td><td>Mediano-grande</td><td>Fase, hora, avance, foco</td><td>Foco; agrandada, la sala y lo que sigue</td><td>Punto · hora · play</td><td>Mediano (lee foco y presencia)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="recomendacion">
       <div>
-        <h3>Recomendación: 6 · Un poco más grande</h3>
-        <p><b>Lo que pediste (2026-10-06):</b> de la 1ª ronda, la Geist y el punto en el acento, y la pestaña de la sala con el reloj apagado mientras está la ventana (ajuste «Detrás»). Todo lo demás queda como hoy: cómo crece y se achica, el botón redondo, la X y pausar tocando cualquier parte.</p>
-        <p>La 6 agranda la hora lo justo: en 320 × 240 pasa de 72 a unos 86 px y entra cómoda con la fase arriba y el botón abajo. La 7 ya aprieta. La 1ª ronda (1 a 4) quedó en <code>bocetos/reloj-flotante-ronda1.html</code>.</p>
-        <h4>Lo que también entra en la Fase 3</h4>
+        <h3>Recomendación: 4 · Crece con la ventana</h3>
+        <p><b>La ventana flotante es la sala cuando no estás mirando la sala.</b> El tamaño normal muestra lo que la sala tiene arriba de todo (la fase, el reloj, el hilo) y lo que tiene la bandeja plegada (en qué estás). El resto aparece solo si la agrandás, y se va si la achicás: el que la quiere mínima la achica y tiene la fila de siempre.</p>
+        <p><b>2</b> si preferís la calma total: es la más linda de lejos, pero sin el mouse no dice si es pomodoro o descanso. <b>1</b> si querés el cambio mínimo antes de la Fase 3. <b>3</b> solo si el anillo vuelve a la sala.</p>
+        <p><b>El fondo:</b> liso. En una ventana de 320 × 240 los puntos se ven como textura sucia detrás de los números; el ajuste «Fondo» solo cambia la pestaña de la sala.</p>
+        <h4>Lo común a las cuatro</h4>
         <ul>
-          <li><b>La ventana tiene que tomar el acento elegido.</b> Hoy no lo toma: sale siempre violeta, porque al abrirla se copia el tema pero no el color de acento.</li>
-          <li><b>La pestaña de la sala</b>, con el reloj apagado, «En la ventana flotante» y «Traerlo acá», en vez del ícono grande y el párrafo de hoy.</li>
-          <li><b>Cerrar la ventana al salir de la sala</b> (ver abajo).</li>
+          <li><b>Sin color por fase.</b> El punto usa el acento y late con el reloj corriendo; en pausa se apaga a gris. Se van <code>PUNTO_MODO</code> y <code>BARRA_MODO</code> de <code>modoVisual.ts</code> (o quedan para otra cosa).</li>
+          <li><b>Geist, no mono,</b> con los dos puntos redondos de la sala y cifras tabulares.</li>
+          <li><b>Solo el play pausa.</b> Hoy tocar cualquier parte pausa, y para mover o enfocar la ventana hay que tocarla.</li>
+          <li><b>Sin X propia:</b> la barra de la ventana ya trae cerrar y «volver a la pestaña».</li>
+          <li><b>Achicada al mínimo, una fila:</b> punto, hora y play, con el hilo en el borde (lo que hoy es la píldora).</li>
+          <li><b>Al cambiar de fase,</b> la ventana se tiñe un instante del acento. No puede robar el foco, así que es lo más que puede avisar sin sonido.</li>
         </ul>
-        <h4>Al salir de la sala, la ventana queda abierta</h4>
-        <p>Pasa así: abrís la ventana flotante en la sala y después tocás «Salir» (o vas a Tareas o al Dashboard). La ventanita sigue en la pantalla, pero <b>en blanco</b>: el reloj que tenía adentro se dibujaba desde la sala, y la sala ya no está. Hay que cerrarla a mano.</p>
-        <p>Lo simple es que <b>se cierre sola al salir de la sala</b>: una línea. Que siga mostrando el reloj fuera de la sala sería un cambio más grande, porque el reloj se sincroniza con los demás solo mientras estás en la sala.</p>
+        <h4>Qué encontré en el código</h4>
+        <ul>
+          <li><b>La ventana no toma el color de acento.</b> <code>useDocumentPiP</code> copia <code>className</code> y <code>style</code> del <code>&lt;html&gt;</code>, pero el acento vive en <code>data-acento</code> (<code>src/lib/acento.ts</code>). Hoy la ventana sale siempre violeta.</li>
+          <li><b>Al salir de la sala la ventana queda vacía.</b> El portal vive en <code>TimerDisplay</code>: si navegás a Tareas o al home, se desmonta y la ventana sigue abierta en blanco. No hay limpieza al desmontar. Además la sincronización del reloj (<code>useSincronizacionReloj</code>) vive en <code>RoomPage</code>, así que afuera de la sala el reloj dejaría de seguir a los demás.</li>
+          <li><b>La pestaña de la sala</b> muestra un ícono grande y «Temporizador en ventana» con un párrafo. Basta con el reloj apagado y «Traerlo acá» (ajuste «Detrás»).</li>
+          <li><code>pip-active-body</code> se pone en el <code>body</code> pero no tiene CSS: no hace nada.</li>
+          <li>Document PiP <b>solo existe en Chrome y Edge de escritorio</b>. En Firefox, Safari y celulares el botón no aparece (ya lo cuida <code>esSoportado</code>).</li>
+        </ul>
       </div>
       <div>
-        <pre><span class="c-com">/* FloatingTimer.css · la 6: solo cambian los tamaños */</span>
-.reloj-flotante__hora {
-  font-size: clamp(2rem, min(38cqmin, 27cqw), 6rem);
+        <pre><span class="c-com">/* FloatingTimer.css · la 4 son tres umbrales */</span>
+.reloj-flotante { container: pip / size; }
+
+<span class="c-com">/* Baja: se va el foco */</span>
+@container pip (max-height: 209px) {
+  .rf-pie { display: none; }
 }
-@container pip ((max-width: 255px) or (max-height: 158px)) {
-  .reloj-flotante__hora { font-size: min(23cqw, 57cqh); }
+<span class="c-com">/* Grande: aparece la sala */</span>
+@container pip (min-height: 330px) and (min-width: 280px) {
+  .rf-sala { display: flex; }
+}
+<span class="c-com">/* Mínima: una fila, el hilo al borde */</span>
+@container pip ((max-width: 219px) or (max-height: 129px)) {
+  .rf-normal { display: none; }
+  .rf-mini { display: flex; }
 }</pre>
-        <pre><span class="c-com">// FloatingTimer.tsx · el punto y el hilo en el acento</span>
-&lt;div className="w-1.5 h-1.5 rounded-full bg-primary" /&gt;
-&lt;div className="h-full bg-primary …" style={{ width: … }} /&gt;
-<span class="c-com">// y fuera `font-mono` de la raíz (hereda Geist)</span></pre>
+        <pre><span class="c-com">// FloatingTimer.tsx · sigue siendo tonto</span>
+interface PropsTemporizadorFlotante {
+  tiempoRestante: number;
+  estaActivo: boolean;
+  modo: Modo;
+  progreso: number | null;   <span class="c-com">// avance de la fase; null en cronómetro</span>
+  foco?: string;             <span class="c-com">// título de la tarea en foco</span>
+  presentes?: Presente[];    <span class="c-com">// de usePresenciaSala</span>
+  siguiente?: { modo: Modo; segundos: number };
+  alAlternar: () =&gt; void;
+}</pre>
         <pre><span class="c-com">// useDocumentPiP · copiar también el acento</span>
 const copiarRaiz = () =&gt; {
   const de = document.documentElement, a = ventana.document.documentElement;
@@ -423,8 +494,11 @@ const copiarRaiz = () =&gt; {
   a.style.cssText = de.style.cssText;
   if (de.dataset.acento) a.dataset.acento = de.dataset.acento;
   else delete a.dataset.acento;
-};</pre>
-        <pre><span class="c-com">// TimerDisplay · cerrar la ventana al salir de la sala</span>
+};
+observador.observe(document.documentElement, {
+  attributes: true, attributeFilter: ["class", "style", "data-acento"],
+});</pre>
+        <pre><span class="c-com">// TimerDisplay · cerrar la ventana si se va la sala</span>
 useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
       </div>
     </div>
@@ -456,7 +530,7 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
     marcha: v => { reloj.corre = v === "corre"; render(); },
   };
   const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", detras: "sala", fase: "pomodoro", marcha: "corre" };
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", detras: "apuntes", fase: "pomodoro", marcha: "corre" };
   const sinGuardar = ["fase", "marcha"];
   const ponerAjuste = {};
 
@@ -488,12 +562,25 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
   const mini = () => `<div class="rf-mini"><i class="rf-punto"></i>${hora()}${play()}</div><span class="rf-borde" aria-hidden="true"><i></i></span>`;
   const R = 46, CIRC = +(2 * Math.PI * R).toFixed(2);
 
-  const CONTENIDO = () => `<div class="rf-contenido">
-      <button type="button" class="rf-x" data-cerrar aria-label="Cerrar la ventana">${ic("i-x")}</button>
-      <div class="rf-fase">${modo()}</div>
-      ${hora()}
-      <button type="button" class="rf-redondo" data-play aria-label="Iniciar o pausar">${ic("i-play", "i-play")}${ic("i-pausa", "i-pausa")}</button>
-    </div><div class="rf-progreso" aria-hidden="true"><i></i></div>`;
+  const CONTENIDO = {
+    v1: () => `<div class="rf-normal">${modo()}${hora(true)}${play()}</div>${mini()}`,
+    v2: () => `<div class="rf-normal"><div class="rf-arriba">${modo()}</div>${hora()}<div class="rf-abajo">${play()}</div></div>${mini()}`,
+    v3: () => `<div class="rf-normal">
+        <button type="button" class="rf-anillo" data-play aria-label="Iniciar o pausar">
+          <svg class="aro" viewBox="0 0 100 100" aria-hidden="true"><circle class="relleno" cx="50" cy="50" r="${R}"/><circle class="pista-aro" cx="50" cy="50" r="${R}" fill="none" stroke-width="1.5"/><circle class="arco" data-arco cx="50" cy="50" r="${R}" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg>
+          <span class="rf-adentro">${modo()}${hora()}<span class="rf-glifo">${ic("i-play", "i-play")}${ic("i-pausa", "i-pausa")}</span></span>
+        </button>
+        <div class="rf-plano"><i class="rf-punto"></i>${hora()}${play()}</div>
+      </div>${mini()}`,
+    v4: () => `<div class="rf-normal">
+        <div class="rf-sup">${modo()}${play()}</div>
+        <div class="rf-centro">${hora(true)}</div>
+        <div class="rf-pie">
+          <div class="rf-foco"><span class="k">Ahora</span><span class="t">Ejercicio 4 · Integrales dobles</span></div>
+          <div class="rf-sala"><span class="avatares"><span class="avatar">A</span><span class="avatar">T</span><span class="avatar yo">L</span></span><span>3 en la sala</span><span class="despues" data-despues></span></div>
+        </div>
+      </div>${mini()}`,
+  };
 
   const apuntes = `<div class="apuntes"><div class="apuntes-barra"><i></i><i></i><i></i><span>Guía 3 · Integrales dobles.pdf</span></div>
     <div class="apuntes-hoja"><h4>Guía 3 · Integrales dobles</h4><p class="sub">Análisis Matemático II · 2º cuatrimestre</p>
@@ -523,13 +610,11 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
     const p = crono ? 0 : 1 - reloj.restante / total();
     document.querySelectorAll("[data-mm]").forEach(e => e.textContent = mm);
     document.querySelectorAll("[data-ss]").forEach(e => e.textContent = ss);
-    document.querySelectorAll("[data-modo]").forEach(e => e.textContent = FASES[reloj.modo][0]);
+    document.querySelectorAll("[data-modo]").forEach(e => e.textContent = reloj.corre || crono ? FASES[reloj.modo][0] : "En pausa");
     const sig = reloj.modo === "pomodoro" ? (reloj.vueltas % 4 === 0 ? "longBreak" : "shortBreak") : "pomodoro";
     document.querySelectorAll("[data-despues]").forEach(e => e.innerHTML = crono ? "" : `Después: <b>${FASES[sig][0].toLowerCase()} ${FASES[sig][1] / 60}:00</b>`);
     document.querySelectorAll(".reloj-flotante").forEach(e => {
       e.style.setProperty("--p", p.toFixed(4));
-      e.style.setProperty("--q", (1 - p).toFixed(4));
-      e.classList.toggle("sin-progreso", !reloj.corre && p <= 0);
       e.classList.toggle("corre", reloj.corre);
       e.classList.toggle("pausa", !reloj.corre);
       e.classList.toggle("crono", crono);
@@ -563,7 +648,7 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
     marco.innerHTML = `<div class="detras"></div>
       <div class="pip" role="dialog" aria-label="Ventana flotante">
         <div class="pip-barra">${ic("i-logo")}<span class="origen">Doro</span><button type="button" data-traer title="Volver a la pestaña" aria-label="Volver a la pestaña">${ic("i-a-pestana")}</button><button type="button" data-cerrar title="Cerrar" aria-label="Cerrar la ventana">${ic("i-x")}</button></div>
-        <div class="reloj-flotante vh ${v}"><div class="rf">${CONTENIDO()}</div></div>
+        <div class="reloj-flotante ${v}"><div class="rf">${CONTENIDO[v]()}</div></div>
       </div><div class="aviso" role="status"></div>`;
     const pip = marco.querySelector(".pip"), cont = marco.querySelector(".reloj-flotante"), detras = marco.querySelector(".detras");
     marcos.push({ op, marco, detras });
@@ -599,10 +684,9 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
     });
 
     marco.addEventListener("click", e => {
+      if (e.target.closest("[data-play]")) { reloj.corre = !reloj.corre; render(); return; }
       if (e.target.closest("[data-cerrar]")) { marco.classList.add("pip-cerrada"); avisar(marco, "Ventana cerrada. El reloj sigue en la sala"); setTimeout(() => marco.classList.remove("pip-cerrada"), 1800); return; }
-      if (e.target.closest("[data-traer]")) { marco.classList.add("pip-cerrada"); avisar(marco, "El reloj vuelve a la pestaña de la sala"); setTimeout(() => marco.classList.remove("pip-cerrada"), 1800); return; }
-      /* Como hoy: tocar cualquier parte de la ventana pausa o sigue */
-      if (e.target.closest(".reloj-flotante")) { reloj.corre = !reloj.corre; render(); }
+      if (e.target.closest("[data-traer]")) { marco.classList.add("pip-cerrada"); avisar(marco, "El reloj vuelve a la pestaña de la sala"); setTimeout(() => marco.classList.remove("pip-cerrada"), 1800); }
     });
   });
 
@@ -611,7 +695,7 @@ useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
   /* Ajustes: se conectan después de montar, porque «Detrás» pinta en los marcos */
   Object.keys(grupos).forEach(id => {
     const g = document.getElementById(id);
-    const clave = id === "detras" ? "doro-rf2-detras" : "doro-d4-" + id;
+    const clave = id === "detras" ? "doro-rf-detras" : "doro-d4-" + id;
     ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); if (!sinGuardar.includes(id)) guardar(clave, v); };
     g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
     const valor = sinGuardar.includes(id) ? null : leer(clave, defaults[id]);

@@ -65,14 +65,33 @@ instante del acento.
 **Recomendación: 4.** La ventana es la sala cuando no la estás mirando. Plan B: 2, si se
 prefiere calma total (pero sin el mouse no dice la fase). Fondo: liso.
 
+## Devolución de la 1ª ronda (2026-10-06)
+
+Leo prefiere la 2 entre las cuatro, pero **la ventana se queda como hoy**: cómo crece y se
+achica, el botón redondo, la X y **pausar tocando cualquier parte**. De la 1ª ronda toma:
+
+- **Geist** en vez de mono.
+- **El color de acento elegido** en vez de un color por fase (y que la ventana lo tome de
+  verdad: problema 1).
+- **La pestaña de la sala** con el reloj apagado, «En la ventana flotante» y «Traerlo acá»:
+  le gustó mucho.
+- Quizás **la hora un poco más grande**.
+
+## 2ª ronda (2026-10-06)
+
+La ventana de hoy con Geist y el acento, en tres tamaños de hora: **5 · Como hoy** (hasta
+72 px), **6 · Un poco más grande** (unos 86 px en 320 × 240, tope 96; recomendada) y
+**7 · Más grande** (unos 96 px, tope 120). Achicada, la fila crece en la misma proporción.
+La 1ª ronda quedó en `bocetos/reloj-flotante-ronda1.html`.
+
+El problema 2 (la ventana queda en blanco al salir de la sala) se le explicó con el ejemplo;
+la propuesta es que **se cierre sola al salir** (una línea en `TimerDisplay`). Que siga
+mostrando el reloj fuera de la sala queda descartado por ahora.
+
 ## Dónde retomamos
 
-Falta la opinión de Leo sobre la 1ª ronda. Preguntas abiertas:
-
-- ¿El reloj flotante tiene que sobrevivir a salir de la sala (problema 2)? Es un cambio de
-  arquitectura, no solo de UI.
-- La pestaña de la sala con el reloj en la ventana: el boceto propone el reloj apagado,
-  «En la ventana flotante» y «Traerlo acá».
+Falta que Leo elija el tamaño (5, 6 o 7) y confirme que la ventana se cierre al salir de la
+sala. Con eso se cierra la pantalla.
 
 ## Propuestas transversales
 
