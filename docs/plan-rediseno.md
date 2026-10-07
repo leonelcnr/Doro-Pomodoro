@@ -27,7 +27,7 @@ aprobación se pasa a la siguiente.
 | 1.5 | Calendario | `/calendar` | ❌ Se elimina (2026-10-04): la reemplaza la vista «Calendario» de Tareas | — |
 | 1.6 | Login y registro | `/login`, `/registro` | ✅ 1 · Una sola puerta: se entra como anónimo y la cuenta es para guardar el progreso (aprobado 2026-10-06). Cambios de código por fases en `docs/rediseno/login.md` | [Login](https://claude.ai/artifact/NqvYrc4ig5xd7HjHfzJt23) |
 | 1.7 | Invitación | `/invitacion/:code` | ✅ 1 · Directo: el link te mete en la sala sin preguntar (aprobado 2026-10-06). 2 y 3 quedan para cuando haya sistema de amigos. Detalle y 4 pendientes para la Fase 3 en `docs/rediseno/invitacion.md` | [Invitación](https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm) |
-| 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | ⏳ | — |
+| 1.8 | Reloj flotante | `FloatingTimer` (fuera de la sala) | 🔄 1ª ronda (2026-10-06): 1 La sala en chico, 2 Solo los números, 3 El anillo, 4 Crece con la ventana (recomendada). Detalle en `docs/rediseno/reloj-flotante.md` | [Reloj flotante](https://claude.ai/artifact/4HJ5JfVQQSLfVEaJHcUzzc) |
 | 1.9 | Estados de error y vacío | `ErrorPage`, 404 | ⏳ | — |
 
 Términos y privacidad quedan afuera: son texto legal y solo necesitan heredar la

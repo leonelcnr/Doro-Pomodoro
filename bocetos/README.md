@@ -31,6 +31,7 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `sala-ronda6.html` | Sala con la base A + F + I, las notas Q, R, U y la 6ª ronda (V–Z), guardada como referencia. | — |
 | `sala-ronda5.html` | Sala completa hasta la 5ª ronda (A–U), guardada como referencia. | — |
 | `invitacion.html` | Invitación (`/invitacion/:code`), 1ª ronda: 1 Directo, 2 Una puerta, 3 La sala detrás, 4 El reloj primero, y los errores. | https://claude.ai/artifact/Piaju275X2WUEUzh73d1Sm |
+| `reloj-flotante.html` | Reloj flotante (Document PiP), 1ª ronda: 1 La sala en chico, 2 Solo los números, 3 El anillo, 4 Crece con la ventana. Ventana arrastrable y redimensionable con container queries reales. | https://claude.ai/artifact/4HJ5JfVQQSLfVEaJHcUzzc |
 | `primary-violeta-zinc.html` | `--primary`: violeta de hoy, violeta unificado y zinc (Fase 2 del plan). | https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd |
 
 Para actualizar un boceto, editar el archivo de acá y republicarlo sobre la misma URL.
