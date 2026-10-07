@@ -38,7 +38,7 @@ export function IndicadorModo({ modo, onClickModo, onPomodoro, onCronometro }: I
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors select-none">
                         <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO.stopwatch}`} />
-                        <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
+                        <span className="text-[0.625rem] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
                             {ETIQUETA_MODO.stopwatch}
                         </span>
                     </div>
@@ -50,7 +50,7 @@ export function IndicadorModo({ modo, onClickModo, onPomodoro, onCronometro }: I
                         className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 md:px-3 px-2 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
                         <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO[modo]}`} />
-                        <span className="text-[10px] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase select-none whitespace-nowrap">
+                        <span className="text-[0.625rem] sm:text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase select-none whitespace-nowrap">
                             {ETIQUETA_MODO[modo]}
                         </span>
                     </button>

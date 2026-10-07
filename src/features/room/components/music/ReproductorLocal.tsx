@@ -34,7 +34,7 @@ export function ReproductorLocal({ entrada, onEntradaChange, urlIncrustada, erro
             {error && <p className="text-xs text-destructive">{error}</p>}
 
             <div className={`${urlIncrustada ? 'block' : 'hidden'} relative w-full rounded-md overflow-hidden bg-muted border flex flex-col items-center justify-center`}>
-                <div className={`w-full ${urlIncrustada && urlIncrustada.includes("youtube") ? "aspect-video" : "h-[152px]"}`}>
+                <div className={`w-full ${urlIncrustada && urlIncrustada.includes("youtube") ? "aspect-video" : "h-[9.5rem]"}`}>
                     {urlIncrustada && (
                         <iframe
                             src={urlIncrustada}

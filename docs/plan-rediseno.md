@@ -152,7 +152,15 @@ Orden propuesto, de menor a mayor riesgo:
    están en `index.css` y solo redefinen `--brand*`. Violeta es la base, sin atributo.
    `public/apariencia-inicial.js` aplica tema y acento antes de pintar (archivo aparte
    por la CSP).
-4. **Home** (D4 + bandeja).
+4. **Home** (D4 + bandeja). ✅ 2026-10-07: `AnilloSala` (el anillo crea la sala y muestra
+   el avance del día; debajo, la línea para pegar el link), `ContadorTareas` (cuadrado de
+   8 px, como en el boceto de la sala) y `useSalaNueva` (crear y unirse, que antes llamaba
+   al servicio desde `SalaNueva`). Se fueron `HeroEnfoque` y `SalaNueva`.
+   **La bandeja es la de la sala (T43)**, sin «De la sala»: `features/tasks/components/bandeja/`
+   (`BandejaTareas`, `FocoTarea`, `ListaBandeja`, `CrearItem`), `features/tasks/bandeja.ts`
+   y `useFoco` (el foco vive en localStorage para ser el mismo en el home y en la sala). La
+   sala la reusa en el paso 7 pasando las pestañas por `arriba`. Fade «Queda el asa» en
+   `index.css`. `TareasVacias` queda sin uso (se borra con la pantalla de Tareas).
 5. **Modelo de datos de tareas, TPs y recordatorios** — blueprint con
    `arquitecto-features`, migración y RLS con `dev-datos-realtime`.
 6. **Pantalla de tareas** y su versión en la bandeja y en la sala.
@@ -178,3 +186,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-06 | Decisiones del cierre de la Fase 1: fondo sin puntos, `--primary` violeta unificado, temas Claro, Oscuro y Negro. Fase 2 hecha. Login: migraciones de limpieza aplicadas en producción. |
 | 2026-10-06 | Fase 3, paso 2: `EncabezadoApp` con el menú de la cuenta y el selector de tres temas; reemplaza a la sidebar. |
 | 2026-10-06 | Fase 3, paso 3: selector de acento en el menú del avatar, guardado en `localStorage`; tema y acento se aplican antes del primer pintado. |
+| 2026-10-07 | Fase 3, paso 4: Home D4 con el anillo, la línea del link y la bandeja T43 de la sala (sin «De la sala»), con el fade «Queda el asa». |

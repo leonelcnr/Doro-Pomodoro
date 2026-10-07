@@ -114,7 +114,7 @@ export function DialogNuevaTarea({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="top-[10vh] grid w-[calc(100%-2rem)] translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-[600px]">
+      <DialogContent className="top-[10vh] grid w-[calc(100%-2rem)] translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-[37.5rem]">
         <DialogHeader className="px-5 pt-5 text-left">
           <DialogTitle className="text-base">Nueva tarea</DialogTitle>
           <DialogDescription className="sr-only">
@@ -227,11 +227,11 @@ export function DialogNuevaTarea({
         {/* Pie estilo paleta: atajos de tokens + acción */}
         <div className="flex items-center gap-3 border-t bg-muted/30 px-5 py-3 text-xs text-muted-foreground">
           <span className="hidden items-center gap-1.5 sm:flex">
-            <kbd className="rounded border bg-background px-1.5 py-0.5 font-mono text-[10px]">!alta</kbd>
+            <kbd className="rounded border bg-background px-1.5 py-0.5 font-mono text-[0.625rem]">!alta</kbd>
             prioridad
           </span>
           <span className="hidden items-center gap-1.5 sm:flex">
-            <kbd className="rounded border bg-background px-1.5 py-0.5 font-mono text-[10px]">#tipo</kbd>
+            <kbd className="rounded border bg-background px-1.5 py-0.5 font-mono text-[0.625rem]">#tipo</kbd>
             categoría
           </span>
           <div className="ml-auto flex items-center gap-2">

@@ -81,7 +81,7 @@ export function QuickAddTarea({ onCrear }: QuickAddTareaProps) {
         />
         {/* Atajo: indica que `N` enfoca esta fila cuando está vacía */}
         {!texto && (
-          <kbd className="pointer-events-none absolute right-3 hidden h-5 select-none items-center rounded border bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-flex">
+          <kbd className="pointer-events-none absolute right-3 hidden h-5 select-none items-center rounded border bg-background px-1.5 font-mono text-[0.625rem] font-medium text-muted-foreground sm:inline-flex">
             N
           </kbd>
         )}
@@ -92,7 +92,7 @@ export function QuickAddTarea({ onCrear }: QuickAddTareaProps) {
         <div className="flex flex-wrap items-center gap-1.5 px-1">
           {hayPrioridad && <BadgePrioridad valor={parsed.priority} />}
           {hayCategoria && (
-            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground">
               #{parsed.type}
             </span>
           )}

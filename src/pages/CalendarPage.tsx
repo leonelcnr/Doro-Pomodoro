@@ -221,7 +221,7 @@ export default function CalendarPage() {
                     Añadir Fecha
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[26.5625rem]">
                   <DialogHeader>
                     <DialogTitle>Añadir Fecha</DialogTitle>
                     <DialogDescription>
@@ -240,7 +240,7 @@ export default function CalendarPage() {
 
               {/* Editar Evento */}
               <Dialog open={abiertoEditar} onOpenChange={establecerAbiertoEditar}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[26.5625rem]">
                   <DialogHeader>
                     <DialogTitle>Editar Evento</DialogTitle>
                     <DialogDescription>
@@ -260,7 +260,7 @@ export default function CalendarPage() {
 
               {/* Detalle del Día */}
               <Dialog open={abiertoDetalleDia} onOpenChange={establecerAbiertoDetalleDia}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[26.5625rem]">
                   <DialogHeader>
                     <DialogTitle>
                       Eventos para el{" "}
@@ -344,7 +344,7 @@ export default function CalendarPage() {
                           </span>
                           <Badge
                             variant="outline"
-                            className={`text-[10px] py-0 px-1.5 h-4 ${COLOR_TIPO_EVENTO[evento.type as EventType]}`}
+                            className={`text-[0.625rem] py-0 px-1.5 h-4 ${COLOR_TIPO_EVENTO[evento.type as EventType]}`}
                           >
                             {evento.type}
                           </Badge>

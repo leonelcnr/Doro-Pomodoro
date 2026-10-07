@@ -106,7 +106,7 @@ export function DailyStreak() {
                             </div>
                             <div className="flex flex-col gap-0.5 leading-none">
                                 <span className="font-bold">{racha} Días</span>
-                                <span className="text-[10px] font-medium opacity-80 uppercase tracking-wider">De Racha</span>
+                                <span className="text-[0.625rem] font-medium opacity-80 uppercase tracking-wider">De Racha</span>
                             </div>
                         </SidebarMenuButton>
                     </PopoverTrigger>

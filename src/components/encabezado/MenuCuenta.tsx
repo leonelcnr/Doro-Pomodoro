@@ -191,7 +191,7 @@ export function MenuCuenta({
             </DropdownMenu>
 
             <Dialog open={editandoNombre} onOpenChange={establecerEditandoNombre}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[26.5625rem]">
                     <DialogHeader>
                         <DialogTitle>Editar nombre</DialogTitle>
                         <DialogDescription>

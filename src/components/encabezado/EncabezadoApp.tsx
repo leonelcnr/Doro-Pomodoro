@@ -61,7 +61,7 @@ export function EncabezadoApp({ extra }: EncabezadoAppProps) {
                 aria-label="Doro, inicio"
                 className="inline-flex items-center gap-2 rounded-md font-semibold tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-                <IconInnerShadowTop className="size-[22px] text-brand" aria-hidden />
+                <IconInnerShadowTop className="size-[1.375rem] text-brand" aria-hidden />
                 <span className="desvanece">Doro</span>
             </Link>
 
@@ -104,7 +104,7 @@ export function EncabezadoApp({ extra }: EncabezadoAppProps) {
                         aria-label="Secciones"
                         className="desvanece grid size-8 place-items-center rounded-md text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
                     >
-                        <Menu className="size-[18px]" aria-hidden />
+                        <Menu className="size-[1.125rem]" aria-hidden />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" sideOffset={8}>
                         {SECCIONES.map(({ ruta, nombre }) => (

@@ -60,7 +60,7 @@ export function ChipEstado({
 // ---- Badges de solo lectura (píldoras de color) para el preview "Se creará…" ----
 
 const baseBadge =
-  "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap";
+  "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.6875rem] font-semibold whitespace-nowrap";
 
 /** Badge de prioridad (no interactivo): ícono del color del nivel + palabra. */
 export function BadgePrioridad({ valor }: { valor?: string | null }) {

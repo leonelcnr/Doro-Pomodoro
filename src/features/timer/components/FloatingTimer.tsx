@@ -58,7 +58,7 @@ export const FloatingTimer = ({ tiempoRestante, estaActivo, modo, progreso, alAl
                 {/* Indicador de modo (solo informativo): punto luminoso + etiqueta de la fase actual */}
                 <div className="reloj-flotante__fase mb-4 flex items-center gap-2">
                     <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO[modo]}`} />
-                    <span className="reloj-flotante__etiqueta text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
+                    <span className="reloj-flotante__etiqueta text-[0.625rem] sm:text-xs font-sans font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
                         {ETIQUETA_MODO[modo]}
                     </span>
                 </div>

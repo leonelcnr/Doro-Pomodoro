@@ -24,7 +24,7 @@ export function MezcladorAmbiente({ volumenes, activo, onToggleActivo, onCambiar
                 <Switch checked={activo} onCheckedChange={onToggleActivo} />
             </div>
 
-            <div className="grid gap-5 max-h-[260px] overflow-y-auto pr-3 custom-scrollbar">
+            <div className="grid gap-5 max-h-[16.25rem] overflow-y-auto pr-3 custom-scrollbar">
                 {AMBIENT_SOUNDS.map((sonido) => {
                     const Icono = sonido.icono;
                     const volumen = volumenes[sonido.id] || 0;
@@ -40,7 +40,7 @@ export function MezcladorAmbiente({ volumenes, activo, onToggleActivo, onCambiar
                                     <span className={`text-xs font-medium transition-colors ${estaActivo ? 'text-foreground' : 'text-muted-foreground'}`}>
                                         {sonido.nombre}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground tabular-nums w-8 text-right">
+                                    <span className="text-[0.625rem] text-muted-foreground tabular-nums w-8 text-right">
                                         {volumen}%
                                     </span>
                                 </div>

@@ -103,4 +103,8 @@ Al actualizar un boceto ya publicado, republicar **el mismo archivo** para conse
 ## Convenciones de TypeScript
 
 - `strict` activo. Evitar `any`: usar los contratos de `src/types/dominio.ts`. En `catch`, usar `error: unknown` + narrowing (`error instanceof Error`).
+- **Medidas en `rem`, no en `px`** (`text-[0.8125rem]`, no `text-[13px]`). La base es
+  `html { font-size: 90% }` (la app se ve como los bocetos al 90 %), así que todo lo que
+  esté en `px` no se escala. Excepción: líneas de 1–2 px y sombras. Al pasar medidas de un
+  boceto (que está en px), dividir por 16.
 - Fechas/horas como **strings** ISO (`"2026-08-10"`, `"18:00"`) cuando son contrato con Supabase.

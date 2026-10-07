@@ -22,7 +22,7 @@ const Login = () => {
 				<IconArrowLeft className="size-4" />
 				Seguir sin cuenta
 			</Link>
-			<div className="flex w-full max-w-[380px] flex-col gap-8">
+			<div className="flex w-full max-w-[23.75rem] flex-col gap-8">
 				<Link to="/" className="flex items-center gap-2 self-center">
 					<div className="flex aspect-square size-8 items-center justify-center rounded-lg text-primary">
 						<IconInnerShadowTop className="size-5" />

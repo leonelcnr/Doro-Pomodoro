@@ -47,7 +47,7 @@ export function FiltroCategorias({ categorias, activa, total, onSeleccionar }: F
         aria-pressed={activo}
         onClick={() => onSeleccionar(nombre)}
         className={cn(
-          "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1.5 text-[0.8125rem] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           activo
             ? "bg-muted font-semibold text-foreground"
             : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"

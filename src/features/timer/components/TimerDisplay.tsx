@@ -121,7 +121,7 @@ export const TimerDisplay = ({ enlace, codigo, salaId }: { enlace: string, codig
                     <div className="flex flex-col items-center gap-2">
                         <PictureInPicture2 className="w-12 h-12 text-muted-foreground opacity-50 mb-2" />
                         <h3 className="text-xl font-medium tracking-tight">Temporizador en ventana</h3>
-                        <p className="text-sm text-muted-foreground text-center max-w-[250px]">
+                        <p className="text-sm text-muted-foreground text-center max-w-[15.625rem]">
                             El reloj se está mostrando ahora en una ventana flotante para mantener tu enfoque.
                         </p>
                     </div>

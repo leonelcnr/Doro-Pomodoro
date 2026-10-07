@@ -32,7 +32,7 @@ export function CabeceraSala({ usuariosEnSala }: { usuariosEnSala: UsuarioEnSala
                             Salir
                         </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="sm:max-w-[425px]">
+                    <AlertDialogContent className="sm:max-w-[26.5625rem]">
                         <AlertDialogHeader>
                             <AlertDialogTitle>¿Salir de la sala?</AlertDialogTitle>
                             <AlertDialogDescription>

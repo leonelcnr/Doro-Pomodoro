@@ -15,6 +15,13 @@
   font-style: normal;
 }
 
+/* La app se ve como los bocetos al 90 %: todo se mide en rem a partir de esta
+   base, así que achicarla escala la interfaz entera (y respeta el tamaño de letra
+   que elija el usuario en el navegador). Medidas nuevas: en rem, no en px. */
+html {
+  font-size: 90%;
+}
+
 :root {
   font-family:
     "Geist",
@@ -216,6 +223,81 @@
     pointer-events: auto;
     transition-delay: 0s;
   }
+}
+
+/* Contador de tareas del home (ContadorTareas): con el encabezado desvanecido
+   queda solo el número, como el logo y el avatar. */
+.contador-etiqueta {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 5em;
+  margin-right: 0.375rem;
+  transition: max-width 0.35s ease 0.5s, opacity 0.35s ease 0.5s, margin 0.35s ease 0.5s;
+}
+@media (hover: hover) {
+  .encabezado:not(:hover, :focus-within, :has([data-state="open"])) .contador-etiqueta {
+    max-width: 0;
+    opacity: 0;
+    margin-right: 0;
+  }
+  .encabezado:is(:hover, :focus-within, :has([data-state="open"])) .contador-etiqueta {
+    transition-delay: 0s;
+  }
+}
+
+/* Bandeja de tareas del home (BandejaTareas, D4 «Queda el asa»). Con mouse,
+   cerrada y sin el puntero encima, se va medio segundo después y deja solo la
+   rayita del asa, un poco más marcada. Abierta no se desvanece nunca, y en
+   pantallas táctiles queda completa. Igual que el encabezado: sin blur. */
+.bandeja {
+  transition: translate 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.35s ease 0.5s, border-color 0.35s ease 0.5s, box-shadow 0.35s ease 0.5s;
+}
+.bandeja-contenido {
+  transition: opacity 0.35s ease 0.5s;
+}
+.bandeja-asa::before {
+  content: "";
+  position: absolute;
+  top: 0.4375rem;
+  left: 50%;
+  width: 2rem;
+  height: 0.25rem;
+  border-radius: 0.25rem;
+  background-color: var(--border);
+  translate: -50% 0;
+  transition: background-color 0.35s ease 0.5s, scale 0.35s ease 0.5s;
+}
+.bandeja:is(:hover, :focus-within, [data-abierta]),
+.bandeja:is(:hover, :focus-within, [data-abierta]) .bandeja-contenido,
+.bandeja:is(:hover, :focus-within, [data-abierta]) .bandeja-asa::before {
+  transition-delay: 0s;
+}
+@media (hover: hover) {
+  .bandeja:not(:hover, :focus-within, [data-abierta]) {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .bandeja:not(:hover, :focus-within, [data-abierta]) .bandeja-contenido {
+    opacity: 0;
+  }
+  .bandeja:not(:hover, :focus-within, [data-abierta]) .bandeja-asa::before {
+    background-color: color-mix(in oklch, var(--muted-foreground) 45%, transparent);
+    scale: 1.375 1; /* 32 → 44 px sin recalcular el layout */
+  }
+}
+
+/* Bandeja: lo recién creado entra deslizando desde arriba (solo opacidad y desplazamiento) */
+@keyframes bandeja-llega {
+  from {
+    opacity: 0;
+    translate: 0 -0.375rem;
+  }
+}
+.bandeja-llega {
+  animation: bandeja-llega 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Calendar Animations */

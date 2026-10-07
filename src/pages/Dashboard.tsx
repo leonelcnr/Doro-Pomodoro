@@ -116,7 +116,7 @@ export default function Dashboard() {
               <p className="text-muted-foreground mt-1 text-sm">Resumen de tus bloques de enfoque y tareas completadas.</p>
             </div>
             <Tabs value={rangoTiempo} onValueChange={(v) => establecerRangoTiempo(v as TimeRange)} className="w-full sm:w-auto">
-              <TabsList className="grid grid-cols-5 w-full sm:w-[400px]">
+              <TabsList className="grid grid-cols-5 w-full sm:w-[25rem]">
                 <TabsTrigger value="day">Día</TabsTrigger>
                 <TabsTrigger value="week">Semana</TabsTrigger>
                 <TabsTrigger value="month">Mes</TabsTrigger>
@@ -203,12 +203,12 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="px-2 sm:p-6">
                 {isLoading ? (
-                  <Skeleton className="h-[250px] w-full" />
+                  <Skeleton className="h-[15.625rem] w-full" />
                 ) : (
                   <ChartContainer
                     key={rangoTiempo}
                     config={chartConfig}
-                    className="aspect-auto h-[250px] w-full animate-in fade-in-0 duration-200"
+                    className="aspect-auto h-[15.625rem] w-full animate-in fade-in-0 duration-200"
                   >
                   <BarChart
                     accessibilityLayer
@@ -229,7 +229,7 @@ export default function Dashboard() {
                     <ChartTooltip
                       content={
                         <ChartTooltipContent
-                          className="w-[150px]"
+                          className="w-[9.375rem]"
                           nameKey="minutes"
                         />
                       }
@@ -249,12 +249,12 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center">
                 {isLoading ? (
-                  <Skeleton className="h-[250px] w-[250px] rounded-full mx-auto" />
+                  <Skeleton className="h-[15.625rem] w-[15.625rem] rounded-full mx-auto" />
                 ) : datosTortaConColor.length > 0 ? (
                   <ChartContainer
                     key={rangoTiempo}
                     config={configTorta}
-                    className="mx-auto aspect-square max-h-[250px] w-full pb-0 animate-in fade-in-0 zoom-in-95 duration-300"
+                    className="mx-auto aspect-square max-h-[15.625rem] w-full pb-0 animate-in fade-in-0 zoom-in-95 duration-300"
                   >
                     <PieChart>
                       <ChartTooltip
@@ -281,7 +281,7 @@ export default function Dashboard() {
                     </PieChart>
                   </ChartContainer>
                 ) : (
-                  <div className="h-[200px] flex flex-col items-center justify-center text-muted-foreground opacity-50">
+                  <div className="h-[12.5rem] flex flex-col items-center justify-center text-muted-foreground opacity-50">
                     <CheckCircle2 className="w-8 h-8 mb-2 opacity-50" />
                     <span className="text-sm">Aún no hay tareas</span>
                   </div>
@@ -303,7 +303,7 @@ export default function Dashboard() {
                       <span className="text-sm font-medium line-through text-muted-foreground truncate">{tarea.header}</span>
                       <div className="flex items-center mt-0.5">
                         <span className="sr-only">Tipo de tarea: </span>
-                        <span className="text-[10px] text-secondary-foreground bg-secondary px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-bold">{tarea.type}</span>
+                        <span className="text-[0.625rem] text-secondary-foreground bg-secondary px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-bold">{tarea.type}</span>
                       </div>
                     </div>
                   </div>
@@ -328,7 +328,7 @@ export default function Dashboard() {
               <CardContent className="px-2 sm:p-6">
                 <ChartContainer
                   config={chartConfig}
-                  className="aspect-auto h-[200px] w-full"
+                  className="aspect-auto h-[12.5rem] w-full"
                 >
                   <BarChart
                     accessibilityLayer
@@ -348,7 +348,7 @@ export default function Dashboard() {
                     <ChartTooltip
                       content={
                         <ChartTooltipContent
-                          className="w-[150px]"
+                          className="w-[9.375rem]"
                           nameKey="avgMinutes"
                         />
                       }
@@ -367,7 +367,7 @@ export default function Dashboard() {
               <CardDescription className="text-xs">Tiempo de concentración diario</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto pb-6">
-              <div className="min-w-[800px] flex justify-center">
+              <div className="min-w-[50rem] flex justify-center">
                 <Heatmap
                   data={heatmapData}
                   startDate={fechasMapaCalor.start}

@@ -138,7 +138,7 @@ const DialogSettings: React.FC<PropsDialogSettings> = ({
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[26.5625rem]">
                 <DialogHeader>
                     <DialogTitle>Configuración del Reloj</DialogTitle>
                     <DialogDescription>
