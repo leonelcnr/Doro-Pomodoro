@@ -247,6 +247,24 @@ describe("useTareas · optimismo y rollback", () => {
     expect(result.current.tareas.map((t) => t.id)).toEqual([42]);
   });
 
+  it("crearTarea: pasa los campos de la pantalla de Tareas solo si vienen", async () => {
+    const { result } = renderHook(() => useTareas());
+    await waitFor(() => expect(result.current.cargado).toBe(true));
+    vi.mocked(tareasService.crearTarea).mockResolvedValue(tarea({ id: 7 }));
+
+    await act(() =>
+      result.current.crearTarea(
+        { header: "TP 2", kind: "practico", topic_id: "tema-1", due_date: "2026-10-10" },
+        "personal"
+      )
+    );
+
+    const payload = vi.mocked(tareasService.crearTarea).mock.calls[0]![0];
+    expect(payload).toMatchObject({ kind: "practico", topic_id: "tema-1", due_date: "2026-10-10" });
+    expect(payload).not.toHaveProperty("due_time");
+    expect(payload).not.toHaveProperty("grade");
+  });
+
   it("actualizarTareaCampos: ante rechazo del service, el array vuelve al estado previo", async () => {
     vi.mocked(tareasService.obtenerTareasPersonales).mockResolvedValue([
       tarea({ id: 1, header: "Original" }),

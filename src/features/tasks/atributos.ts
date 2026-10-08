@@ -75,26 +75,22 @@ export function siguienteEstado(valor?: string | null): EstadoTarea {
 // Metadatos visuales de un atributo:
 //  - `icono`: ícono de lucide
 //  - `clase`: color del ícono (para chips outline y celdas de la tabla)
-//  - `badge`: clases de píldora con fondo tenue (para el preview "Se creará…")
 // Paleta alineada al boceto: Alta=rojo · Media=ámbar · Baja=celeste;
 // En Progreso=violeta · Completada=esmeralda · Sin Empezar=neutro.
-type InfoAtributo = { icono: LucideIcon; clase: string; badge: string };
+type InfoAtributo = { icono: LucideIcon; clase: string };
 
 export const INFO_PRIORIDAD: Record<Prioridad, InfoAtributo> = {
   Alta: {
     icono: Flag,
     clase: "text-red-500 dark:text-red-400",
-    badge: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
   },
   Media: {
     icono: Flag,
     clase: "text-amber-500 dark:text-amber-400",
-    badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   Baja: {
     icono: Flag,
     clase: "text-sky-500 dark:text-sky-400",
-    badge: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
   },
 };
 
@@ -102,17 +98,14 @@ export const INFO_ESTADO: Record<EstadoTarea, InfoAtributo> = {
   Completada: {
     icono: CircleCheck,
     clase: "text-emerald-500 dark:text-emerald-400",
-    badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   "En Progreso": {
     icono: Hourglass,
     clase: "text-violet-500 dark:text-violet-400",
-    badge: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
   },
   "Sin Empezar": {
     icono: CircleDashed,
     clase: "text-muted-foreground",
-    badge: "bg-muted text-muted-foreground border-border",
   },
 };
 

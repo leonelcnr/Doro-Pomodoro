@@ -329,6 +329,8 @@ export function useDashboardStats(userId: string | undefined) {
     statsByRange,
     heatmapData,
     bestDaysData,
+    /** Los agregados crudos de la RPC (minutos por día y por hora), para el dashboard. */
+    agregados: agregados ?? null,
     isLoading: cargandoAgregados || cargandoTareas
   };
 }

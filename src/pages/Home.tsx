@@ -1,153 +1,112 @@
-import { AnimatePresence, motion } from "motion/react"
-import { AppSidebar } from "@/components/app-sidebar"
-import { DataTable } from "@/components/data-table"
-import { SiteHeader } from "@/components/site-header"
-import {
-    SidebarInset,
-    SidebarProvider,
-} from "@/components/ui/sidebar"
-
-import SalaNueva from "../features/home/components/SalaNueva"
-import { HeroEnfoque } from "@/features/home/components/HeroEnfoque"
-import { RelojSaludo } from "@/features/home/components/RelojSaludo"
-import { obtenerSaludo } from "@/features/home/saludo"
+import { useState } from "react"
+import { toast } from "sonner"
+import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
+import { AnilloSala } from "@/features/home/components/AnilloSala"
+import { ContadorTareas } from "@/features/home/components/ContadorTareas"
+import { useSalaNueva } from "@/features/home/hooks/useSalaNueva"
+import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas"
+import { INFO_TIPO, estaPendiente } from "@/features/tasks/bandeja"
+import { tipoDe } from "@/features/tasks/avance"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
-import { QuickAddTarea } from "@/features/tasks/components/QuickAddTarea"
-import { FiltroCategorias } from "@/features/tasks/components/FiltroCategorias"
-import { derivarCategorias, CATEGORIA_POR_DEFECTO } from "@/features/tasks/atributos"
+import { useTemas } from "@/features/tasks/hooks/useTemas"
+import { useFoco } from "@/features/tasks/hooks/useFoco"
 import { useAuth } from "@/features/auth/context/useAuth"
 import { useDashboardStats } from "@/features/dashboard/hooks/useDashboardStats"
-import { useMemo, useState } from "react"
-import { toast } from "sonner"
-import type { Tarea } from "@/types/dominio"
-
-// Meta diaria de minutos de enfoque que llena el anillo del hero.
-const META_DIARIA_MINUTOS = 120;
+import { useMetaDiaria } from "@/features/dashboard/hooks/useMetaDiaria"
+import type { ItemChecklist, Tarea, TareaPayload } from "@/types/dominio"
 
 /**
- * Página de inicio: hero con el resumen de enfoque del día, panel para
- * crear/unirse a salas y la lista de tareas personales del usuario,
- * sincronizada en tiempo real con Supabase.
+ * Página de inicio (D4 · Anillo y bandeja): en el centro, el anillo que crea la
+ * sala y muestra el avance del día, con la línea para pegar un link debajo; abajo,
+ * la bandeja de tareas de la sala (T43), sin «De la sala». El contador del
+ * encabezado también la sube.
  */
 const Home = () => {
-    // Sin salaId: el hook trae y escucha solo las tareas personales del usuario
-    const { tareas, guardarCambios, crearTarea, actualizarTareaCampos } = useTareas();
+    // Sin salaId: el hook trae y escucha solo las tareas personales
+    const { tareas, crearTarea, actualizarTareaCampos } = useTareas()
+    const { temas } = useTemas()
+    const { foco, enfocar, soltar } = useFoco(tareas)
+    const { user } = useAuth()
+    const { statsByRange, isLoading } = useDashboardStats(user?.id)
+    // La misma meta que se ajusta en el Dashboard
+    const [metaDiaria] = useMetaDiaria()
+    const { creando, crearSala, unirse } = useSalaNueva()
+    const [bandejaAbierta, establecerBandejaAbierta] = useState(false)
+    const pendientes = tareas.filter(estaPendiente).length
 
-    // Filtro por categoría (opción B): chips derivados de las tareas
-    const [categoriaActiva, establecerCategoriaActiva] = useState("Todas");
-    const categorias = useMemo(() => derivarCategorias(tareas), [tareas]);
-    const tareasFiltradas = useMemo(
-        () => categoriaActiva === "Todas"
-            ? tareas
-            : tareas.filter((t) => (t.type?.trim() || CATEGORIA_POR_DEFECTO) === categoriaActiva),
-        [tareas, categoriaActiva]
-    );
-
-    // Datos vivos del hero: reutiliza el hook del dashboard (racha + hoy), que ya
-    // trae todo con react-query e invalidación en tiempo real.
-    const { user } = useAuth();
-    const { stats, statsByRange } = useDashboardStats(user?.id);
-    const primerNombre = !user || user.isAnonymous ? "" : (user.name?.split(" ")[0] ?? "");
-
-    // Alta rápida personal (fila inline). Re-lanza el error para verlo en consola.
-    const manejarAltaRapida = async (parcial: Partial<Tarea>) => {
+    const actualizar = async (id: number, datos: TareaPayload) => {
         try {
-            await crearTarea(parcial, "personal");
-        } catch (error) {
-            console.error("Error al crear la tarea:", error);
-        }
-    };
-
-    // Edición rápida de un atributo (tocar para ciclar / elegir categoría)
-    const manejarActualizarTarea = async (id: number, datos: Partial<Tarea>) => {
-        try {
-            await actualizarTareaCampos(id, datos);
-        } catch (error) {
-            console.error("Error al actualizar la tarea:", error);
-        }
-    };
-
-    // Persiste en Supabase los cambios hechos en la tabla de tareas (edición, alta, baja)
-    const manejarCambioTareas = async (nuevoEstadoTareas: Tarea[]) => {
-        try {
-            await guardarCambios(nuevoEstadoTareas, "personal");
+            await actualizarTareaCampos(id, datos)
         } catch (error: unknown) {
-            console.error("Error al guardar las tareas en Supabase:", error);
-            // Los errores de Supabase (PostgrestError) traen `message` y `details`
-            const err = error as { message?: string; details?: string };
-            const mensaje = err?.message ?? 'desconocido';
-            const detalles = err?.details ? ` (Detalles: ${err.details})` : '';
-            toast.error("No se pudo guardar la tarea", {
-                description: `${mensaje}${detalles}`,
-            });
+            console.error("Error al actualizar la tarea:", error)
+            toast.error("No se pudo guardar el cambio")
         }
-    };
+    }
+
+    const crear = async (payload: TareaPayload) => {
+        const tema = temas.find((t) => t.id === payload.topic_id)?.name ?? "General"
+        const tipo = INFO_TIPO[payload.kind ?? "tarea"].uno
+        try {
+            await crearTarea(payload, "personal")
+            toast.success(`${tipo} ${payload.kind === "tarea" ? "creada" : "creado"} en ${tema}`)
+        } catch (error: unknown) {
+            console.error("Error al crear la tarea:", error)
+            toast.error("No se pudo crear")
+        }
+    }
+
+    // Marcar la tarea del foco la saca y vuelve a lo que tenías antes
+    const marcarHecha = (tarea: Tarea) => {
+        void actualizar(tarea.id, { status: "Completada" })
+        const vuelve = soltar()
+        toast(vuelve ? `Hecha. Volvés a ${vuelve.header.split(" — ")[0]}` : "Hecha. Elegí lo que sigue")
+    }
+
+    const cambiarChecklist = (tarea: Tarea, checklist: ItemChecklist[]) => {
+        void actualizar(tarea.id, { checklist })
+        if (checklist.every((i) => i.hecho) && !tarea.checklist?.every((i) => i.hecho)) {
+            const tipo = tipoDe(tarea)
+            toast(tipo === "informe" ? "Informe listo para entregar" : tipo === "parcial" ? "Repasaste todas las unidades" : `${tarea.header.split(" — ")[0]}: están todos los puntos`)
+        }
+    }
 
     return (
-        <>
-            <SidebarProvider defaultOpen={false}
-                style={
-                    {
-                        "--sidebar-width": "calc(var(--spacing) * 72)",
-                        "--header-height": "calc(var(--spacing) * 12)",
-                    } as React.CSSProperties
+        <div className="flex min-h-dvh flex-col">
+            <EncabezadoApp
+                extra={
+                    <ContadorTareas
+                        pendientes={pendientes}
+                        abierta={bandejaAbierta}
+                        onAlternar={() => establecerBandejaAbierta(!bandejaAbierta)}
+                    />
                 }
-            >
-                <AppSidebar />
-                <SidebarInset>
-                    <SiteHeader>
-                        <RelojSaludo />
-                    </SiteHeader>
-                    <div className="flex flex-1 flex-col">
-                        <div className="@container/main flex flex-1 flex-col gap-0 ">
-                            <div className="max-w-full h-full flex flex-col gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-                                <HeroEnfoque
-                                    saludo={obtenerSaludo()}
-                                    nombre={primerNombre}
-                                    minutosHoy={statsByRange.day.displayMinutes}
-                                    metaMinutos={META_DIARIA_MINUTOS}
-                                    racha={stats.currentStreak}
-                                    tareasHoy={statsByRange.day.displayCompletedTasks}
-                                />
+            />
 
-                                <SalaNueva />
+            {/* El padding de abajo deja libre el asa de la bandeja */}
+            <main className="@container flex flex-1 flex-col items-center justify-center gap-10 px-5 pt-8 pb-[6.5rem] text-center">
+                <AnilloSala
+                    minutosHoy={statsByRange.day.displayMinutes}
+                    metaMinutos={metaDiaria}
+                    cargando={isLoading}
+                    creando={creando}
+                    onCrear={crearSala}
+                    onUnirse={unirse}
+                />
+            </main>
 
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex flex-col gap-1">
-                                        <h2 className="text-xl font-bold tracking-tight">Tus tareas</h2>
-                                        <p className="text-muted-foreground text-sm">
-                                            Aquí tienes una lista de tus tareas.
-                                        </p>
-                                    </div>
-                                    <FiltroCategorias
-                                        categorias={categorias}
-                                        activa={categoriaActiva}
-                                        total={tareas.length}
-                                        onSeleccionar={establecerCategoriaActiva}
-                                    />
-                                    <AnimatePresence mode="wait">
-                                        <motion.div
-                                            key={categoriaActiva}
-                                            initial={{ opacity: 0, y: 6 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -6 }}
-                                            transition={{ duration: 0.18, ease: "easeOut" }}
-                                        >
-                                            <DataTable
-                                                data={tareasFiltradas}
-                                                onTasksChange={manejarCambioTareas}
-                                                onActualizarTarea={manejarActualizarTarea}
-                                                slotAltaRapida={<QuickAddTarea onCrear={manejarAltaRapida} />}
-                                            />
-                                        </motion.div>
-                                    </AnimatePresence>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
-        </>
+            <BandejaTareas
+                tareas={tareas}
+                temas={temas}
+                abierta={bandejaAbierta}
+                onAbrir={establecerBandejaAbierta}
+                foco={foco}
+                onEnfocar={enfocar}
+                onSoltar={soltar}
+                onMarcarHecha={marcarHecha}
+                onCambiarChecklist={cambiarChecklist}
+                onCrear={crear}
+            />
+        </div>
     )
 }
 

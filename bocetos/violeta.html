@@ -1,0 +1,169 @@
+<title>Violeta de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Cuatro violetas lado a lado sobre las mismas piezas de la app; tokens neutros de src/index.css. */
+:root {
+  --bg: oklch(1 0 0); --fg: oklch(0.141 0.005 285.823); --tenue: oklch(0.552 0.016 285.938);
+  --card: oklch(1 0 0); --campo: oklch(0.967 0.001 286.375); --linea: oklch(0.92 0.004 286.32);
+  --caja: oklch(1 0 0); --sombra: 0 1px 2px oklch(0.2 0.01 285 / .06), 0 8px 24px -12px oklch(0.2 0.01 285 / .14);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.141 0.005 285.823); --fg: oklch(0.985 0 0); --tenue: oklch(0.705 0.015 286.067);
+    --card: oklch(0.21 0.006 285.885); --campo: oklch(0.274 0.006 286.033); --linea: oklch(1 0 0 / 10%);
+    --caja: oklch(0.185 0.005 285); --sombra: 0 1px 2px oklch(0 0 0 / .3), 0 12px 32px -16px oklch(0 0 0 / .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.141 0.005 285.823); --fg: oklch(0.985 0 0); --tenue: oklch(0.705 0.015 286.067);
+  --card: oklch(0.21 0.006 285.885); --campo: oklch(0.274 0.006 286.033); --linea: oklch(1 0 0 / 10%);
+  --caja: oklch(0.185 0.005 285); --sombra: 0 1px 2px oklch(0 0 0 / .3), 0 12px 32px -16px oklch(0 0 0 / .6);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] { --bg: oklch(0.12 0.003 285); --card: oklch(0.165 0.004 285); --campo: oklch(0.225 0.005 285); --caja: oklch(0.16 0.004 285); }
+
+/* Cada opción: --brand (texto, íconos, barras) y --brand-strong (rellenos con texto blanco), claro y oscuro */
+.o-hoy   { --b-c: oklch(60.6% 0.25 292.717); --s-c: oklch(54.1% 0.281 293.009); --b-o: oklch(70.2% 0.183 293.541); --s-o: oklch(54.1% 0.281 293.009); }
+.o-indigo { --b-c: oklch(0.55 0.24 284); --s-c: oklch(0.51 0.25 284); --b-o: oklch(0.66 0.2 284); --s-o: oklch(0.55 0.24 284); }
+.o-profundo { --b-c: oklch(0.52 0.25 289); --s-c: oklch(0.48 0.26 289); --b-o: oklch(0.63 0.22 289); --s-o: oklch(0.52 0.25 289); }
+.o-electrico { --b-c: oklch(0.56 0.26 280); --s-c: oklch(0.52 0.27 280); --b-o: oklch(0.65 0.23 280); --s-o: oklch(0.56 0.26 280); }
+.op { --brand: var(--b-c); --brand-strong: var(--s-c); }
+:root[data-theme="dark"] .op { --brand: var(--b-o); --brand-strong: var(--s-o); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .op { --brand: var(--b-o); --brand-strong: var(--s-o); } }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 6px; }
+.pagina { max-width: 1400px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; }
+.intro p { margin: 0 0 10px; color: var(--tenue); max-width: 70ch; }
+.ajustes { display: flex; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 36px; border-block: 1px solid var(--linea); position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; flex-wrap: wrap; font-size: 13px; color: var(--tenue); }
+.ajustes b { color: var(--fg); font-weight: 500; margin-right: 10px; }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: var(--sombra); }
+
+.grilla { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); }
+.op { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.op h2 { margin: 0; font-size: 19px; letter-spacing: -0.02em; font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.op h2 .letra { color: var(--brand); }
+.op .resumen { margin: 0; color: var(--tenue); font-size: 13.5px; min-height: 3em; }
+.marca-rec { font-size: 12px; font-weight: 500; color: var(--brand); border: 1px solid color-mix(in oklch, var(--brand) 45%, transparent); padding: 2px 10px; border-radius: 999px; }
+.lienzo { display: flex; flex-direction: column; gap: 18px; padding: 22px 20px; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); }
+
+/* Piezas */
+.titulo { font-size: 22px; font-weight: 600; letter-spacing: -0.035em; text-align: center; margin: 0; }
+.barra { display: block; height: 4px; border-radius: 2px; background: var(--linea); overflow: hidden; }
+.barra.fina { height: 2px; }
+.barra i { display: block; height: 100%; background: var(--brand); }
+.anillo { width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; border: 2px solid var(--linea); position: relative; display: grid; place-items: center; text-align: center; }
+.anillo svg { position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); transform: rotate(-90deg); }
+.anillo b { font-size: 15px; } .anillo small { display: block; font-size: 11px; color: var(--tenue); }
+.caja { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--caja); box-shadow: var(--sombra); }
+.caja .f { display: flex; justify-content: space-between; font-size: 14.5px; font-weight: 500; }
+.caja .f span { color: var(--tenue); font-weight: 400; font-size: 12.5px; }
+.fila { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 8px; padding: 8px 14px; font-size: 13.5px; background: var(--brand-strong); color: oklch(0.985 0 0); }
+.check { width: 16px; height: 16px; border-radius: 4px; background: var(--brand-strong); display: grid; place-items: center; color: oklch(0.985 0 0); font-size: 11px; font-weight: 700; }
+.regla { display: flex; gap: 3px; }
+.regla i { width: 22px; height: 22px; border-radius: 3px; background: var(--campo); }
+.regla i.h { background: var(--brand); }
+.punto { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+.fase { display: inline-flex; gap: 8px; align-items: center; font-size: 11.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); font-weight: 500; }
+.mapa { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; }
+.mapa i { aspect-ratio: 1; border-radius: 2px; background: var(--campo); }
+.mapa i.n1 { background: color-mix(in oklch, var(--brand-strong) 30%, var(--bg)); }
+.mapa i.n2 { background: color-mix(in oklch, var(--brand-strong) 65%, var(--bg)); }
+.mapa i.n3 { background: var(--brand); }
+.dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-size: 12.5px; text-align: center; }
+.dias span { padding: 6px 4px; border-radius: 6px; }
+.dias .hoy { background: var(--campo); }
+.dias .sel { background: var(--brand-strong); color: oklch(0.985 0 0); }
+.enlace { color: var(--brand); font-size: 13.5px; }
+.cierre { border-top: 1px solid var(--linea); margin-top: 64px; padding-top: 40px; }
+.cierre h2 { font-size: 26px; letter-spacing: -0.03em; margin: 0 0 16px; font-weight: 600; }
+.cierre p { color: var(--tenue); max-width: 68ch; margin: 0 0 12px; }
+.cierre p b { color: var(--fg); font-weight: 600; }
+pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; }
+.tabla { overflow-x: auto; margin-bottom: 24px; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid var(--linea); }
+th { font-size: 12.5px; color: var(--tenue); font-weight: 600; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+</style>
+
+<div class="pagina">
+  <header class="intro">
+    <h1>Un violeta más firme</h1>
+    <p>El violeta de hoy tira a magenta en los rellenos y, en oscuro, el de texto y barras se aclara hasta quedar casi lavanda. Las tres propuestas bajan el tono hacia el azul (menos magenta) y lo oscurecen en el tema oscuro, sin perder contraste con el texto blanco de los botones.</p>
+    <p>Cada columna muestra las mismas piezas: la frase con su barra, el anillo del home, una caja de tema, la regla de unidades, el mapa de calor, el calendario y los botones. Cambiá el tema arriba.</p>
+  </header>
+
+  <div class="ajustes"><b>Tema</b><div class="seg" id="tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+
+  <div class="grilla" id="grilla"></div>
+
+  <section class="cierre">
+    <h2>Comparación y recomendación</h2>
+    <div class="tabla"><table>
+      <thead><tr><th>Opción</th><th>Tono (hue)</th><th>Texto y barras en oscuro</th><th>Rellenos</th></tr></thead>
+      <tbody>
+        <tr><td>A · Hoy</td><td>293</td><td>Claro, casi lavanda (L 0,70 · C 0,18)</td><td>Tira a magenta</td></tr>
+        <tr><td>B · Índigo</td><td>284</td><td>L 0,66 · C 0,20</td><td>Violeta azulado, el más frío</td></tr>
+        <tr><td>C · Profundo</td><td>289</td><td>L 0,63 · C 0,22</td><td>Violeta clásico, más oscuro</td></tr>
+        <tr><td>D · Eléctrico</td><td>280</td><td>L 0,65 · C 0,23</td><td>El más saturado, casi índigo</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Elegiría C · Profundo.</b> Sigue leyéndose como violeta (no como azul, que ya es otro acento de la lista) y deja de parecer magenta. En oscuro baja de 0,70 a 0,63 de luz con más color, así las barras y la regla se ven firmes en lugar de pastel. Los botones quedan con texto blanco y buen contraste en los tres temas.</p>
+    <p>Es un cambio de cuatro valores en <code>src/index.css</code>: todo lo demás (mapa de calor, anillo, botones, foco) sigue a <code>--brand</code> y <code>--brand-strong</code>.</p>
+    <pre>/* :root (claro) */
+--brand: oklch(0.52 0.25 289);
+--brand-strong: oklch(0.48 0.26 289);
+/* .dark, .negro */
+--brand: oklch(0.63 0.22 289);
+--brand-strong: oklch(0.52 0.25 289);</pre>
+  </section>
+</div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const OPC = [
+  ["hoy", "Hoy", "El violeta actual: rellenos que tiran a magenta y, en oscuro, texto casi lavanda."],
+  ["indigo", "Índigo", "Tono más azul y más oscuro. Se siente frío; con el acento azul de la lista quedan cerca."],
+  ["profundo", "Profundo", "Un violeta clásico, un poco menos magenta y bastante más oscuro en el tema oscuro.", true],
+  ["electrico", "Eléctrico", "El más saturado, casi índigo. Llama mucho la atención en barras y botones."],
+];
+const anillo = `<svg viewBox="0 0 124 124" aria-hidden="true"><circle cx="62" cy="62" r="61" fill="none" stroke="var(--brand)" stroke-width="2" stroke-dasharray="383" stroke-dashoffset="250" stroke-linecap="round"/></svg>`;
+const mapa = Array.from({ length: 28 }, (_, i) => `<i class="${["", "n1", "n2", "n3", "", "n1", "n3"][(i * 5 + i % 3) % 7]}"></i>`).join("");
+$("#grilla").innerHTML = OPC.map(([id, nombre, resumen, rec], i) => `
+  <article class="op o-${id}">
+    <h2><span class="letra">${String.fromCharCode(65 + i)}</span>${nombre}${rec ? '<span class="marca-rec">Recomendada</span>' : ""}</h2>
+    <p class="resumen">${resumen}</p>
+    <div class="lienzo">
+      <p class="titulo">Te queda un parcial.</p>
+      <span class="barra" style="width:70%;margin:-8px auto 0"><i style="width:40%"></i></span>
+      <div class="anillo">${anillo}<span><b>Crear sala</b><small>O seguí en 3 tareas</small></span></div>
+      <div class="caja"><div class="f">Paradigmas<span>33 %</span></div><span class="barra fina"><i style="width:33%"></i></span><span style="font-size:12.5px;color:var(--tenue)">Te queda un parcial</span></div>
+      <div class="fila"><span class="fase"><i class="punto"></i>Pomodoro</span><span class="regla"><i class="h"></i><i class="h"></i><i></i><i></i></span></div>
+      <div class="mapa">${mapa}</div>
+      <div class="dias"><span>5</span><span>6</span><span class="hoy">7</span><span>8</span><span>9</span><span class="sel">10</span><span>11</span></div>
+      <div class="fila"><button type="button" class="btn">Agregar</button><span class="check">✓</span><span class="enlace">Ver los 12</span></div>
+    </div>
+  </article>`).join("");
+
+const raiz = document.documentElement;
+function tema(v) {
+  raiz.dataset.theme = v === "light" ? "light" : "dark";
+  if (v === "negro") raiz.setAttribute("data-negro", ""); else raiz.removeAttribute("data-negro");
+  document.querySelectorAll("#tema button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+}
+document.querySelectorAll("#tema button").forEach((b) => b.addEventListener("click", () => tema(b.dataset.v)));
+tema("negro");
+</script>

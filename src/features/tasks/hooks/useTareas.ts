@@ -4,6 +4,7 @@ import supabase from "@/lib/supabase";
 import * as tareasService from "@/features/tasks/services/tareasService";
 import { useAuth } from "@/features/auth/context/useAuth";
 import type { Tarea, TareaPayload } from "@/types/dominio";
+import { asegurarSesion } from "@/features/auth/authHelpers";
 import {
   CATEGORIA_POR_DEFECTO,
   ESTADO_POR_DEFECTO,
@@ -36,6 +37,20 @@ export function ordenarTareas(arr: Tarea[]): Tarea[] {
     }
     return (b.created_at ?? "").localeCompare(a.created_at ?? "");
   });
+}
+
+// Campos de la pantalla de Tareas que el alta pasa tal cual, solo si vienen
+// (lo que falta lo completa la base: `kind` = 'tarea', el resto null).
+const CAMPOS_FASE_A = [
+  "kind", "topic_id", "due_date", "due_time", "grade", "remind_at", "checklist",
+] as const;
+
+function camposDeFaseA(parcial: TareaPayload): TareaPayload {
+  const campos: TareaPayload = {};
+  for (const clave of CAMPOS_FASE_A) {
+    if (parcial[clave] !== undefined) Object.assign(campos, { [clave]: parcial[clave] });
+  }
+  return campos;
 }
 
 /**
@@ -166,6 +181,8 @@ export function useTareas(salaId?: string) {
   // (alta, baja, edición, reordenamiento por drag & drop) dentro de un ámbito.
   const guardarCambios = useCallback(
     async (nuevoEstadoTareas: Tarea[], ambito: AmbitoTarea) => {
+      // Sin sesión todavía: la primera tarea crea la anónima
+      const usuarioId = usuario?.id ?? (await asegurarSesion());
       const nuevosIds = new Set(nuevoEstadoTareas.map((t) => t.id));
 
       // Solo borramos dentro del ámbito afectado (las del otro ámbito no se tocan)
@@ -181,7 +198,7 @@ export function useTareas(salaId?: string) {
       nuevoEstadoTareas.forEach((t) => {
         // Las claves se mantienen en inglés porque son columnas de la tabla `tasks`
         const datosNuevaTarea = {
-          user_id: usuario?.id,
+          user_id: usuarioId,
           room_id: t.room_id ? t.room_id : (ambito === "sala" ? salaId : null),
           header: t.header,
           type: t.type,
@@ -232,13 +249,14 @@ export function useTareas(salaId?: string) {
   // array). Hace prepend optimista con un id temporal y reconcilia con la fila
   // real que devuelve la DB (deduplicando si el eco del realtime llegó antes).
   const crearTarea = useCallback(async (parcial: TareaPayload, ambito: AmbitoTarea) => {
-    if (!usuario) return;
+    // Sin sesión todavía: la primera tarea crea la anónima
+    const usuarioId = usuario?.id ?? (await asegurarSesion());
 
     const idTemporal = Date.now() + Math.floor(Math.random() * 1000);
     const roomId = ambito === "sala" ? (salaId ?? null) : null;
 
     const payload: TareaPayload = {
-      user_id: usuario.id,
+      user_id: usuarioId,
       room_id: roomId,
       header: parcial.header?.trim() || "Nueva Tarea",
       type: parcial.type?.trim() || CATEGORIA_POR_DEFECTO,
@@ -246,6 +264,7 @@ export function useTareas(salaId?: string) {
       priority: parcial.priority || PRIORIDAD_POR_DEFECTO,
       favorite: parcial.favorite ?? false,
       description: parcial.description,
+      ...camposDeFaseA(parcial),
     };
 
     const tareaOptimista = { id: idTemporal, ...payload } as Tarea;

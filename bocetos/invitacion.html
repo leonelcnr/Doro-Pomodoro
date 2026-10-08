@@ -1,0 +1,807 @@
+<meta charset="utf-8">
+<title>Invitación de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Invitación de Doro, primera ronda. Lo que ve quien abre un link /invitacion/:code. Mundo del home D4 y de la sala final: fondo neutro, un acento, líneas finas. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklab, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --salida: cubic-bezier(.16,1,.3,1);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.resumen b { color: var(--fg); font-weight: 500; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 760px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+.cuerpo { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; position: relative; z-index: 2; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.cuenta-tb { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tenue); }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--campo); border: 2px solid var(--bg); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--fg); position: relative; flex-shrink: 0; }
+.avatar svg { width: 15px; height: 15px; color: var(--tenue); }
+.avatar.yo { background: var(--acento-suave); border-color: var(--bg); box-shadow: 0 0 0 1px color-mix(in oklch, var(--acento) 35%, var(--linea)); }
+.avatar[data-nombre]:hover::after { content: attr(data-nombre); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 6px; white-space: nowrap; z-index: 5; }
+.avatares { display: flex; }
+.avatares .avatar + .avatar { margin-left: -8px; }
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); max-width: calc(100% - 32px); text-align: center; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+.entra { animation: fundido .35s ease both; }
+@keyframes fundido { from { opacity: .15; } }
+
+.btn-link { border: 0; background: none; padding: 0; font: inherit; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; cursor: pointer; }
+.btn-link:hover { color: var(--fg); text-decoration-color: currentColor; }
+.btn-acento { height: 46px; padding: 0 22px; border: 0; border-radius: 10px; background: var(--acento); color: var(--acento-fg); font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background-color .15s; }
+.btn-acento:hover { background: color-mix(in oklch, var(--acento) 88%, var(--fg)); }
+.btn-acento svg { width: 16px; height: 16px; }
+.d-linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: center; height: 42px; font-size: 15px; transition: border-color .2s; border-radius: 0; }
+.d-linea:focus { outline: none; border-color: var(--acento); }
+.d-linea::placeholder { color: var(--tenue); }
+
+/* ───────── Home D4 (para «Ahora no» e «Ir a Doro») ───────── */
+.d-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 32px 20px 104px; text-align: center; }
+.d-anillo { position: relative; width: clamp(200px, 34cqi, 280px); aspect-ratio: 1; max-width: 100%; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+.d-anillo svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.d-anillo .pista-anillo { stroke: var(--linea); }
+.d-anillo .arco { stroke: var(--acento); }
+.d-anillo .relleno { fill: var(--superficie); }
+.d-texto { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.d-texto strong { font-size: clamp(20px, 3.4cqi, 26px); font-weight: 600; letter-spacing: -0.02em; }
+.d-texto span { font-size: 13px; color: var(--tenue); }
+.d-unirse { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(100%, 360px); }
+.d-unirse label { font-size: 13.5px; color: var(--tenue); }
+
+/* ───────── Cargando: un arco que gira, el del anillo ───────── */
+.carga { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px 20px 104px; text-align: center; }
+.carga svg { width: 56px; height: 56px; }
+.carga .pista-anillo { stroke: var(--linea); }
+.carga .arco { stroke: var(--acento); transform-origin: 50% 50%; animation: girar 1.1s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.carga p { margin: 0; color: var(--tenue); font-size: 14.5px; }
+.carga p b { color: var(--fg); font-weight: 500; }
+
+/* ───────── La sala (de la sala final), simplificada ───────── */
+.s-main { container: zona / inline-size; --tam: 17cqi; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 104px; position: relative; }
+.zona { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "modo modo" "reloj reloj" "izq der"; align-items: center; gap: 10px 8px; }
+@container zona (min-width: 700px) { .zona { grid-template-columns: 1fr auto 1fr; grid-template-areas: ". modo ." "izq reloj der"; gap: 6px clamp(28px, 5cqi, 64px); } }
+.ctrl { display: flex; gap: 6px; grid-area: izq; justify-self: end; margin-top: 18px; transition: opacity .45s ease, transform .45s var(--salida); }
+.ctrl.der { grid-area: der; justify-self: start; }
+@container zona (min-width: 700px) { .ctrl { margin-top: 0; } }
+.ic { width: 40px; height: 40px; border-radius: 10px; border: 1px solid transparent; background: none; color: var(--tenue); display: grid; place-items: center; padding: 0; transition: background-color .2s, color .2s; }
+.ic:hover { background: var(--campo); color: var(--fg); }
+.ic svg { width: 19px; height: 19px; }
+.ic.play { background: var(--acento); color: var(--acento-fg); }
+.corre .ic.play { background: none; border-color: var(--linea); color: var(--fg); }
+.ic.play .i-pausa, .corre .ic.play .i-play { display: none; }
+.corre .ic.play .i-pausa { display: block; }
+.modo { grid-area: modo; justify-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); }
+.punto { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.corre .punto { animation: latido 2.4s ease-in-out infinite; }
+.pausa .punto { background: var(--tenue); }
+@keyframes latido { 50% { transform: scale(.55); opacity: .6; } }
+.reloj { grid-area: reloj; justify-self: center; display: flex; align-items: center; font-size: clamp(56px, var(--tam), 184px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; user-select: none; }
+.pausa .reloj, .quieta .reloj { color: color-mix(in oklch, var(--fg) 88%, var(--bg)); }
+.dos-puntos { display: inline-flex; flex-direction: column; gap: .2em; margin: 0 .14em; }
+.dos-puntos i { width: .1em; height: .1em; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 70%, transparent); }
+.salir { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; margin-left: -10px; border: 0; background: none; border-radius: 8px; color: var(--tenue); font-size: 14px; }
+.salir:hover { color: var(--fg); background: var(--campo); }
+.salir svg { width: 17px; height: 17px; }
+.en-sala { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; display: none; }
+@container app (min-width: 600px) { .en-sala { display: inline; } }
+
+/* Antes de entrar: la sala sin controles, sin «Salir» y sin vos (3 y 4) */
+.app:not(.dentro) .solo-dentro { display: none; }
+.app.dentro .solo-fuera { display: none; }
+.app:not(.dentro) .ctrl { opacity: 0; transform: scale(.96); pointer-events: none; visibility: hidden; }
+.app.dentro .avatar.yo { animation: llega .5s var(--salida) both; }
+@keyframes llega { from { opacity: 0; transform: translateX(-6px); } }
+
+/* ───────── La puerta (2 y la hoja de 3) ───────── */
+.pu-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px 72px; }
+.pu-col { width: min(100%, 380px); display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+.pu-col .avatares .avatar { width: 40px; height: 40px; font-size: 15px; border-width: 3px; border-color: var(--bg); }
+.hoja .pu-col .avatares .avatar { border-color: var(--superficie); }
+.pu-col .avatares .avatar + .avatar { margin-left: -10px; }
+.pu-de { margin: 0; font-size: 14.5px; color: var(--tenue); }
+.pu-de b { color: var(--fg); font-weight: 500; }
+.pu-tit { margin: -12px 0 0; font-size: clamp(26px, 4.4cqi, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.12; text-wrap: balance; }
+.pu-estado { margin: -6px 0 0; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.pu-form { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+.pu-form .btn-acento { width: 100%; }
+.pu-lbl { font-size: 13px; color: var(--tenue); margin-bottom: -8px; }
+.pu-nota { margin: -4px 0 0; font-size: 13px; color: var(--tenue); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.pu-nota b { color: var(--fg); font-weight: 500; }
+.pu-nota .avatar { width: 22px; height: 22px; font-size: 10px; border-width: 0; }
+
+/* 3 · Hoja desde abajo sobre la sala atenuada (sin desenfoque) */
+.velo { position: absolute; inset: 0; z-index: 8; background: color-mix(in oklch, var(--bg) 58%, transparent); transition: opacity .4s ease; }
+.app.dentro .velo { opacity: 0; pointer-events: none; }
+.hoja { position: absolute; left: 50%; bottom: 0; z-index: 9; width: min(100%, 500px); max-height: calc(100% - 24px); overflow: auto; padding: 22px 24px 28px; border: 1px solid var(--linea); border-bottom: 0; border-radius: 20px 20px 0 0; background: var(--superficie); box-shadow: var(--sombra); transform: translate(-50%, 0); transition: transform .45s var(--salida); }
+.hoja.sube { animation: sube .55s var(--salida) both; }
+@keyframes sube { from { transform: translate(-50%, 104%); } }
+.hoja::before { content: ""; display: block; width: 32px; height: 4px; margin: 0 auto 16px; border-radius: 4px; background: var(--linea); }
+.hoja .pu-col { margin: 0 auto; }
+.app.dentro .hoja { transform: translate(-50%, 104%); }
+.app.con-hoja:not(.dentro) .tb, .app.con-hoja:not(.dentro) .s-main { pointer-events: none; }
+/* El reloj sube por encima de la hoja (no queda tapado) y vuelve al centro al entrar */
+.s-main { transition: padding-bottom .5s var(--salida); }
+.app.con-hoja:not(.dentro) .s-main { padding-bottom: calc(var(--hoja, 0px) + 20px); }
+
+/* 4 · El reloj primero: la sala, con «Entrar» donde van los controles */
+.r4-de { position: absolute; left: 50%; bottom: calc(100% + 18px); transform: translateX(-50%); width: max-content; max-width: 86cqi; margin: 0; text-align: center; font-size: 15px; color: var(--tenue); text-wrap: balance; transition: opacity .4s ease, transform .5s var(--salida); }
+.r4-de b { color: var(--fg); font-weight: 600; }
+.r4-entrada { position: absolute; left: 50%; top: calc(100% + 28px); transform: translateX(-50%); width: min(420px, 92cqi); display: flex; flex-direction: column; align-items: center; gap: 12px; transition: opacity .35s ease, transform .5s var(--salida); }
+.r4-fila { display: flex; gap: 12px; width: 100%; align-items: end; }
+.r4-fila .d-linea { text-align: left; }
+.r4-fila .btn-acento { flex-shrink: 0; }
+.r4-solo { display: flex; justify-content: center; }
+@container zona (max-width: 460px) { .r4-fila { flex-direction: column; align-items: stretch; } .r4-fila .d-linea { text-align: center; } }
+.r4-pie { font-size: 13px; color: var(--tenue); display: inline-flex; align-items: center; gap: 8px; }
+.app.dentro .r4-de, .app.dentro .r4-entrada { opacity: 0; pointer-events: none; }
+.app.dentro .r4-de { transform: translate(-50%, -6px); }
+.app.dentro .r4-entrada { transform: translate(-50%, 8px); }
+@container zona (min-width: 700px) { .r4-entrada { top: calc(100% + 36px); } }
+
+/* ───────── Errores (los mismos en las cuatro) ───────── */
+.er-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px 88px; }
+.er-col { width: min(100%, 380px); display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.er-ic { width: 44px; height: 44px; color: var(--tenue); }
+.er-tit { margin: 0; font-size: clamp(24px, 4cqi, 30px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+.er-txt { margin: -6px 0 8px; color: var(--tenue); font-size: 15px; text-wrap: balance; }
+.er-col .d-unirse { width: 100%; }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p, .recomendacion li { color: var(--tenue); max-width: 64ch; }
+.recomendacion p { margin: 0 0 12px; }
+.recomendacion ul { margin: 0 0 12px; padding-left: 18px; }
+.recomendacion li + li { margin-top: 6px; }
+.recomendacion b { color: var(--fg); font-weight: 600; }
+pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.2 3.8-4.8 7-4.8s5.8 1.6 7 4.8"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-entrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-compartir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
+  <symbol id="i-musica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-reiniciar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-pip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="12" width="6" height="4" rx="1" fill="currentColor"/></symbol>
+  <symbol id="i-ajustes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-link-roto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m18.84 12.25 1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="m5.17 11.75-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"/><path d="M8 2v3M2 8h3M16 19v3M19 16h3"/></symbol>
+  <symbol id="i-puerta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21h14"/><path d="M7 21V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V21"/><circle cx="14" cy="12.5" r=".8" fill="currentColor"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Invitación de Doro</h1>
+    <p><b>Lo que ve quien abre un link de invitación</b> (<code>/invitacion/:code</code>). Hoy la página se une sola, muestra «Procesando tu invitación…» y salta a la sala; si el link venció, muestra el error crudo de Postgres («Invite inválido o expirado»). Quien llega no sabe a qué sala entra, y si es anónimo, los demás lo ven como «Usuario».</p>
+    <p>Cada maqueta arranca como si recién abrieras el link. <b>Entrá</b> y vas a ver cómo queda la sala. Los ajustes <b>«Link»</b>, <b>«Quién abre»</b>, <b>«La sala»</b> y <b>«Carga»</b> cambian el caso; el botón «Abrir el link otra vez» lo repite. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Link</span>
+      <div class="segmentado" id="estado" role="group" aria-label="Estado del link"><button type="button" data-v="valida">Sirve</button><button type="button" data-v="vencida">Venció</button><button type="button" data-v="noexiste">No existe</button><button type="button" data-v="miembro">Ya estabas</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Quién abre</span>
+      <div class="segmentado" id="quien" role="group" aria-label="Quién abre el link"><button type="button" data-v="nuevo">Recién llegado</button><button type="button" data-v="cuenta">Con cuenta</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">La sala</span>
+      <div class="segmentado" id="sala" role="group" aria-label="Estado de la sala"><button type="button" data-v="corre">Estudiando</button><button type="button" data-v="pausa">En pausa</button><button type="button" data-v="vacia">Vacía</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Carga</span>
+      <div class="segmentado" id="carga" role="group" aria-label="Velocidad de carga"><button type="button" data-v="rapida">Rápida</button><button type="button" data-v="lenta">Lenta</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="r1" data-v="r1">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">1</span><span class="nombre">Directo</span><span class="marca-rec">Elegida</span></h2>
+        <p class="resumen">Como hoy, pero cuidado: el link <b>te mete en la sala sin preguntar</b>. Mientras entra, el arco del anillo gira con «Entrando a la sala…»; al llegar, un aviso dice a qué sala entraste y cómo te ven.</p>
+        <p class="enfoque">Lo primero: <b>estar adentro</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Cero clics: abrís el link y estás.</li><li>No hace falta una RPC nueva para mirar la sala antes.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No sabés a dónde entrás hasta estar adentro.</li><li>El anónimo entra sin nombre; tiene que cambiarlo después.</li><li>Un bot que abra el link crea un anónimo y suma un uso.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r2" data-v="r2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">2</span><span class="nombre">Una puerta</span></h2>
+        <p class="resumen">Una pantalla antes de la sala, en el idioma del login: <b>quién te invita, el nombre de la sala, cómo va el reloj</b> y un botón. Si no tenés cuenta, una línea para tu nombre.</p>
+        <p class="enfoque">Lo primero: <b>a qué sala entrás</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Sabés dónde entrás y con quién antes de aparecer.</li><li>El nombre se pide en el momento justo.</li><li>Gemela del login: misma columna, mismo tono.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un clic más.</li><li>Al entrar cambia toda la pantalla: la puerta y la sala no se parecen.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r3" data-v="r3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">3</span><span class="nombre">La sala detrás</span></h2>
+        <p class="resumen">La sala ya está abierta, <b>atenuada detrás de una hoja que sube desde abajo</b> con lo de 2. El reloj corre de verdad atrás. Al entrar, la hoja baja y la sala se aclara.</p>
+        <p class="enfoque">Lo primero: <b>la sala, aunque todavía no estés</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Se ve el lugar al que entrás, no una descripción.</li><li>Mismo gesto que la bandeja y que la hoja del login (4).</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>La hoja tapa medio reloj en el celular.</li><li>Dos capas para una decisión de un botón.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r4" data-v="r4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">4</span><span class="nombre">El reloj primero</span></h2>
+        <p class="resumen">La invitación <b>es la sala, sin controles</b>: arriba «Ana te invita a <i>Parcial de Análisis II</i>», el reloj grande corriendo, y donde van los botones, tu nombre y «Entrar». Al entrar no cambia la pantalla: aparecen los controles, «Salir» y tu avatar.</p>
+        <p class="enfoque">Lo primero: <b>el reloj que vas a compartir</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Entrar no es un salto: la sala «se enciende».</li><li>Una sola capa, y el reloj dice más que cualquier texto.</li><li>Sin hoja: nada tapa nada en el celular.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Con la sala vacía y en pausa, un 25:00 quieto dice poco.</li><li>Hay que cuidar que nadie crea que ya está adentro.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Invitación</th><th>Clics para entrar</th><th>Qué sabés antes</th><th>Nombre del anónimo</th><th>En el celular</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>1 · Directo</td><td>Cero</td><td>Nada</td><td>Después, desde la sala</td><td>Igual</td><td>Entrás a ciegas como «Usuario»</td></tr>
+          <tr><td>2 · Una puerta</td><td>Uno</td><td>Quién, qué sala, cómo va</td><td>En la puerta</td><td>Igual</td><td>Salto entre dos pantallas</td></tr>
+          <tr><td>3 · La sala detrás</td><td>Uno</td><td>Lo de 2, y la sala atrás</td><td>En la hoja</td><td>La hoja tapa el reloj</td><td>Dos capas</td></tr>
+          <tr><td>4 · El reloj primero</td><td>Uno</td><td>Quién, qué sala, el reloj en vivo</td><td>Junto a «Entrar»</td><td>Columna</td><td>Sala vacía y en pausa dice poco</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegida: 1 (Leo, 2026-10-06)</h3>
+        <p><b>Si ya te pasaron el link es porque querés entrar:</b> una segunda confirmación es fricción. 2 y 3 quedan para cuando haya amigos e invitaciones directas dentro de Doro, donde sí conviene ver quién te invita antes de aceptar.</p>
+        <h4>Lo que recomendaba antes</h4>
+        <p><b>La invitación es «vení a estudiar con nosotros», y lo que la sala tiene para mostrar es el reloj.</b> Ver los minutos bajando, con quién y en qué sala, convence más que una tarjeta, y entrar no cambia de pantalla: los controles aparecen donde estaba el botón. Es lo que menos se aleja de la sala final.</p>
+        <p><b>2</b> si preferís que la invitación se lea como el login (las dos son una puerta). <b>1</b> solo si el clic de más te molesta más que entrar a ciegas.</p>
+        <p><b>El fondo:</b> liso, como se decidió. En 4 los puntos compiten con el reloj, igual que en la sala.</p>
+        <h4>Los errores, iguales en las cuatro</h4>
+        <ul>
+          <li><b>Venció o se agotó:</b> «Este link ya no sirve» y que pidas otro. Debajo, el mismo renglón del home para pegar otro link.</li>
+          <li><b>No existe:</b> «No encontramos esta sala»: link mal copiado o la sala se cerró (el cron borra las inactivas, y con ellas sus invitaciones).</li>
+          <li><b>Ya estabas:</b> no hay puerta, entrás directo con «Volviste a…».</li>
+        </ul>
+        <h4>Qué encontré en el código</h4>
+        <ul>
+          <li><b>Pegar el link en el home no funciona:</b> <code>parsearInvitacion</code> busca <code>/invite/</code>, pero los links son <code>/invitacion/</code>. Hoy cae en «código suelto» y manda la URL entera a <code>join_room</code>.</li>
+          <li><b>El anónimo se ve como «Usuario»:</b> la presencia arma el nombre con el email. El nombre de la puerta iría a <code>user_metadata.nombre</code> (<code>updateUser</code> funciona con anónimos) y la presencia lo leería primero.</li>
+          <li><b>Para mirar antes de entrar falta una RPC:</b> con RLS, quien no es miembro no puede leer la sala. <code>ver_invitacion</code> (a la derecha) devuelve solo lo que se muestra, y no crea sesión: el anónimo se crea recién al tocar «Entrar», como pide el login (Fase C, bots).</li>
+          <li><b>Quiénes están conectados</b> sale de la presencia, que es un canal de la sala. Si no se puede escuchar sin ser miembro, la puerta muestra solo a quien invita y el reloj.</li>
+          <li><code>join_room</code> suma un uso aunque ya fueras miembro. Menor, pero con <code>max_uses</code> te puede agotar el link entrando dos veces.</li>
+        </ul>
+      </div>
+      <div>
+        <pre><span class="c-com">-- Lo que la puerta puede ver sin ser miembro (ni tener sesión)</span>
+create function public.ver_invitacion(p_code text)
+returns table (estado text, sala text, anfitrion text, timer_state jsonb)
+language sql stable security definer set search_path = public as $$
+  select
+    case when i.expires_at &lt; now()                        then 'vencida'
+         when i.max_uses is not null and i.uses &gt;= i.max_uses then 'agotada'
+         else 'valida' end,
+    r.name, <span class="c-com">/* nombre visible del anfitrión */</span> null, r.timer_state
+  from room_invites i join rooms r on r.id = i.room_id
+  where i.code = upper(p_code);
+$$;
+grant execute on function public.ver_invitacion(text) to anon, authenticated;
+<span class="c-com">-- Sin filas = 'noexiste'</span></pre>
+        <pre><span class="c-com">// src/pages/InvitacionPage.tsx · contenedor delgado</span>
+const { invitacion, estado, entrar } = useInvitacion(code);
+if (estado === "cargando") return &lt;CargandoInvitacion /&gt;;
+if (estado !== "valida")   return &lt;InvitacionRota motivo={estado} /&gt;;
+return (
+  &lt;SalaAntesDeEntrar
+    sala={invitacion.sala} anfitrion={invitacion.anfitrion}
+    reloj={invitacion.reloj}          <span class="c-com">// corre local desde timer_state</span>
+    pedirNombre={usuario?.esAnonimo ?? true}
+    onEntrar={nombre =&gt; entrar(nombre)} <span class="c-com">// asegurarSesion → nombre → join_room → /room/:id</span>
+  /&gt;
+);</pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+    estado: v => raiz.dataset.estado = v,
+    quien: v => raiz.dataset.quien = v,
+    sala: v => raiz.dataset.sala = v,
+    carga: v => raiz.dataset.carga = v,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", estado: "valida", quien: "nuevo", sala: "corre", carga: "rapida" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    const clave = ["estado", "quien", "sala", "carga"].includes(id) ? "doro-inv-" + id : "doro-d4-" + id;
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar(clave, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer(clave, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── La sala a la que invitan: un reloj que corre de verdad ── */
+  const SALA = "Parcial de Análisis II", ANFITRION = "Ana";
+  const OTROS = [["A", "Ana"], ["T", "Tomi"]];
+  const base = Date.now(), INICIO = 18 * 60 + 42;
+  const restante = () => {
+    const s = raiz.dataset.sala;
+    if (s === "pausa") return 12 * 60 + 30;
+    if (s === "vacia") return 25 * 60;
+    const r = INICIO - Math.floor((Date.now() - base) / 1000);
+    return ((r % 1500) + 1500) % 1500 || 1500;
+  };
+  const dos = n => String(n).padStart(2, "0");
+  const tic = () => {
+    const r = restante(), mm = dos(Math.floor(r / 60)), ss = dos(r % 60);
+    document.querySelectorAll("[data-mm]").forEach(e => e.textContent = mm);
+    document.querySelectorAll("[data-ss]").forEach(e => e.textContent = ss);
+    document.querySelectorAll("[data-tiempo]").forEach(e => e.textContent = `${mm}:${ss}`);
+  };
+  setInterval(tic, 1000);
+
+  const esNuevo = () => raiz.dataset.quien !== "cuenta";
+  const claseSala = () => ({ corre: "corre", pausa: "pausa", vacia: "quieta" })[raiz.dataset.sala] || "corre";
+  const otros = () => raiz.dataset.sala === "vacia" ? [] : OTROS;
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const yoInicial = el => esNuevo() ? (el._nombre ? el._nombre[0].toUpperCase() : "I") : "L";
+  const yoNombre = el => esNuevo() ? (el._nombre || "Invitado") : "Leo";
+  const avatar = ([l, n], cls = "") => `<span class="avatar${cls}" data-nombre="${esc(n)}">${esc(l)}</span>`;
+
+  /* Línea de estado de la sala (puerta y hoja) */
+  const estadoSala = () => {
+    const s = raiz.dataset.sala;
+    if (s === "vacia") return `<span class="punto" style="background:var(--linea)"></span>Nadie estudiando ahora`;
+    if (s === "pausa") return `<span class="punto"></span>En pausa · <span data-tiempo></span> · 2 en la sala`;
+    return `<span class="punto"></span>Pomodoro · <span data-tiempo></span> · 2 estudiando`;
+  };
+
+  /* ── Pantallas ── */
+  const barraMin = () => `<header class="tb"><a class="marca" href="#" aria-label="Doro, inicio">${ic("i-logo")}<span class="desv">Doro</span></a>
+    <div class="tb-der">${esNuevo() ? `<span class="cuenta-tb"><span class="avatar">${ic("i-persona")}</span></span>` : `<span class="avatar yo" data-nombre="Leo">L</span>`}</div></header>`;
+
+  const cargando = txt => `${barraMin()}<main class="carga entra" role="status"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="pista-anillo" cx="28" cy="28" r="24" fill="none" stroke-width="3"/><circle class="arco" cx="28" cy="28" r="24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="113"/></svg><p>${txt}</p></main>`;
+
+  const error = motivo => {
+    const t = motivo === "vencida"
+      ? ["Este link ya no sirve", "Venció o ya se usó todas las veces. Pedile uno nuevo a quien te lo pasó."]
+      : ["No encontramos esta sala", "Puede que el link esté mal copiado o que la sala se haya cerrado."];
+    return `${barraMin()}<main class="er-main entra"><div class="er-col">${ic("i-link-roto", "er-ic")}
+      <h1 class="er-tit">${t[0]}</h1><p class="er-txt">${t[1]}</p>
+      <form class="d-unirse" data-otro><label for="otro-${Math.random().toString(36).slice(2, 7)}">¿Tenés otro?</label><input class="d-linea" placeholder="Pegá el link o el código" autocomplete="off"></form>
+      <button type="button" class="btn-link" data-inicio data-k="inicio">Ir a Doro</button>
+    </div></main>`;
+  };
+
+  const home = () => `<header class="tb"><a class="marca" href="#">${ic("i-logo")}<span class="desv">Doro</span></a>
+      <nav class="tb-nav desv"><a aria-current="page" href="#">Inicio</a><a href="#">Tareas</a><a href="#">Dashboard</a></nav>
+      <div class="tb-der"><span class="hora desv">${ahora()}</span>${esNuevo() ? `<span class="cuenta-tb"><span class="desv">Entrar</span><span class="avatar">${ic("i-persona")}</span></span>` : `<span class="avatar yo">L</span>`}</div></header>
+    <main class="d-main entra"><span class="d-anillo"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno" cx="100" cy="100" r="92"/><circle class="pista-anillo" cx="100" cy="100" r="92" fill="none" stroke-width="3"/><circle class="arco" cx="100" cy="100" r="92" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="578.05" stroke-dashoffset="578.05"/></svg><span class="d-texto"><strong>Crear sala</strong><span>Tu primera sesión</span></span></span>
+      <form class="d-unirse" data-otro><label>¿Te pasaron un link?</label><input class="d-linea" placeholder="Pegalo acá y tocá Enter"></form></main>`;
+
+  /* La sala: con dentro=false queda sin controles, sin «Salir» y sin vos */
+  const sala = (el, extra = "") => {
+    const ot = otros(), n = ot.length;
+    return `<header class="tb">
+      <button type="button" class="salir solo-dentro" data-inicio data-k="salir" aria-label="Salir de la sala">${ic("i-volver")}<span class="desv">Salir</span></button>
+      <a class="marca solo-fuera" href="#" aria-label="Doro, inicio">${ic("i-logo")}<span class="desv">Doro</span></a>
+      <div class="tb-der">
+        <span class="en-sala desv"><span class="solo-fuera">${n ? `${n} en la sala` : "Nadie conectado"}</span><span class="solo-dentro">${n + 1} en la sala</span></span>
+        <span class="avatares">${ot.map(o => avatar(o)).join("")}<span class="avatar yo solo-dentro" data-yo data-nombre="${esc(yoNombre(el))} (vos)">${esc(yoInicial(el))}</span></span>
+      </div></header>
+    <main class="s-main ${claseSala()}"><div class="zona">
+      ${extra}
+      <div class="modo"><span class="punto"></span>${raiz.dataset.sala === "pausa" ? "En pausa" : "Pomodoro"}</div>
+      <div class="ctrl izq"><button type="button" class="ic" data-nada title="Compartir la sala">${ic("i-compartir")}</button><button type="button" class="ic" data-nada title="Música">${ic("i-musica")}</button><button type="button" class="ic" data-nada title="Reiniciar">${ic("i-reiniciar")}</button></div>
+      <div class="reloj" role="timer" aria-label="Tiempo de la sala"><span data-mm></span><span class="dos-puntos" aria-hidden="true"><i></i><i></i></span><span data-ss></span></div>
+      <div class="ctrl der"><button type="button" class="ic play" data-nada aria-label="Iniciar o pausar">${ic("i-play", "i-play")}${ic("i-pausa", "i-pausa")}</button><button type="button" class="ic" data-nada title="Ventana flotante">${ic("i-pip")}</button><button type="button" class="ic" data-nada title="Tiempos del reloj">${ic("i-ajustes")}</button></div>
+    </div></main>`;
+  };
+
+  /* La puerta (2) y el contenido de la hoja (3) */
+  const formNombre = (el, cls = "pu-form") => esNuevo()
+    ? `<form class="${cls}" data-entrar-form><label class="pu-lbl" for="n-${el._id}">Cómo te ven en la sala</label><input id="n-${el._id}" class="d-linea" data-nombre data-k="nombre" placeholder="Tu nombre" autocomplete="given-name" maxlength="24" value="${esc(el._nombre || "")}"><button type="submit" class="btn-acento" data-k="entrar">Entrar a la sala</button></form>`
+    : `<form class="${cls}" data-entrar-form><button type="submit" class="btn-acento" data-k="entrar">Entrar a la sala</button><p class="pu-nota"><span class="avatar yo">L</span>Entrás como <b>Leo</b></p></form>`;
+  const puerta = el => `<div class="pu-col">
+      ${otros().length ? `<span class="avatares">${otros().map(o => avatar(o)).join("")}</span>` : `<span class="avatares">${avatar(OTROS[0])}</span>`}
+      <p class="pu-de"><b>${ANFITRION}</b> te invita a estudiar</p>
+      <h1 class="pu-tit">${SALA}</h1>
+      <p class="pu-estado">${estadoSala()}</p>
+      ${formNombre(el)}
+      <button type="button" class="btn-link" data-inicio data-k="ahora-no">Ahora no</button>
+    </div>`;
+
+  /* 4 · Lo que va arriba y abajo del reloj antes de entrar */
+  const r4Extra = el => {
+    const s = raiz.dataset.sala;
+    const pie = s === "vacia" ? "Nadie estudiando ahora" : s === "pausa" ? "En pausa · 2 en la sala" : "2 estudiando";
+    const fila = esNuevo()
+      ? `<div class="r4-fila"><input class="d-linea" data-nombre data-k="nombre" placeholder="Tu nombre" aria-label="Cómo te ven en la sala" autocomplete="given-name" maxlength="24" value="${esc(el._nombre || "")}"><button type="submit" class="btn-acento" data-k="entrar">Entrar ${ic("i-entrar")}</button></div>`
+      : `<div class="r4-solo"><button type="submit" class="btn-acento" data-k="entrar">Entrar como Leo ${ic("i-entrar")}</button></div>`;
+    return `<p class="r4-de"><b>${ANFITRION}</b> te invita a <b>${SALA}</b></p>
+      <form class="r4-entrada" data-entrar-form>${fila}<span class="r4-pie">${pie} · <button type="button" class="btn-link" data-inicio data-k="ahora-no">Ahora no</button></span></form>`;
+  };
+
+  const pintar = (a, enfocar) => {
+    const el = a.el, f = el._fase, v = a.v;
+    const k = enfocar && el.contains(document.activeElement) && document.activeElement.dataset?.k;
+    el.classList.toggle("dentro", f === "dentro");
+    el.classList.toggle("con-hoja", v === "r3" && f === "puerta");
+    let h;
+    if (f === "carga") h = cargando(v === "r1" && raiz.dataset.estado === "valida" ? "Entrando a la sala…" : "Abriendo la invitación…");
+    else if (f === "error") h = error(raiz.dataset.estado);
+    else if (f === "home") h = home();
+    else if (v === "r1" || (v === "r2" && f === "dentro")) h = sala(el);
+    else if (v === "r2") h = `${barraMin()}<main class="pu-main entra">${puerta(el)}</main>`;
+    else if (v === "r3") h = `${sala(el)}<div class="velo"></div><section class="hoja sube" role="dialog" aria-label="Invitación a ${SALA}">${puerta(el)}</section>`;
+    else h = sala(el, r4Extra(el));
+    a.cuerpo.innerHTML = h;
+    if (f === "dentro" && el._entra) a.cuerpo.querySelector(".s-main")?.classList.add("entra");
+    el._entra = false;
+    a.cuerpo.style.overflow = v === "r3" ? "hidden" : "";
+    const hoja = a.cuerpo.querySelector(".hoja");
+    if (hoja) { a._obs ??= new ResizeObserver(([e]) => el.style.setProperty("--hoja", e.target.offsetHeight + "px")); a._obs.disconnect(); a._obs.observe(hoja); }
+    tic();
+    if (k) a.cuerpo.querySelector(`[data-k="${k}"]`)?.focus();
+  };
+
+  /* ── Montaje ── */
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2800); };
+
+  /* Abrir el link: según el ajuste «Link», carga → error, sala o puerta */
+  const abrir = a => {
+    const el = a.el, est = raiz.dataset.estado, lenta = raiz.dataset.carga === "lenta";
+    clearTimeout(a._t);
+    el._nombre = ""; el._entra = true;
+    const directo = a.v === "r1" || est === "miembro";
+    const espera = directo ? (lenta ? 2200 : 800) : lenta ? 1800 : 0;
+    const luego = () => {
+      if (est === "vencida" || est === "noexiste") { el._fase = "error"; return pintar(a); }
+      if (directo) {
+        el._fase = "dentro"; el._entra = true; pintar(a);
+        return avisar(el, est === "miembro" ? `Volviste a «${SALA}»` : esNuevo() ? `Entraste a «${SALA}». Te ven como «Invitado»` : `Entraste a «${SALA}»`);
+      }
+      el._fase = "puerta"; pintar(a);
+    };
+    if (espera) { el._fase = "carga"; pintar(a); a._t = setTimeout(luego, espera); } else luego();
+  };
+
+  const entrar = a => {
+    const el = a.el, inp = el.querySelector("[data-nombre]");
+    el._nombre = inp ? inp.value.trim() : "";
+    const yo = el.querySelector("[data-yo]");
+    if (yo) { yo.textContent = yoInicial(el); yo.dataset.nombre = `${yoNombre(el)} (vos)`; }
+    const msg = esNuevo() ? `Entraste como «${yoNombre(el)}»` : `Entraste a «${SALA}»`;
+    if (a.v === "r2") { el._fase = "dentro"; el._entra = true; pintar(a); }
+    else { el._fase = "dentro"; el.classList.add("dentro"); el.classList.remove("con-hoja"); a.cuerpo.querySelector(".salir")?.focus(); }
+    avisar(el, msg);
+  };
+
+  const conectar = a => {
+    const el = a.el;
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div>`);
+    el.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches("[data-entrar-form]")) return entrar(a);
+      if (e.target.matches("[data-otro]")) return avisar(el, "Acá se abre ese link (no es parte de este boceto)");
+    });
+    el.addEventListener("click", e => {
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
+      if (e.target.closest("[data-nada]")) return avisar(el, "Los controles son los de la sala final");
+      if (e.target.closest("[data-inicio]")) { el._fase = "home"; el._entra = true; el.classList.remove("dentro", "con-hoja"); return pintar(a); }
+    });
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+  opciones.forEach((op, n) => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el._id = v;
+    const cuerpo = document.createElement("div"); cuerpo.className = "cuerpo"; el.appendChild(cuerpo);
+    const a = { v, el, cuerpo };
+    apps.push(a);
+    conectar(a);
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <button type="button" class="btn-completa" data-reabrir>Abrir el link otra vez</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    bm.querySelector("[data-reabrir]").addEventListener("click", () => abrir(a));
+    abrir(a);
+  });
+  ["estado", "quien", "sala", "carga"].forEach(g => document.getElementById(g).addEventListener("click", e => { if (e.target.closest("button")) apps.forEach(abrir); }));
+  setInterval(() => document.querySelectorAll(".tb .hora").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic("i-contraer")}</button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra">${ic("i-x")}</button>`;
+  /* H o la X esconden el mando para ver la pantalla sola; H o la esquina de abajo a la derecha lo traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisoMando("Barra escondida. H o la esquina de abajo a la derecha la traen");
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  /* Fuera de pantalla completa, H esconde y trae la barra de ajustes */
+  const ajustesBarra = document.querySelector(".ajustes");
+  document.addEventListener("keydown", e => {
+    if (actual || e.key.toLowerCase() !== "h" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    ajustesBarra.hidden = !ajustesBarra.hidden;
+  });
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>

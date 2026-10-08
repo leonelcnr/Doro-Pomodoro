@@ -1,0 +1,7 @@
+# Las salas y las invitaciones son privadas: no se indexan.
+User-agent: *
+Allow: /
+Disallow: /room/
+Disallow: /invitacion/
+
+Sitemap: https://doro.page/sitemap.xml

@@ -1,0 +1,1218 @@
+<meta charset="utf-8">
+<title>Dashboard de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Quinta ronda del dashboard. Mundo del home D4: fondo neutro, un acento que pinta el tiempo estudiado y la meta cumplida, líneas finas. Cada gráfico lleva arriba su respuesta en una frase. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklab, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 24px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion, .metas { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2, .metas > h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.marca-base { font-size: 13px; font-weight: 500; color: var(--tenue); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: auto; width: 100%; max-width: 100%; height: 760px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* ───────── Maqueta: base heredada del home ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; isolation: isolate; }
+.app { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .app::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+@container app (min-width: 720px) { .tb { padding: 0 32px; } }
+.marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: inherit; }
+.marca svg { width: 22px; height: 22px; color: var(--acento); }
+.tb-nav { display: none; gap: 4px; }
+.tb-nav a { text-decoration: none; font-size: 14px; color: var(--tenue); padding: 6px 10px; border-radius: 6px; }
+.tb-nav a[aria-current] { color: var(--fg); background: var(--campo); }
+@container app (min-width: 600px) { .tb-nav { display: flex; } }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.hora { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--campo); border: 1px solid var(--linea); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.menu { display: grid; place-items: center; width: 32px; height: 32px; border: 0; background: transparent; border-radius: 6px; color: var(--tenue); }
+.menu svg { width: 18px; height: 18px; }
+@container app (min-width: 600px) { .menu { display: none; } }
+.tb .desv { transition: opacity .35s ease .5s, filter .35s ease .5s, transform .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:is(:hover, :focus-within) .desv { opacity: 1; filter: none; transform: none; pointer-events: auto; transition-delay: 0s; }
+}
+.aviso { position: absolute; left: 50%; top: 68px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); white-space: nowrap; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── Piezas compartidas del dashboard ───────── */
+.tip { position: absolute; z-index: 30; transform: translate(-50%, calc(-100% - 8px)); background: var(--fg); color: var(--bg); font-size: 12.5px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; font-variant-numeric: tabular-nums; }
+.tip.ver { opacity: 1; }
+.main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 40px; }
+@container app (min-width: 720px) { .main { padding: 40px 32px 80px; gap: 48px; } }
+.frase { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; font-variant-numeric: tabular-nums; }
+@container app (min-width: 720px) { .frase { font-size: 34px; } }
+.frase span, .bloque-frase span { color: var(--tenue); font-weight: 400; }
+.bajada { margin: 6px 0 0; font-size: 14px; color: var(--tenue); font-variant-numeric: tabular-nums; max-width: 68ch; text-wrap: pretty; }
+.bloque { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; border-top: 1px solid var(--linea); min-width: 0; }
+.bloque-frase { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.btn-texto { border: 0; background: none; padding: 0; font-size: 13.5px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 5px; }
+.btn-texto:hover { color: var(--fg); text-decoration-color: currentColor; }
+
+/* Hoy contra la meta: la misma cabecera en todas las variantes */
+.hoy { display: flex; flex-direction: column; gap: 14px; }
+.hoy-fila { display: flex; align-items: center; gap: 12px; min-height: 30px; }
+.hoy-linea { flex: 1; height: 4px; border-radius: 4px; background: var(--linea); overflow: hidden; }
+.hoy-linea span { display: block; height: 100%; background: var(--acento); border-radius: 4px; transition: width .5s cubic-bezier(.16,1,.3,1); }
+.hoy-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; min-height: 30px; }
+.hoy-pie .bajada { margin: 0; }
+.paso { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--linea); background: var(--superficie); display: grid; place-items: center; color: var(--fg); padding: 0; transition: border-color .15s, background-color .15s; }
+.paso:hover:not(:disabled) { border-color: var(--tenue); }
+.paso:disabled { opacity: .35; cursor: default; }
+.paso svg { width: 14px; height: 14px; }
+.paso.ok { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.meta-ed { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.meta-ed b { font-weight: 600; min-width: 4.8em; text-align: center; }
+.meta-ed .n { color: var(--tenue); margin-right: 2px; }
+.meta-ed.siempre .paso { width: 26px; height: 26px; border-color: transparent; background: var(--campo); }
+.meta-ed.siempre .paso:hover:not(:disabled) { border-color: var(--linea); }
+.meta-ed.siempre b { min-width: 4.4em; }
+
+/* 2 · Lápiz pegado a la meta */
+.meta-lapiz { display: inline-grid; place-items: center; width: 30px; height: 30px; vertical-align: 0.12em; margin-left: 2px; border: 0; border-radius: 6px; background: transparent; color: var(--tenue); padding: 0; transition: background-color .15s, color .15s; }
+.meta-lapiz:hover { background: var(--campo); color: var(--fg); }
+.meta-lapiz svg { width: 17px; height: 17px; }
+/* 3 · La cifra es el botón */
+.meta-cifra { font: inherit; letter-spacing: inherit; color: inherit; border: 0; padding: 0 .2em; margin: 0 -.05em; border-radius: 6px; background: var(--campo); box-shadow: inset 0 0 0 1px var(--linea); transition: background-color .15s, color .15s; }
+.meta-cifra:hover { background: var(--linea); color: var(--fg); }
+/* 4 · Ícono de objetivo con la meta */
+.meta-obj { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px 0 9px; border: 1px solid var(--linea); border-radius: 6px; background: var(--superficie); font-size: 13.5px; color: var(--fg); font-variant-numeric: tabular-nums; transition: border-color .15s; }
+.meta-obj:hover { border-color: var(--tenue); }
+.meta-obj svg { width: 16px; height: 16px; color: var(--acento); }
+/* 5 · La meta vive al final de la línea */
+.meta-linea { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.meta-linea b { font-weight: 600; min-width: 3.4em; text-align: center; }
+.meta-linea .paso { width: 26px; height: 26px; opacity: 0; transform: scale(.9); transition: opacity .18s, transform .22s cubic-bezier(.16,1,.3,1), border-color .15s; }
+.hoy-fila:is(:hover, :focus-within) .meta-linea .paso, :root[data-tactil] .meta-linea .paso { opacity: 1; transform: none; }
+@media (hover: none) { .meta-linea .paso { opacity: 1; transform: none; } }
+
+/* Pestañas subrayadas, en texto */
+.rangos { display: flex; gap: 22px; border-bottom: 1px solid var(--linea); }
+.rangos button { flex-shrink: 0; border: 0; background: none; padding: 0 0 9px; font-size: 14px; color: var(--tenue); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.rangos button:hover { color: var(--fg); }
+.rangos button[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+
+/* Celdas: sin estudio, menos de la mitad, más de la mitad, meta cumplida */
+.celda { aspect-ratio: 1; min-width: 0; border: 0; padding: 0; border-radius: 2px; background: color-mix(in oklch, var(--linea) 75%, var(--bg)); }
+.celda[data-n="1"] { background: color-mix(in oklch, var(--acento) 22%, var(--linea)); }
+.celda[data-n="2"] { background: color-mix(in oklch, var(--acento) 50%, var(--linea)); }
+.celda[data-n="3"] { background: color-mix(in oklch, var(--acento) 75%, var(--linea)); }
+.celda[data-n="4"] { background: var(--acento); }
+.celda.vacia { visibility: hidden; }
+button.celda:hover { box-shadow: 0 0 0 1.5px var(--fg); }
+button.celda[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
+.ley { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--tenue); }
+.ley span { display: inline-flex; align-items: center; gap: 6px; }
+.ley .celda { width: 11px; display: inline-block; }
+
+/* Mapa del año: el mismo DOM gira con container queries.
+   Angosto: una fila por semana y solo los últimos seis meses.
+   Ancho: una columna por semana, el año entero. */
+.mapa { container: mapa / inline-size; display: flex; flex-direction: column; gap: 12px; }
+.mapa-grilla { display: grid; gap: 3px; grid-auto-flow: row; grid-template-columns: 3em repeat(7, minmax(0, 28px)); justify-content: start; }
+.mapa-grilla .mes { font-size: 11.5px; color: var(--tenue); white-space: nowrap; align-self: center; line-height: 1; }
+@container mapa (max-width: 599px) { .mapa-grilla .viejo { display: none; } }
+@container mapa (min-width: 600px) {
+  .mapa-grilla { grid-auto-flow: column; grid-template-columns: none; grid-template-rows: 1.4em repeat(7, auto); grid-auto-columns: minmax(0, 1fr); justify-content: stretch; }
+  .mapa-grilla .mes { align-self: start; }
+}
+
+/* Detalle de un día: la franja con cada sesión en su hora */
+.dia-det { display: flex; flex-direction: column; gap: 10px; min-height: 96px; }
+.dia-det h3 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.dia-det h3 span { color: var(--tenue); font-weight: 400; }
+.fr-pista { position: relative; height: 26px; border-radius: 4px; background: var(--campo); }
+.fr-pista .guia { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.fr-bloque { position: absolute; top: 4px; bottom: 4px; min-width: 3px; border-radius: 2px; background: var(--acento); }
+.fr-bloque:hover { box-shadow: 0 0 0 1.5px var(--fg); }
+.fr-eje { position: relative; height: 18px; }
+.fr-eje span { position: absolute; transform: translateX(-50%); font-size: 11.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.ses-lista { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+
+/* Tendencia: acumulado del período contra el anterior y el ritmo de la meta */
+.graf { padding-left: 46px; }
+.graf-area { position: relative; height: var(--alto, 200px); border-bottom: 1px solid var(--linea); }
+.graf-guia { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid color-mix(in oklch, var(--linea) 60%, transparent); }
+.graf-guia span { position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%); font-size: 11.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-etqs { display: flex; padding-top: 8px; }
+.graf-etqs span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-etqs span.hoy { color: var(--fg); font-weight: 500; }
+.tend-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.tend-svg polyline { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.t-act { stroke: var(--acento); stroke-width: 2.5; }
+.t-ant { stroke: color-mix(in oklch, var(--fg) 32%, var(--bg)); stroke-width: 1.5; }
+.t-meta { stroke: color-mix(in oklch, var(--fg) 30%, var(--bg)); stroke-width: 1; stroke-dasharray: 3 4; }
+.t-punto { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 2px var(--bg); transform: translate(-50%, -50%); pointer-events: none; }
+.tend-cols { position: absolute; inset: 0; display: flex; }
+.tend-cols i { flex: 1 1 0; position: relative; }
+.tend-cols i:hover::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.tend-ley { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--tenue); margin-top: 12px; }
+.tend-ley span { display: inline-flex; align-items: center; gap: 7px; }
+.tend-ley svg { width: 18px; height: 6px; overflow: visible; }
+.tend-ley line { vector-effect: non-scaling-stroke; }
+
+/* Cuándo: días por horas, con la misma celda que el mapa */
+.dh { display: grid; grid-template-columns: 2.6em repeat(var(--horas), minmax(0, 1fr)); gap: 3px; max-width: 760px; }
+.dh .d { font-size: 12px; color: var(--tenue); align-self: center; }
+.dh .h { font-size: 11.5px; color: var(--tenue); text-align: center; white-space: nowrap; overflow: visible; font-variant-numeric: tabular-nums; padding-top: 4px; }
+.dh .h.pico, .dh .d.pico { color: var(--fg); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; }
+}
+
+/* ───────── F · Página que baja ───────── */
+.f-par { display: grid; gap: 40px; }
+@container app (min-width: 900px) { .f-par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; } }
+
+/* ───────── Piezas de la cuarta ronda ───────── */
+/* Una pantalla: en la compu la maqueta se reparte el alto; angosto, se apila */
+.app.una { height: 100%; }
+.una-main { min-height: 0; padding: 20px 20px 40px; gap: 28px; }
+/* En pantallas grandes no se estira: tope de ancho y de alto, y el tablero queda centrado */
+@container app (min-width: 1000px) { .una-main { padding: 22px 32px 26px; gap: 22px; display: grid; max-width: 1440px; max-height: 900px; margin: auto; } }
+/* Angosto no hay una pantalla: los bloques se apilan con su alto natural y se baja */
+@container app (max-width: 999px) { .una-main > *, .panel { flex-shrink: 0; } }
+.una .hoy { gap: 8px; }
+.una .hoy .frase { font-size: 24px; }
+@container app (min-width: 1000px) { .una .hoy .frase { font-size: 26px; } }
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+.panel-cab { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.p-frase { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; text-wrap: balance; font-variant-numeric: tabular-nums; }
+.p-frase span { color: var(--tenue); font-weight: 400; }
+.p-sub { margin: 2px 0 0; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.crece { flex: 1; min-height: 180px; display: flex; flex-direction: column; }
+@container app (min-width: 1000px) { .crece { min-height: 0; } }
+.rangos.chico { gap: 16px; border-bottom: 0; }
+.rangos.chico button { font-size: 13px; padding-bottom: 4px; }
+
+/* Cifra con frase: el número es parte de la oración */
+.kpi { display: flex; flex-direction: column; min-width: 0; }
+.kpi-t { margin: 0; font-size: 13.5px; color: var(--tenue); line-height: 1.3; text-wrap: balance; }
+.kpi-t b { display: block; font-size: 24px; font-weight: 600; color: var(--fg); letter-spacing: -0.025em; line-height: 1.2; font-variant-numeric: tabular-nums; margin-bottom: 1px; }
+.kpi-s { margin: 4px 0 0; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+
+/* Barras por día con la línea de la meta. Las que llegan a la meta, en acento lleno */
+.br { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 0 46px 0 40px; }
+.br-area { position: relative; flex: 1; min-height: 110px; border-bottom: 1px solid var(--linea); }
+.br-cols { position: absolute; inset: 0; display: flex; gap: var(--hueco, 8px); }
+.br-col { position: relative; flex: 1 1 0; min-width: 0; height: 100%; display: block; border: 0; background: none; padding: 0; border-radius: 4px 4px 0 0; transition: background-color .15s; }
+button.br-col:hover, .br-col[aria-pressed="true"] { background: var(--campo); }
+.br-col i { position: absolute; bottom: 0; left: 50%; width: min(38px, 70%); transform: translateX(-50%); border-radius: 3px 3px 0 0; background: color-mix(in oklab, var(--acento) 36%, var(--superficie)); }
+.br-col i.ok { background: var(--acento); }
+.br-col.par i { width: min(22px, 42%); transform: translateX(2%); }
+.br-col.par i.ant { transform: translateX(-104%); background: color-mix(in oklch, var(--fg) 16%, var(--bg)); }
+.br-col i.cero { background: transparent; }
+.br-col .v { position: absolute; left: 50%; bottom: calc(var(--h) + 4px); transform: translateX(-50%); font-size: 11.5px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; pointer-events: none; }
+.br-col.hoy .v, .br-col[aria-pressed="true"] .v { color: var(--fg); font-weight: 500; }
+.br-area { container: br / inline-size; }
+@container br (max-width: 380px) { .br-col:not(.hoy):not([aria-pressed="true"]) .v { display: none; } }
+/* Doce meses: los valores solo si sobra ancho; si no, en el tooltip */
+@container br (max-width: 640px) { .br.meses .br-col:not(.hoy) .v { display: none; } }
+.br-meta { position: absolute; left: 0; right: 0; height: 0; border-top: 1.5px dashed color-mix(in oklch, var(--fg) 45%, var(--bg)); pointer-events: none; z-index: 1; }
+.br-meta span { position: absolute; left: calc(100% + 6px); top: 0; transform: translateY(-50%); font-size: 11.5px; font-weight: 500; color: var(--fg); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.br-etqs { display: flex; gap: var(--hueco, 8px); padding-top: 7px; }
+.br-etqs span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.br-etqs span.hoy { color: var(--fg); font-weight: 600; }
+.br.mini { padding: 0; flex: none; }
+.br.mini .br-area { height: 64px; min-height: 0; flex: none; }
+.br.mini .br-meta span { display: none; }
+.ley-par { display: inline-flex; align-items: center; gap: 6px 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--tenue); }
+.ley-par span { display: inline-flex; align-items: center; gap: 6px; }
+.ley-par i { width: 10px; height: 10px; border-radius: 2px; background: var(--acento); }
+.ley-par i.ant { background: color-mix(in oklch, var(--fg) 16%, var(--bg)); }
+.ley-par i.meta { width: 14px; height: 0; border-radius: 0; background: none; border-top: 1.5px dashed color-mix(in oklch, var(--fg) 45%, var(--bg)); }
+
+/* Los últimos 14 días, un cuadrito por día */
+.marcas { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 3px 3px; max-width: 340px; }
+.marcas .m-e { font-size: 10.5px; color: var(--tenue); text-align: center; }
+.marcas .m-e.hoy { color: var(--fg); font-weight: 600; }
+
+/* Histograma por hora que crece con su lugar */
+.hh { display: flex; flex-direction: column; min-height: 0; }
+.hh.crece .fr-hist { flex: 1; height: auto; min-height: 60px; }
+.fr-hist { position: relative; height: 56px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--linea); }
+.fr-hist i { flex: 1 1 0; background: color-mix(in oklab, var(--acento) 36%, var(--superficie)); border-radius: 2px 2px 0 0; }
+.fr-hist i.pico { background: var(--acento); }
+
+/* Tendencia que se estira */
+.tend.flex { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.tend.flex .graf { flex: 1; display: flex; flex-direction: column; min-height: 150px; }
+.tend.flex .graf-area { flex: 1; height: auto !important; min-height: 100px; }
+@container app (min-width: 1000px) { .tend.flex .graf { min-height: 0; } }
+
+/* ───────── F sin scroll: lo mismo, repartido en el alto ───────── */
+@container app (min-width: 1000px) {
+  .f-main { grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; padding-block: 16px 20px; }
+  .f-main .bloque { padding-top: 14px; gap: 10px; }
+  .f-main .bloque-frase { font-size: 17px; }
+  .f-main .bajada { font-size: 13px; margin-top: 2px; }
+  .f-main .f-par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; min-height: 0; }
+  .f-main .mapa { gap: 8px; }
+  /* El mapa no pasa de 820 px: con celdas más chicas le deja alto a los gráficos de abajo */
+  .f-main .mapa-grilla { max-width: 820px; }
+  .f-main .f-par > .bloque { min-height: 0; overflow: hidden; }
+  .f-main .f-par .panel-cab { flex-wrap: nowrap; align-items: flex-start; }
+  .f-main .f-par .panel-cab > div { flex: 1; min-width: 0; }
+  .f-main .f-par .rangos { flex-shrink: 0; }
+  .f-main .tend.flex .graf-area { min-height: 60px; }
+  /* El día elegido en un renglón: título a la izquierda, franja a la derecha */
+  .f-main .dia-det { min-height: 0; display: grid; grid-template-columns: minmax(0, 17em) minmax(0, 1fr); gap: 4px 24px; align-items: start; }
+  .f-main .dia-det .ses-lista { display: none; }
+}
+/* Días por horas que llena el alto que le toca */
+@container app (min-width: 1000px) {
+  .dh.llena { flex: 1; min-height: 0; max-width: none; grid-template-rows: repeat(7, minmax(0, 1fr)) auto; }
+  .dh.llena .celda { aspect-ratio: auto; min-height: 5px; }
+}
+
+/* ───────── Quinta ronda: tarjetas y período ───────── */
+.tj { background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+.tj-et { display: flex; align-items: center; gap: 7px; margin: 0; font-size: 12.5px; font-weight: 500; color: var(--tenue); }
+.tj-et svg { width: 15px; height: 15px; flex-shrink: 0; }
+.tj.heroe .p-frase { font-size: 19px; letter-spacing: -0.02em; }
+.centro { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+.tj .hoy .frase { font-size: 22px; }
+
+/* Cabecera del período: título con las fechas y el selector */
+.per-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
+.per-izq { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.per-titulo { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.per-titulo span { color: var(--tenue); font-weight: 400; font-size: 14.5px; letter-spacing: 0; margin-left: 8px; white-space: nowrap; }
+.segmentado.periodo button { padding: 5px 14px; }
+.flechas { display: inline-flex; gap: 4px; }
+.flechas svg.izq { transform: rotate(180deg); }
+/* Al cambiar de período, las tarjetas se funden (solo opacidad) */
+.fundir .tj, .fundir .cifras { animation: fundido .32s ease both; }
+@keyframes fundido { from { opacity: .25; } }
+
+/* El año entero, con el período elegido resaltado */
+.celda.fuera { opacity: .28; }
+
+/* Cuadritos del período: un día (o una semana, en el año) por cuadrito */
+.puntos { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 3px; }
+/* Este período contra el anterior, en dos barras */
+.cmp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 10px; align-items: center; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.cmp-p { height: 10px; }
+.cmp-p i { display: block; height: 100%; border-radius: 3px; background: color-mix(in oklch, var(--fg) 16%, var(--bg)); }
+.cmp-p i.act { background: var(--acento); }
+.cmp b { font-weight: 500; color: var(--fg); }
+/* Fila de cifras separadas por líneas */
+.cifras { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-top: 14px; border-top: 1px solid var(--linea); }
+.cifras > * { padding: 0 18px; border-left: 1px solid var(--linea); min-width: 0; }
+.cifras > :first-child { padding-left: 0; border-left: 0; }
+@container app (max-width: 699px) { .cifras { grid-template-columns: 1fr 1fr; gap: 16px 0; } .cifras > :nth-child(3) { padding-left: 0; border-left: 0; } }
+
+/* Angosto: todo se apila con su alto natural y se baja */
+@container app (max-width: 999px) { .tj, .t-der > *, .cifras { flex-shrink: 0; } }
+
+/* ───────── R · M en tarjetas ───────── */
+.r-grid { display: grid; gap: 14px; min-height: 0; }
+@container app (min-width: 600px) and (max-width: 999px) { .r-grid { grid-template-columns: 1fr 1fr; } .r-sem, .r-mapa { grid-column: 1 / -1; } }
+@container app (min-width: 1000px) {
+  .r-main { grid-template-rows: auto minmax(0, 1fr); gap: 16px; }
+  .r-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "hoy sem sem tend" "mapa mapa mapa cuando"; }
+  .r-hoy { grid-area: hoy; } .r-sem { grid-area: sem; } .r-tend { grid-area: tend; } .r-mapa { grid-area: mapa; } .r-cuando { grid-area: cuando; }
+  .r-hoy { justify-content: space-between; }
+}
+
+/* ───────── S · O con período ───────── */
+.s-top, .s-abajo { display: grid; gap: 14px; min-height: 0; }
+@container app (min-width: 600px) and (max-width: 999px) { .s-top { grid-template-columns: 1fr 1fr; } }
+@container app (min-width: 1000px) {
+  .s-main { grid-template-rows: auto auto minmax(0, 1fr); gap: 14px; }
+  .s-top { grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); }
+  .s-abajo { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+}
+
+/* ───────── T · Protagonista e inspector ───────── */
+.t-grid { display: grid; gap: 14px; min-height: 0; }
+.t-der { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+@container app (min-width: 1000px) {
+  .t-main { grid-template-rows: auto minmax(0, 1fr); gap: 16px; }
+  .t-grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); }
+  .t-der > :last-child { flex: 1; }
+}
+
+/* ───────── U · Recorrer el tiempo ───────── */
+.u-abajo { display: grid; gap: 14px; min-height: 0; }
+.u-cifras { border-top: 0; padding-top: 0; align-items: start; }
+.u-cifras .hoy .frase { font-size: 19px; }
+@container app (min-width: 1000px) {
+  .u-main { grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; }
+  .u-abajo { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); }
+  .u-main .br-area { min-height: 80px; }
+  .u-main .tj-et { display: none; }
+}
+
+/* ───────── V · Tres preguntas en columnas ───────── */
+.v-top { display: grid; gap: 14px 40px; }
+.v-per { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.v-per .p-sub { margin: 0; }
+.v-cols { display: grid; gap: 14px; min-height: 0; }
+@container app (max-width: 999px) { .v-per { align-items: flex-start; } }
+@container app (min-width: 600px) and (max-width: 999px) { .v-cols { grid-template-columns: 1fr 1fr; } }
+@container app (min-width: 1000px) {
+  .v-main { grid-template-rows: auto minmax(0, 1fr); gap: 18px; }
+  .v-top { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+  .v-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 64ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-menos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-lapiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-barras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 19v-7M10.5 19V6M15 19v-9M19.5 19v-5"/><path d="M3.5 19h17"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 14.5l2 2 4-4"/></symbol>
+  <symbol id="i-tend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-8"/><path d="M15 7h5v5"/></symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Dashboard, quinta ronda</h1>
+    <p>De la cuarta ronda: <b>F queda igual pero sin scroll</b>. De M te gustaron los gráficos, pero quedaban sueltos y sin jerarquía. O te pareció interesante. Y en casi todas faltaba <b>poder elegir entre la semana, el mes o el año entero</b>.</p>
+    <p>Esta ronda arregla las dos cosas. Las cinco propuestas nuevas (R a V) van en <b>tarjetas</b>, con un orden de lectura claro: primero el período, después lo más grande y al final el detalle. Todas tienen el selector <b>Semana · 30 días · Año</b>, que cambia todos los gráficos a la vez. U, además, deja ir para atrás (la semana pasada, el mes anterior).</p>
+    <p>Probalas en «Escritorio» (1180 × 760) o en pantalla completa. En «Móvil» se apilan y se baja. El ajuste «Meta» cambia la forma de cambiar la meta en todas las maquetas.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Meta</span>
+      <div class="segmentado" id="ctlmeta" role="group" aria-label="Forma de cambiar la meta"><button type="button" data-v="texto">Texto</button><button type="button" data-v="lapiz">Lápiz</button><button type="button" data-v="cifra">Cifra</button><button type="button" data-v="objetivo">Ícono y meta</button><button type="button" data-v="linea">En la línea</button><button type="button" data-v="siempre">Siempre a mano</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="f" data-v="f">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">F</span><span class="nombre">Página que baja, sin bajar</span><span class="marca-base">La base, con el alto arreglado</span></h2>
+        <p class="resumen">Los mismos bloques y en el mismo orden: hoy contra la meta, la constancia en el mapa del año y, abajo, si vas mejor o peor y a qué hora rendís. Ahora se reparten el alto de la pantalla en vez de estirarla. El día que tocás queda en un renglón debajo del mapa, y los dos gráficos de abajo crecen hasta el borde.</p>
+        <p class="enfoque">Lo primero: <b>hoy contra la meta, y la racha</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Es la que ya te gustaba, ahora entera en una pantalla.</li><li>El mapa del año sigue ocupando todo el ancho.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Los dos gráficos de abajo quedan bajos (unos 130 px en 760 de alto).</li><li>Sigue sin barras ni selector de período, salvo semana o 30 días en el acumulado.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r" data-v="r">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">R</span><span class="nombre">M en tarjetas</span><span class="marca-rec">Recomendada</span></h2>
+        <p class="resumen">Los cinco gráficos de M, ahora en tarjetas y con un orden. Arriba están el período y su selector. En la primera fila, hoy y la racha a la izquierda, <b>las barras del período en el centro (la tarjeta más grande)</b> y el acumulado a la derecha. Abajo, el mapa del año con el período resaltado y a qué hora rendís. Cada tarjeta tiene un ícono y un nombre corto arriba de su frase.</p>
+        <p class="enfoque">Lo primero: <b>cada día del período contra la meta</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Son los gráficos de M, pero con un protagonista y un orden de lectura.</li><li>El mapa del año siempre está y marca qué parte estás mirando.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El acumulado queda angosto (un cuarto del ancho).</li><li>No muestra las sesiones de un día.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="s" data-v="s">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">S</span><span class="nombre">O con período</span></h2>
+        <p class="resumen">El orden de O (cifras arriba y tendencias abajo), en tarjetas y con el selector. Arriba hay cuatro tarjetas con una cifra y un gráfico chico: hoy, los días con la meta (un cuadrito por día, o por semana en el año), el período contra el anterior en dos barras y tu horario. Abajo, grandes, las barras del período y el acumulado.</p>
+        <p class="enfoque">Lo primero: <b>cuatro respuestas, y después el detalle</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La primera fila contesta todo; lo de abajo es para mirar con tiempo.</li><li>Con «Año», los cuadritos pasan a ser semanas y el gráfico sigue siendo legible.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año.</li><li>Cuatro tarjetas chicas arriba compiten un poco entre sí.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="t" data-v="t">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">T</span><span class="nombre">Protagonista e inspector</span></h2>
+        <p class="resumen">Una tarjeta grande con las barras del período (en la semana, cada día al lado del mismo día de la anterior) y, debajo, cuatro cifras separadas por líneas. A la derecha, una columna con hoy, <b>el día que tocaste con sus sesiones</b> y a qué hora rendís.</p>
+        <p class="enfoque">Lo primero: <b>las barras, y tocar un día para verlo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La jerarquía más clara: una tarjeta grande y tres chicas.</li><li>Recupera las sesiones de un día, que M no tenía.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año ni el acumulado.</li><li>En «Año» las barras son meses y no se pueden tocar.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="u" data-v="u">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">U</span><span class="nombre">Recorrer el tiempo</span></h2>
+        <p class="resumen">Como R, pero el título es el período y tiene flechas para ir para atrás: la semana pasada, los 30 días anteriores, el año anterior. Debajo del título hay una fila de cifras sin tarjeta. Después, las barras del período a todo el ancho y, abajo, el mapa del año (con el período resaltado) junto al acumulado.</p>
+        <p class="enfoque">Lo primero: <b>qué período estás mirando</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Responde «¿cómo me fue el mes pasado?», que ninguna otra puede.</li><li>Las barras a todo el ancho hacen legibles los 30 días.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Las flechas suman un control más.</li><li>Lo de hoy queda chico, en la fila de cifras.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="v" data-v="v">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">V</span><span class="nombre">Tres preguntas en columnas</span></h2>
+        <p class="resumen">Arriba, hoy contra la meta a todo el ancho, con el selector a la derecha. Debajo, tres tarjetas iguales, una por pregunta: <b>¿soy constante?</b> (las barras del período contra la meta), <b>¿voy mejor o peor?</b> (el acumulado) y <b>¿cuándo rindo?</b> (las horas). Cada una abre con su cifra.</p>
+        <p class="enfoque">Lo primero: <b>hoy, y después las tres respuestas</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El orden sale de las tres preguntas que decidimos.</li><li>Tres columnas iguales se comparan de un vistazo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mapa del año.</li><li>Las barras de 30 días quedan finitas en un tercio del ancho.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app una" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Boceto</th><th>Jerarquía</th><th>Semana · 30 días · Año</th><th>Mapa del año</th><th>Sesiones de un día</th><th>Ir para atrás</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>F · Sin bajar</td><td>Hoy, el mapa, dos gráficos</td><td>Solo el acumulado (semana o 30 días)</td><td>Sí</td><td>Sí</td><td>No</td><td>Gráficos de abajo bajos</td></tr>
+          <tr class="elegida"><td>R · M en tarjetas</td><td>Las barras del período, al centro</td><td>Sí, todo cambia</td><td>Sí, con el período resaltado</td><td>No</td><td>No</td><td>Acumulado angosto</td></tr>
+          <tr><td>S · O con período</td><td>Cuatro cifras, después dos gráficos</td><td>Sí, todo cambia</td><td>No</td><td>No</td><td>No</td><td>Arriba compiten cuatro</td></tr>
+          <tr><td>T · Protagonista e inspector</td><td>Una tarjeta grande y tres chicas</td><td>Sí, todo cambia</td><td>No</td><td>Sí</td><td>No</td><td>Sin mapa ni acumulado</td></tr>
+          <tr><td>U · Recorrer el tiempo</td><td>El período, después las barras</td><td>Sí, todo cambia</td><td>Sí, con el período resaltado</td><td>No</td><td>Sí</td><td>Hoy queda chico</td></tr>
+          <tr><td>V · Tres preguntas</td><td>Hoy, después tres columnas iguales</td><td>Sí, todo cambia</td><td>No</td><td>No</td><td>No</td><td>Barras de 30 días finitas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Elegiría R, y U si querés mirar para atrás</h3>
+        <p><b>R es M con lo que le faltaba.</b> Están los mismos cinco gráficos que te gustaron, pero las tarjetas los separan y el tamaño marca el orden: las barras del período mandan, hoy las acompaña y el mapa y las horas quedan abajo como contexto. El selector cambia las barras, el acumulado, las horas y la parte resaltada del mapa al mismo tiempo, así que se ve una sola historia por período.</p>
+        <p><b>U, si «¿cómo me fue el mes pasado?» importa.</b> Es R con flechas, y las barras a todo el ancho. Las flechas se le pueden sumar a R sin cambiar nada más.</p>
+        <p><b>Lo que se puede cruzar:</b> la columna de la derecha de T (el día que tocaste) entra en R en el lugar del acumulado, si las sesiones de un día te importan más que la tendencia. El acumulado, en ese caso, pasa a la tarjeta de las barras como segunda pestaña.</p>
+        <h4>Qué cambia con el período</h4>
+        <p><b>Semana:</b> siete barras, cada una con la del mismo día de la semana anterior al lado (en T). <b>30 días:</b> treinta barras finas. <b>Año:</b> una barra por mes con el promedio por día contra la meta, y el acumulado por semanas. La meta sigue siendo diaria en los tres casos.</p>
+        <h4>Fondo con puntos y meta</h4>
+        <p><b>Liso.</b> Las tarjetas ya separan bien, y los puntos detrás se confundirían con las celdas del mapa. La forma de cambiar la meta sigue pendiente: el ajuste «Meta» la cambia en todas las maquetas (está puesta «En la línea»).</p>
+      </div>
+      <div>
+        <pre><span class="c-com">/* R · tarjetas con un protagonista: las barras ocupan dos columnas */</span>
+.tablero {
+  display: grid; gap: .875rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "hoy semana semana tendencia"
+                       "anio anio anio cuando";
+}
+
+<span class="c-com">// Un solo estado de período para todo el tablero</span>
+type Periodo = "semana" | "mes" | "anio";
+const [periodo, setPeriodo] = useState&lt;Periodo&gt;("semana");
+const { barras, acumulado, horas, rango } =
+  useDashboardStats({ periodo, desplazamiento: 0 });
+
+&lt;ToggleGroup type="single" value={periodo}
+  onValueChange={(v) =&gt; v &amp;&amp; setPeriodo(v as Periodo)}&gt;
+  &lt;ToggleGroupItem value="semana"&gt;Semana&lt;/ToggleGroupItem&gt;
+  &lt;ToggleGroupItem value="mes"&gt;30 días&lt;/ToggleGroupItem&gt;
+  &lt;ToggleGroupItem value="anio"&gt;Año&lt;/ToggleGroupItem&gt;
+&lt;/ToggleGroup&gt;</pre>
+        <h4>Datos para la Fase 3</h4>
+        <p>Se suma a lo de antes (guardar la meta diaria y la hora de inicio de cada sesión): la RPC tiene que recibir el período y el desplazamiento, y devolver también el período anterior para comparar. Para «Año» contra el año anterior hacen falta dos años de historia. Las barras por mes se arman en el cliente a partir de los días. El mapa del año es el mismo en los tres períodos, así que se pide una sola vez.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<template id="tpl-tb">
+  <header class="tb">
+    <a class="marca" href="#" aria-label="Doro, inicio"><svg><use href="#i-logo"/></svg><span class="desv">Doro</span></a>
+    <nav class="tb-nav desv" aria-label="Secciones"><a href="#">Inicio</a><a href="#">Tareas</a><a aria-current="page" href="#">Dashboard</a><a href="#">Calendario</a></nav>
+    <div class="tb-der">
+      <span class="hora desv" data-hora></span>
+      <span class="avatar" aria-label="Tu cuenta">L</span>
+      <button type="button" class="menu desv" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); guardar("doro-d4-" + id, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const guardado = leer("doro-d4-" + id, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaActual() : guardado);
+  });
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+  aplicarAcento();
+
+  /* ── Datos de ejemplo: tres años inventados, con semilla fija (el año contra el anterior pide dos) ── */
+  let semilla = 20261004;
+  const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
+  const HOY = new Date(2026, 9, 4);             // domingo
+  let meta = 120;                                 // meta diaria, en minutos
+  const N_DIAS = 1100;
+  const dias = [];                                // dias[i]: hace i días
+  for (let i = 0; i < N_DIAS; i++) {
+    const f = new Date(HOY); f.setDate(f.getDate() - i);
+    dias[i] = { i, f, dow: (f.getDay() + 6) % 7, ses: [], min: 0 };
+  }
+  const PROB_DOW = [.78, .86, .7, .76, .6, .32, .4];
+  const agregar = (d, h, n) => {
+    for (let k = 0; k < n && h < 23.4; k++) {
+      const m = azar() < .7 ? 25 : 50;
+      d.ses.push({ h, m }); d.min += m;
+      h += m / 60 + (k % 4 === 3 ? 25 : 5) / 60;
+    }
+  };
+  for (let i = N_DIAS - 1; i >= 0; i--) {
+    const d = dias[i], mes = d.f.getMonth();
+    const receso = mes === 0 || mes === 1 || (mes === 6 && d.f.getDate() > 10) ? .3 : 1;
+    const ganas = i > 365 ? .85 : 1;              // el año anterior estudiaba un poco menos
+    let estudia = azar() < PROB_DOW[d.dow] * receso * ganas;
+    if (i <= 5) estudia = true;
+    if (i === 6) estudia = false;
+    if (!estudia) continue;
+    if (i === 0) { d.ses = [{ h: 10, m: 25 }, { h: 10 + 30 / 60, m: 25 }]; d.min = 50; continue; }
+    const tarde = d.dow === 1 || d.dow === 3 ? .8 : .55;
+    let h = azar() < tarde ? 14 + azar() * 2.5 : azar() < .5 ? 9 + azar() * 2 : 20 + azar() * 1.2;
+    h = Math.round(h * 12) / 12;
+    agregar(d, h, 1 + Math.floor(azar() * 5));
+    if (i <= 5) while (d.min < 130) agregar(d, Math.round((d.ses.at(-1).h + d.ses.at(-1).m / 60 + 0.25) * 12) / 12 % 23, 1);
+  }
+
+  /* ── Cálculos que dependen de la meta ── */
+  const cumple = d => d.min >= meta;
+  const racha = () => { let i = cumple(dias[0]) ? 0 : 1, r = 0; while (i < N_DIAS && cumple(dias[i])) { r++; i++; } return r; };
+  const mejorRacha = () => { let m = 0, r = 0; for (let i = 364; i >= 0; i--) { r = cumple(dias[i]) ? r + 1 : 0; m = Math.max(m, r); } return m; };
+  const cumplidos = (a, b) => { let n = 0; for (let i = a; i <= b; i++) if (cumple(dias[i])) n++; return n; };
+  const suma = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += dias[i].min; return s; };
+  const nivelMeta = m => !m ? 0 : m < meta / 2 ? 1 : m < meta ? 2 : 4;
+
+  const fmt = m => { m = Math.round(m); if (m < 60) return `${m} min`; const h = Math.floor(m / 60), r = m % 60; return r ? `${h} h ${r} min` : `${h} h`; };
+  const fmtCorto = m => { m = Math.round(m); if (m < 60) return `${m} min`; const h = Math.floor(m / 60), r = m % 60; return r ? `${h} h ${r}` : `${h} h`; };
+  const fmtEje = m => m < 60 ? `${m} min` : `${(m / 60).toLocaleString("es-AR")} h`;
+  const signo = m => `${m >= 0 ? "+" : "−"}${fmt(Math.abs(m))}`;
+  const hm = h => { let t = Math.round(h * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  const DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
+  const DOW_L = ["L", "M", "M", "J", "V", "S", "D"];
+  const DOW_LARGO = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábados", "domingos"];
+  const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  const fecha = f => `${DOW[(f.getDay() + 6) % 7]} ${f.getDate()} ${MESES[f.getMonth()]}`;
+  const fechaCorta = (f, conAno) => `${f.getDate()} ${MESES[f.getMonth()]}${conAno ? ` ${f.getFullYear()}` : ""}`;
+
+  /* ── Períodos: semana (7 días), 30 días y año (365). off = cuántos períodos para atrás ── */
+  const LARGO = { semana: 7, mes: 30, ano: 365 };
+  const OFF_MAX = { semana: 52, mes: 12, ano: 1 };
+  const rango = (per, off = 0) => { const n = LARGO[per]; return [off * n, off * n + n - 1]; };   // [más nuevo, más viejo]
+  const textos = (per, off = 0) => {
+    const [a, b] = rango(per, off), ano = per === "ano";
+    const t = { semana: ["Esta semana", "esta semana", "esa semana", "la semana anterior", "La anterior", "Semana"],
+                mes: ["Últimos 30 días", "en estos 30 días", "en esos 30 días", "los 30 anteriores", "Los 30 anteriores", "30 días"],
+                ano: ["Último año", "en el último año", "en ese año", "el año anterior", "El anterior", "Año"] }[per];
+    return { titulo: off ? t[5] : t[0], fechas: `del ${fechaCorta(dias[b].f, ano)} al ${fechaCorta(dias[a].f, ano)}`, en: off ? t[2] : t[1], ant: t[3], antCap: t[4] };
+  };
+  const cifrasPer = (per, off = 0) => {
+    const [a, b] = rango(per, off), [a2, b2] = rango(per, off + 1), n = b - a + 1, T = textos(per, off);
+    const total = suma(a, b), antes = suma(a2, b2), c = cumplidos(a, b), cAnt = cumplidos(a2, b2);
+    let nses = 0; for (let i = a; i <= b; i++) nses += dias[i].ses.length;
+    return { a, b, n, total, antes, dif: total - antes, c, cAnt, nses, prom: total / n,
+      kTotal: kpi(fmt(total), T.en, `${signo(total - antes)} que ${T.ant}.`),
+      kDif: kpi(signo(total - antes), `que ${T.ant}`, `${fmt(total)} contra ${fmt(antes)}.`),
+      kCumpl: kpi(`${c} de ${n}`, "días con la meta", `${T.antCap}, ${cAnt}.`),
+      kProm: kpi(fmt(total / n), "por día en promedio", `Sesión promedio: ${fmt(nses ? total / nses : 0)}.`) };
+  };
+
+  /* Cuándo: minutos por día de la semana y hora, en promedio por semana, entre los días a y b */
+  const H0 = 7, H1 = 24, HORAS = H1 - H0;
+  const horario = (a, b) => {
+    const sem = (b - a + 1) / 7, dh = Array.from({ length: 7 }, () => Array(HORAS).fill(0));
+    for (let i = a; i <= b; i++) dias[i].ses.forEach(s => { const k = Math.floor(s.h) - H0; if (k >= 0 && k < HORAS) dh[dias[i].dow][k] += s.m / sem; });
+    const porHora = Array.from({ length: HORAS }, (_, k) => dh.reduce((x, fila) => x + fila[k], 0));
+    const porDow = dh.map(fila => fila.reduce((x, y) => x + y, 0));
+    const mejorDow = porDow.indexOf(Math.max(...porDow));
+    let mejor = 0, at = 0; for (let k = 0; k + 3 <= HORAS; k++) { const v = porHora[k] + porHora[k + 1] + porHora[k + 2]; if (v > mejor) { mejor = v; at = k; } }
+    const total = porHora.reduce((x, y) => x + y, 0);
+    return { dh, porHora, porDow, mejorDow, ventana: at + H0, share: total ? Math.round(mejor / total * 100) : 0, maxDh: Math.max(1, ...dh.flat()) };
+  };
+
+  /* ── Piezas ── */
+  const TICKS = [8, 12, 16, 20, 24];
+  const pos = h => (h - H0) / HORAS * 100;
+  const eje = () => `<div class="fr-eje">${TICKS.map(h => `<span style="left:${pos(h)}%">${h}</span>`).join("")}</div>`;
+  const pista = d => `<div class="fr-pista">${TICKS.map(h => `<span class="guia" style="left:${pos(h)}%"></span>`).join("")}${d.ses.map(s => `<span class="fr-bloque" style="left:${pos(s.h)}%;width:${s.m / 60 / HORAS * 100}%" data-tip="${hm(s.h)} a ${hm(s.h + s.m / 60)} · ${s.m} min"></span>`).join("")}</div>`;
+  const tipDia = d => `${d.i === 0 ? "Hoy" : fecha(d.f)} · ${d.min ? fmt(d.min) : "sin estudio"}${cumple(d) ? " · meta cumplida" : ""}`;
+  const et = (icono, texto) => `<p class="tj-et">${ic(icono)}${texto}</p>`;
+
+  /* Cabecera de hoy. La forma de cambiar la meta sale del ajuste global. */
+  let ctlMeta = leer("doro-dash-meta", "linea");
+  const cabHoy = app => {
+    const ctl = app.dataset.ctl || ctlMeta, ed = app._editMeta;
+    const d = dias[0], falta = meta - d.min, p = Math.min(d.min / meta, 1) * 100;
+    const menos = `<button type="button" class="paso" data-meta="-15" data-k="meta-menos" aria-label="Bajar la meta 15 minutos" ${meta <= 30 ? "disabled" : ""}>${ic("i-menos")}</button>`;
+    const mas = `<button type="button" class="paso" data-meta="15" data-k="meta-mas" aria-label="Subir la meta 15 minutos" ${meta >= 480 ? "disabled" : ""}>${ic("i-mas")}</button>`;
+    const valor = `<b aria-live="polite">${fmt(meta)}</b>`;
+    const editor = `<span class="meta-ed" role="group" aria-label="Meta diaria">${menos}${valor}${mas}<button type="button" class="paso ok" data-editmeta data-k="meta-listo" aria-label="Listo">${ic("i-check")}</button></span>`;
+    let enFrase = "", enPie = "", enLinea = "", metaTxt = fmt(meta);
+    if (ctl === "texto") enPie = ed ? editor : `<button type="button" class="btn-texto" data-editmeta data-k="meta">Cambiar la meta</button>`;
+    if (ctl === "lapiz") { if (ed) enPie = editor; else enFrase = `<button type="button" class="meta-lapiz" data-editmeta data-k="meta" aria-label="Cambiar la meta" title="Cambiar la meta">${ic("i-lapiz")}</button>`; }
+    if (ctl === "cifra") { if (ed) enPie = editor; else metaTxt = `<button type="button" class="meta-cifra" data-editmeta data-k="meta" aria-label="Meta de ${fmt(meta)}. Cambiar" title="Cambiar la meta">${fmt(meta)}</button>`; }
+    if (ctl === "objetivo") enPie = ed ? editor : `<button type="button" class="meta-obj" data-editmeta data-k="meta" title="Cambiar la meta">${ic("i-meta")}<span>Meta ${fmt(meta)}</span></button>`;
+    if (ctl === "linea") enLinea = `<span class="meta-linea" role="group" aria-label="Meta diaria">${menos}${valor}${mas}</span>`;
+    if (ctl === "siempre") enPie = `<span class="meta-ed siempre" role="group" aria-label="Meta diaria"><span class="n">Meta</span>${menos}${valor}${mas}</span>`;
+    return `<header class="hoy">
+      <h1 class="frase">Hoy llevás ${fmt(d.min)} <span>de ${metaTxt}.</span>${enFrase}</h1>
+      <div class="hoy-fila"><div class="hoy-linea" role="img" aria-label="${Math.round(p)} % de la meta de hoy"><span style="width:${p}%"></span></div>${enLinea}</div>
+      <div class="hoy-pie"><p class="bajada">${falta > 0 ? `Te falta ${fmt(falta)} para la meta.` : "Cumpliste la meta de hoy."}</p>${enPie}</div>
+    </header>`;
+  };
+
+  /* El día elegido: total, meta y cada sesión en su hora */
+  const detalle = d => `<div class="dia-det" aria-live="polite">
+    <h3>${d.i === 0 ? "Hoy" : fecha(d.f)} <span>· ${d.min ? `${fmt(d.min)} en ${d.ses.length} ${d.ses.length === 1 ? "sesión" : "sesiones"}${cumple(d) ? ", meta cumplida" : `, de ${fmt(meta)}`}` : "sin estudio"}</span></h3>
+    ${d.min ? `<div>${pista(d)}${eje()}</div><p class="ses-lista">${d.ses.map(s => `<span>${hm(s.h)} a ${hm(s.h + s.m / 60)}</span>`).join("")}</p>` : `<p class="bajada" style="margin:0">Tocá otro día para ver sus sesiones.</p>`}
+  </div>`;
+
+  /* ¿Soy constante? */
+  const constancia = () => {
+    const r = racha(), mr = mejorRacha(), hoyFalta = !cumple(dias[0]), record = r > 1 && r >= mr;
+    const frase = r > 1 ? `Cumpliste la meta ${r} días seguidos.` : r === 1 ? `Ayer cumpliste la meta.` : `Esta semana cumpliste la meta ${cumplidos(0, 6)} de 7 días.`;
+    const sub = `${hoyFalta && r > 0 ? `Hoy todavía no: sería el día ${r + 1}. ` : ""}${record ? "Es tu mejor racha del año." : `Tu mejor racha del año fue de ${mr} días.`} En total cumpliste la meta ${cumplidos(0, 364)} días.`;
+    return { frase, sub };
+  };
+  const kRacha = () => { const r = racha(), mr = mejorRacha(); return kpi(`${r} ${r === 1 ? "día" : "días"}`, "seguidos con la meta", !cumple(dias[0]) && r > 0 ? `Hoy sería el ${r + 1}. Tu mejor: ${mr}.` : `Tu mejor racha: ${mr}.`); };
+  const ley = `<div class="ley"><span><i class="celda" data-n="0"></i>Sin estudio</span><span><i class="celda" data-n="1"></i>Menos de la mitad</span><span><i class="celda" data-n="2"></i>Más de la mitad</span><span><i class="celda" data-n="4"></i>Meta cumplida</span></div>`;
+  /* Mapa de un año (desde = el día más nuevo de la ventana). marcar = [a, b]: lo de afuera se apaga */
+  const mapa = (sel, { desde = 0, marcar = null } = {}) => {
+    const fin = desde + 364, primero = fin + dias[fin].dow;
+    let html = "", mesAnt = -1;
+    for (let w = primero; w >= desde; w -= 7) {
+      const viejo = w >= desde + 26 * 7 ? " viejo" : "", enSemana = [];
+      for (let k = 0; k < 7; k++) enSemana.push(w - k);
+      const primerDia = enSemana.map(i => i >= desde && i <= fin ? dias[i] : null).find(Boolean);
+      const mes = primerDia ? primerDia.f.getMonth() : -1;
+      html += `<span class="mes${viejo}">${mes !== mesAnt && mes >= 0 ? MESES[mes] : ""}</span>`;
+      if (mes >= 0) mesAnt = mes;
+      enSemana.forEach(i => {
+        if (i < desde || i > fin) { html += `<span class="celda vacia${viejo}"></span>`; return; }
+        const d = dias[i], tip = tipDia(d), fuera = marcar && (i < marcar[0] || i > marcar[1]) ? " fuera" : "";
+        html += `<button type="button" class="celda${viejo}${fuera}" data-n="${nivelMeta(d.min)}" data-dia="${i}" data-k="dia-${i}" data-tip="${tip}" aria-label="${tip}" aria-pressed="${sel === i}"></button>`;
+      });
+    }
+    return `<div class="mapa"><div class="mapa-grilla">${html}</div>${ley}</div>`;
+  };
+
+  /* ¿Voy mejor o peor? Acumulado del período contra el anterior y el ritmo de la meta.
+     En el año, un punto por semana. */
+  const tendencia = (per, off = 0, { flex = false } = {}) => {
+    const [a, b] = rango(per, off), largo = b - a + 1, paso = per === "ano" ? 7 : 1, n = Math.floor(largo / paso), T = textos(per, off);
+    const act = [], ant = [], ritmo = [], fin = []; let sa = 0, sb = 0;
+    for (let k = 0; k < n; k++) {
+      for (let j = 0; j < paso; j++) { const i = b - k * paso - j; sa += dias[i].min; sb += dias[i + largo].min; }
+      act.push(sa); ant.push(sb); ritmo.push(meta * (k + 1) * paso); fin.push(dias[b - k * paso - paso + 1]);
+    }
+    const dif = sa - sb;
+    const frase = dif === 0 ? `${cap(T.en)}, lo mismo que ${T.ant}.` : `${cap(T.en)}, ${fmt(Math.abs(dif))} ${dif > 0 ? "más" : "menos"} que ${T.ant}.`;
+    const sub = `${fmt(sa)} contra ${fmt(sb)}. Cumpliste la meta ${cumplidos(a, b)} de ${largo} días; ${T.ant}, ${cumplidos(a + largo, b + largo)}.`;
+    const pasos = [60, 120, 180, 300, 600, 900, 1200, 1800, 3000, 6000, 12000, 30000, 60000];
+    const crudo = Math.max(sa, sb, ritmo[n - 1]), pasoEje = pasos.find(p => crudo / p <= 4) || 60000, tope = Math.ceil(crudo / pasoEje) * pasoEje;
+    const pts = arr => arr.map((v, k) => `${(k / (n - 1) * 100).toFixed(2)},${(100 - v / tope * 100).toFixed(2)}`).join(" ");
+    const guias = Array.from({ length: Math.round(tope / pasoEje) }, (_, k) => (k + 1) * pasoEje).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
+    const etq = k => { const d = fin[k]; if (per === "semana") return DOW_L[d.dow]; if (per === "mes") return k % 7 === 0 || k === n - 1 ? `${d.f.getDate()}` : ""; const m = d.f.getMonth(); return (k === 0 || fin[k - 1].f.getMonth() !== m) && m % 3 === 0 ? MESES[m] : ""; };
+    const etqs = act.map((_, k) => `<span class="${k === n - 1 && !off ? "hoy" : ""}">${etq(k)}</span>`).join("");
+    const cols = act.map((v, k) => `<i data-tip="${per === "ano" ? `Semana al ${fechaCorta(fin[k].f)}` : fecha(fin[k].f)} · ${fmt(v)} acumulado (antes ${fmt(ant[k])}, la meta pide ${fmt(ritmo[k])})"></i>`).join("");
+    const graf = `<div class="tend${flex ? " flex" : ""}">
+      <div class="graf" style="--alto:190px"><div class="graf-area">${guias}
+        <svg class="tend-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline class="t-meta" points="${pts(ritmo)}"/><polyline class="t-ant" points="${pts(ant)}"/><polyline class="t-act" points="${pts(act)}"/></svg>
+        <span class="t-punto" style="left:100%;top:${100 - sa / tope * 100}%"></span>
+        <div class="tend-cols">${cols}</div></div>
+        <div class="graf-etqs">${etqs}</div></div>
+      <div class="tend-ley"><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-act" stroke-width="2.5"/></svg>${off ? "Ese período" : "Ahora"}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-ant" stroke-width="1.5"/></svg>${cap(T.ant)}</span><span><svg viewBox="0 0 18 6"><line x1="0" y1="3" x2="18" y2="3" class="t-meta" stroke-width="1"/></svg>La meta</span></div>
+    </div>`;
+    return { frase, sub, graf };
+  };
+
+  /* ¿Cuándo rindo? Días por horas, con la misma celda que el mapa */
+  const cuando = (h, { llena = false, sub } = {}) => {
+    const frase = `Rendís más los ${DOW_LARGO[h.mejorDow]}, entre las ${h.ventana} y las ${h.ventana + 3} h.`;
+    const enVentana = x => x >= h.ventana && x < h.ventana + 3;
+    let g = "";
+    for (let w = 0; w < 7; w++) {
+      g += `<span class="d${w === h.mejorDow ? " pico" : ""}">${DOW[w]}</span>`;
+      for (let k = 0; k < HORAS; k++) { const v = h.dh[w][k], r = v / h.maxDh, n = !v ? 0 : r < .25 ? 1 : r < .5 ? 2 : r < .75 ? 3 : 4; g += `<span class="celda" data-n="${n}" data-tip="${DOW_LARGO[w]} a las ${k + H0} h · ${fmt(v)} por semana"></span>`; }
+    }
+    g += `<span></span>` + Array.from({ length: HORAS }, (_, k) => `<span class="h${enVentana(k + H0) ? " pico" : ""}">${(k + H0) % 3 === 0 ? k + H0 : ""}</span>`).join("");
+    return { frase, sub: sub ?? `Ahí arranca el ${h.share} % de lo que estudiás.`, graf: `<div class="dh${llena ? " llena" : ""}" style="--horas:${HORAS}" role="img" aria-label="Minutos por día de la semana y hora">${g}</div>` };
+  };
+
+  const kpi = (num, resto, sub) => `<div class="kpi"><p class="kpi-t"><b>${num}</b>${resto}</p>${sub ? `<p class="kpi-s">${sub}</p>` : ""}</div>`;
+
+  /* Barras del período: un día por barra; en el año, el promedio por día de cada mes */
+  const listaPer = (per, off = 0) => {
+    const [a, b] = rango(per, off);
+    if (per === "ano") {
+      const g = [];
+      for (let i = b; i >= a; i--) { const d = dias[i], y = d.f.getFullYear(), mo = d.f.getMonth(); let x = g.at(-1); if (!x || x.y !== y || x.mo !== mo) g.push(x = { y, mo, t: 0, n: 0, c: 0 }); x.t += d.min; x.n++; if (cumple(d)) x.c++; }
+      if (g.length > 12) g.shift();               // el mes más viejo queda cortado: afuera, quedan 12
+      return g.map((x, k) => { const v = x.t / x.n, enCurso = !off && k === g.length - 1; return { v, etq: MESES[x.mo], tip: `${MESES[x.mo]} ${x.y}${enCurso ? ` (en curso, ${x.n} días)` : ""} · ${fmt(v)} por día · ${x.c} de ${x.n} días con la meta`, hoy: enCurso }; });
+    }
+    const n = b - a + 1;
+    return Array.from({ length: n }, (_, k) => {
+      const d = dias[b - k], ant = dias[b - k + n].min;
+      const etq = per === "semana" ? DOW_L[d.dow] : d.f.getDate() % 5 === 0 || k === n - 1 ? `${d.f.getDate()}` : "";
+      return { v: d.min, ant, etq, tip: `${tipDia(d)}${per === "semana" ? ` (la semana anterior, ${ant ? fmt(ant) : "nada"})` : ""}`, dia: d.i, hoy: d.i === 0 };
+    });
+  };
+  const HUECO = { semana: 10, mes: 3, ano: 6 };
+  const barras = (lista, { sel = null, valores = true, pares = false, mini = false, hueco = 8 } = {}) => {
+    const max = Math.max(meta * 1.12, ...lista.map(x => Math.max(x.v, pares ? x.ant || 0 : 0)));
+    const paso = [30, 60, 90, 120, 180, 240, 300, 600].find(p => max / p <= 4) || 600, tope = Math.ceil(max / paso) * paso;
+    const guias = mini ? "" : Array.from({ length: Math.round(tope / paso) }, (_, k) => (k + 1) * paso).map(v => `<div class="graf-guia" style="bottom:${v / tope * 100}%"><span>${fmtEje(v)}</span></div>`).join("");
+    const cols = lista.map(x => {
+      const h = x.v / tope * 100, ok = x.v >= meta, toca = x.dia !== undefined && !mini;
+      const attrs = toca ? `type="button" data-dia="${x.dia}" data-k="b-${x.dia}" aria-pressed="${sel === x.dia}" aria-label="${x.tip}"` : `role="img" aria-label="${x.tip}"`;
+      const tag = toca ? "button" : "div";
+      return `<${tag} class="br-col${x.hoy ? " hoy" : ""}${pares ? " par" : ""}" ${attrs} data-tip="${x.tip}" style="--h:${h.toFixed(1)}%">${pares ? `<i class="ant" style="height:${(x.ant / tope * 100).toFixed(1)}%"></i>` : ""}<i class="${x.v ? (ok ? "ok" : "") : "cero"}" style="height:${h.toFixed(1)}%"></i>${valores && x.v && !mini ? `<span class="v">${fmtCorto(x.v)}</span>` : ""}</${tag}>`;
+    }).join("");
+    return `<div class="br${mini ? " mini" : ""}${lista.length === 12 ? " meses" : ""}" style="--hueco:${hueco}px"><div class="br-area">${guias}<div class="br-meta" style="bottom:${meta / tope * 100}%"><span>Meta ${fmt(meta)}</span></div><div class="br-cols">${cols}</div></div><div class="br-etqs">${lista.map(x => `<span class="${x.hoy ? "hoy" : ""}">${x.etq}</span>`).join("")}</div></div>`;
+  };
+  const barrasPer = (per, off, sel, extra = {}) => barras(listaPer(per, off), { sel, valores: per !== "mes", hueco: HUECO[per], ...extra });
+  const fraseBarras = (per, k, T) => per === "ano" ? `${fmt(k.prom)} por día ${T.en} <span>· promedio de cada mes</span>` : `${fmt(k.total)} ${T.en} <span>· ${k.c} de ${k.n} días con la meta</span>`;
+  const leyPar = `<span class="ley-par"><span><i></i>Esta semana</span><span><i class="ant"></i>La anterior</span><span><i class="meta"></i>Meta</span></span>`;
+  const histHoras = (h, clase = "") => { const max = Math.max(1, ...h.porHora); return `<div class="hh ${clase}"><div class="fr-hist">${h.porHora.map((m, k) => `<i class="${k + H0 >= h.ventana && k + H0 < h.ventana + 3 ? "pico" : ""}" style="height:${m / max * 100}%" data-tip="${k + H0} h · ${fmt(m)} por semana"></i>`).join("")}</div>${eje()}</div>`; };
+  const marcas = () => { const ds = Array.from({ length: 14 }, (_, k) => dias[13 - k]); return `<div class="marcas" role="img" aria-label="Los últimos 14 días">${ds.map(d => `<span class="celda" data-n="${nivelMeta(d.min)}" data-tip="${tipDia(d)}"></span>`).join("")}${ds.map(d => `<span class="m-e${d.i === 0 ? " hoy" : ""}">${DOW_L[d.dow]}</span>`).join("")}</div>`; };
+  /* Un cuadrito por día del período; en el año, uno por semana según cuántos días cumplió */
+  const puntosPer = (per, off = 0) => {
+    const [a, b] = rango(per, off);
+    if (per === "ano") {
+      let h = "";
+      for (let w = 51; w >= 0; w--) { const i0 = a + w * 7, c = cumplidos(i0, i0 + 6), n = !c ? 0 : c <= 2 ? 1 : c <= 4 ? 2 : c <= 6 ? 3 : 4; h += `<span class="celda" data-n="${n}" data-tip="Semana al ${fechaCorta(dias[i0].f)} · ${c} de 7 con la meta"></span>`; }
+      return `<div class="puntos" style="--cols:13" role="img" aria-label="Las 52 semanas del año">${h}</div>`;
+    }
+    let h = ""; for (let i = b; i >= a; i--) h += `<span class="celda" data-n="${nivelMeta(dias[i].min)}" data-tip="${tipDia(dias[i])}"></span>`;
+    return `<div class="puntos" style="--cols:${per === "semana" ? 7 : 15}" role="img" aria-label="Los días del período">${h}</div>`;
+  };
+  const comparar = (k, T) => { const max = Math.max(k.total, k.antes, 1); return `<div class="cmp"><span>Ahora</span><span class="cmp-p"><i class="act" style="width:${k.total / max * 100}%"></i></span><b>${fmtCorto(k.total)}</b><span>${T.antCap}</span><span class="cmp-p"><i style="width:${k.antes / max * 100}%"></i></span><b>${fmtCorto(k.antes)}</b></div>`; };
+  const selPer = per => `<div class="segmentado periodo" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"], ["ano", "Año"]].map(([v, t]) => `<button type="button" data-per="${v}" data-k="per-${v}" aria-pressed="${v === per}">${t}</button>`).join("")}</div>`;
+  const perCab = (app, { flechas = false } = {}) => {
+    const per = app._per || "semana", off = app._off || 0, T = textos(per, off);
+    const fl = flechas ? `<span class="flechas"><button type="button" class="paso" data-off="1" data-k="off-ant" aria-label="Período anterior" ${off >= OFF_MAX[per] ? "disabled" : ""}>${ic("i-flecha", "izq")}</button><button type="button" class="paso" data-off="-1" data-k="off-sig" aria-label="Período siguiente" ${off <= 0 ? "disabled" : ""}>${ic("i-flecha")}</button></span>` : "";
+    return `<div class="per-cab"><div class="per-izq">${fl}<h1 class="per-titulo">${T.titulo}<span>${T.fechas}</span></h1></div>${selPer(per)}</div>`;
+  };
+  /* Lo que comparten R a V */
+  const base = app => {
+    const per = app._per || "semana", off = app._off || 0, [a, b] = rango(per, off);
+    return { per, off, a, b, sel: app._dia ?? 0, T: textos(per, off), k: cifrasPer(per, off), h: horario(a, b) };
+  };
+
+  /* ── Las estructuras ── */
+  const V = {
+    f: app => {
+      const sel = app._dia ?? 0, c = constancia(), r = app._rango === "mes" ? "mes" : "semana", t = tendencia(r, 0, { flex: true });
+      const q = cuando(horario(0, 83), { llena: true, sub: `Promedio de las últimas 12 semanas.` });
+      const tabs = `<div class="rangos chico" role="group" aria-label="Período">${[["semana", "Semana"], ["mes", "30 días"]].map(([v, x]) => `<button type="button" data-rango="${v}" data-k="r-${v}" aria-pressed="${v === r}">${x}</button>`).join("")}</div>`;
+      return `<main class="main una-main f-main">
+        ${cabHoy(app)}
+        <section class="bloque"><div><h2 class="bloque-frase">${c.frase}</h2><p class="bajada">${c.sub}</p></div>
+          ${mapa(sel)}
+          ${detalle(dias[sel])}</section>
+        <div class="f-par">
+          <section class="bloque"><div class="panel-cab"><div><h2 class="bloque-frase">${t.frase}</h2><p class="bajada">${t.sub}</p></div>${tabs}</div>${t.graf}</section>
+          <section class="bloque"><div><h2 class="bloque-frase">${q.frase}</h2><p class="bajada">${q.sub}</p></div>${q.graf}</section>
+        </div>
+      </main>`;
+    },
+    r: app => {
+      const { per, a, b, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true });
+      const fraseMapa = per === "ano" ? `${k.c} días con la meta en el último año` : `${k.c} de ${k.n} días con la meta ${T.en} <span>· resaltados en el año</span>`;
+      return `<main class="main una-main r-main">
+        ${perCab(app)}
+        <div class="r-grid">
+          <section class="tj r-hoy">${cabHoy(app)}<div class="tj-pie" style="display:flex;flex-direction:column;gap:10px">${kRacha()}${marcas()}</div></section>
+          <section class="tj heroe r-sem">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj r-tend">${et("i-tend", "Mejor o peor")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+          <section class="tj r-mapa">${et("i-cal", "Constancia")}<h2 class="p-frase">${fraseMapa}</h2><div class="centro">${mapa(sel, { marcar: per === "ano" ? null : [a, b] })}</div></section>
+          <section class="tj r-cuando">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${h.ventana} y las ${h.ventana + 3} h <span>· los ${DOW_LARGO[h.mejorDow]}</span></h2>${histHoras(h, "crece")}</section>
+        </div>
+      </main>`;
+    },
+    s: app => {
+      const { per, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true });
+      return `<main class="main una-main s-main">
+        ${perCab(app)}
+        <div class="s-top">
+          <section class="tj">${cabHoy(app)}</section>
+          <section class="tj">${et("i-cal", "Constancia")}${k.kCumpl}${puntosPer(per)}</section>
+          <section class="tj">${et("i-tend", "Contra el anterior")}${k.kDif}${comparar(k, T)}</section>
+          <section class="tj">${et("i-reloj", "Tu horario")}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís`)}${histHoras(h)}</section>
+        </div>
+        <div class="s-abajo">
+          <section class="tj heroe">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj">${et("i-tend", "Acumulado")}<div><h2 class="p-frase">${t.frase}</h2><p class="p-sub">${t.sub}</p></div>${t.graf}</section>
+        </div>
+      </main>`;
+    },
+    t: app => {
+      const { per, sel, T, k, h } = base(app), pares = per === "semana";
+      return `<main class="main una-main t-main">
+        ${perCab(app)}
+        <div class="t-grid">
+          <section class="tj heroe">${et("i-barras", "Día por día")}<div class="panel-cab"><h2 class="p-frase">${fraseBarras(per, k, T)}</h2>${pares ? leyPar : ""}</div>
+            <div class="crece">${barrasPer(per, 0, sel, { pares, hueco: pares ? 14 : HUECO[per] })}</div>
+            <div class="cifras">${k.kTotal}${k.kProm}${k.kCumpl}${kRacha()}</div></section>
+          <div class="t-der">
+            <section class="tj">${cabHoy(app)}</section>
+            <section class="tj">${et("i-cal", "El día que tocaste")}${detalle(dias[sel])}</section>
+            <section class="tj">${et("i-reloj", "Cuándo rendís")}<h2 class="p-frase">Entre las ${h.ventana} y las ${h.ventana + 3} h <span>· los ${DOW_LARGO[h.mejorDow]}</span></h2>${histHoras(h, "crece")}</section>
+          </div>
+        </div>
+      </main>`;
+    },
+    u: app => {
+      const { per, off, a, b, sel, T, k, h } = base(app), t = tendencia(per, off, { flex: true });
+      const primera = off ? k.kProm : `<div>${cabHoy(app)}</div>`;
+      return `<main class="main una-main u-main">
+        ${perCab(app, { flechas: true })}
+        <div class="cifras u-cifras">${primera}${k.kTotal}${k.kCumpl}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}, cuando más rendís`, `Ahí arranca el ${h.share} %.`)}</div>
+        <section class="tj heroe">${et("i-barras", "Día por día")}<h2 class="p-frase">${fraseBarras(per, k, T)}</h2><div class="crece">${barrasPer(per, off, sel)}</div></section>
+        <div class="u-abajo">
+          <section class="tj">${et("i-cal", "En el año")}${mapa(sel, { desde: per === "ano" ? a : Math.max(0, b - 364), marcar: per === "ano" ? null : [a, b] })}</section>
+          <section class="tj">${et("i-tend", "Mejor o peor")}<h2 class="p-frase">${t.frase}</h2>${t.graf}</section>
+        </div>
+      </main>`;
+    },
+    v: app => {
+      const { per, sel, T, k, h } = base(app), t = tendencia(per, 0, { flex: true }), r = racha();
+      return `<main class="main una-main v-main">
+        <div class="v-top">${cabHoy(app)}<div class="v-per">${selPer(per)}<p class="p-sub">${T.titulo} ${T.fechas}</p></div></div>
+        <div class="v-cols">
+          <section class="tj">${et("i-cal", "¿Soy constante?")}${kpi(`${k.c} de ${k.n}`, `días con la meta ${T.en}`, `Racha: ${r} ${r === 1 ? "día" : "días"}. ${T.antCap}, ${k.cAnt} días.`)}<div class="crece">${barrasPer(per, 0, sel)}</div></section>
+          <section class="tj">${et("i-tend", "¿Voy mejor o peor?")}${kpi(signo(k.dif), `que ${T.ant}`, `${fmt(k.total)} contra ${fmt(k.antes)}.`)}${t.graf}</section>
+          <section class="tj">${et("i-reloj", "¿Cuándo rindo?")}${kpi(`${h.ventana} a ${h.ventana + 3} h`, `los ${DOW_LARGO[h.mejorDow]}`, `Ahí arranca el ${h.share} % de lo que estudiás.`)}${histHoras(h, "crece")}</section>
+        </div>
+      </main>`;
+    },
+  };
+
+  const DESPUES = {};
+
+  /* ── Montaje ── */
+  const tplTb = document.getElementById("tpl-tb");
+  const ahora = () => new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const apps = [];
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const avisar = (el, t) => { const a = el.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2000); };
+  const pintar = (a, enfocar, fundir) => {
+    const k = enfocar && document.activeElement?.dataset?.k;
+    if (fundir) { a.cuerpo.classList.add("fundir"); clearTimeout(a._fundir); a._fundir = setTimeout(() => a.cuerpo.classList.remove("fundir"), 400); }
+    a.cuerpo.innerHTML = V[a.v](a.el);
+    DESPUES[a.v]?.(a);
+    if (k) (a.el.querySelector(`[data-k="${k}"]`) || a.el.querySelector('[data-k="meta"]'))?.focus();
+  };
+
+  const conectar = a => {
+    const el = a.el;
+    el.insertAdjacentHTML("beforeend", `<div class="aviso" role="status"></div><div class="tip" aria-hidden="true"></div>`);
+    const tip = el.querySelector(".tip");
+    const verTip = t => {
+      const r = t.getBoundingClientRect(), ra = el.getBoundingClientRect();
+      tip.textContent = t.dataset.tip;
+      const x = Math.min(Math.max(r.left - ra.left + r.width / 2, 90), ra.width - 90);
+      tip.style.left = x + "px"; tip.style.top = (r.top - ra.top) + "px"; tip.classList.add("ver");
+    };
+    el.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) verTip(t); });
+    el.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.classList.remove("ver"); });
+    el.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); t ? verTip(t) : tip.classList.remove("ver"); });
+    el.addEventListener("click", e => {
+      if (e.target.closest('a[href="#"]')) { e.preventDefault(); return; }
+      const b = e.target.closest("button"); if (!b || b.disabled) return;
+      const d = b.dataset;
+      tip.classList.remove("ver");
+      if (d.editmeta !== undefined) { el._editMeta = !el._editMeta; return pintar(a, true); }
+      if (d.meta) { meta = Math.min(480, Math.max(30, meta + +d.meta)); apps.forEach(x => pintar(x, x === a)); return; }
+      if (d.per) { el._per = d.per; el._off = 0; return pintar(a, true, true); }
+      if (d.off) { const per = el._per || "semana"; el._off = Math.min(OFF_MAX[per], Math.max(0, (el._off || 0) + +d.off)); return pintar(a, true, true); }
+      if (d.rango) { el._rango = d.rango; return pintar(a, true); }
+      if (d.dia !== undefined) { el._dia = +d.dia; return pintar(a, true); }
+    });
+  };
+
+  const opciones = [...document.querySelectorAll(".opcion")];
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+
+  opciones.forEach((op, n) => {
+    const v = op.dataset.v, el = op.querySelector("[data-app]");
+    el._uid = n;
+    el.appendChild(tplTb.content.cloneNode(true));
+    const cuerpo = document.createElement("div"); cuerpo.style.cssText = "flex:1;display:flex;flex-direction:column;min-height:0"; el.appendChild(cuerpo);
+    el.querySelector("[data-hora]").textContent = ahora();
+    const a = { v, el, cuerpo };
+    apps.push(a);
+    conectar(a);
+
+    const bm = op.querySelector("[data-barra]"), marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 780], ["Tablet", 820, 760], ["Escritorio", 1180, 760]];
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px"; marco.style.height = b.dataset.h + "px"; }));
+    const medida = bm.querySelector(".medida");
+    new ResizeObserver(() => { const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; marco._actualizar?.(); }).observe(marco);
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    pintar(a);
+  });
+
+  const grupoCtl = document.getElementById("ctlmeta");
+  pulsar(grupoCtl, ctlMeta);
+  grupoCtl.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    ctlMeta = b.dataset.v; guardar("doro-dash-meta", ctlMeta); pulsar(grupoCtl, ctlMeta);
+    apps.forEach(x => { if (x.v !== "mini") { x.el._editMeta = false; pintar(x); } });
+  }));
+  setInterval(() => document.querySelectorAll("[data-hora]").forEach(h => h.textContent = ahora()), 15000);
+
+  /* ── Pantalla completa ── */
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-app]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir (Esc)" aria-label="Salir de pantalla completa">${ic("i-x")}</button>`;
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco"); mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mando.hidden = false; mostrar(op); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>

@@ -1,166 +1,216 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Music } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useEffect, useRef, useState } from "react";
+import { Link2, MonitorPlay, Music, Pause, Play, User, Volume2, VolumeX, X } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useAuth } from "@/features/auth/context/useAuth";
 import { useMusicaSala } from "@/features/room/hooks/useMusicaSala";
 import { useAudioAmbiente } from "@/features/room/hooks/useAudioAmbiente";
+import { claseControl, clasePanel, claseRotulo } from "@/features/timer/clasesReloj";
+import { cn } from "@/lib/utils";
 import { AMBIENT_SOUNDS } from "./music/ambientSounds";
 import { ReproductorAudioSinCortes } from "./music/ReproductorAudioSinCortes";
-import { MezcladorAmbiente } from "./music/MezcladorAmbiente";
-import { ReproductorLocal } from "./music/ReproductorLocal";
-import { ReproductorSala } from "./music/ReproductorSala";
-import { parsearUrlMedia, parsearYoutube } from "./music/parsearUrlMedia";
+import { parsearYoutube } from "./music/parsearUrlMedia";
+
+/** Con más de estos sonidos, la grilla muestra los primeros y «Ver los N» despliega el resto. */
+const A_LA_VISTA = 12;
+
+/** El video acepta órdenes por postMessage (volumen) solo con la API de iframes prendida. */
+const conApi = (url: string) => (url.includes("enablejsapi") ? url : `${url}${url.includes("?") ? "&" : "?"}enablejsapi=1`);
+
+const mandarVolumen = (video: HTMLIFrameElement | null, volumen: number) =>
+    video?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [volumen] }), "*");
+
+const botonChico = "grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground [&_svg]:size-3.5";
 
 /**
- * Panel del reproductor de música con tres pestañas:
- *  - Ambiental: mezcla de sonidos de fondo con volumen independiente.
- *  - Local: incrusta un video/track de YouTube o Spotify solo para este usuario.
- *  - Sala: comparte un video de YouTube sincronizado con todos (vía `music_state`).
+ * La música de la sala (M7 · Todo junto, se despliega): un panel pegado al botón
+ * con «Pausar todo» arriba y dos partes. **Ambiente · solo vos**: los volúmenes de
+ * lo que suena y la grilla de sonidos; la última mezcla se guarda sola. **Para la
+ * sala**: el video de YouTube que escuchan todos, que se cambia sin sacarlo, y
+ * «Silenciar para mí» (local, no toca `music_state`).
  *
- * Es un contenedor delgado: conecta los hooks (`useAudioAmbiente`, `useMusicaSala`)
- * con las piezas presentacionales y mantiene los motores de audio ambiental
- * montados de forma persistente (fuera de las pestañas, que se desmontan).
+ * Los motores de audio y el video quedan montados aunque el panel esté cerrado.
  */
-export const MusicPlayer = React.memo(function MusicPlayer({ salaId }: { salaId?: string }) {
-    const [estaAbierto, establecerEstaAbierto] = useState(false);
-    const refDesplegable = useRef<HTMLDivElement>(null);
-
-    // Estado del modo Ambiental (hook: mezclador de sonidos locales, sin Supabase)
-    const {
-        volumenes: volumenesAmbiente,
-        activo: ambienteActivo,
-        establecerActivo: establecerAmbienteActivo,
-        establecerVolumen: establecerVolumenAmbiente,
-        hayAmbienteActivo,
-    } = useAudioAmbiente();
-
-    // Estado del modo Local (solo para este usuario). Vive en el contenedor para
-    // que persista al cambiar de pestaña (las TabsContent se desmontan).
-    const [entradaUrlLocal, establecerEntradaUrlLocal] = useState("");
-    const [urlIncrustadaLocal, establecerUrlIncrustadaLocal] = useState<string | null>(null);
-    const [errorLocal, establecerErrorLocal] = useState<string | null>(null);
-
-    // Estado del modo Sala (sincronizado entre usuarios vía hook + Supabase)
-    const [entradaUrlSala, establecerEntradaUrlSala] = useState("");
+export const MusicPlayer = React.memo(function MusicPlayer({ salaId, enLaSala }: { salaId?: string; enLaSala: number }) {
+    const { volumenes, activo, establecerActivo, establecerVolumen, hayAmbienteActivo } = useAudioAmbiente();
     const { estadoSala, actualizarEstadoSala } = useMusicaSala(salaId);
-    const [errorSala, establecerErrorSala] = useState<string | null>(null);
+    const { user } = useAuth();
+    const [silenciada, establecerSilenciada] = useState(false);
+    const [verTodos, establecerVerTodos] = useState(false);
+    const [cambiandoVideo, establecerCambiandoVideo] = useState(false);
+    const [link, establecerLink] = useState("");
+    const [error, establecerError] = useState<string | null>(null);
+    // El volumen del video es de cada uno, como «Silenciar para mí»: no toca `music_state`
+    const [volumenVideo, establecerVolumenVideo] = useState(70);
+    const video = useRef<HTMLIFrameElement>(null);
+    useEffect(() => mandarVolumen(video.current, volumenVideo), [volumenVideo]);
 
-    // Detecta clics fuera del panel para cerrarlo
-    useEffect(() => {
-        const manejarClickFuera = (evento: MouseEvent) => {
-            if (refDesplegable.current && !refDesplegable.current.contains(evento.target as Node)) {
-                establecerEstaAbierto(false);
-            }
-        };
-        if (estaAbierto) document.addEventListener("mousedown", manejarClickFuera);
-        return () => document.removeEventListener("mousedown", manejarClickFuera);
-    }, [estaAbierto]);
+    const sonando = AMBIENT_SOUNDS.filter((s) => (volumenes[s.id] ?? 0) > 0);
+    const videoSuena = Boolean(estadoSala.url) && !silenciada;
+    const suenaAlgo = hayAmbienteActivo || videoSuena;
+    const visibles = verTodos || AMBIENT_SOUNDS.length <= A_LA_VISTA ? AMBIENT_SOUNDS : AMBIENT_SOUNDS.slice(0, 8);
 
-    // Carga un enlace de YouTube/Spotify en el reproductor local (solo este usuario)
-    const manejarCargarLocal = (e: React.FormEvent) => {
+    const pausarTodo = () => {
+        const pausar = suenaAlgo;
+        establecerActivo(!pausar);
+        establecerSilenciada(pausar);
+    };
+
+    const ponerVideo = (e: React.FormEvent) => {
         e.preventDefault();
-        establecerErrorLocal(null);
-        if (!entradaUrlLocal.trim()) { establecerUrlIncrustadaLocal(null); return; }
-
-        const urlEmbebida = parsearUrlMedia(entradaUrlLocal);
-        if (urlEmbebida) {
-            establecerUrlIncrustadaLocal(urlEmbebida);
+        const url = parsearYoutube(link);
+        if (!url) {
+            establecerError("Tiene que ser un link de YouTube.");
             return;
         }
-
-        establecerErrorLocal("URL inválida. Usa YouTube o Spotify.");
+        actualizarEstadoSala({ url, isPlaying: true, puestaPor: user?.name || "Alguien" });
+        establecerLink("");
+        establecerError(null);
+        establecerCambiandoVideo(false);
+        establecerSilenciada(false);
     };
 
-    // Carga un enlace de YouTube para la sala sincronizada (todos lo ven)
-    const manejarCargarSala = (e: React.FormEvent) => {
-        e.preventDefault();
-        establecerErrorSala(null);
-        if (!entradaUrlSala.trim()) return;
-
-        const urlEmbebida = parsearYoutube(entradaUrlSala);
-        if (urlEmbebida) {
-            actualizarEstadoSala({ url: urlEmbebida, isPlaying: true });
-            establecerEntradaUrlSala("");
-        } else {
-            establecerErrorSala("Para la sala sincronizada, usa solo enlaces de YouTube.");
-        }
-    };
-
-    // Indica si hay alguna fuente de audio activa (para resaltar el botón del reproductor)
-    const musicaActiva = urlIncrustadaLocal || estadoSala.url || hayAmbienteActivo;
+    const campoVideo = (
+        <form onSubmit={ponerVideo} className="flex flex-col gap-1.5">
+            <input
+                autoFocus={cambiandoVideo}
+                value={link}
+                onChange={(e) => establecerLink(e.target.value)}
+                placeholder={estadoSala.url ? "Pegá otro link de YouTube" : "Pegá un link de YouTube para la sala"}
+                aria-label="Link de YouTube para la sala"
+                className="h-[2.375rem] w-full border-0 border-b bg-transparent text-[0.875rem] outline-none placeholder:text-muted-foreground focus:border-brand"
+            />
+            {error && <p className="m-0 text-[0.75rem] text-destructive">{error}</p>}
+        </form>
+    );
 
     return (
-        <div className="relative flex items-center" ref={refDesplegable}>
-            {/* Motores de audio ambiental: se mantienen montados siempre (fuera del
-                modal y de las pestañas) para que el sonido no se corte al cambiar de
-                pestaña o cerrar el panel. No renderizan nada. */}
-            {AMBIENT_SOUNDS.map(sonido => (
-                <ReproductorAudioSinCortes
-                    key={sonido.id}
-                    fuente={sonido.archivo}
-                    volumenObjetivo={volumenesAmbiente[sonido.id] || 0}
-                    reproduciendo={ambienteActivo}
-                />
+        <>
+            {AMBIENT_SOUNDS.map((sonido) => (
+                <ReproductorAudioSinCortes key={sonido.id} fuente={sonido.archivo} volumenObjetivo={volumenes[sonido.id] ?? 0} reproduciendo={activo} />
             ))}
+            {/* El video de la sala suena aunque el panel esté cerrado; silenciado, no se carga */}
+            {videoSuena && (
+                <iframe
+                    ref={video}
+                    src={conApi(estadoSala.url)}
+                    // ponytail: el reproductor tarda en estar listo después del load; si se pierde la orden, queda en 100 hasta mover la barra
+                    onLoad={() => setTimeout(() => mandarVolumen(video.current, volumenVideo), 1000)}
+                    title="Música de la sala"
+                    allow="autoplay; encrypted-media"
+                    className="pointer-events-none fixed -left-[200vw] size-px opacity-0"
+                />
+            )}
 
-            <Button
-                variant={estaAbierto || musicaActiva ? "default" : "outline"}
-                size="icon"
-                onClick={() => establecerEstaAbierto(!estaAbierto)}
-                className={`h-10 w-10 transition-all ${musicaActiva && !estaAbierto ? 'bg-primary text-primary-foreground shadow-sm animate-pulse' : 'text-muted-foreground hover:text-foreground shadow-sm bg-background border-border/50'}`}
-                title="Música de Fondo"
-            >
-                <Music className="w-5 h-5" />
-            </Button>
+            <Popover>
+                <PopoverTrigger className={claseControl} title="Música" aria-label="Música">
+                    <Music />
+                    {suenaAlgo && <span className="absolute top-[0.4375rem] right-[0.4375rem] size-1.5 rounded-full bg-brand" />}
+                </PopoverTrigger>
+                <PopoverContent align="start" sideOffset={10} className={cn(clasePanel, "flex flex-col gap-3")}>
+                    <div className="flex items-center justify-between">
+                        <span className={claseRotulo}>Música</span>
+                        {(suenaAlgo || !activo || silenciada) && (sonando.length > 0 || estadoSala.url) && (
+                            <button type="button" onClick={pausarTodo} className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-[0.8125rem] text-muted-foreground hover:text-foreground">
+                                {suenaAlgo ? <Pause className="size-3 fill-current" /> : <Play className="size-3 fill-current" />}
+                                {suenaAlgo ? "Pausar todo" : "Reanudar"}
+                            </button>
+                        )}
+                    </div>
 
-            {/* Modal flotante */}
-            <div
-                className={`fixed z-50 bottom-24 left-1/2 -translate-x-1/2 sm:left-auto sm:right-6 sm:translate-x-0 w-[340px] sm:w-[400px] bg-popover text-popover-foreground border shadow-2xl rounded-xl p-5 transition-all duration-300 flex flex-col gap-4 ${estaAbierto ? 'opacity-100 pointer-events-auto translate-y-0 scale-100 visible' : 'opacity-0 pointer-events-none translate-y-4 scale-95 invisible'}`}
-            >
-                <div className="flex flex-col gap-1">
-                    <h4 className="font-semibold leading-none tracking-tight">Reproductor</h4>
-                    <p className="text-sm text-muted-foreground leading-tight">Configura tu ambiente ideal de concentración.</p>
-                </div>
+                    <section aria-label="Ambiente, solo vos" className="flex flex-col gap-1.5 border-t pt-3">
+                        <p className={`${claseRotulo} m-0`}>
+                            Ambiente <span className="ml-1 tracking-normal normal-case">solo vos</span>
+                        </p>
+                        {videoSuena && (
+                            <label className="grid grid-cols-[1rem_4.5rem_minmax(0,1fr)_1.75rem] items-center gap-2 text-[0.84375rem]">
+                                <MonitorPlay className="size-4 text-brand" aria-hidden />
+                                <span className="truncate">Video</span>
+                                <input
+                                    type="range" min={0} max={100}
+                                    value={volumenVideo}
+                                    onChange={(e) => establecerVolumenVideo(Number(e.target.value))}
+                                    aria-label="Volumen del video de la sala"
+                                    className="w-full accent-[var(--brand)]"
+                                />
+                                <button type="button" onClick={() => establecerSilenciada(true)} aria-label="Silenciar el video para mí" title="Silenciar para mí" className={botonChico}>
+                                    <X />
+                                </button>
+                            </label>
+                        )}
+                        {sonando.map((s) => (
+                            <label key={s.id} className="grid grid-cols-[1rem_4.5rem_minmax(0,1fr)_1.75rem] items-center gap-2 text-[0.84375rem]">
+                                <s.icono className="size-4 text-brand" aria-hidden />
+                                <span className="truncate">{s.nombre}</span>
+                                <input
+                                    type="range" min={0} max={100}
+                                    value={volumenes[s.id]}
+                                    onChange={(e) => establecerVolumen(s.id, Number(e.target.value))}
+                                    aria-label={`Volumen de ${s.nombre}`}
+                                    className="w-full accent-[var(--brand)]"
+                                />
+                                <button type="button" onClick={() => establecerVolumen(s.id, 0)} aria-label={`Apagar ${s.nombre}`} className={botonChico}>
+                                    <X />
+                                </button>
+                            </label>
+                        ))}
+                        <div className="mt-1 grid grid-cols-4 gap-y-1">
+                            {visibles.map((s) => {
+                                const prendido = (volumenes[s.id] ?? 0) > 0;
+                                return (
+                                    <button
+                                        key={s.id}
+                                        type="button"
+                                        aria-pressed={prendido}
+                                        onClick={() => establecerVolumen(s.id, prendido ? 0 : 45)}
+                                        className="flex flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-[0.71875rem] text-muted-foreground hover:bg-muted hover:text-foreground aria-pressed:text-foreground"
+                                    >
+                                        <s.icono className={cn("size-4", prendido && "text-brand")} aria-hidden />
+                                        <span className="w-full truncate text-center">{s.nombre}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {visibles.length < AMBIENT_SOUNDS.length && (
+                            <button type="button" onClick={() => establecerVerTodos(true)} className="self-start text-[0.8125rem] text-muted-foreground hover:text-foreground">
+                                Ver los {AMBIENT_SOUNDS.length}
+                            </button>
+                        )}
+                    </section>
 
-                <Tabs defaultValue="ambient" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mb-4">
-                        <TabsTrigger value="ambient">Ambiental</TabsTrigger>
-                        <TabsTrigger value="local">Local</TabsTrigger>
-                        <TabsTrigger value="room" disabled={!salaId}>Sala</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="ambient">
-                        <MezcladorAmbiente
-                            volumenes={volumenesAmbiente}
-                            activo={ambienteActivo}
-                            onToggleActivo={establecerAmbienteActivo}
-                            onCambiarVolumen={establecerVolumenAmbiente}
-                        />
-                    </TabsContent>
-
-                    <TabsContent value="local">
-                        <ReproductorLocal
-                            entrada={entradaUrlLocal}
-                            onEntradaChange={establecerEntradaUrlLocal}
-                            urlIncrustada={urlIncrustadaLocal}
-                            error={errorLocal}
-                            onSubmit={manejarCargarLocal}
-                            onLimpiar={() => establecerUrlIncrustadaLocal(null)}
-                        />
-                    </TabsContent>
-
-                    <TabsContent value="room">
-                        <ReproductorSala
-                            entrada={entradaUrlSala}
-                            onEntradaChange={establecerEntradaUrlSala}
-                            error={errorSala}
-                            onSubmit={manejarCargarSala}
-                            estadoSala={estadoSala}
-                            onLimpiar={() => actualizarEstadoSala({ url: "", isPlaying: false })}
-                        />
-                    </TabsContent>
-                </Tabs>
-            </div>
-        </div>
+                    {salaId && (
+                        <section aria-label="Para la sala" className="flex flex-col gap-2 border-t pt-3">
+                            <p className={`${claseRotulo} m-0`}>
+                                Para la sala <span className="ml-1 tracking-normal normal-case">{enLaSala > 1 ? `los ${enLaSala}` : "todos"}</span>
+                            </p>
+                            {estadoSala.url ? (
+                                <>
+                                    <div className="flex items-center gap-2">
+                                        <User className="size-4 shrink-0 text-brand" aria-hidden />
+                                        <span className="flex min-w-0 flex-1 flex-col leading-tight">
+                                            <b className="truncate text-[0.84375rem] font-medium">Video de YouTube</b>
+                                            <small className="truncate text-[0.75rem] text-muted-foreground">
+                                                {estadoSala.puestaPor ? `Lo puso ${estadoSala.puestaPor}` : "Suena para todos"}
+                                            </small>
+                                        </span>
+                                        <button type="button" onClick={() => establecerCambiandoVideo(!cambiandoVideo)} aria-expanded={cambiandoVideo} title="Poner otro video" aria-label="Poner otro video" className={botonChico}>
+                                            <Link2 />
+                                        </button>
+                                        <button type="button" onClick={() => establecerSilenciada(!silenciada)} title={silenciada ? "Escucharlo" : "Silenciar para mí"} aria-label={silenciada ? "Escucharlo" : "Silenciar para mí"} className={botonChico}>
+                                            {silenciada ? <VolumeX /> : <Volume2 />}
+                                        </button>
+                                        <button type="button" onClick={() => actualizarEstadoSala({ url: "", isPlaying: false })} title="Sacarlo para todos" aria-label="Sacarlo para todos" className={botonChico}>
+                                            <X />
+                                        </button>
+                                    </div>
+                                    {cambiandoVideo && campoVideo}
+                                </>
+                            ) : (
+                                campoVideo
+                            )}
+                        </section>
+                    )}
+                </PopoverContent>
+            </Popover>
+        </>
     );
 });

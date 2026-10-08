@@ -1,54 +1,46 @@
-import { Button } from '@/components/ui/button';
-import { Play, Pause, PictureInPicture2 } from 'lucide-react';
-import DialogSettings from './DialogSettings';
+import { Pause, Play, PictureInPicture2 } from 'lucide-react';
 import type { TimerSettings } from '@/types/timer';
+import { claseControl } from '../clasesReloj';
+import { cn } from '@/lib/utils';
+import { PanelTiempos } from './PanelTiempos';
 
 type ControlesTimerProps = {
     estaActivo: boolean;
-    // Play/pausa del temporizador
     onAlternar: () => void;
-    // Si el navegador soporta Picture-in-Picture (Document PiP)
+    // Si el navegador soporta la ventana flotante (Document PiP)
     esSoportadoPiP: boolean;
-    // Abre/cierra la ventana flotante
     onAlternarPiP: () => void;
     configuracion: TimerSettings;
-    onGuardarConfiguracion: (configuracion: TimerSettings) => void;
+    onCambiarConfiguracion: (configuracion: TimerSettings) => void;
+    enLaSala: number;
 };
 
 /**
- * Controles principales del reloj (presentacional): play/pausa, Picture-in-Picture
- * (si está soportado) y el diálogo de configuración.
+ * Los controles a la derecha del reloj: play (en el acento; corriendo pasa a un
+ * borde fino con la pausa), la ventana flotante y los tiempos.
  */
-export function ControlesTimer({
-    estaActivo,
-    onAlternar,
-    esSoportadoPiP,
-    onAlternarPiP,
-    configuracion,
-    onGuardarConfiguracion,
-}: ControlesTimerProps) {
+export function ControlesTimer({ estaActivo, onAlternar, esSoportadoPiP, onAlternarPiP, configuracion, onCambiarConfiguracion, enLaSala }: ControlesTimerProps) {
     return (
-        <div className="flex items-center gap-3 order-3">
-            <Button
+        <div className="zona-controles flex gap-1.5">
+            <button
+                type="button"
                 onClick={onAlternar}
-                size="icon"
-                variant={estaActivo ? "outline" : "default"}
-                aria-label={estaActivo ? "Pausar temporizador" : "Iniciar temporizador"}
-                className={`h-10 w-10 shadow-sm transition-all duration-200 ${!estaActivo && 'bg-primary hover:bg-primary/90'}`}>
-                {estaActivo ? <Pause className="fill-current w-5 h-5" /> : <Play className="fill-current w-5 h-5 ml-1" />}
-            </Button>
+                aria-label={estaActivo ? 'Pausar' : 'Iniciar'}
+                className={cn(
+                    claseControl,
+                    estaActivo
+                        ? 'border-border text-foreground'
+                        : 'bg-brand-strong text-brand-foreground hover:bg-brand-strong/90 hover:text-brand-foreground',
+                )}
+            >
+                {estaActivo ? <Pause className="fill-current" /> : <Play className="fill-current" />}
+            </button>
             {esSoportadoPiP && (
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={onAlternarPiP}
-                    className="h-10 w-10 text-muted-foreground hover:text-foreground transition-all shadow-sm"
-                    title="Abrir en ventana flotante"
-                >
-                    <PictureInPicture2 className="w-5 h-5" />
-                </Button>
+                <button type="button" onClick={onAlternarPiP} className={claseControl} title="Ventana flotante" aria-label="Abrir en ventana flotante">
+                    <PictureInPicture2 />
+                </button>
             )}
-            <DialogSettings configuracionActual={configuracion} alGuardarConfiguracion={onGuardarConfiguracion} />
+            <PanelTiempos configuracion={configuracion} onCambiar={onCambiarConfiguracion} enLaSala={enLaSala} />
         </div>
     );
 }

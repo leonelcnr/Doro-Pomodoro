@@ -1,14 +1,14 @@
 import { Play, Pause, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Modo } from '@/types/timer';
-import { ETIQUETA_MODO, PUNTO_MODO, BARRA_MODO } from '../modoVisual';
+import { ETIQUETA_MODO } from '../modoVisual';
 import './FloatingTimer.css';
 
 // Props del reloj flotante (se renderiza dentro de la ventana Picture-in-Picture)
 interface PropsTemporizadorFlotante {
     tiempoRestante: number;     // Segundos restantes a mostrar
     estaActivo: boolean;        // Para alternar el ícono play/pausa
-    modo: Modo;                 // Fase actual, para mostrar el indicador de modo
+    modo: Modo;                 // Fase actual, para la etiqueta de la fase
     progreso: number | null;    // Fracción de tiempo que queda (1 = recién arrancado); null en cronómetro
     alAlternar: () => void;     // Callback al tocar play/pausa
     alCerrar: () => void;       // Callback al cerrar la ventana flotante
@@ -41,7 +41,7 @@ export const FloatingTimer = ({ tiempoRestante, estaActivo, modo, progreso, alAl
     const mostrarProgreso = progreso !== null && (estaActivo || progreso < 1);
 
     return (
-        <div className="reloj-flotante relative w-full h-screen bg-background text-foreground font-mono select-none overflow-hidden cursor-pointer"
+        <div className="reloj-flotante relative w-full h-screen bg-background text-foreground select-none overflow-hidden cursor-pointer"
             onClick={alAlternar}>
 
             {/* La caja que se reacomoda va aparte del contenedor: un elemento no
@@ -55,17 +55,21 @@ export const FloatingTimer = ({ tiempoRestante, estaActivo, modo, progreso, alAl
                     <X className="w-4 h-4" />
                 </Button>
 
-                {/* Indicador de modo (solo informativo): punto luminoso + etiqueta de la fase actual */}
+                {/* Indicador de modo (solo informativo): punto en el acento + etiqueta de la fase actual */}
                 <div className="reloj-flotante__fase mb-4 flex items-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${PUNTO_MODO[modo]}`} />
-                    <span className="reloj-flotante__etiqueta text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="reloj-flotante__etiqueta text-[0.625rem] sm:text-xs font-sans font-medium tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
                         {ETIQUETA_MODO[modo]}
                     </span>
                 </div>
 
-                <div className="reloj-flotante__hora flex items-baseline gap-1 tracking-tighter whitespace-nowrap">
+                <div className="reloj-flotante__hora flex items-center font-semibold leading-none tracking-[-0.04em] tabular-nums whitespace-nowrap">
                     <DosDigitos value={Math.floor(tiempoRestante / 60)} />
-                    <span className="opacity-50">:</span>
+                    {/* Los dos puntos redondos de la sala, en vez de «:» */}
+                    <span className="mx-[0.12em] inline-flex flex-col gap-[0.2em]" aria-hidden>
+                        <i className="size-[0.1em] rounded-full bg-muted-foreground/70" />
+                        <i className="size-[0.1em] rounded-full bg-muted-foreground/70" />
+                    </span>
                     <DosDigitos value={tiempoRestante % 60} />
                 </div>
 
@@ -82,7 +86,7 @@ export const FloatingTimer = ({ tiempoRestante, estaActivo, modo, progreso, alAl
             {mostrarProgreso && (
                 <div className="reloj-flotante__progreso absolute inset-x-0 bottom-0 h-0.5 bg-muted">
                     <div
-                        className={`h-full transition-[width] duration-1000 ease-linear ${BARRA_MODO[modo]}`}
+                        className="h-full bg-primary transition-[width] duration-1000 ease-linear"
                         style={{ width: `${progreso * 100}%` }}
                     />
                 </div>

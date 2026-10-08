@@ -1,0 +1,773 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reloj flotante de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Reloj flotante (Document PiP), primera ronda. Un escritorio con la ventana flotante encima; la ventana se arrastra y se redimensiona, y adentro todo se acomoda con container queries reales, como FloatingTimer.css. Mundo de la sala final: un acento, el punto que late, los dos puntos redondos y el hilo. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --escritorio: oklch(0.90 0.006 285);
+  --cromo: oklch(0.945 0.003 285);
+  --cromo-fg: oklch(0.40 0.010 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --sombra-ventana: 0 0 0 1px oklch(0.2 0.01 285 / 0.10), 0 18px 40px -14px oklch(0.2 0.01 285 / 0.35);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --salida: cubic-bezier(.16,1,.3,1);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --escritorio: oklch(0.11 0.004 285); --cromo: oklch(0.235 0.005 285); --cromo-fg: oklch(0.78 0.008 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --sombra-ventana: 0 0 0 1px oklch(1 0 0 / 0.08), 0 18px 44px -12px oklch(0 0 0 / 0.75);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --escritorio: oklch(0.11 0.004 285); --cromo: oklch(0.235 0.005 285); --cromo-fg: oklch(0.78 0.008 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --sombra-ventana: 0 0 0 1px oklch(1 0 0 / 0.08), 0 18px 44px -12px oklch(0 0 0 / 0.75);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+  --escritorio: oklch(0.08 0.002 285); --cromo: oklch(0.2 0.004 285);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 26%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+code { font-size: .9em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+
+/* ───────── Página del boceto ───────── */
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 76ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.indice { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 64px; font-size: 13.5px; }
+.indice a { color: var(--tenue); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.indice a:hover { color: var(--fg); border-color: var(--linea); }
+.indice b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+
+.opcion { margin-bottom: 96px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.resumen b { color: var(--fg); font-weight: 500; }
+.enfoque { margin: 8px 0 0; font-size: 13px; color: var(--tenue); }
+.enfoque b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.presets button, .btn-completa { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.presets button:hover, .btn-completa:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-completa { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+.btn-completa svg { width: 14px; height: 14px; }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { resize: both; overflow: hidden; width: 100%; max-width: 100%; height: 600px; min-width: 300px; min-height: 380px; border: 1px solid var(--linea); border-radius: 12px; background: var(--escritorio); position: relative; }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+.mando-volver { position: fixed; z-index: 110; left: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
+/* ───────── Lo que hay detrás de la ventana ───────── */
+.detras { position: absolute; inset: 0; overflow: hidden; }
+/* Tus apuntes: otra aplicación cualquiera, en gris */
+.apuntes { position: absolute; inset: 18px 18px 0; border-radius: 10px 10px 0 0; background: var(--superficie); box-shadow: var(--sombra); display: flex; flex-direction: column; overflow: hidden; }
+.apuntes-barra { height: 36px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid var(--linea); font-size: 12.5px; color: var(--tenue); }
+.apuntes-barra i { width: 9px; height: 9px; border-radius: 50%; background: var(--linea); }
+.apuntes-barra span { margin-left: 8px; }
+.apuntes-hoja { padding: 28px clamp(20px, 6%, 64px); max-width: 720px; font-size: 14.5px; color: color-mix(in oklch, var(--fg) 80%, var(--bg)); overflow: hidden; }
+.apuntes-hoja h4 { margin: 0 0 4px; font-size: 19px; letter-spacing: -0.01em; color: var(--fg); }
+.apuntes-hoja .sub { margin: 0 0 20px; font-size: 13px; color: var(--tenue); }
+.apuntes-hoja p { margin: 0 0 14px; max-width: 64ch; }
+.apuntes-hoja b { color: var(--fg); font-weight: 600; }
+.apuntes-hoja .marcado { background: color-mix(in oklch, var(--acento) 14%, transparent); }
+
+/* La pestaña de la sala mientras el reloj está en la ventana */
+.sala-tab { position: absolute; inset: 0; background: var(--bg); display: flex; flex-direction: column; isolation: isolate; container: app / inline-size; }
+.sala-tab { --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent); --patron: none; }
+:root[data-fondo="puntos"] .sala-tab { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.sala-tab::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .sala-tab::before { -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, transparent 25%, #000 100%); }
+:root[data-vineta="bordes"] .sala-tab::before { -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%); }
+.tb { display: flex; align-items: center; gap: 24px; height: 56px; padding: 0 20px; flex-shrink: 0; }
+.salir { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; margin-left: -10px; border: 0; background: none; border-radius: 8px; color: var(--tenue); font-size: 14px; }
+.salir svg { width: 17px; height: 17px; }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--tenue); }
+.tb .desv { transition: opacity .35s ease .5s; }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb .desv { opacity: 0; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:hover .desv { opacity: 1; transition-delay: 0s; }
+}
+.avatares { display: flex; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--campo); border: 2px solid var(--bg); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--fg); flex-shrink: 0; }
+.avatares .avatar + .avatar { margin-left: -8px; }
+.avatar.yo { background: var(--acento-suave); box-shadow: 0 0 0 1px color-mix(in oklch, var(--acento) 35%, var(--linea)); }
+.st-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px 16px 96px; text-align: center; }
+.st-reloj { display: flex; align-items: center; font-size: clamp(56px, 13cqi, 150px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; color: color-mix(in oklch, var(--fg) 16%, var(--bg)); }
+.st-txt { margin: 0; font-size: 14px; color: var(--tenue); display: inline-flex; align-items: center; gap: 8px; }
+.st-txt .punto { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.btn-link { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: var(--tenue); text-decoration: underline; text-decoration-color: var(--linea); text-underline-offset: 3px; }
+.btn-link:hover { color: var(--fg); text-decoration-color: currentColor; }
+
+/* ───────── La ventana flotante (cromo del navegador) ───────── */
+.pip { position: absolute; right: 24px; bottom: 24px; z-index: 5; display: flex; flex-direction: column; width: 320px; height: 272px; min-width: 120px; min-height: 92px; max-width: calc(100% - 16px); max-height: calc(100% - 16px); border-radius: 10px; overflow: hidden; resize: both; background: var(--bg); box-shadow: var(--sombra-ventana); }
+.pip-barra { height: 32px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 4px 0 10px; background: var(--cromo); color: var(--cromo-fg); font-size: 12px; cursor: grab; user-select: none; touch-action: none; }
+.pip-barra:active { cursor: grabbing; }
+.pip-barra > svg { width: 14px; height: 14px; color: var(--acento); flex-shrink: 0; }
+.pip-barra .origen { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pip-barra button { width: 26px; height: 26px; border: 0; background: none; border-radius: 6px; display: grid; place-items: center; color: var(--cromo-fg); padding: 0; flex-shrink: 0; }
+.pip-barra button:hover { background: color-mix(in oklch, var(--cromo-fg) 14%, transparent); }
+.pip-barra button svg { width: 14px; height: 14px; }
+.pip-cerrada .pip { display: none; }
+
+/* ═════════ El contenido: lo que va a FloatingTimer ═════════
+   Mismo truco que FloatingTimer.css: el contenedor (.reloj-flotante) mide la
+   ventana y la caja que se reacomoda (.rf) es otro elemento. */
+.reloj-flotante { container: pip / size; position: relative; flex: 1; min-height: 0; background: var(--bg); color: var(--fg); overflow: hidden; isolation: isolate; }
+.reloj-flotante::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: var(--acento); opacity: 0; }
+.reloj-flotante.cambia::after { animation: cambia 1.6s ease both; }
+@keyframes cambia { 15% { opacity: .16; } }
+.rf { position: absolute; inset: 0; }
+
+.rf-hora { display: flex; align-items: center; font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; user-select: none; position: relative; transition: color .4s, transform .5s var(--salida); }
+.dos-puntos { display: inline-flex; flex-direction: column; gap: .2em; margin: 0 .12em; }
+.dos-puntos i { width: .1em; height: .1em; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 70%, transparent); }
+/* En pausa, los números bajan: de reojo se nota que no corre */
+.pausa .rf-hora { color: color-mix(in oklch, var(--fg) 58%, var(--bg)); }
+
+.rf-modo { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); white-space: nowrap; }
+.rf-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.corre .rf-punto { animation: latido 2.4s ease-in-out infinite; }
+.pausa .rf-punto { background: var(--tenue); }
+@keyframes latido { 50% { transform: scale(.55); opacity: .6; } }
+
+.rf-play { width: 36px; height: 36px; border-radius: 10px; border: 1px solid transparent; background: var(--acento); color: var(--acento-fg); display: grid; place-items: center; padding: 0; flex-shrink: 0; transition: background-color .2s, color .2s, border-color .2s; }
+.rf-play:hover { background: color-mix(in oklch, var(--acento) 88%, var(--fg)); }
+.corre .rf-play { background: none; border-color: var(--linea); color: var(--fg); }
+.corre .rf-play:hover { background: var(--campo); }
+.rf-play svg { width: 16px; height: 16px; }
+.rf-play .i-pausa, .corre .rf-play .i-play { display: none; }
+.corre .rf-play .i-pausa { display: block; }
+
+/* El hilo: avance de la fase en 2 px, solo con el reloj corriendo (como en la sala) */
+.rf-hilo { position: absolute; left: .14em; right: .14em; bottom: -.24em; height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; opacity: 0; transition: opacity .6s ease .3s; }
+.rf-hilo i, .rf-borde i { position: absolute; inset: 0; background: var(--acento); transform-origin: left center; transform: scaleX(var(--p, 0)); transition: transform 1s linear; }
+.corre .rf-hilo { opacity: 1; transition-delay: 0s; }
+.rf-borde { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--linea); overflow: hidden; display: none; opacity: 0; transition: opacity .6s ease .3s; z-index: 2; }
+.corre .rf-borde { opacity: 1; transition-delay: 0s; }
+.crono :is(.rf-hilo, .rf-borde) { visibility: hidden; }
+
+/* La fila mínima, igual en las cuatro: punto · hora · play */
+.rf-mini { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 10px; padding: 0 12px; }
+.rf-mini .rf-hora { font-size: min(22cqw, 54cqh); }
+.rf-mini .rf-play { width: 28px; height: 28px; background: none; border-color: transparent; color: var(--tenue); }
+.rf-mini .rf-play:hover { color: var(--fg); background: var(--campo); }
+.rf-mini .rf-play svg { width: 13px; height: 13px; }
+@container pip ((max-width: 219px) or (max-height: 129px)) {
+  .rf-normal { display: none !important; }
+  .rf-mini { display: flex; }
+  .rf-borde { display: block; }
+}
+
+/* ───────── 1 · La sala en chico ───────── */
+.v1 .rf-normal { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: min(7cqh, 22px); padding: 12px; }
+.v1 .rf-hora { font-size: clamp(26px, min(25cqw, 30cqh), 150px); }
+
+/* ───────── 2 · Solo los números ───────── */
+.v2 .rf-normal { position: absolute; inset: 0; display: grid; place-items: center; }
+.v2 .rf-hora { font-size: min(26cqw, 62cqh); }
+.v2 .rf-borde { display: block; }
+.v2 .rf-arriba, .v2 .rf-abajo { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .3s ease .2s, transform .4s var(--salida) .2s; pointer-events: none; }
+.v2 .rf-arriba { top: 10px; transform: translateY(-4px); }
+.v2 .rf-abajo { bottom: 12px; transform: translateY(4px); }
+.v2 .reloj-flotante:is(:hover, :focus-within) :is(.rf-arriba, .rf-abajo) { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+.v2 .reloj-flotante:is(:hover, :focus-within) .rf-normal .rf-hora { transform: scale(.74); }
+:root[data-tactil] .v2 :is(.rf-arriba, .rf-abajo) { opacity: 1; transform: none; pointer-events: auto; }
+:root[data-tactil] .v2 .rf-normal .rf-hora { transform: scale(.74); }
+@container pip (max-height: 189px) { .v2 .rf-arriba { display: none; } }
+
+/* ───────── 3 · El anillo ───────── */
+.v3 .rf-normal { position: absolute; inset: 0; display: grid; place-items: center; }
+.v3 .rf-anillo { --d: min(84cqw, 82cqh); position: relative; width: var(--d); aspect-ratio: 1; border: 0; padding: 0; background: none; border-radius: 50%; display: grid; place-items: center; color: inherit; }
+.v3 .rf-anillo svg.aro { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.v3 .aro .pista-aro { stroke: var(--linea); }
+.v3 .aro .arco { stroke: var(--acento); transition: stroke-dashoffset 1s linear; }
+.v3 .aro .relleno { fill: var(--superficie); transition: fill .25s; }
+.v3 .rf-anillo:hover .relleno { fill: var(--acento-suave); }
+.pausa.v3 .aro .arco, .pausa .v3 .aro .arco { stroke: var(--tenue); }
+.v3 .rf-adentro { position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(var(--d) * .05); }
+.v3 .rf-adentro .rf-hora { font-size: calc(var(--d) / 4.3); }
+.v3 .rf-adentro .rf-modo { font-size: max(9px, calc(var(--d) / 20)); }
+.v3 .rf-glifo { width: calc(var(--d) / 11); height: calc(var(--d) / 11); color: var(--tenue); opacity: 0; transition: opacity .2s; }
+.v3 .rf-glifo svg { width: 100%; height: 100%; }
+.v3 .rf-glifo .i-pausa, .corre .v3 .rf-glifo .i-play, .v3.corre .rf-glifo .i-play { display: none; }
+.corre .v3 .rf-glifo .i-pausa { display: block; }
+.v3 .rf-anillo:is(:hover, :focus-visible) .rf-glifo { opacity: 1; }
+:root[data-tactil] .v3 .rf-glifo { opacity: 1; }
+/* Ancha y baja: el anillo quedaría chiquito; se va y queda la hora con el hilo al pie */
+.v3 .rf-plano { display: none; }
+@container pip (min-aspect-ratio: 17/10) {
+  .v3 .rf-anillo { display: none; }
+  .v3 .rf-plano { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .v3 .rf-plano .rf-hora { font-size: min(20cqw, 50cqh); }
+  .v3 .rf-borde { display: block; }
+}
+
+/* ───────── 4 · Crece con la ventana ───────── */
+.v4 .rf-normal { position: absolute; inset: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 10px 12px 12px 14px; gap: 4px; }
+.v4 .rf-sup { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; }
+.v4 .rf-centro { display: grid; place-items: center; min-height: 0; }
+.v4 .rf-hora { font-size: clamp(26px, min(24cqw, 27cqh), 150px); }
+.v4 .rf-pie { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.v4 .rf-foco { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: 13px; color: var(--fg); }
+.v4 .rf-foco .k { font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); flex-shrink: 0; }
+.v4 .rf-foco .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.v4 .rf-sala { display: none; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid var(--linea); font-size: 12.5px; color: var(--tenue); min-width: 0; }
+.v4 .rf-sala .avatar { width: 24px; height: 24px; font-size: 10.5px; }
+.v4 .rf-sala .despues { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.v4 .rf-sala .despues b { color: var(--fg); font-weight: 500; }
+@container pip (max-height: 209px) { .v4 .rf-pie { display: none; } }
+@container pip (min-height: 330px) and (min-width: 280px) { .v4 .rf-sala { display: flex; } .v4 .rf-normal { padding: 12px 14px 14px 16px; } }
+@container pip (max-width: 279px) { .v4 .rf-sala .despues { display: none; } }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 40px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 13px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 24px 0 8px; font-weight: 600; }
+.recomendacion p, .recomendacion li { color: var(--tenue); max-width: 64ch; }
+.recomendacion p { margin: 0 0 12px; }
+.recomendacion ul { margin: 0 0 12px; padding-left: 18px; }
+.recomendacion li + li { margin-top: 6px; }
+.recomendacion b { color: var(--fg); font-weight: 600; }
+pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.c-com { color: var(--tenue); }
+.aviso { position: absolute; left: 50%; top: 14px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 8px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); max-width: calc(100% - 32px); text-align: center; z-index: 20; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 1 12.728 12.728a9 9 0 0 1 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-a-pestana" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M14 9h-4v4"/><path d="m10 9 5 5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Reloj flotante de Doro</h1>
+    <p><b>La ventanita que queda encima de todo</b> cuando tocás «Ventana flotante» en la sala (Document Picture-in-Picture). Sirve para ver el reloj mientras estudiás en otra cosa: el PDF, el editor, otra pestaña. Hoy usa fuente mono, un color por fase (rojo, verde, azul), un botón redondo con sombra y una X propia, y tocar cualquier parte de la ventana pausa el reloj.</p>
+    <p>En cada maqueta, <b>la ventana se arrastra por su barra y se agranda desde la esquina</b>, o con los tamaños de arriba; la medida es la del contenido, la que mide el código. Adentro todo se acomoda con <b>container queries</b>, la misma técnica de <code>FloatingTimer.css</code>. El reloj es el mismo en las cuatro, como el de una sala: tocá play en una y se mueve en todas. <b>«Saltar al final»</b> deja 4 segundos para ver el cambio de fase. <b>H</b> esconde la barra de ajustes; en pantalla completa, la del mando.</p>
+  </header>
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste"><span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Acento</span><div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fase</span>
+      <div class="segmentado" id="fase" role="group" aria-label="Fase del reloj"><button type="button" data-v="pomodoro">Pomodoro</button><button type="button" data-v="shortBreak">Descanso</button><button type="button" data-v="stopwatch">Cronómetro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Reloj</span>
+      <div class="segmentado" id="marcha" role="group" aria-label="Reloj corriendo o en pausa"><button type="button" data-v="corre">Corriendo</button><button type="button" data-v="pausa">En pausa</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Detrás</span>
+      <div class="segmentado" id="detras" role="group" aria-label="Qué hay detrás de la ventana"><button type="button" data-v="apuntes">Tus apuntes</button><button type="button" data-v="sala">La pestaña de la sala</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior"><button type="button" data-v="completa">Completa</button><button type="button" data-v="desvanece">Se desvanece</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo"><button type="button" data-v="liso">Liso</button><button type="button" data-v="puntos">Puntos</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos"><button type="button" data-v="parejo">No</button><button type="button" data-v="bordes">A los lados</button><button type="button" data-v="centro">Al centro</button></div></div>
+    <div class="ajuste"><span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo"><button type="button" data-v="mouse">Con mouse</button><button type="button" data-v="tactil">Táctil</button></div></div>
+  </div>
+
+  <nav class="indice" aria-label="Bocetos" id="indice"></nav>
+
+  <section class="opcion" id="r1" data-v="v1">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">1</span><span class="nombre">La sala en chico</span></h2>
+        <p class="resumen">La de hoy pasada al idioma de la sala: <b>el punto y la fase arriba, el reloj, el hilo y el play</b>. Sin colores por fase, sin mono, sin X propia (la ventana ya trae la suya). Solo el play pausa.</p>
+        <p class="enfoque">Lo primero: <b>que sea la misma sala</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El cambio más chico: es la de hoy, ordenada.</li><li>Se reconoce al instante: mismo punto, mismos dos puntos, mismo hilo.</li><li>Ya no se pausa sin querer al tocar la ventana para moverla.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Tres cosas apiladas en una ventana chica: el reloj no llega a ser grande.</li><li>No aprovecha que la ventana puede crecer.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco" data-marco></div>
+  </section>
+
+  <section class="opcion" id="r2" data-v="v2">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">2</span><span class="nombre">Solo los números</span></h2>
+        <p class="resumen"><b>La ventana es el reloj</b>: los números la llenan y el hilo corre por el borde de abajo. Al pasar el mouse, los números se achican y aparecen la fase arriba y el play abajo. En pausa, los números bajan de tono.</p>
+        <p class="enfoque">Lo primero: <b>leerlo de reojo, de lejos</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj más grande posible en cualquier tamaño.</li><li>Nada que mirar salvo la hora: lo más calmo de las cuatro.</li><li>Es el «queda el reloj» de la sala, llevado a la ventana.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin el mouse encima no dice qué fase es: hay que fiarse del tono y del hilo.</li><li>En táctil los controles quedan siempre a la vista.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco" data-marco></div>
+  </section>
+
+  <section class="opcion" id="r3" data-v="v3">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">3</span><span class="nombre">El anillo</span></h2>
+        <p class="resumen"><b>El anillo del home</b> rodea el reloj y se llena con la fase; tocarlo da play o pausa, como en la E de la sala. Si la ventana queda ancha y baja, el anillo se va y queda la hora con el hilo al pie.</p>
+        <p class="enfoque">Lo primero: <b>cuánto falta, de un vistazo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El avance se lee sin leer números.</li><li>Une la ventana con el home: el mismo objeto.</li><li>Un solo blanco grande para tocar.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un círculo en una ventana rectangular desperdicia las esquinas: los números quedan más chicos que en 2.</li><li>La sala final no tiene anillo (eligió el hilo): son dos objetos para lo mismo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco" data-marco></div>
+  </section>
+
+  <section class="opcion" id="r4" data-v="v4">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">4</span><span class="nombre">Crece con la ventana</span></h2>
+        <p class="resumen">Usa el ancho: <b>fase a la izquierda y play a la derecha</b>, el reloj al medio y, abajo, <b>en qué estás</b> (el foco de la bandeja). Si agrandás la ventana aparece la sala: quién está y qué viene después. Si la achicás, se va de abajo hacia arriba.</p>
+        <p class="enfoque">Lo primero: <b>el reloj, y lo que estás haciendo</b></p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La ventana dice lo mismo que la sala: el reloj y el foco.</li><li>Cada tamaño tiene sentido; vos elegís cuánto ver.</li><li>Fase y play en una fila: el reloj sube de tamaño respecto de 1.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Más texto que las otras: una línea en el tamaño normal.</li><li>Necesita el foco y la presencia de la sala aunque no estés en la pestaña.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco" data-marco></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Reloj flotante</th><th>Tamaño del reloj (320 × 240)</th><th>Se lee sin el mouse</th><th>Qué más dice</th><th>Achicada al mínimo</th><th>Cambio respecto de hoy</th></tr></thead>
+        <tbody>
+          <tr><td>1 · La sala en chico</td><td>Mediano</td><td>Fase, hora, avance</td><td>—</td><td>Punto · hora · play</td><td>Chico</td></tr>
+          <tr><td>2 · Solo los números</td><td>El más grande</td><td>Hora, avance; la fase no</td><td>—</td><td>Punto · hora · play</td><td>Chico</td></tr>
+          <tr><td>3 · El anillo</td><td>Chico</td><td>Fase, hora, avance (anillo)</td><td>—</td><td>Punto · hora · play</td><td>Mediano</td></tr>
+          <tr class="elegida"><td>4 · Crece con la ventana</td><td>Mediano-grande</td><td>Fase, hora, avance, foco</td><td>Foco; agrandada, la sala y lo que sigue</td><td>Punto · hora · play</td><td>Mediano (lee foco y presencia)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recomendacion">
+      <div>
+        <h3>Recomendación: 4 · Crece con la ventana</h3>
+        <p><b>La ventana flotante es la sala cuando no estás mirando la sala.</b> El tamaño normal muestra lo que la sala tiene arriba de todo (la fase, el reloj, el hilo) y lo que tiene la bandeja plegada (en qué estás). El resto aparece solo si la agrandás, y se va si la achicás: el que la quiere mínima la achica y tiene la fila de siempre.</p>
+        <p><b>2</b> si preferís la calma total: es la más linda de lejos, pero sin el mouse no dice si es pomodoro o descanso. <b>1</b> si querés el cambio mínimo antes de la Fase 3. <b>3</b> solo si el anillo vuelve a la sala.</p>
+        <p><b>El fondo:</b> liso. En una ventana de 320 × 240 los puntos se ven como textura sucia detrás de los números; el ajuste «Fondo» solo cambia la pestaña de la sala.</p>
+        <h4>Lo común a las cuatro</h4>
+        <ul>
+          <li><b>Sin color por fase.</b> El punto usa el acento y late con el reloj corriendo; en pausa se apaga a gris. Se van <code>PUNTO_MODO</code> y <code>BARRA_MODO</code> de <code>modoVisual.ts</code> (o quedan para otra cosa).</li>
+          <li><b>Geist, no mono,</b> con los dos puntos redondos de la sala y cifras tabulares.</li>
+          <li><b>Solo el play pausa.</b> Hoy tocar cualquier parte pausa, y para mover o enfocar la ventana hay que tocarla.</li>
+          <li><b>Sin X propia:</b> la barra de la ventana ya trae cerrar y «volver a la pestaña».</li>
+          <li><b>Achicada al mínimo, una fila:</b> punto, hora y play, con el hilo en el borde (lo que hoy es la píldora).</li>
+          <li><b>Al cambiar de fase,</b> la ventana se tiñe un instante del acento. No puede robar el foco, así que es lo más que puede avisar sin sonido.</li>
+        </ul>
+        <h4>Qué encontré en el código</h4>
+        <ul>
+          <li><b>La ventana no toma el color de acento.</b> <code>useDocumentPiP</code> copia <code>className</code> y <code>style</code> del <code>&lt;html&gt;</code>, pero el acento vive en <code>data-acento</code> (<code>src/lib/acento.ts</code>). Hoy la ventana sale siempre violeta.</li>
+          <li><b>Al salir de la sala la ventana queda vacía.</b> El portal vive en <code>TimerDisplay</code>: si navegás a Tareas o al home, se desmonta y la ventana sigue abierta en blanco. No hay limpieza al desmontar. Además la sincronización del reloj (<code>useSincronizacionReloj</code>) vive en <code>RoomPage</code>, así que afuera de la sala el reloj dejaría de seguir a los demás.</li>
+          <li><b>La pestaña de la sala</b> muestra un ícono grande y «Temporizador en ventana» con un párrafo. Basta con el reloj apagado y «Traerlo acá» (ajuste «Detrás»).</li>
+          <li><code>pip-active-body</code> se pone en el <code>body</code> pero no tiene CSS: no hace nada.</li>
+          <li>Document PiP <b>solo existe en Chrome y Edge de escritorio</b>. En Firefox, Safari y celulares el botón no aparece (ya lo cuida <code>esSoportado</code>).</li>
+        </ul>
+      </div>
+      <div>
+        <pre><span class="c-com">/* FloatingTimer.css · la 4 son tres umbrales */</span>
+.reloj-flotante { container: pip / size; }
+
+<span class="c-com">/* Baja: se va el foco */</span>
+@container pip (max-height: 209px) {
+  .rf-pie { display: none; }
+}
+<span class="c-com">/* Grande: aparece la sala */</span>
+@container pip (min-height: 330px) and (min-width: 280px) {
+  .rf-sala { display: flex; }
+}
+<span class="c-com">/* Mínima: una fila, el hilo al borde */</span>
+@container pip ((max-width: 219px) or (max-height: 129px)) {
+  .rf-normal { display: none; }
+  .rf-mini { display: flex; }
+}</pre>
+        <pre><span class="c-com">// FloatingTimer.tsx · sigue siendo tonto</span>
+interface PropsTemporizadorFlotante {
+  tiempoRestante: number;
+  estaActivo: boolean;
+  modo: Modo;
+  progreso: number | null;   <span class="c-com">// avance de la fase; null en cronómetro</span>
+  foco?: string;             <span class="c-com">// título de la tarea en foco</span>
+  presentes?: Presente[];    <span class="c-com">// de usePresenciaSala</span>
+  siguiente?: { modo: Modo; segundos: number };
+  alAlternar: () =&gt; void;
+}</pre>
+        <pre><span class="c-com">// useDocumentPiP · copiar también el acento</span>
+const copiarRaiz = () =&gt; {
+  const de = document.documentElement, a = ventana.document.documentElement;
+  a.className = de.className;
+  a.style.cssText = de.style.cssText;
+  if (de.dataset.acento) a.dataset.acento = de.dataset.acento;
+  else delete a.dataset.acento;
+};
+observador.observe(document.documentElement, {
+  attributes: true, attributeFilter: ["class", "style", "data-acento"],
+});</pre>
+        <pre><span class="c-com">// TimerDisplay · cerrar la ventana si se va la sala</span>
+useEffect(() =&gt; () =&gt; cerrarPiP(), [cerrarPiP]);</pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const ic = (id, cls = "") => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#${id}"/></svg>`;
+
+  /* ── El reloj (uno solo, como el de una sala) ── */
+  const FASES = { pomodoro: ["Pomodoro", 1500], shortBreak: ["Descanso corto", 300], longBreak: ["Descanso largo", 900], stopwatch: ["Cronómetro", 0] };
+  const reloj = { modo: "pomodoro", restante: 18 * 60 + 42, transcurrido: 0, corre: true, vueltas: 1 };
+  const total = () => FASES[reloj.modo][1];
+
+  /* ── Ajustes (mismas claves que los otros bocetos) ── */
+  const grupos = {
+    tema: v => { if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; } else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; } },
+    barra: v => raiz.dataset.barra = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+    detras: v => { raiz.dataset.detras = v; pintarDetras(); },
+    fase: v => { reloj.modo = v; reloj.restante = v === "pomodoro" ? 18 * 60 + 42 : total(); reloj.transcurrido = v === "stopwatch" ? 7 * 60 + 15 : 0; render(); },
+    marcha: v => { reloj.corre = v === "corre"; render(); },
+  };
+  const temaActual = () => raiz.hasAttribute("data-negro") ? "negro" : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", fondo: "liso", vineta: "centro", disp: "mouse", detras: "apuntes", fase: "pomodoro", marcha: "corre" };
+  const sinGuardar = ["fase", "marcha"];
+  const ponerAjuste = {};
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0], o = temaActual() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => { b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]); b.setAttribute("aria-pressed", b.dataset.id === acento); });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre); b.addEventListener("click", () => ponerAcento(a.id)); contMuestras.appendChild(b); });
+  new MutationObserver(() => { aplicarAcento(); pulsar(document.getElementById("tema"), temaActual()); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { pulsar(document.getElementById("tema"), temaActual()); aplicarAcento(); });
+
+  /* ── Piezas del contenido ── */
+  const hora = (hilo = false) => `<div class="rf-hora" role="timer"><span data-mm></span><span class="dos-puntos" aria-hidden="true"><i></i><i></i></span><span data-ss></span>${hilo ? `<span class="rf-hilo" aria-hidden="true"><i></i></span>` : ""}</div>`;
+  const modo = () => `<span class="rf-modo"><i class="rf-punto"></i><span data-modo></span></span>`;
+  const play = () => `<button type="button" class="rf-play" data-play aria-label="Iniciar o pausar">${ic("i-play", "i-play")}${ic("i-pausa", "i-pausa")}</button>`;
+  const mini = () => `<div class="rf-mini"><i class="rf-punto"></i>${hora()}${play()}</div><span class="rf-borde" aria-hidden="true"><i></i></span>`;
+  const R = 46, CIRC = +(2 * Math.PI * R).toFixed(2);
+
+  const CONTENIDO = {
+    v1: () => `<div class="rf-normal">${modo()}${hora(true)}${play()}</div>${mini()}`,
+    v2: () => `<div class="rf-normal"><div class="rf-arriba">${modo()}</div>${hora()}<div class="rf-abajo">${play()}</div></div>${mini()}`,
+    v3: () => `<div class="rf-normal">
+        <button type="button" class="rf-anillo" data-play aria-label="Iniciar o pausar">
+          <svg class="aro" viewBox="0 0 100 100" aria-hidden="true"><circle class="relleno" cx="50" cy="50" r="${R}"/><circle class="pista-aro" cx="50" cy="50" r="${R}" fill="none" stroke-width="1.5"/><circle class="arco" data-arco cx="50" cy="50" r="${R}" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg>
+          <span class="rf-adentro">${modo()}${hora()}<span class="rf-glifo">${ic("i-play", "i-play")}${ic("i-pausa", "i-pausa")}</span></span>
+        </button>
+        <div class="rf-plano"><i class="rf-punto"></i>${hora()}${play()}</div>
+      </div>${mini()}`,
+    v4: () => `<div class="rf-normal">
+        <div class="rf-sup">${modo()}${play()}</div>
+        <div class="rf-centro">${hora(true)}</div>
+        <div class="rf-pie">
+          <div class="rf-foco"><span class="k">Ahora</span><span class="t">Ejercicio 4 · Integrales dobles</span></div>
+          <div class="rf-sala"><span class="avatares"><span class="avatar">A</span><span class="avatar">T</span><span class="avatar yo">L</span></span><span>3 en la sala</span><span class="despues" data-despues></span></div>
+        </div>
+      </div>${mini()}`,
+  };
+
+  const apuntes = `<div class="apuntes"><div class="apuntes-barra"><i></i><i></i><i></i><span>Guía 3 · Integrales dobles.pdf</span></div>
+    <div class="apuntes-hoja"><h4>Guía 3 · Integrales dobles</h4><p class="sub">Análisis Matemático II · 2º cuatrimestre</p>
+      <p><b>Ejercicio 3.</b> Calcular ∬<sub>R</sub> (x² + y) dA, con R = [0, 2] × [1, 3]. Comparar el resultado integrando primero en x y después en y.</p>
+      <p class="marcado"><b>Ejercicio 4.</b> Hallar el área de la región limitada por y = x² e y = 2x. Dibujar la región antes de plantear los límites de integración.</p>
+      <p><b>Ejercicio 5.</b> Cambiar el orden de integración en ∫₀¹ ∫<sub>x</sub>¹ e<sup>y²</sup> dy dx y calcular. ¿Por qué no se puede resolver en el orden dado?</p>
+      <p><b>Ejercicio 6.</b> Usar coordenadas polares para calcular el volumen bajo z = 4 − x² − y² sobre el disco x² + y² ≤ 4.</p>
+    </div></div>`;
+  const salaTab = `<div class="sala-tab"><header class="tb"><button type="button" class="salir" tabindex="-1">${ic("i-volver")}<span class="desv">Salir</span></button>
+      <div class="tb-der"><span class="desv">3 en la sala</span><span class="avatares"><span class="avatar">A</span><span class="avatar">T</span><span class="avatar yo">L</span></span></div></header>
+    <main class="st-main"><div class="st-reloj"><span data-mm></span><span class="dos-puntos" aria-hidden="true"><i></i><i></i></span><span data-ss></span></div>
+      <p class="st-txt"><span class="punto"></span>En la ventana flotante</p>
+      <button type="button" class="btn-link" data-traer>Traerlo acá</button></main></div>`;
+
+  const marcos = [];
+  function pintarDetras() {
+    marcos.forEach(m => { m.detras.innerHTML = raiz.dataset.detras === "sala" ? salaTab : apuntes; });
+    render();
+  }
+
+  /* ── Render del reloj en todas las ventanas ── */
+  const dos = n => String(n).padStart(2, "0");
+  function render() {
+    const crono = reloj.modo === "stopwatch";
+    const s = crono ? reloj.transcurrido : reloj.restante;
+    const mm = dos(Math.floor(s / 60)), ss = dos(s % 60);
+    const p = crono ? 0 : 1 - reloj.restante / total();
+    document.querySelectorAll("[data-mm]").forEach(e => e.textContent = mm);
+    document.querySelectorAll("[data-ss]").forEach(e => e.textContent = ss);
+    document.querySelectorAll("[data-modo]").forEach(e => e.textContent = reloj.corre || crono ? FASES[reloj.modo][0] : "En pausa");
+    const sig = reloj.modo === "pomodoro" ? (reloj.vueltas % 4 === 0 ? "longBreak" : "shortBreak") : "pomodoro";
+    document.querySelectorAll("[data-despues]").forEach(e => e.innerHTML = crono ? "" : `Después: <b>${FASES[sig][0].toLowerCase()} ${FASES[sig][1] / 60}:00</b>`);
+    document.querySelectorAll(".reloj-flotante").forEach(e => {
+      e.style.setProperty("--p", p.toFixed(4));
+      e.classList.toggle("corre", reloj.corre);
+      e.classList.toggle("pausa", !reloj.corre);
+      e.classList.toggle("crono", crono);
+    });
+    document.querySelectorAll("[data-arco]").forEach(c => c.setAttribute("stroke-dashoffset", (CIRC * (1 - (crono ? 0 : p))).toFixed(2)));
+    pulsar(document.getElementById("marcha"), reloj.corre ? "corre" : "pausa");
+    pulsar(document.getElementById("fase"), reloj.modo === "longBreak" ? "shortBreak" : reloj.modo);
+    document.querySelectorAll("[data-play]").forEach(b => b.setAttribute("aria-label", reloj.corre ? "Pausar" : "Iniciar"));
+  }
+  function cambiarFase() {
+    if (reloj.modo === "pomodoro") { reloj.modo = reloj.vueltas % 4 === 0 ? "longBreak" : "shortBreak"; reloj.vueltas++; }
+    else reloj.modo = "pomodoro";
+    reloj.restante = total();
+    document.querySelectorAll(".reloj-flotante").forEach(e => { e.classList.remove("cambia"); void e.offsetWidth; e.classList.add("cambia"); });
+  }
+  setInterval(() => {
+    if (!reloj.corre) return;
+    if (reloj.modo === "stopwatch") reloj.transcurrido++;
+    else if (--reloj.restante <= 0) cambiarFase();
+    render();
+  }, 1000);
+
+  /* ── Montaje de cada maqueta ── */
+  const opciones = [...document.querySelectorAll(".opcion")];
+  const PRESETS = [["Mínima", 200, 110], ["Tira", 380, 96], ["Normal", 320, 240], ["Alta", 260, 380], ["Grande", 440, 360]];
+  const BARRA = 32;
+  document.getElementById("indice").innerHTML = opciones.map(op => `<a href="#${op.id}"><b>${op.querySelector(".letra").textContent}</b>${op.querySelector(".nombre").textContent}</a>`).join("") + `<a href="#cierre">Recomendación</a>`;
+
+  opciones.forEach(op => {
+    const v = op.dataset.v, marco = op.querySelector("[data-marco]"), bm = op.querySelector("[data-barra]");
+    marco.innerHTML = `<div class="detras"></div>
+      <div class="pip" role="dialog" aria-label="Ventana flotante">
+        <div class="pip-barra">${ic("i-logo")}<span class="origen">Doro</span><button type="button" data-traer title="Volver a la pestaña" aria-label="Volver a la pestaña">${ic("i-a-pestana")}</button><button type="button" data-cerrar title="Cerrar" aria-label="Cerrar la ventana">${ic("i-x")}</button></div>
+        <div class="reloj-flotante ${v}"><div class="rf">${CONTENIDO[v]()}</div></div>
+      </div><div class="aviso" role="status"></div>`;
+    const pip = marco.querySelector(".pip"), cont = marco.querySelector(".reloj-flotante"), detras = marco.querySelector(".detras");
+    marcos.push({ op, marco, detras });
+
+    bm.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}" title="${w} × ${h} px">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-completa" data-fin>Saltar al final</button>
+      <button type="button" class="btn-completa" data-completa>${ic("i-expandir")}Pantalla completa</button>
+      <span>Ventana: <span class="medida" aria-live="polite"></span></span><span class="pista">Arrastrala por la barra · agrandala desde la esquina</span>`;
+    const medida = bm.querySelector(".medida");
+    const tam = (w, h) => { pip.style.width = w + "px"; pip.style.height = (h + BARRA) + "px"; };
+    bm.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => tam(+b.dataset.w, +b.dataset.h)));
+    new ResizeObserver(() => { const t = `${Math.round(cont.clientWidth)} × ${Math.round(cont.clientHeight)} px`; medida.textContent = t; if (op === actual) mando.querySelector(".medida").textContent = t; }).observe(cont);
+    bm.querySelector("[data-fin]").addEventListener("click", () => {
+      if (reloj.modo === "stopwatch") { avisar(marco, "El cronómetro no termina: elegí Pomodoro o Descanso"); return; }
+      reloj.restante = 4; reloj.corre = true; render();
+    });
+    bm.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+
+    /* Arrastrar por la barra, dentro del escritorio */
+    const barra = pip.querySelector(".pip-barra");
+    barra.addEventListener("pointerdown", e => {
+      if (e.target.closest("button")) return;
+      barra.setPointerCapture(e.pointerId);
+      const m = marco.getBoundingClientRect(), r = pip.getBoundingClientRect();
+      const dx = e.clientX - r.left, dy = e.clientY - r.top;
+      const mover = ev => {
+        const x = Math.max(0, Math.min(ev.clientX - m.left - dx, m.width - r.width));
+        const y = Math.max(0, Math.min(ev.clientY - m.top - dy, m.height - r.height));
+        pip.style.right = (m.width - x - r.width) + "px"; pip.style.bottom = (m.height - y - r.height) + "px";
+      };
+      const soltar = () => { barra.removeEventListener("pointermove", mover); barra.removeEventListener("pointerup", soltar); barra.removeEventListener("pointercancel", soltar); };
+      barra.addEventListener("pointermove", mover); barra.addEventListener("pointerup", soltar); barra.addEventListener("pointercancel", soltar);
+    });
+
+    marco.addEventListener("click", e => {
+      if (e.target.closest("[data-play]")) { reloj.corre = !reloj.corre; render(); return; }
+      if (e.target.closest("[data-cerrar]")) { marco.classList.add("pip-cerrada"); avisar(marco, "Ventana cerrada. El reloj sigue en la sala"); setTimeout(() => marco.classList.remove("pip-cerrada"), 1800); return; }
+      if (e.target.closest("[data-traer]")) { marco.classList.add("pip-cerrada"); avisar(marco, "El reloj vuelve a la pestaña de la sala"); setTimeout(() => marco.classList.remove("pip-cerrada"), 1800); }
+    });
+  });
+
+  function avisar(marco, t) { const a = marco.querySelector(".aviso"); if (!a) return; a.textContent = t; a.classList.add("ver"); clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), 2600); }
+
+  /* Ajustes: se conectan después de montar, porque «Detrás» pinta en los marcos */
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    const clave = id === "detras" ? "doro-rf-detras" : "doro-d4-" + id;
+    ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaActual() : v); if (!sinGuardar.includes(id)) guardar(clave, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => ponerAjuste[id](b.dataset.v)));
+    const valor = sinGuardar.includes(id) ? null : leer(clave, defaults[id]);
+    if (valor) grupos[id](valor);
+    if (id === "tema") pulsar(g, temaActual()); else if (valor) pulsar(g, valor);
+  });
+  aplicarAcento();
+  render();
+
+  /* ── Pantalla completa ── */
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true; mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisoMando = t => { if (actual) avisar(actual.querySelector("[data-marco]"), t); };
+  const usarCiclo = id => { const o = CICLOS[id], v = id === "tema" ? temaActual() : raiz.dataset[id]; ponerAjuste[id](o[(o.indexOf(v) + 1) % o.length]); if (id !== "tema") avisoMando(NOMBRES[raiz.dataset[id]]); };
+  const siguienteAcento = () => { const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length]; ponerAcento(a.id); avisoMando("Acento " + a.nombre.toLowerCase()); };
+  mando.innerHTML = opciones.map(op => { const l = op.querySelector(".letra").textContent, n = op.querySelector(".nombre").textContent; return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Boceto ${l}, ${n}">${l}</button>`; }).join("")
+    + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo">${ic("i-fondo")}</button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos (D)" aria-label="Cambiar desvanecido">${ic("i-vineta")}</button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento">${ic("i-color")}</button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema">${ic("i-tema")}</button>
+    <button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic("i-contraer")}</button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra">${ic("i-x")}</button>`;
+  /* La ventana flotante vive abajo a la derecha, así que el mando va a la izquierda; H o la esquina de abajo a la izquierda lo traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisoMando("Barra escondida. H o la esquina de abajo a la izquierda la traen");
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  const ajustesBarra = document.querySelector(".ajustes");
+  document.addEventListener("keydown", e => {
+    if (actual || e.key.toLowerCase() !== "h" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    ajustesBarra.hidden = !ajustesBarra.hidden;
+  });
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-salir]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const c = op.querySelector(".reloj-flotante"); mando.querySelector(".medida").textContent = `Ventana ${c.clientWidth} × ${c.clientHeight} px`;
+  }
+  function abrirCompleta(op) { raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false); const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null; if (p) p.catch(() => {}); }
+  function cerrarCompleta() { if (!actual) return; const op = actual; op.classList.remove("completa"); actual = null; raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false; if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); op.scrollIntoView({ block: "start" }); }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>

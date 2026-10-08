@@ -1,95 +1,61 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import supabase from "@/lib/supabase";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Unlink } from "lucide-react";
 import * as salasService from "@/features/room/services/salasService";
-import { Button } from "@/components/ui/button"
-import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from "@/components/ui/empty"
-import { Spinner } from "@/components/ui/spinner"
+import { useSalaNueva } from "@/features/home/hooks/useSalaNueva";
+import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp";
+import { CargaArco, EstadoColumna, LineaLink } from "@/components/estados/EstadoColumna";
+import { claseBotonLink } from "@/components/estados/clases";
 
 /**
- * Página intermedia al abrir un enlace de invitación (/invitacion/:code).
- * Procesa automáticamente el código: valida la sesión (redirige a login si hace
- * falta), se une a la sala vía la RPC `join_room` y navega a ella.
+ * Link de invitación (/invitacion/:code), «1 · Directo»: si ya te pasaron el link es
+ * porque querés entrar, así que te une sola (sin sesión, entra como anónimo) y te
+ * lleva a la sala. Mientras, gira el arco del anillo; si el link no sirve, la columna
+ * de errores con el renglón para pegar otro.
  */
 const Invitacion = () => {
     // `code` viene del parámetro de la ruta (contrato con el router)
     const { code } = useParams<{ code: string }>();
     const navigate = useNavigate();
-    const [mensajeError, establecerMensajeError] = useState<string | null>(null);
+    const { unirse } = useSalaNueva();
+    const [fallo, establecerFallo] = useState(false);
 
     useEffect(() => {
-        const procesarInvitacion = async () => {
-            const codigoInvitacion = (code ?? "").trim().toUpperCase();
-            if (!codigoInvitacion) {
-                establecerMensajeError("Código inválido.");
-                return;
-            }
-
-            // 1) Verificamos la sesión (si no hay login, vamos a login y luego volvemos acá)
-            const { data: { session: sesion } } = await supabase.auth.getSession();
-            if (!sesion) {
-                const redireccion = encodeURIComponent(`/invitacion/${codigoInvitacion}`);
-                navigate(`/login?redirect=${redireccion}`, { replace: true, state: { from: location.pathname } });
-                return;
-            }
-
-            // 2) Nos unimos a la sala mediante el servicio de salas
-            try {
-                const salaId = await salasService.unirseASala(codigoInvitacion);
-                // 3) Entramos a la sala
-                navigate(`/room/${salaId}`, { replace: true });
-            } catch (error: unknown) {
-                const mensaje = error instanceof Error ? error.message : undefined;
-                establecerMensajeError(mensaje || "No se pudo unir a la sala.");
-            }
-        };
-
-        procesarInvitacion();
+        const codigo = (code ?? "").trim().toUpperCase();
+        if (!codigo) {
+            establecerFallo(true);
+            return;
+        }
+        salasService
+            .unirseASala(codigo)
+            .then((salaId) => navigate(`/room/${salaId}`, { replace: true }))
+            .catch((error: unknown) => {
+                // El detalle va a la consola; en pantalla, la columna sin mensaje técnico
+                console.error("No se pudo entrar con la invitación:", error);
+                establecerFallo(true);
+            });
     }, [code, navigate]);
 
-    if (mensajeError) {
-        return (
-            <Empty className="w-full h-screen flex flex-col items-center justify-center">
-                <EmptyHeader>
-                    <EmptyTitle>Error</EmptyTitle>
-                    <EmptyDescription>
-                        {mensajeError}
-                    </EmptyDescription>
-                </EmptyHeader>
-                <EmptyContent>
-                    <Button variant="outline" size="sm" onClick={() => navigate("/")}>
-                        Volver al inicio
-                    </Button>
-                </EmptyContent>
-            </Empty>
-        );
-    }
-
     return (
-        <Empty className="w-full h-screen flex flex-col items-center justify-center">
-            <EmptyHeader>
-                <EmptyMedia variant="icon">
-                    <Spinner />
-                </EmptyMedia>
-                <EmptyTitle>Procesando tu invitación...</EmptyTitle>
-                <EmptyDescription>
-                    Por favor espera mientras procesamos tu invitación. No recargues la página.
-                </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-                <Button variant="outline" size="sm" onClick={() => navigate("/")}>
-                    Cancelar
-                </Button>
-            </EmptyContent>
-        </Empty>
+        <div className="flex min-h-dvh flex-col">
+            <EncabezadoApp />
+            {fallo ? (
+                // ponytail: join_room no distingue «venció» de «no existe»; sin vencimiento de links, «no existe» es el caso real
+                <EstadoColumna
+                    icono={Unlink}
+                    titulo="No encontramos esta sala"
+                    texto="Puede que el link esté mal copiado o que la sala se haya cerrado."
+                >
+                    <LineaLink etiqueta="¿Tenés otro?" onUnirse={unirse} />
+                    <Link to="/" className={`mt-2 text-[0.9375rem] ${claseBotonLink}`}>
+                        Ir a Doro
+                    </Link>
+                </EstadoColumna>
+            ) : (
+                <CargaArco texto="Entrando a la sala…" />
+            )}
+        </div>
     );
-}
+};
 
 export default Invitacion;

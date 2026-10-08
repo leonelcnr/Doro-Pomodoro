@@ -57,7 +57,7 @@ src/
     services/              ← acceso a datos (supabase.from/rpc/channel) — p.ej. tareasService,
                              salasService, calendarService
   features/auth/           ← AuthProvider + useAuth (context) + authHelpers
-  pages/, layouts/, components/ (ui + bloques de plantilla shadcn)
+  pages/, layouts/, components/ (ui de shadcn, encabezado/, estados/)
 ```
 
 Features: `auth`, `calendar`, `dashboard`, `home`, `room`, `tasks`, `timer`.
@@ -75,7 +75,7 @@ Features: `auth`, `calendar`, `dashboard`, `home`, `room`, `tasks`, `timer`.
 - **Todo en español**: variables, funciones, estado, comentarios y textos de UI.
 - **Excepción — se mantienen en inglés** (son contratos que romperían la app): nombres de tablas/columnas/RPC de Supabase, campos de Google Calendar/OAuth (`provider_refresh_token`, etc.), props de librerías, los valores literales de `mode` y las claves de `configuracion` del store, y los nombres de archivos/componentes exportados. Aislar esos nombres en la capa de `services/`.
 - **Gestor de paquetes: pnpm** (hay `pnpm-lock.yaml` y `pnpm-workspace.yaml`; Vercel despliega con `pnpm run build`).
-- **No tocar como código propio:** `src/components/ui/*` (shadcn), `src/components/animate-ui/*`, y los bloques de plantilla (`app-sidebar`, `data-table`, `nav-*`, `site-header`). Están ignorados en `eslint.config.js` a propósito.
+- **No tocar como código propio:** `src/components/ui/*` (shadcn) y `src/components/animate-ui/*`. Están ignorados en `eslint.config.js` a propósito. (Los bloques de plantilla `app-sidebar`, `data-table`, `nav-*` y `site-header` se borraron al cerrar la Fase 3 del rediseño.)
 - **Bocetos visuales, no ASCII:** al proponer o comparar diseños de UI, generar un boceto HTML renderizable en vez de previsualizaciones en ASCII. Es la forma más práctica de ver el resultado final.
 
 ### Cómo hacer los bocetos (formato acordado)
@@ -103,4 +103,8 @@ Al actualizar un boceto ya publicado, republicar **el mismo archivo** para conse
 ## Convenciones de TypeScript
 
 - `strict` activo. Evitar `any`: usar los contratos de `src/types/dominio.ts`. En `catch`, usar `error: unknown` + narrowing (`error instanceof Error`).
+- **Medidas en `rem`, no en `px`** (`text-[0.8125rem]`, no `text-[13px]`). La base es
+  `html { font-size: 90% }` (la app se ve como los bocetos al 90 %), así que todo lo que
+  esté en `px` no se escala. Excepción: líneas de 1–2 px y sombras. Al pasar medidas de un
+  boceto (que está en px), dividir por 16.
 - Fechas/horas como **strings** ISO (`"2026-08-10"`, `"18:00"`) cuando son contrato con Supabase.

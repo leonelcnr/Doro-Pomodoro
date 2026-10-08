@@ -1,0 +1,80 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/dashboard.html"
+        ],
+        "createdAt": "2026-10-04T19:49:29.922Z",
+        "reason": "Claude: falso positivo; el detector cruza --tenue/--fg del tema oscuro con el fondo claro. Contraste real medido en el navegador."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/errores.html"
+        ],
+        "createdAt": "2026-10-07T01:06:56.250Z",
+        "reason": "Claude: el scanner mezcla los tokens del tema oscuro con el fondo blanco (#f3f3f5 sobre #ffffff); son los mismos tokens que los bocetos aprobados. Los dos contrastes reales (cifra en cero y días fantasma) se subieron."
+      },
+      {
+        "rule": "layout-transition",
+        "value": "*",
+        "files": [
+          "src/index.css"
+        ],
+        "createdAt": "2026-10-07T20:01:56.059Z",
+        "reason": "Claude: la etiqueta «Tareas» del contador se pliega con max-width tal como el boceto aprobado del home (bocetos/home-d4-bandeja.html); es un span de 5em, una vez por hover. El asa ya pasó a scale."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/tonos-superficies.html"
+        ],
+        "createdAt": "2026-10-07T22:07:33.960Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); los textos usan --fg/--tenue de la app."
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          "bocetos/tonos-superficies.html"
+        ],
+        "createdAt": "2026-10-07T22:07:33.967Z",
+        "reason": "Claude: son maquetas en miniatura de la app (post-its de 11,5 px como en la sala); el texto del boceto en sí es de 13 a 15 px."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/tareas-ajustes.html"
+        ],
+        "createdAt": "2026-10-08T02:10:54.228Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en tonos-superficies.html); los textos usan --fg/--tenue de la app."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "bocetos/tareas-ajustes.html"
+        ],
+        "createdAt": "2026-10-08T02:11:17.865Z",
+        "reason": "Claude: copia fiel de la app: pestañas Temas|Calendario subrayadas sin padding lateral y filas del calendario con borde inferior, igual que CabeceraTareas y CalendarioTareas."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/violeta.html"
+        ],
+        "createdAt": "2026-10-08T03:02:29.395Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); textos con --fg/--tenue y blanco sobre --brand-strong."
+      }
+    ]
+  }
+}

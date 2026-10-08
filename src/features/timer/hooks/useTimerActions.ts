@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTimerStore } from '@/store/timerStore';
 import supabase from '@/lib/supabase';
-import { useAuth } from '@/features/auth/context/useAuth';
+import { asegurarSesion } from '@/features/auth/authHelpers';
 
 // Importamos los audios para que Vite los procese y entregue la URL final
 import rutaSonidoTick from '@/assets/sounds/tick.mp3';
@@ -21,7 +21,6 @@ audioTick.volume = 0.4;
  * sesiones de estudio en Supabase y expone las acciones para los botones.
  */
 export const useTimer = () => {
-  const { user } = useAuth();
   // Traemos estado y acciones persistentes desde el store de Zustand
   const {
     tiempoRestante, estaActivo, modo, configuracion,
@@ -85,21 +84,21 @@ export const useTimer = () => {
           clearInterval(intervalo);
 
           // Guardamos la sesión de estudio si veníamos de un pomodoro
-          if (modo === 'pomodoro' && user) {
+          // (sin sesión todavía, el primer pomodoro terminado crea la anónima)
+          if (modo === 'pomodoro') {
             const minutosAGuardar = configuracion.pomodoro;
 
-            // RPC que acumula los minutos totales del usuario (nombre y parámetro fijados por Supabase)
-            supabase.rpc('update_user_stats', { extra_minutes: minutosAGuardar })
-              .then(({ error: errorEstadisticas }) => {
-                if (errorEstadisticas) console.error("Error update_user_stats:", errorEstadisticas);
-              });
+            void asegurarSesion().then(async (usuarioId) => {
+              // RPC que acumula los minutos totales del usuario (nombre y parámetro fijados por Supabase)
+              const { error: errorEstadisticas } = await supabase.rpc('update_user_stats', { extra_minutes: minutosAGuardar });
+              if (errorEstadisticas) console.error("Error update_user_stats:", errorEstadisticas);
 
-            // Registramos la sesión individual de estudio
-            supabase.from('study_sessions').insert([
-              { user_id: user.id, duration_minutes: minutosAGuardar }
-            ]).then(({ error: errorSesion }) => {
+              // Registramos la sesión individual de estudio
+              const { error: errorSesion } = await supabase.from('study_sessions').insert([
+                { user_id: usuarioId, duration_minutes: minutosAGuardar }
+              ]);
               if (errorSesion) console.error("Error al insertar study_session:", errorSesion);
-            });
+            }).catch((error: unknown) => console.error("No se pudo guardar el pomodoro:", error));
           }
 
           // Transición automática al terminar la fase actual
@@ -154,7 +153,7 @@ export const useTimer = () => {
     return () => clearInterval(intervalo);
     // `tiempoRestante` se lee fresco vía `useTimerStore.getState()` dentro del intervalo,
     // por eso NO va en las dependencias: así el intervalo no se recrea en cada tick.
-  }, [estaActivo, establecerTiempoRestante, establecerEstaActivo, modo, configuracion.pomodoro, user, establecerModo, configuracion.autoBreak, tiempoFinObjetivo, tiempoInicioCronometro, establecerTiempoFinObjetivo, establecerTiempoInicioCronometro]); // Dependencias
+  }, [estaActivo, establecerTiempoRestante, establecerEstaActivo, modo, configuracion.pomodoro, establecerModo, configuracion.autoBreak, tiempoFinObjetivo, tiempoInicioCronometro, establecerTiempoFinObjetivo, establecerTiempoInicioCronometro]); // Dependencias
 
   // --- Funciones que disparan los botones de la interfaz ---
   const alternarTemporizador = () => {

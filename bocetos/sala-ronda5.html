@@ -1,0 +1,2116 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sala de Doro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Sala: la vista de hoy, quieta. Una variante por sección, mismas herramientas que el boceto del home. */
+:root {
+  --bg: oklch(0.985 0.002 285);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.21 0.006 285);
+  --tenue: oklch(0.50 0.012 285);
+  --linea: oklch(0.915 0.004 285);
+  --campo: oklch(0.965 0.003 285);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.12);
+  --acento: oklch(0.56 0.24 293);
+  --acento-fg: oklch(0.99 0 0);
+  --acento-suave: color-mix(in oklch, var(--acento) 12%, var(--superficie));
+  --trama-c: oklch(0.21 0.006 285);
+  --trama-a: 8%;
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --salida: cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+    --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+    --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.155 0.004 285); --superficie: oklch(0.19 0.005 285); --fg: oklch(0.965 0.002 285);
+  --tenue: oklch(0.70 0.010 285); --linea: oklch(0.275 0.006 285); --campo: oklch(0.225 0.005 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --acento: oklch(0.70 0.18 293); --acento-fg: oklch(0.16 0.02 293); --trama-c: oklch(0.965 0.002 285);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --superficie: oklch(0.165 0.004 285);
+  --campo: oklch(0.195 0.004 285); --linea: oklch(0.255 0.005 285);
+}
+
+* { box-sizing: border-box; }
+html { scrollbar-color: var(--linea) transparent; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: color-mix(in oklch, var(--acento) 28%, transparent); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 6px; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+input { caret-color: var(--acento); }
+code { font-family: var(--f-mono); font-size: .88em; background: var(--campo); padding: 1px 5px; border-radius: 5px; }
+
+.pagina { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+.cabecera h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera p b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 56px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); transition: box-shadow .2s, transform .2s; }
+.muestra:hover { transform: scale(1.08); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.opcion { margin-bottom: 88px; scroll-margin-top: 24px; }
+.opcion-cabeza { display: grid; gap: 16px 48px; margin-bottom: 20px; }
+@media (min-width: 900px) { .opcion-cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; } }
+.opcion-cabeza h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.opcion-cabeza h2 .letra { color: var(--acento); }
+.recomendada { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--acento); border: 1px solid color-mix(in oklch, var(--acento) 40%, transparent); background: var(--acento-suave); }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.notas li + li { margin-top: 3px; }
+
+.barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
+.presets { display: inline-flex; gap: 4px; }
+.presets button, .btn-chico { border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); display: inline-flex; align-items: center; gap: 6px; }
+.presets button:hover, .btn-chico:hover { color: var(--fg); border-color: var(--tenue); }
+.btn-chico svg { width: 14px; height: 14px; }
+.btn-completa { color: var(--fg); }
+.medida { font-variant-numeric: tabular-nums; color: var(--fg); }
+.pista { margin-left: auto; font-size: 12px; }
+@media (max-width: 600px) { .pista { display: none; } }
+
+.marco { container: marco / size; resize: both; overflow: auto; width: 100%; max-width: 100%; height: 680px; min-width: 320px; min-height: 460px; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); }
+@media (max-width: 400px) { .marco { min-width: 0; } }
+
+/* Pantalla completa */
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando {
+  position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 4px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px);
+  background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; box-shadow: var(--sombra);
+  font-size: 12.5px; color: var(--tenue);
+  transition: opacity .35s ease .5s, filter .35s ease .5s;
+}
+.mando:is(:hover, :focus-within) { transition-delay: 0s; }
+html[data-quieto-global] .mando:not(:hover, :focus-within) { opacity: .25; filter: blur(1px); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); display: inline-grid; place-items: center; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento); color: var(--acento-fg); }
+.mando svg { width: 15px; height: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 520px) { .mando .medida { display: none; } }
+
+/* ───────── Maqueta ───────── */
+.app { container: app / inline-size; position: relative; min-height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; overflow: clip; isolation: isolate; }
+.app {
+  --trama-punto: color-mix(in oklch, color-mix(in oklch, var(--acento) 35%, var(--trama-c)) calc(var(--trama-a) * 2.2), transparent);
+  --patron: none;
+}
+:root[data-fondo="puntos"] .app { --patron: radial-gradient(circle, var(--trama-punto) 0 1.2px, transparent 1.8px) 0 0 / 14px 14px; }
+.app::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--patron); }
+:root[data-vineta="centro"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 46%, transparent 25%, #000 100%);
+  mask-image: radial-gradient(ellipse 55% 50% at 50% 46%, transparent 25%, #000 100%);
+}
+:root[data-vineta="bordes"] .app::before {
+  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 68% at 50% 45%, #000 35%, transparent 100%);
+}
+
+/* Lo que se desvanece comparte un mismo ritmo: medio segundo de espera para irse, vuelta inmediata */
+.desv, .ctrl, .modo, .tb-etq, .en-sala { transition: opacity .45s ease .5s, filter .45s ease .5s, transform .45s ease .5s; }
+
+/* Barra superior: salir a la izquierda, quién está y las tareas a la derecha */
+.tb { display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 12px 0 10px; flex-shrink: 0; position: relative; z-index: 6; }
+@container app (min-width: 720px) { .tb { padding: 0 28px 0 22px; } }
+.salir { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border: 0; background: none; border-radius: 8px; color: var(--tenue); font-size: 14px; }
+.salir:hover { color: var(--fg); background: var(--campo); }
+.salir svg { width: 17px; height: 17px; }
+.tb-der { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.en-sala { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; display: none; }
+@container app (min-width: 520px) { .en-sala { display: inline; } }
+.avatares { display: flex; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--campo); border: 2px solid var(--bg); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--fg); position: relative; }
+.avatar + .avatar { margin-left: -8px; }
+.avatar[data-nombre]:hover::after { content: attr(data-nombre); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+.btn-tareas { display: inline-flex; align-items: center; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 30px; padding: 0 10px; font-size: 13px; position: relative; transition: background-color .3s, border-color .3s; }
+.btn-tareas:hover { border-color: var(--tenue); }
+.btn-tareas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.btn-tareas .tb-etq { display: inline-block; overflow: hidden; white-space: nowrap; max-width: 5em; margin-right: 6px; transition-property: max-width, opacity, margin; }
+.btn-tareas[aria-expanded="true"] { border-color: color-mix(in oklch, var(--acento) 45%, var(--linea)); background: var(--acento-suave); }
+.app[data-nuevas] .btn-tareas::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); margin-right: 7px; }
+
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .desv { opacity: 0; filter: blur(4px); transform: translateY(-2px); pointer-events: none; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .en-sala { opacity: 0; filter: blur(4px); }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .tb-etq { max-width: 0; opacity: 0; margin-right: 0; }
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .btn-tareas:not([aria-expanded="true"]) { border-color: transparent; background: var(--campo); }
+  .tb:is(:hover, :focus-within) :is(.desv, .en-sala, .tb-etq) { transition-delay: 0s; }
+}
+
+/* ── Zona del reloj ── */
+.cuerpo-sala { flex: 1; display: flex; min-height: 0; position: relative; }
+.s-main { container: zona / inline-size; --tam: 17cqi; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 104px; }
+.zona { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "modo modo" "reloj reloj" "izq der"; align-items: center; gap: 10px 8px; }
+@container zona (min-width: 700px) {
+  .zona { grid-template-columns: 1fr auto 1fr; grid-template-areas: ". modo ." "izq reloj der"; gap: 6px clamp(28px, 5cqi, 64px); }
+}
+.ctrl { display: flex; gap: 6px; grid-area: izq; justify-self: end; position: relative; margin-top: 18px; }
+.ctrl.der { grid-area: der; justify-self: start; }
+@container zona (min-width: 700px) { .ctrl { margin-top: 0; } }
+.ic { width: 40px; height: 40px; border-radius: 10px; border: 1px solid transparent; background: none; color: var(--tenue); display: grid; place-items: center; position: relative; padding: 0; transition: background-color .2s, color .2s, border-color .2s; }
+.ic:hover { background: var(--campo); color: var(--fg); }
+.ic svg { width: 19px; height: 19px; }
+.ic.play { background: var(--acento); color: var(--acento-fg); }
+.ic.play:hover { background: color-mix(in oklch, var(--acento) 88%, var(--fg)); }
+.corriendo .ic.play { background: none; border-color: var(--linea); color: var(--fg); }
+.corriendo .ic.play:hover { background: var(--campo); }
+.ic.play .i-pausa, .corriendo .ic.play .i-play { display: none; }
+.corriendo .ic.play .i-pausa { display: block; }
+.ic[data-suena]::after { content: ""; position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.ic[aria-expanded="true"] { background: var(--campo); color: var(--fg); }
+
+.modo { grid-area: modo; justify-self: center; display: inline-flex; align-items: center; gap: 2px; position: relative; }
+.modo-btn { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); }
+.modo-btn:hover { background: var(--campo); color: var(--fg); }
+.modo-btn i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); transition: transform .4s var(--salida); }
+.corriendo .modo-btn i { animation: latido 2.4s ease-in-out infinite; }
+@keyframes latido { 50% { transform: scale(.55); opacity: .6; } }
+.flechita { width: 24px; height: 24px; border: 0; background: none; border-radius: 6px; color: var(--tenue); display: grid; place-items: center; opacity: 0; transition: opacity .2s; padding: 0; }
+.flechita svg { width: 14px; height: 14px; }
+.flechita:hover { color: var(--fg); background: var(--campo); }
+.modo:is(:hover, :focus-within) .flechita { opacity: 1; }
+
+.reloj { grid-area: reloj; justify-self: center; display: flex; align-items: center; font-size: clamp(56px, var(--tam), 184px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; user-select: none; transition: transform .9s var(--salida), color .4s, font-size .55s var(--salida); }
+.corriendo .reloj { transform: scale(1.035); }
+.pausado-sin-empezar .reloj { color: color-mix(in oklch, var(--fg) 88%, var(--bg)); }
+.reloj .grupo { display: inline-flex; }
+.reloj .d { display: inline-block; width: .6em; text-align: center; }
+.reloj .d.entra { animation: digito .42s var(--salida); }
+/* Sin desenfoque: los dígitos son enormes y cambian cada segundo */
+@keyframes digito { from { opacity: 0; transform: translateY(-.16em); } }
+.dos-puntos { display: inline-flex; flex-direction: column; gap: .2em; margin: 0 .14em; }
+.dos-puntos i { width: .1em; height: .1em; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 70%, transparent); }
+
+/* Con el reloj corriendo y el mouse quieto, queda el reloj */
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .ctrl { opacity: 0; filter: blur(5px); transform: scale(.96); pointer-events: none; }
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .modo { opacity: .45; }
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .tb .desv,
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .tb .en-sala { opacity: 0; filter: blur(4px); }
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .tb .tb-etq { max-width: 0; opacity: 0; margin-right: 0; }
+  .app:not([data-quieto]) :is(.ctrl, .modo) { transition-delay: 0s; }
+}
+
+/* Reproductor: un panel chico que entra desvaneciéndose */
+.pop { position: absolute; z-index: 30; left: 0; top: calc(100% + 10px); width: min(320px, calc(100cqi - 32px)); background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; box-shadow: var(--sombra); padding: 14px 16px 16px; text-align: left;
+  opacity: 0; transform: translateY(-6px); filter: blur(4px); pointer-events: none; visibility: hidden;
+  transition: opacity .25s ease, transform .35s var(--salida), filter .25s ease, visibility 0s linear .35s; }
+.pop.abierto { opacity: 1; transform: none; filter: none; pointer-events: auto; visibility: visible; transition-delay: 0s; }
+@container zona (max-width: 699px) { .pop { top: auto; bottom: calc(100% + 10px); left: 50%; translate: -25% 0; } }
+.pestanas { display: flex; gap: 18px; border-bottom: 1px solid var(--linea); margin-bottom: 12px; }
+.pestanas button { border: 0; background: none; padding: 6px 0 9px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-size: 13.5px; color: var(--tenue); display: inline-flex; align-items: center; gap: 6px; }
+.pestanas button:hover { color: var(--fg); }
+.pestanas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--acento); }
+.pestanas .n { font-variant-numeric: tabular-nums; color: var(--tenue); font-size: 12.5px; }
+.pestanas .nuevas::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.sonido { display: grid; grid-template-columns: 7.5em 1fr; align-items: center; gap: 10px; font-size: 13.5px; padding: 5px 0; }
+.sonido input { accent-color: var(--acento); width: 100%; }
+.pop .linea { width: 100%; border: 0; border-bottom: 1px solid var(--linea); background: none; height: 38px; font-size: 14px; }
+.pop .linea:focus { outline: none; border-color: var(--acento); }
+.pop .linea::placeholder, .alta input::placeholder { color: var(--tenue); }
+.pop .ayuda { font-size: 12.5px; color: var(--tenue); margin: 8px 0 0; }
+
+/* ── Lista de tareas (compartida por todas las variantes) ── */
+.panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.panel .pestanas { margin-bottom: 0; }
+.alta { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); flex-shrink: 0; }
+.alta svg { width: 16px; height: 16px; flex-shrink: 0; }
+.alta input { border: 0; background: none; flex: 1; min-width: 0; font-size: 14px; outline: none; }
+.lista { list-style: none; margin: 0; padding: 0; transition: opacity .18s ease, transform .25s var(--salida), filter .18s; }
+.lista.cambia { opacity: 0; transform: translateY(4px); filter: blur(3px); }
+.tarea { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; }
+.tarea:last-child { border-bottom: 0; }
+.check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid color-mix(in oklch, var(--tenue) 60%, transparent); background: transparent; padding: 0; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
+.check:hover { border-color: var(--acento); }
+.check svg { width: 11px; height: 11px; opacity: 0; color: var(--acento-fg); }
+.tarea.hecha .check, .check.hecho { background: var(--acento); border-color: var(--acento); }
+.tarea.hecha .check svg, .check.hecho svg { opacity: 1; }
+.tarea.hecha .titulo { color: var(--tenue); text-decoration: line-through; }
+.titulo { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { font-size: 12.5px; color: var(--tenue); flex-shrink: 0; }
+.prio { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.prio[hidden] { display: block; visibility: hidden; }
+.mover { width: 28px; height: 28px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; opacity: 0; transition: opacity .2s; flex-shrink: 0; }
+.mover svg { width: 15px; height: 15px; }
+.mover:hover { background: var(--campo); color: var(--fg); }
+.tarea:is(:hover, :focus-within) .mover { opacity: 1; }
+:root[data-tactil] .mover { opacity: .7; }
+.vacio { color: var(--tenue); font-size: 14px; padding: 14px 0; }
+.tarea.llega { animation: llega .7s var(--salida); }
+@keyframes llega { from { opacity: 0; transform: translateY(-6px); filter: blur(4px); } }
+
+/* ── A · Bandeja, la misma del home ── */
+.bandeja {
+  position: absolute; left: 50%; bottom: 0; z-index: 10;
+  width: min(calc(100% - 24px), 560px); max-height: 78%;
+  display: flex; flex-direction: column;
+  background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
+  transform: translate(-50%, calc(100% - 60px));
+  transition: transform .5s var(--salida), background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s;
+}
+.bandeja.abierta { transform: translate(-50%, 0); }
+/* Abierta, la zona del reloj sube y se achica para no quedar tapada (solo transform: no recalcula el layout) */
+.zona { transition: transform .55s var(--salida); }
+.app:is(.v-a, .v-e, .v-f, .v-g, .v-h):has(.bandeja.abierta) .zona { transform: translateY(calc(-1 * min(24cqh, 170px))) scale(.6); }
+@container app (max-width: 859px) { .v-b:has(.bandeja.abierta) .zona { transform: translateY(calc(-1 * min(24cqh, 170px))) scale(.6); } }
+.asa { position: relative; flex-shrink: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px 20px 0; border: 0; background: none; text-align: left; font-size: 14px; border-radius: 16px 16px 0 0; }
+.asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 32px; height: 4px; border-radius: 4px; background: var(--linea); transform: translateX(-50%); transition: background-color .35s ease .5s, width .35s ease .5s; }
+.sig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sig b { font-weight: 500; }
+.tenue { color: var(--tenue); }
+.cuenta { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--tenue); font-size: 13px; font-variant-numeric: tabular-nums; }
+.cuenta svg { width: 16px; height: 16px; transition: transform .4s; }
+.abierta .cuenta svg { transform: rotate(180deg); }
+.sig, .cuenta { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.bandeja .cuerpo { padding: 4px 20px 20px; overflow-y: auto; }
+.bandeja:is(:hover, :focus-within, .abierta),
+.bandeja:is(:hover, :focus-within, .abierta) :is(.sig, .cuenta),
+.bandeja:is(:hover, :focus-within, .abierta) .asa::before { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .bandeja:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .bandeja:not(:hover, :focus-within, .abierta) :is(.sig, .cuenta) { opacity: 0; filter: blur(4px); }
+  :root:not([data-tactil]) .bandeja:not(:hover, :focus-within, .abierta) .asa::before { background-color: color-mix(in oklch, var(--tenue) 45%, transparent); width: 44px; }
+}
+/* Alguien sumó una tarea a la sala: la rayita toma el acento */
+.app[data-nuevas] .bandeja .asa::before { background-color: var(--acento) !important; }
+.app[data-nuevas] .cuenta::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+
+/* ── B · Al costado: columna a la derecha en pantallas anchas, bandeja en las angostas ── */
+.v-b .cuerpo-sala { display: grid; grid-template-columns: minmax(0, 1fr) 0px; transition: grid-template-columns .55s var(--salida); }
+.v-b .rayita-lat { display: none; }
+@container app (min-width: 860px) {
+  .v-b .cuerpo-sala:has(.cajon.abierta) { grid-template-columns: minmax(0, 1fr) 360px; }
+  .v-b .cajon { position: relative; left: auto; bottom: auto; width: 360px; max-height: none; transform: none; border-radius: 0; border: 0; border-left: 1px solid var(--linea); box-shadow: none; background: var(--superficie); opacity: 0; filter: blur(6px); transition: opacity .35s ease, filter .35s ease; }
+  .v-b .cajon.abierta { opacity: 1; filter: none; transition-delay: .12s; }
+  .v-b .cajon .asa { height: 56px; padding-top: 0; cursor: default; }
+  .v-b .cajon .asa::before { display: none; }
+  .v-b .cajon .asa .cuenta svg { transform: rotate(90deg); }
+  .v-b .cajon .cuerpo { flex: 1; }
+  .v-b .cajon:not(.abierta) { pointer-events: none; }
+  .v-b .rayita-lat { display: block; position: absolute; right: 0; top: 50%; translate: 0 -50%; width: 28px; height: 96px; border: 0; background: none; padding: 0; z-index: 8; }
+  .v-b .rayita-lat::before { content: ""; position: absolute; right: 10px; top: 50%; translate: 0 -50%; width: 4px; height: 40px; border-radius: 4px; background: color-mix(in oklch, var(--tenue) 45%, transparent); transition: height .3s var(--salida), background-color .3s; }
+  .v-b .rayita-lat:hover::before { height: 64px; background: var(--tenue); }
+  .v-b .rayita-lat .rotulo { position: absolute; right: 22px; top: 50%; translate: 0 -50%; font-size: 13px; color: var(--tenue); white-space: nowrap; opacity: 0; filter: blur(3px); transition: opacity .25s, filter .25s; pointer-events: none; }
+  .v-b .rayita-lat:is(:hover, :focus-visible) .rotulo { opacity: 1; filter: none; }
+  .v-b .cuerpo-sala:has(.cajon.abierta) .rayita-lat { opacity: 0; pointer-events: none; }
+  .app.v-b[data-nuevas] .rayita-lat::before { background: var(--acento); }
+}
+
+/* ── C · Debajo, como hoy: se baja con el scroll y el reloj se desvanece al irse ── */
+.v-c .tb { position: sticky; top: 0; background: var(--bg); }
+.v-c .s-main { min-height: calc(100cqh - 56px - 76px); padding-bottom: 24px; }
+.asomo { display: flex; justify-content: center; padding: 0 16px 28px; }
+.asomo button { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; color: var(--tenue); font-size: 13.5px; padding: 6px 10px; border-radius: 8px; transition: opacity .45s ease .5s, filter .45s ease .5s; }
+.asomo button:hover { color: var(--fg); background: var(--campo); transition-delay: 0s; }
+.asomo svg { width: 16px; height: 16px; }
+.app.v-c[data-nuevas] .asomo button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app.v-c[data-quieto] .asomo button { opacity: 0; filter: blur(4px); }
+}
+.debajo { width: 100%; max-width: 1000px; margin: 0 auto; padding: 32px 20px 64px; border-top: 1px solid var(--linea); }
+@container app (min-width: 720px) { .debajo { padding-inline: 32px; } }
+.debajo h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 14px; }
+@supports (animation-timeline: view()) {
+  .v-c .s-main { animation: se-va linear both; animation-timeline: view(); animation-range: exit 0% exit 75%; }
+  @keyframes se-va { to { opacity: .08; transform: scale(.96); } }
+  .v-c .debajo .tarea { animation: aparece linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+  @keyframes aparece { from { opacity: 0; transform: translateY(14px); } }
+}
+
+/* ── D · Ahora, bajo el reloj: la tarea en curso es una línea, y la lista se despliega desde ahí ── */
+.ahora { grid-column: 1 / -1; justify-self: center; width: min(100%, 460px); margin-top: 30px; }
+.ahora-fila { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 12px; transition: background-color .3s; }
+.ahora-fila:hover { background: var(--campo); }
+.ahora-tit { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; border: 0; background: none; padding: 0; text-align: left; font-size: 15px; }
+.ahora-tit .txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ahora-tit .txt b { font-weight: 500; transition: opacity .3s, filter .3s; }
+.ahora-tit .txt b.cambia { opacity: 0; filter: blur(4px); }
+.ahora-tit .cuenta svg { transform: rotate(180deg); }
+.ahora.abierta .ahora-tit .cuenta svg { transform: none; }
+.app.v-d[data-nuevas] .ahora-tit .cuenta::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.despliegue { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s var(--salida); }
+.ahora.abierta .despliegue { grid-template-rows: 1fr; }
+.despliegue > div { overflow: hidden; min-height: 0; }
+.despliegue .panel { padding: 12px 12px 4px; }
+.despliegue .lista { max-height: min(240px, 32cqh); overflow-y: auto; }
+.despliegue :is(.pestanas, .alta, .tarea) { opacity: 0; transform: translateY(-4px); filter: blur(3px); transition: opacity .3s ease, transform .4s var(--salida), filter .3s ease; }
+.ahora.abierta .despliegue :is(.pestanas, .alta, .tarea) { opacity: 1; transform: none; filter: none; transition-delay: calc(80ms + var(--i, 0) * 35ms); }
+.v-d .s-main { padding-bottom: 48px; }
+.v-d:has(.ahora.abierta) .s-main { --tam: 12cqi; }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app.v-d[data-quieto] .ahora:not(.abierta) .ahora-fila { opacity: .55; }
+}
+.ahora-fila { transition: background-color .3s, opacity .45s ease .5s; }
+
+
+/* Desenfoque: «En lo chico» lo deja en botones y textos cortos; «Nunca» lo saca de todo */
+:root[data-blur="nunca"] *, :root[data-blur="nunca"] *::before, :root[data-blur="nunca"] *::after { filter: none !important; }
+
+/* C · al bajar, el reloj se muda a la barra; tocarlo (o tocar el reloj grande apagado) vuelve arriba */
+.mini-reloj { display: none; }
+.app:is(.v-c, .v-j) .mini-reloj { display: inline-flex; align-items: center; gap: 8px; position: absolute; left: 50%; translate: -50% 4px; border: 0; background: none; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; opacity: 0; visibility: hidden; transition: opacity .3s ease, translate .4s var(--salida), visibility 0s linear .3s; }
+.app:is(.v-c, .v-j) .mini-reloj i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.app:is(.v-c, .v-j) .mini-reloj:hover { background: var(--campo); }
+.app.v-c[data-abajo] .mini-reloj { opacity: 1; visibility: visible; translate: -50% 0; transition-delay: 0s; }
+.app.v-c[data-abajo] .s-main { cursor: pointer; }
+
+/* ── Segunda ronda: todas con la bandeja de A; cambia la zona del reloj ── */
+.ronda { border-top: 1px solid var(--linea); padding-top: 56px; margin-bottom: 48px; }
+.ronda h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 10px; font-weight: 600; }
+.ronda p { margin: 0; color: var(--tenue); max-width: 72ch; }
+
+/* E · Anillo: el anillo del home rodea el reloj y se llena con la fase; tocarlo da play */
+.v-e .zona { --diam: min(54cqh, 60cqi); }
+.v-e .reloj { position: relative; isolation: isolate; width: var(--diam); height: var(--diam); justify-content: center; font-size: calc(var(--diam) / 3.3); border-radius: 50%; cursor: pointer; }
+.v-e .modo { grid-area: reloj; align-self: start; margin-top: calc(var(--diam) * .19); z-index: 1; }
+.aro { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; pointer-events: none; z-index: -1; }
+.aro .relleno-aro { fill: transparent; transition: fill .3s; }
+.v-e .reloj:hover .relleno-aro { fill: var(--acento-suave); }
+.aro .pista-aro { stroke: var(--linea); }
+.aro .arco-aro { stroke: var(--acento); }
+.v-e .reloj .d { width: .6em; }
+
+/* F · Hilo: una línea bajo los números que se llena con la fase */
+.v-f .reloj { position: relative; }
+.hilo { position: absolute; left: .14em; right: .14em; bottom: -.2em; height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; }
+.hilo i { position: absolute; inset: 0; background: var(--acento); transform-origin: left center; transform: scaleX(var(--p, 0)); }
+
+/* G · La sala a la vista: quién está y con qué, debajo del reloj */
+.gente { grid-column: 1 / -1; justify-self: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 32px; margin: 36px 0 0; padding: 0; list-style: none; font-size: 13.5px; max-width: 100%; transition: opacity .45s ease .5s; }
+.gente li { display: flex; align-items: center; gap: 9px; min-width: 0; max-width: 280px; }
+.gente .avatar { width: 24px; height: 24px; font-size: 10.5px; border: 0; flex-shrink: 0; }
+.gente .quien { font-weight: 500; flex-shrink: 0; }
+.gente .que { color: var(--tenue); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gente .que b { font-weight: 400; color: var(--fg); }
+.v-g .tb :is(.avatares, .en-sala) { display: none; }
+@media (hover: hover) { :root[data-correr="reloj"]:not([data-tactil]) .app.v-g[data-quieto] .gente { opacity: .3; } }
+.app.v-g:not([data-quieto]) .gente { transition-delay: 0s; }
+
+/* H · Una sola fila: los seis controles juntos debajo, play en el medio */
+.v-h .zona { grid-template-columns: 1fr; grid-template-areas: "modo" "reloj" "fila"; gap: 6px; }
+.fila-ctrl { grid-area: fila; justify-self: center; display: flex; align-items: center; gap: 6px; margin-top: 30px; }
+.v-h .ctrl { margin: 0; }
+.v-h .ctrl.medio { margin: 0 12px; }
+.v-h .ic.play { width: 52px; height: 52px; border-radius: 16px; }
+.v-h .ic.play svg { width: 22px; height: 22px; }
+
+
+/* El hilo solo con el reloj corriendo; en pausa se desvanece */
+.hilo { opacity: 0; transition: opacity .6s ease .3s; }
+.app.corriendo .hilo { opacity: 1; transition-delay: 0s; }
+
+/* ── Tercera ronda: A + F, y qué hace el reloj cuando sube la bandeja ── */
+.zona { transition: transform .55s var(--salida), opacity .35s ease; }
+
+/* I · Sube sin achicarse: la bandeja abre más baja y el reloj solo se corre hacia arriba */
+.v-i .bandeja { max-height: 52%; }
+.v-i:has(.bandeja.abierta) .zona { transform: translateY(calc(-1 * min(22cqh, 160px))); }
+
+/* J · Las tareas ocupan la pantalla: el reloj se apaga y queda chico en la barra */
+.v-j .bandeja { height: calc(100% - 64px); max-height: none; width: min(calc(100% - 24px), 760px); }
+.v-j:has(.bandeja.abierta) .zona { opacity: 0; transform: scale(.98); pointer-events: none; }
+.app.v-j:has(.bandeja.abierta) .mini-reloj { opacity: 1; visibility: visible; translate: -50% 0; transition-delay: .15s, 0s, 0s; }
+
+/* K · El reloj se muda a la bandeja: arriba se apaga, en el asa aparece chico con su play y el hilo en el borde */
+.asa-reloj, .hilo-bandeja { display: none; }
+.v-k .asa-reloj { display: flex; align-items: center; gap: 8px; position: absolute; left: 12px; top: 14px; z-index: 2; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+.v-k .bandeja.abierta .asa-reloj { opacity: 1; visibility: visible; transition-delay: .15s, 0s; }
+.v-k .bandeja.abierta .sig { opacity: 0; }
+.v-k .ic.mini-play { width: 32px; height: 32px; border-radius: 9px; }
+.v-k .ic.mini-play svg { width: 14px; height: 14px; }
+.v-k .hilo-bandeja { display: block; position: absolute; left: 16px; right: 16px; top: 0; height: 2px; border-radius: 2px; overflow: hidden; opacity: 0; transition: opacity .5s ease; }
+.v-k .hilo-bandeja i { position: absolute; inset: 0; background: var(--acento); transform-origin: left center; transform: scaleX(var(--p, 0)); }
+.app.v-k.corriendo .bandeja.abierta .hilo-bandeja { opacity: 1; }
+.v-k:has(.bandeja.abierta) .zona { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+
+/* L · Se corre al costado: en ancho la bandeja abre a la derecha y el reloj se desliza a la izquierda, sin achicarse */
+@container app (min-width: 900px) {
+  .v-l .bandeja { left: auto; right: 24px; width: 380px; transform: translateY(calc(100% - 60px)); }
+  .v-l .bandeja.abierta { transform: none; }
+  .v-l:has(.bandeja.abierta) .zona { transform: translateX(calc(-1 * min(210px, 17cqi))); }
+  .v-l:has(.bandeja.abierta) .ctrl { opacity: 0; pointer-events: none; transition-delay: 0s; }
+}
+@container app (max-width: 899px) {
+  .v-l .bandeja { max-height: 52%; }
+  .v-l:has(.bandeja.abierta) .zona { transform: translateY(calc(-1 * min(22cqh, 160px))); }
+}
+
+/* ── Cuarta ronda: notas rápidas de la sesión, sobre A + F + I ── */
+.app { --ancho-notas: clamp(260px, 30cqi, 340px); }
+
+/* Lo común: el alta, la lista y el aviso de que se borran */
+.notas-bloque { display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
+.notas-cab { display: flex; align-items: center; gap: 8px; min-height: 28px; font-size: 13px; color: var(--tenue); }
+.notas-cab b { color: var(--fg); font-weight: 600; font-size: 14px; margin-right: auto; }
+.notas-cab button { border: 0; background: none; height: 28px; padding: 0 8px; border-radius: 7px; font-size: 12.5px; color: var(--tenue); display: inline-grid; place-items: center; }
+.notas-cab button:hover { color: var(--fg); background: var(--campo); }
+.notas-cab button svg { width: 15px; height: 15px; }
+.bandeja .notas-cab b, .esquina .notas-cab b { display: none; }
+.bandeja .notas-cab, .esquina .notas-cab { justify-content: flex-end; }
+:is(.bandeja, .esquina) .notas-cab:not(:has(button:not([hidden]))) { display: none; }
+.notas-lista { list-style: none; margin: 0; padding: 0; overflow-y: auto; min-height: 0; }
+.nota { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--linea); font-size: 14.5px; line-height: 1.45; transition: opacity .2s ease, transform .25s var(--salida); }
+.nota:last-child { border-bottom: 0; }
+.nota-txt { overflow-wrap: anywhere; }
+.nota-pie { grid-column: 1; font-size: 12px; color: var(--tenue); font-variant-numeric: tabular-nums; margin-top: 1px; }
+.quitar { grid-column: 2; grid-row: 1 / span 2; align-self: center; width: 28px; height: 28px; border: 0; background: none; border-radius: 7px; color: var(--tenue); display: grid; place-items: center; padding: 0; opacity: 0; transition: opacity .2s; }
+.quitar svg { width: 14px; height: 14px; }
+.quitar:hover { background: var(--campo); color: var(--fg); }
+.nota:is(:hover, :focus-within) .quitar { opacity: 1; }
+:root[data-tactil] .quitar { opacity: .7; }
+.nota.llega { animation: llega .7s var(--salida); }
+.nota.se-va { opacity: 0; transform: translateX(10px); }
+.notas-vacio { color: var(--tenue); font-size: 13.5px; padding: 8px 0; }
+.notas-aviso { margin: 0; font-size: 12px; color: var(--tenue); }
+.panel[data-en-notas] > :is(.alta, .lista) { display: none; }
+.panel:not([data-en-notas]) > .notas-bloque { display: none; }
+.bandeja .notas-lista { max-height: none; }
+
+/* El botón de notas en la barra (M, y P en angosto) */
+.btn-notas { display: none; }
+.app:is(.v-m, .con-esquina) .btn-notas { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 8px; height: 30px; padding: 0 9px; font-size: 13px; transition: background-color .3s, border-color .3s; }
+.btn-notas:hover { border-color: var(--tenue); }
+.btn-notas svg { width: 15px; height: 15px; color: var(--tenue); }
+.btn-notas b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.btn-notas b:empty { display: none; }
+.btn-notas[aria-expanded="true"] { border-color: color-mix(in oklch, var(--acento) 45%, var(--linea)); background: var(--acento-suave); }
+@media (hover: hover) {
+  :root[data-barra="desvanece"]:not([data-tactil]) .tb:not(:hover, :focus-within) .btn-notas:not([aria-expanded="true"]) { border-color: transparent; background: var(--campo); }
+}
+
+/* M · Cajón al costado: abre a la derecha y el reloj se corre lo justo para quedar centrado en lo que sobra */
+.notas-cajon { position: absolute; z-index: 12; top: 64px; right: 16px; bottom: 76px; width: var(--ancho-notas); display: flex; flex-direction: column; padding: 14px 18px 16px; background: var(--superficie); border: 1px solid var(--linea); border-radius: 16px; box-shadow: var(--sombra);
+  opacity: 0; transform: translateX(16px); visibility: hidden; pointer-events: none;
+  transition: opacity .28s ease, transform .5s var(--salida), visibility 0s linear .5s; }
+.notas-cajon.abierta { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+@container app (min-width: 900px) {
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) .zona { transform: translateX(calc((var(--ancho-notas) + 32px) / -2)); }
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) :is(.ctrl.izq, [data-pip], [data-ajustes]) { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+}
+@container app (max-width: 899px) {
+  .notas-cajon { left: 12px; right: 12px; width: auto; }
+  .app:is(.v-m, .con-esquina):has(.notas-cajon.abierta) .zona { opacity: .1; }
+}
+
+/* N · Pestaña en la bandeja: nada nuevo en pantalla, las notas son una tercera pestaña */
+
+/* O · Bajo el reloj: una línea para escribir y las dos últimas notas, siempre ahí */
+.al-pie { grid-column: 1 / -1; justify-self: center; width: min(100%, 460px); margin-top: 34px; display: flex; flex-direction: column; transition: opacity .45s ease .5s; }
+.anotar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 6px; border-bottom: 1px solid transparent; color: var(--tenue); transition: border-color .25s; }
+.anotar:hover, .anotar:focus-within { border-bottom-color: var(--linea); }
+.anotar svg { width: 15px; height: 15px; flex-shrink: 0; }
+.anotar input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14.5px; }
+.anotar input::placeholder { color: var(--tenue); }
+.al-pie .notas-lista { max-height: min(200px, 26cqh); }
+.al-pie .nota { padding: 7px 6px; font-size: 14px; border-bottom: 0; }
+.al-pie .nota-txt { color: color-mix(in oklch, var(--fg) 80%, var(--bg)); }
+.ver-mas { align-self: flex-start; border: 0; background: none; color: var(--tenue); font-size: 12.5px; padding: 4px 6px; border-radius: 6px; }
+.ver-mas:hover { color: var(--fg); background: var(--campo); }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app.v-o[data-quieto] .al-pie { opacity: 0; }
+}
+.app.v-o:not([data-quieto]) .al-pie { transition-delay: 0s; }
+.app.v-o:has(.bandeja.abierta) .al-pie { opacity: 0; pointer-events: none; transition-delay: 0s; }
+
+/* P · En la esquina: una bandeja chica abajo a la izquierda que se desvanece como la de tareas */
+.esquina { display: none; flex-direction: column; position: absolute; left: 20px; bottom: 16px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); max-height: calc(100% - 92px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 14px; box-shadow: var(--sombra); transition: background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s, opacity .45s ease .5s; }
+/* Si no entra al lado de la bandeja, pasa al lápiz de la barra con el cajón de M */
+@container app (min-width: 1040px) {
+  .app.con-esquina:not(.v-s) :is(.esquina, .suelta) { display: flex; }
+  .app.con-esquina:not(.v-s) :is(.btn-notas, .notas-cajon) { display: none; }
+}
+@container app (min-width: 720px) {
+  .app.v-s .esquina { display: flex; }
+  .app.v-s :is(.btn-notas, .notas-cajon) { display: none; }
+}
+.esquina-asa { display: flex; align-items: center; gap: 8px; width: 100%; height: 44px; padding: 0 14px; border: 0; background: none; text-align: left; font-size: 13.5px; flex-shrink: 0; border-radius: 14px; }
+.esquina-asa svg { width: 15px; height: 15px; color: var(--tenue); flex-shrink: 0; }
+.esquina-asa b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--tenue); }
+.esquina-asa .flecha { margin-left: auto; transition: transform .4s, opacity .35s ease .5s, filter .35s ease .5s; }
+.esquina.abierta .esquina-asa .flecha { transform: rotate(180deg); }
+.esq-etq { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.esquina-cuerpo { display: grid; grid-template-rows: 0fr; min-height: 0; transition: grid-template-rows .5s var(--salida); }
+.esquina.abierta .esquina-cuerpo { grid-template-rows: 1fr; }
+.esquina-cuerpo > div { overflow: hidden; min-height: 0; display: flex; flex-direction: column; }
+.esquina-cuerpo .notas-bloque { padding: 0 14px 14px; }
+.esquina .notas-lista { max-height: min(280px, 38cqh); }
+.esquina:is(:hover, :focus-within, .abierta), .esquina:is(:hover, :focus-within, .abierta) :is(.esq-etq, .flecha) { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .esquina:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .esquina:not(:hover, :focus-within, .abierta) :is(.esq-etq, .flecha) { opacity: 0; filter: blur(3px); }
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .esquina:not(.abierta) { opacity: 0; }
+}
+
+/* ── Quinta ronda: variaciones de P ── */
+
+/* Q · Asoma la última: plegada, en vez de «Notas» se lee la última nota */
+.esq-ult { display: none; }
+.v-q .esq-etq { display: none; }
+.v-q .esq-ult { display: block; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tenue); }
+.v-q .esquina-asa .flecha { margin-left: 0; }
+.v-q .esquina { width: clamp(220px, calc(50cqi - 316px), 320px); }
+
+/* R · Se escribe en el asa: plegada es una línea para escribir; lo anotado se apila arriba */
+.v-r .esquina-cuerpo .alta { display: none; }
+.v-r .esquina .notas-lista { display: flex; flex-direction: column-reverse; }
+.v-r .esquina-cuerpo .notas-bloque { padding: 12px 14px 4px; }
+.esq-escribir { cursor: text; }
+.esq-escribir input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14px; transition: opacity .35s ease .5s; }
+.esq-escribir input::placeholder { color: var(--tenue); }
+.v-r .esquina.abierta .esq-escribir { border-top: 1px solid var(--linea); border-radius: 0 0 14px 14px; }
+.v-r .esquina:is(:hover, :focus-within, .abierta) .esq-escribir input { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .v-r .esquina:not(:hover, :focus-within, .abierta) .esq-escribir input { opacity: 0; }
+}
+
+/* S · Cuelga de arriba: la esquina de arriba a la izquierda, bajo Salir, y se despliega hacia abajo */
+.v-s .esquina { top: 64px; bottom: auto; width: clamp(220px, 28cqi, 300px); max-height: calc(100% - 150px); }
+.v-s .esquina-asa .flecha { transform: rotate(180deg); }
+.v-s .esquina.abierta .esquina-asa .flecha { transform: none; }
+
+/* T · Sin caja: texto suelto en el margen, lo más viejo se va apagando */
+.suelta { display: none; flex-direction: column; position: absolute; left: 24px; bottom: 18px; z-index: 9; width: clamp(200px, calc(50cqi - 316px), 300px); transition: opacity .45s ease .5s; }
+.suelta .notas-lista { max-height: min(260px, 36cqh); display: flex; flex-direction: column-reverse; }
+.suelta .nota { padding: 6px 4px; border-bottom: 0; font-size: 14px; }
+.suelta:not(.todas) .nota:nth-child(2) { opacity: .6; }
+.suelta:not(.todas) .nota:nth-child(3) { opacity: .35; }
+.app:not([data-quieto]) .suelta { transition-delay: 0s; }
+@media (hover: hover) {
+  :root[data-correr="reloj"]:not([data-tactil]) .app[data-quieto] .suelta { opacity: 0; }
+}
+
+/* U · Bandejas gemelas: las notas son una segunda bandeja, angosta, pegada a la de tareas */
+.gemela { display: none; }
+.v-u .gemela { display: flex; flex-direction: column; position: absolute; bottom: 0; right: calc(50% + 288px); z-index: 11; width: 64px; max-height: 52%; overflow: hidden;
+  background: var(--superficie); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: var(--sombra);
+  transform: translateY(calc(100% - 60px));
+  transition: transform .5s var(--salida), width .45s var(--salida), background-color .35s ease .5s, border-color .35s ease .5s, box-shadow .35s ease .5s; }
+.v-u .gemela.abierta { transform: none; width: min(var(--ancho-notas), calc(50% - 300px)); }
+.gemela-asa { justify-content: center; gap: 6px; padding: 4px 0 0; }
+.gemela-asa::before { width: 20px; }
+.gemela-asa svg { width: 15px; height: 15px; color: var(--tenue); }
+.gemela-asa b { font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--tenue); }
+.gemela-asa > * { transition: opacity .35s ease .5s, filter .35s ease .5s; }
+.gem-etq { display: none; font-size: 14px; }
+.gemela.abierta .gemela-asa { justify-content: flex-start; padding: 4px 20px 0; }
+.gemela.abierta .gem-etq { display: inline; }
+.gemela .cuerpo { width: var(--ancho-notas); max-width: 100%; padding: 4px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+.gemela:is(:hover, :focus-within, .abierta), .gemela:is(:hover, :focus-within, .abierta) .gemela-asa > *, .gemela:is(:hover, :focus-within, .abierta) .asa::before { transition-delay: 0s; }
+@media (hover: hover) {
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) { background-color: transparent; border-color: transparent; box-shadow: none; }
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) .gemela-asa > * { opacity: 0; filter: blur(4px); }
+  :root:not([data-tactil]) .gemela:not(:hover, :focus-within, .abierta) .asa::before { background-color: color-mix(in oklch, var(--tenue) 45%, transparent); width: 24px; }
+}
+/* Sin lugar para abrir al costado: abre encima de la de tareas */
+@container app (max-width: 1119px) {
+  .v-u .gemela.abierta { right: auto; left: max(12px, calc(50% - 280px)); width: min(calc(100% - 24px), 560px); }
+  .v-u .gemela.abierta .cuerpo { width: 100%; }
+}
+/* En angosto la bandeja de tareas se corre para dejarle lugar al asa de las notas */
+@container app (max-width: 739px) {
+  .v-u .bandeja { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .v-u .gemela { right: auto; left: 12px; }
+  .v-u .gemela.abierta { left: 12px; width: calc(100% - 24px); }
+}
+
+/* Pantalla completa: la barra de ajustes se puede esconder; la esquina de abajo a la derecha la trae */
+.mando-volver { position: fixed; z-index: 110; right: 0; bottom: 0; width: 64px; height: 64px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+
+.aviso { position: absolute; left: 50%; top: 66px; transform: translate(-50%, -8px); background: var(--fg); color: var(--bg); font-size: 13px; padding: 9px 14px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s var(--salida); white-space: nowrap; z-index: 40; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+.aviso.ver { opacity: 1; transform: translate(-50%, 0); }
+
+/* ───────── Cierre ───────── */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.tabla-envoltura { overflow-x: auto; margin-bottom: 48px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 12.5px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.elegida td { background: var(--acento-suave); }
+tr.elegida td:first-child { padding-left: 10px; }
+.recomendacion { display: grid; gap: 32px; }
+@media (min-width: 960px) { .recomendacion { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.recomendacion > * { min-width: 0; }
+.recomendacion h3 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.02em; font-weight: 600; }
+.recomendacion h4 { font-size: 15px; margin: 28px 0 8px; font-weight: 600; }
+.recomendacion p { margin: 0 0 12px; color: var(--tenue); max-width: 62ch; }
+.recomendacion p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0; background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; font-family: var(--f-mono); }
+.c-com { color: var(--tenue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-compartir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
+  <symbol id="i-musica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-reiniciar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></symbol>
+  <symbol id="i-pip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 9V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h4"/><rect x="12" y="13" width="10" height="7" rx="2"/></symbol>
+  <symbol id="i-ajustes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-der" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-izq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-arriba" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></symbol>
+  <symbol id="i-abajo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-mover" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></symbol>
+  <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-fondo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-vineta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5c3 3.6 6 6.6 6 10a6 6 0 0 1-12 0c0-3.4 3-6.4 6-10z"/></symbol>
+  <symbol id="i-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Sala de Doro: la misma vista, más quieta</h1>
+    <p>La sala es la pantalla que menos cambia. Se queda lo que ya funciona: salir a la izquierda, quién está a la derecha, el reloj grande con sus dos puntos en el medio y los controles a los costados. Se va el recuadro punteado, los botones pierden el borde y el punto del modo pasa a usar el acento. <b>Con el reloj corriendo, si no movés el mouse, queda solo el reloj.</b> Moverlo trae todo de vuelta.</p>
+    <p>Lo que cambia es dónde viven las tareas. Hay cuatro maneras de desplegarlas. <b>Más abajo, la segunda ronda</b> (E a H, sobre la bandeja de A), <b>la tercera</b> (I a L, sobre A + F) <b>la cuarta</b> (M a P, las notas rápidas sobre A + F + I) <b>y la quinta</b> (Q a U, variaciones de P). El reloj corre de verdad: dale play, tocá el modo para pasar de fase y abrí la música. «Alguien suma una tarea» simula a otra persona de la sala agregando una. En pantalla completa, ← → cambian de variante, Espacio da play o pausa, F cambia el fondo, D el desvanecido de los puntos, C el acento, T el tema, N abre las notas y Esc sale. <b>La X (o H) esconde la barra de ajustes</b> para ver la pantalla sola; H o la esquina de abajo a la derecha la traen de vuelta.</p>
+  </header>
+
+  <div class="ajustes" role="group" aria-label="Ajustes de las maquetas">
+    <div class="ajuste">
+      <span class="ajuste-nombre">Tema</span>
+      <div class="segmentado" id="tema" role="group" aria-label="Tema">
+        <button type="button" data-v="light">Claro</button>
+        <button type="button" data-v="dark">Oscuro</button>
+        <button type="button" data-v="negro">Negro</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Acento</span>
+      <div class="muestras" id="muestras" role="group" aria-label="Color de acento"></div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Barra</span>
+      <div class="segmentado" id="barra" role="group" aria-label="Barra superior">
+        <button type="button" data-v="completa">Completa</button>
+        <button type="button" data-v="desvanece">Se desvanece</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Al correr</span>
+      <div class="segmentado" id="correr" role="group" aria-label="Con el reloj corriendo">
+        <button type="button" data-v="todo">Todo a la vista</button>
+        <button type="button" data-v="reloj">Queda el reloj</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Desenfoque</span>
+      <div class="segmentado" id="blur" role="group" aria-label="Desenfoque">
+        <button type="button" data-v="chico">En lo chico</button>
+        <button type="button" data-v="nunca">Nunca</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Fondo</span>
+      <div class="segmentado" id="fondo" role="group" aria-label="Fondo">
+        <button type="button" data-v="liso">Liso</button>
+        <button type="button" data-v="puntos">Puntos</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Desvanecer puntos</span>
+      <div class="segmentado" id="vineta" role="group" aria-label="Desvanecer los puntos">
+        <button type="button" data-v="parejo">No</button>
+        <button type="button" data-v="bordes">A los lados</button>
+        <button type="button" data-v="centro">Al centro</button>
+      </div>
+    </div>
+    <div class="ajuste">
+      <span class="ajuste-nombre">Dispositivo</span>
+      <div class="segmentado" id="disp" role="group" aria-label="Dispositivo">
+        <button type="button" data-v="mouse">Con mouse</button>
+        <button type="button" data-v="tactil">Táctil</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="opcion" id="a" data-v="a">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">A</span><span class="nombre">Bandeja, como en el home</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">La misma bandeja del home, con el asa que queda cuando se desvanece. Adentro se suman las dos pestañas de hoy, Mías y Sala. Si alguien agrega una tarea a la sala mientras está desvanecida, la rayita toma el acento.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Es el mismo componente que el home: se aprende una vez.</li><li>El reloj queda solo en la pantalla, como el anillo en el home.</li><li>La rayita en acento avisa sin agregar un globo con número.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abierta tapa la parte de abajo del reloj en pantallas bajas.</li><li>No se ven reloj y lista enteros a la vez.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="b" data-v="b">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">B</span><span class="nombre">Al costado</span></h2>
+        <p class="resumen">En pantallas anchas las tareas son una columna a la derecha que corre el reloj hacia la izquierda. Cerrada, queda una rayita vertical en el borde. En angostas (menos de 860 px) se vuelve la bandeja de A.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Reloj y lista a la vez, sin taparse.</li><li>Sirve para ir tachando mientras corre el pomodoro.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Son dos comportamientos según el ancho.</li><li>La rayita vertical se descubre menos que la de abajo.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="c" data-v="c">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">C</span><span class="nombre">Debajo, como hoy</span></h2>
+        <p class="resumen">La estructura de hoy: el reloj ocupa la primera pantalla y las tareas están abajo. Al bajar, el reloj se apaga y se muda chiquito al centro de la barra; tocarlo, o tocar el reloj grande apagado, vuelve arriba. Ya no usa desenfoque al bajar: era lo que trababa.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Es el cambio más chico: nadie tiene que reaprender la sala.</li><li>La lista tiene todo el ancho.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Para ver las tareas el reloj se va de la pantalla.</li><li>No comparte el gesto del home.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="d" data-v="d">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">D</span><span class="nombre">Ahora, bajo el reloj</span></h2>
+        <p class="resumen">Debajo del reloj, una sola línea: la tarea en la que estás. Se tacha desde ahí y entra la siguiente. Al tocarla, la lista se despliega en el lugar, con las filas apareciendo de a una, y el reloj sube para hacerle espacio.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Une el pomodoro con la tarea: «estoy con esto».</li><li>Nada flota ni tapa: todo está en la misma columna.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Agrega una línea permanente debajo del reloj.</li><li>La lista desplegada es corta; con muchas tareas hay que desplazar.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-2">
+    <h2>Segunda ronda: qué más puede ser la sala</h2>
+    <p>Todas parten de A: las tareas quedan en la bandeja y lo que cambia es lo de arriba. Dos dicen cuánto queda de la fase, una muestra con qué está cada uno, y otra junta los controles en una fila.</p>
+  </header>
+
+  <section class="opcion" id="e" data-v="e">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">E</span><span class="nombre">Anillo</span></h2>
+        <p class="resumen">El anillo del home rodea el reloj y se llena a medida que avanza la fase. Tocar el anillo da play o pausa, igual que en el home el anillo crea la sala. Es la idea D3 de la mudanza: el mismo objeto en las dos pantallas.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La sala y el home se leen como la misma app de un vistazo.</li><li>Dice cuánto queda de la fase sin leer los números.</li><li>El botón principal es el reloj mismo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Los números quedan más chicos para entrar en el anillo.</li><li>Es el cambio más visible respecto de hoy.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="f" data-v="f">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">F</span><span class="nombre">Hilo</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">Una línea fina debajo de los números que se llena con la fase, la misma del reloj flotante. Solo aparece con el reloj corriendo: en pausa se desvanece. Es lo único que se suma a la vista de hoy; el reloj conserva su tamaño.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Los números siguen siendo enormes.</li><li>Coincide con el hilo de progreso del reloj flotante.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos píxeles se notan poco en pantallas lejanas.</li><li>No une con el anillo del home.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="g" data-v="g">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">G</span><span class="nombre">La sala a la vista</span></h2>
+        <p class="resumen">Debajo del reloj, quién está y con qué: «Ana · Resolver el ejercicio 4». Los avatares bajan de la barra a este renglón. Con el reloj corriendo y el mouse quieto, se apaga hasta casi desaparecer.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Hace visible lo que tiene la sala de distinto: estudiar acompañado.</li><li>No hace falta abrir nada para ver en qué anda cada uno.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma un renglón de texto bajo el reloj.</li><li>Necesita saber la tarea en curso de cada uno (dato nuevo de presencia).</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="h" data-v="h">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">H</span><span class="nombre">Una sola fila</span></h2>
+        <p class="resumen">Los seis controles juntos en una fila debajo del reloj, con play más grande en el medio. El reloj queda solo y centrado, igual en el celular que en el escritorio.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Un solo lugar para todos los controles, sin flancos.</li><li>El reloj queda perfectamente centrado.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Se pierde la simetría de hoy, con los controles a los costados.</li><li>La fila agrega altura: el reloj sube un poco.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-3">
+    <h2>Tercera ronda: el reloj no se achica</h2>
+    <p>Todas son A + F: la bandeja, y el hilo que aparece solo con el reloj corriendo. Lo único que cambia es qué hace el reloj cuando subís la bandeja, en vez de achicarse. Dale play y abrí las tareas en cada una.</p>
+  </header>
+
+  <section class="opcion" id="i" data-v="i">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">I</span><span class="nombre">Sube sin achicarse</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">La bandeja abre más baja, hasta la mitad, y el reloj solo se corre hacia arriba con su tamaño de siempre. Si hay muchas tareas, la lista se desplaza adentro de la bandeja.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj nunca cambia de tamaño.</li><li>Es el movimiento más chico de los cuatro.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Entran menos tareas a la vista (unas cuatro).</li><li>En pantallas muy bajas el reloj queda pegado a la barra.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="j" data-v="j">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">J</span><span class="nombre">Las tareas a pantalla completa</span></h2>
+        <p class="resumen">Abrir las tareas cambia de vista: el reloj se apaga y queda chico en el centro de la barra, y la bandeja ocupa casi toda la altura. Tocar el reloj de la barra vuelve.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>La lista tiene todo el espacio: sirve para ordenar con calma.</li><li>El tiempo sigue a la vista, arriba.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Son dos vistas, no una: se pierde la sensación de sala.</li><li>Es el cambio más brusco de los cuatro.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="k" data-v="k">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">K</span><span class="nombre">El reloj se muda a la bandeja</span></h2>
+        <p class="resumen">Al subir la bandeja, el reloj de arriba se apaga y aparece chico en el asa, con su play al lado. El hilo pasa al borde de la bandeja. Al bajarla, vuelve a su lugar.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El tiempo y el play quedan a mano mientras tachás.</li><li>Nada se achica ni queda tapado: el reloj se apaga y reaparece.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos lugares para el mismo reloj.</li><li>El fundido tiene que ser rápido para que no parezcan dos relojes.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="l" data-v="l">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">L</span><span class="nombre">Se corre al costado</span></h2>
+        <p class="resumen">En pantallas anchas la bandeja abre abajo a la derecha y el reloj se desliza a la izquierda, del mismo tamaño. Los controles se apagan mientras está abierta. En angostas hace lo de I.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Reloj grande y lista a la vez, sin taparse.</li><li>La bandeja sigue siendo la del home, solo cambia dónde abre.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Mientras está abierta no hay controles a la vista.</li><li>Otra vez dos comportamientos según el ancho.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-4">
+    <h2>Cuarta ronda: notas rápidas de la sesión</h2>
+    <p>Todas son A + F + I. Las notas son tuyas, viven en el navegador y <b>se borran al salir de la sala</b>: sobreviven a recargar, no a irte. Cambia dónde viven y cómo se abren. En las cuatro, la tecla N abre las notas y deja el cursor listo para escribir. Probá también Salir: si tenés notas, te avisa que se borran y hay que tocarlo otra vez.</p>
+  </header>
+
+  <section class="opcion" id="m" data-v="m">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">M</span><span class="nombre">Cajón al costado</span></h2>
+        <p class="resumen">La idea tal como salió de L: un cajón a la derecha que se abre desde el botón del lápiz en la barra. El reloj se corre lo justo para quedar centrado en lo que sobra, sin achicarse; los controles de la izquierda se apagan y el play queda. En angosto, el cajón tapa el reloj.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Mucho lugar para leer y escribir.</li><li>Las notas son un lugar propio, separado de las tareas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El reloj se mueve cada vez que anotás algo.</li><li>Abrir las notas cierra las tareas, y al revés.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="n" data-v="n">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">N</span><span class="nombre">Pestaña en la bandeja</span></h2>
+        <p class="resumen">No se suma nada a la pantalla: la bandeja de tareas tiene una tercera pestaña, Notas, con la cuenta al lado. Se abre como siempre y el reloj sube como en I.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Cero piezas nuevas: es el mismo componente con otra pestaña.</li><li>Lo más simple de construir.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sin teclado son dos toques para anotar: abrir y elegir la pestaña.</li><li>Las notas quedan escondidas detrás de las tareas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="o" data-v="o">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">O</span><span class="nombre">Bajo el reloj</span></h2>
+        <p class="resumen">Debajo del reloj hay una línea para escribir, sin caja, y las dos últimas notas en gris. El resto se despliega con «y 3 más». Con el reloj corriendo y el mouse quieto se va, como los controles.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más rápido: se escribe sin abrir nada.</li><li>Lo que anotaste queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Suma una línea fija debajo del reloj, como D.</li><li>Al abrir la bandeja las notas se apagan.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="p" data-v="p">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">P</span><span class="nombre">En la esquina</span><span class="recomendada">Favorita</span></h2>
+        <p class="resumen">Una bandeja chica abajo a la izquierda, al lado de la de tareas. Se desvanece igual: sin el mouse encima queda el lápiz con el número. Tocarla la despliega hacia arriba. En pantallas de menos de 1040 px no entra al lado de la bandeja y pasa al lápiz de la barra, con el cajón de M.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>El reloj no se mueve nunca.</li><li>Notas y tareas pueden estar abiertas a la vez.</li><li>Es el mismo gesto de la bandeja, en chico.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Dos comportamientos según el ancho.</li><li>El lugar es angosto para notas largas.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <header class="ronda" id="ronda-5">
+    <h2>Quinta ronda, la última: variaciones de P</h2>
+    <p>P queda como favorita. Estas cinco mantienen lo que la hace funcionar (el reloj no se mueve y las notas no compiten con las tareas) y cambian una cosa por vez: qué se ve plegada, dónde se escribe, de qué esquina cuelga, si tiene caja y cómo se lleva con la bandeja de tareas.</p>
+  </header>
+
+  <section class="opcion" id="q" data-v="q">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">Q</span><span class="nombre">Asoma la última</span></h2>
+        <p class="resumen">Igual que P, pero plegada no dice «Notas»: muestra la última nota en gris, cortada en una línea, y la cuenta al lado. Al desvanecerse queda el texto, sin la caja.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo último que anotaste se lee sin abrir nada.</li><li>Es P con un solo cambio.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Un renglón de texto más en pantalla, aunque tenue.</li><li>Con el reloj quieto se va igual que P.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="r" data-v="r">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">R</span><span class="nombre">Se escribe en el asa</span></h2>
+        <p class="resumen">Plegada, la esquina es una línea para escribir. Al tocarla (o con N) se abre hacia arriba con lo que ya anotaste, lo más nuevo pegado a donde escribís. Al salir de la línea se pliega sola.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Anotar es un solo gesto: tocar y escribir.</li><li>Lo nuevo aparece justo arriba de donde escribiste.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>No hay un «abrir» sin escribir: para releer, se toca la línea.</li><li>Plegada se ve poco: solo el lápiz y la cuenta.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="s" data-v="s">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">S</span><span class="nombre">Cuelga de arriba</span></h2>
+        <p class="resumen">La misma esquina, arriba a la izquierda, debajo de Salir, y se despliega hacia abajo. Lejos de la bandeja de tareas, entra desde 720 px de ancho.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Funciona en tablets, no solo en pantallas anchas.</li><li>Las notas y las tareas quedan en extremos opuestos.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abierta puede tapar los controles de la izquierda.</li><li>Arriba se lee como menú, menos como bandeja.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="t" data-v="t">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">T</span><span class="nombre">Sin caja</span></h2>
+        <p class="resumen">Las notas son texto suelto en el margen de abajo a la izquierda, sin borde ni fondo, con una línea para escribir debajo. Se ven las tres últimas y las más viejas se van apagando; «y 2 más» trae el resto.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Lo más liviano: no hay ninguna superficie nueva.</li><li>Lo anotado queda a la vista mientras estudiás.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sobre el fondo con puntos se lee peor.</li><li>Siempre ocupa ese rincón, aunque no lo uses.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="opcion" id="u" data-v="u">
+    <div class="opcion-cabeza">
+      <div>
+        <h2><span class="letra">U</span><span class="nombre">Bandejas gemelas</span></h2>
+        <p class="resumen">Las notas son una segunda bandeja, angosta, pegada a la izquierda de la de tareas: dos asas en la misma fila. Desvanecidas quedan dos rayitas. Abierta, crece hacia la izquierda; si no hay lugar, abre encima de la de tareas. En el celular, la de tareas se corre para dejarle lugar.</p>
+      </div>
+      <div class="notas">
+        <div><h3>Qué gana</h3><ul><li>Funciona en todos los anchos, también en el celular.</li><li>Es literalmente la misma pieza que la bandeja de tareas.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Abajo se juntan dos cosas que se tocan.</li><li>Entre 740 y 1120 px abre encima de las tareas, no al lado.</li></ul></div>
+      </div>
+    </div>
+    <div class="barra-marco" data-barra></div>
+    <div class="marco"><div class="app" data-app></div></div>
+  </section>
+
+  <section class="cierre" id="cierre">
+    <h2>Comparación · primera ronda</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Dónde están las tareas</th><th>Reloj y lista a la vez</th><th>Mismo gesto que el home</th><th>Cómo avisa una tarea nueva de la sala</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>A · Bandeja</td><td>Abajo, en la bandeja</td><td>A medias (la bandeja tapa el pie)</td><td>Sí, es el mismo componente</td><td>La rayita toma el acento</td><td>Tapar el reloj en pantallas bajas</td></tr>
+          <tr><td>B · Al costado</td><td>Columna derecha / bandeja</td><td>Sí, en escritorio</td><td>Solo en el celular</td><td>La rayita lateral en acento</td><td>Dos comportamientos según el ancho</td></tr>
+          <tr><td>C · Debajo</td><td>Abajo, con scroll</td><td>No</td><td>No</td><td>Punto junto a «Tareas» que asoma</td><td>Las tareas quedan fuera de la vista</td></tr>
+          <tr><td>D · Ahora</td><td>Una línea bajo el reloj</td><td>Sí, la tarea en curso siempre</td><td>Parecido (la «Siguiente» de la bandeja)</td><td>Punto junto a la cuenta</td><td>Una línea más bajo el reloj</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="recomendacion">
+      <div>
+        <h3>Favorita: A · Bandeja</h3>
+        <p><b>Es la misma pieza que el home.</b> La bandeja se escribe una vez (<code>BandejaTareas</code>) y en la sala recibe las pestañas Mías y Sala. Quien la usó en el home ya sabe qué es la rayita de abajo.</p>
+        <p><b>El reloj vuelve a ser lo único en pantalla.</b> En el home el anillo está solo; en la sala, el reloj. Con «Queda el reloj», cuando corre y no tocás nada, se van los controles, la barra y la bandeja, y quedan los números.</p>
+        <p><b>Si en escritorio querés tachar sin abrir nada, B es el plan B.</b> La columna lateral es la única que deja ver la lista entera con el reloj corriendo. La idea de D (la tarea en curso) ya está en A: es la «Siguiente» del asa.</p>
+        <h4>Los puntos de fondo en la sala</h4>
+        <p><b>Suman, con «Al centro».</b> El reloj queda sobre un centro limpio y los puntos se ven en los bordes, como en el home. Con «No» o «A los lados» compiten con los dígitos, que son muy grandes. En C conviene liso: las filas que aparecen al bajar se mezclan con la trama.</p>
+        <h4>Dos decisiones para que confirmes</h4>
+        <p><b>El color de cada fase.</b> Hoy el punto es rojo en Pomodoro, verde en el descanso corto y azul en el largo. En el boceto usa el acento y la fase la dice el texto, siguiendo la regla de un solo color. Si extrañás saber la fase de un vistazo, se puede volver al color por fase solo en ese punto.</p>
+        <p><b>El recuadro punteado alrededor del reloj se va.</b> Hoy separa el reloj de la tabla; con las tareas en la bandeja ya no hay nada de qué separarlo.</p>
+      </div>
+      <pre><span class="c-com">/* src/index.css · con el reloj corriendo y el mouse quieto */</span>
+@media (hover: hover) {
+  [data-quieto] :is(.sala-controles, .encabezado-desv) {
+    opacity: 0; filter: blur(5px);
+    pointer-events: none;
+    transition: opacity .45s ease .5s, filter .45s ease .5s;
+  }
+  [data-quieto] .sala-modo { opacity: .45; }
+}
+
+<span class="c-com">// src/features/room/hooks/useQuietud.ts</span>
+<span class="c-com">// true cuando el reloj corre y nadie movió el mouse en 2,5 s</span>
+export function useQuietud(corriendo: boolean, espera = 2500) {
+  const [quieto, establecerQuieto] = useState(false);
+  useEffect(() =&gt; {
+    if (!corriendo) { establecerQuieto(false); return; }
+    let t = setTimeout(() =&gt; establecerQuieto(true), espera);
+    const despertar = () =&gt; {
+      establecerQuieto(false); clearTimeout(t);
+      t = setTimeout(() =&gt; establecerQuieto(true), espera);
+    };
+    addEventListener("pointermove", despertar);
+    addEventListener("keydown", despertar);
+    return () =&gt; { clearTimeout(t);
+      removeEventListener("pointermove", despertar);
+      removeEventListener("keydown", despertar); };
+  }, [corriendo, espera]);
+  return quieto;
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx</span>
+&lt;div data-quieto={quieto || undefined}&gt;
+  &lt;CabeceraSala usuariosEnSala={usuariosEnSala} /&gt;
+  &lt;TimerDisplay … /&gt;
+  &lt;BandejaTareas ambitos={["personal", "sala"]}
+                 noVistas={cantidadNoVistas} … /&gt;
+&lt;/div&gt;</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Segunda ronda</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Qué agrega</th><th>Tamaño del reloj</th><th>Dice cuánto queda</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>E · Anillo</td><td>El anillo del home, con progreso</td><td>Más chico</td><td>Sí, el arco</td><td>Pierde los números grandes</td></tr>
+          <tr class="elegida"><td>F · Hilo</td><td>Una línea de 2 px</td><td>El de hoy</td><td>Sí, la línea</td><td>Que se note poco</td></tr>
+          <tr><td>G · La sala a la vista</td><td>Quién está y con qué</td><td>El de hoy</td><td>No</td><td>Un renglón de texto más</td></tr>
+          <tr><td>H · Una sola fila</td><td>Nada: reordena</td><td>El de hoy</td><td>No</td><td>Romper la simetría que ya funciona</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Favoritas: A con F · Hilo</h3>
+        <p><b>Es lo único que le falta a la vista de hoy:</b> saber cuánto queda de la fase sin hacer la cuenta. El hilo lo dice con dos píxeles y los números no se achican. El reloj flotante ya tiene el mismo hilo.</p>
+        <p><b>E es la más linda y la que más cambia.</b> Si querés que la sala y el home se sientan el mismo objeto, es esa. El precio es que los números se achican para entrar en el anillo.</p>
+        <p><b>G vale como detalle, no como renglón fijo.</b> Lo que dice (con qué está cada uno) podría aparecer al pasar el mouse por los avatares de la barra, sin sumar nada a la pantalla.</p>
+        <h4>Sobre el desenfoque</h4>
+        <p><b>Lo que trababa C era un desenfoque atado al scroll</b> sobre toda la zona del reloj: el navegador lo recalcula en cada cuadro mientras bajás. Lo saqué de ahí y de los dígitos, que son enormes y cambian cada segundo. Quedó solo en elementos chicos y en transiciones cortas, que cuestan poco. Con «Desenfoque: Nunca» podés comparar: los desvanecidos siguen, solo con opacidad.</p>
+      </div>
+      <pre><span class="c-com">/* F · el hilo es un transform: no recalcula el layout */</span>
+.hilo i {
+  transform-origin: left center;
+  transform: scaleX(var(--progreso));
+}
+
+<span class="c-com">// src/features/timer/components/RelojDigital.tsx</span>
+&lt;div className="relative"&gt;
+  {/* … dígitos … */}
+  &lt;span className="hilo" aria-hidden&gt;
+    &lt;i style={{ "--progreso": 1 - restante / inicial }} /&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Tercera ronda</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Qué hace el reloj al abrir</th><th>El tiempo sigue a la vista</th><th>Tareas a la vista</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr class="elegida"><td>I · Sube sin achicarse</td><td>Se corre hacia arriba</td><td>Sí, grande</td><td>Unas cuatro</td><td>Pantallas bajas</td></tr>
+          <tr><td>J · Pantalla completa</td><td>Se apaga y pasa a la barra</td><td>Sí, chico arriba</td><td>Todas</td><td>Se siente otra pantalla</td></tr>
+          <tr><td>K · Se muda a la bandeja</td><td>Se apaga y pasa al asa</td><td>Sí, chico y con play</td><td>Las de A</td><td>Dos relojes si el fundido es lento</td></tr>
+          <tr><td>L · Al costado</td><td>Se desliza a la izquierda</td><td>Sí, grande</td><td>Las de A</td><td>Sin controles mientras está abierta</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Favorita: I · Sube sin achicarse (posible finalista)</h3>
+        <p><b>Lo que dijiste (2026-10-04):</b> A y F favoritas de las rondas anteriores, e I la favorita de esta, muy posiblemente la finalista. El achique de A te gustaba y no a la vez; I lo resuelve sin cambiar el tamaño del reloj. El hilo de F aparece solo con el reloj corriendo.</p>
+        <p><b>Idea que salió de L, para seguir mañana:</b> notas rápidas de la sesión, que se despliegan al costado como la bandeja de L. Duran lo que dura la sesión y se descartan (pueden vivir en <code>localStorage</code>); si alguna toma relevancia, se guarda. Falta ver cómo se visualizan.</p>
+        <h4 style="margin-top:20px">Mi recomendación era K · El reloj se muda a la bandeja</h4>
+        <p><b>Lo que molestaba del achique era ver el reloj encogerse.</b> En K no se encoge: se apaga arriba y reaparece en el asa, donde mirás mientras tachás. El tiempo, el play y el hilo quedan a mano sin tapar nada.</p>
+        <p><b>Es el mismo gesto que el reloj de la barra en C</b>, que ya te gustó para volver: el reloj se muda a donde está la atención.</p>
+        <p><b>I es el plan B</b> si preferís que el reloj no se vaya nunca de su lugar. Cuesta tareas a la vista, no tamaño.</p>
+        <p><b>Sobre el hilo:</b> ahora aparece solo con el reloj corriendo y se desvanece en pausa, con un respiro corto para que no parpadee si pausás un segundo.</p>
+      </div>
+      <pre><span class="c-com">/* K · solo opacidad y transform: nada de achicar */</span>
+.sala:has(.bandeja[data-abierta]) .zona-reloj {
+  opacity: 0; transform: translateY(-10px);
+  pointer-events: none;
+}
+.bandeja[data-abierta] .asa-reloj {
+  opacity: 1; transition-delay: .15s;   <span class="c-com">/* entra cuando el otro ya se fue */</span>
+}
+
+<span class="c-com">/* F · el hilo solo con el reloj corriendo */</span>
+.hilo { opacity: 0; transition: opacity .6s ease .3s; }
+[data-corriendo] .hilo { opacity: 1; transition-delay: 0s; }</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Cuarta ronda · notas rápidas</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Dónde viven</th><th>Cómo se anota</th><th>El reloj se mueve</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>M · Cajón al costado</td><td>Panel a la derecha</td><td>Lápiz de la barra o N</td><td>Sí, a la izquierda</td><td>Una cierra la otra</td><td>El reloj se mueve cada vez que anotás</td></tr>
+          <tr><td>N · Pestaña en la bandeja</td><td>Tercera pestaña</td><td>Abrir la bandeja y elegir Notas, o N</td><td>Sube, como con las tareas</td><td>Comparten el lugar</td><td>Las notas quedan escondidas</td></tr>
+          <tr><td>O · Bajo el reloj</td><td>Debajo del reloj, siempre</td><td>Escribir directo</td><td>No</td><td>Las notas se apagan</td><td>Una línea fija bajo el reloj</td></tr>
+          <tr class="elegida"><td>P · En la esquina</td><td>Bandeja chica abajo a la izquierda</td><td>Tocar la esquina o N</td><td>No (en ancho)</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Favorita: P · En la esquina (era mi recomendación)</h3>
+        <p><b>Es la única en la que no se mueve nada.</b> El reloj se queda donde está, como pediste en la tercera ronda, y las notas no compiten con las tareas por el mismo lugar: podés tener las dos abiertas.</p>
+        <p><b>Habla el mismo idioma que la sala.</b> Es la bandeja de tareas en chico: se desvanece, queda el lápiz con la cuenta, y con «Queda el reloj» se va del todo.</p>
+        <p><b>N es el plan B</b> si preferís no sumar ninguna pieza. Con la tecla N se anota igual de rápido; sin teclado, cuesta un toque más. <b>O</b> es la más rápida, pero vuelve a poner un renglón fijo bajo el reloj, que fue lo que menos te convenció de D.</p>
+        <h4>Qué pasa con las notas</h4>
+        <p><b>Se guardan por sala</b> (<code>doro-notas-&lt;id de la sala&gt;</code>), así que recargar no las borra y otra sala no las ve. <b>Salir las borra</b>, con un aviso si hay alguna.</p>
+        <p><b>Una decisión para que confirmes:</b> si cerrás la pestaña sin tocar Salir, las notas quedan. Propongo que al volver a esa sala sigan ahí, pero que al entrar se descarten solas las de más de 12 horas, para que no se junten notas de otros días.</p>
+        <p><b>Lo que queda para después:</b> «Pasar a tarea» en cada nota, y ver las guardadas en Tareas o en el home. El hook ya deja el lugar: es una acción más sobre la misma lista.</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>Igual que en el resto de la sala: «Al centro».</b> La esquina y el cajón son superficies llenas que tapan la trama; no cambia nada.</p>
+      </div>
+      <pre><span class="c-com">// src/features/room/hooks/useNotasSesion.ts</span>
+<span class="c-com">// Notas personales de la sala: solo en este navegador, se borran al salir</span>
+const VENCEN_EN = 12 * 60 * 60 * 1000;
+
+export function useNotasSesion(idSala: string) {
+  const clave = `doro-notas-${idSala}`;
+  const [notas, establecerNotas] = useState&lt;NotaSesion[]&gt;(() =&gt;
+    leerNotas(clave).filter(n =&gt;
+      Date.now() - Date.parse(n.creada) &lt; VENCEN_EN));
+
+  useEffect(() =&gt; {
+    try { localStorage.setItem(clave, JSON.stringify(notas)); }
+    catch { <span class="c-com">/* modo privado: quedan en memoria */</span> }
+  }, [clave, notas]);
+
+  const agregar = (texto: string, fase: Modo) =&gt;
+    establecerNotas(n =&gt; [{ id: crypto.randomUUID(), texto, fase,
+      creada: new Date().toISOString() }, ...n]);
+  const descartar = (id: string) =&gt;
+    establecerNotas(n =&gt; n.filter(x =&gt; x.id !== id));
+  const descartarTodas = () =&gt; establecerNotas([]);
+
+  return { notas, agregar, descartar, descartarTodas };
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx · al confirmar la salida</span>
+const salir = () =&gt; { descartarTodas(); navegar("/"); };
+
+<span class="c-com">/* P · la esquina se esconde si no entra al lado de la bandeja */</span>
+@container sala (max-width: 1039px) {
+  .notas-esquina { display: none; }   <span class="c-com">/* pasa al lápiz de la barra */</span>
+}</pre>
+    </div>
+
+    <h2 style="margin-top:64px">Quinta ronda · variaciones de P</h2>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Variante</th><th>Plegada se ve</th><th>Cómo se anota</th><th>Desde qué ancho</th><th>Con las tareas abiertas</th><th>Riesgo principal</th></tr></thead>
+        <tbody>
+          <tr><td>P · En la esquina</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Dos comportamientos según el ancho</td></tr>
+          <tr><td>Q · Asoma la última</td><td>La última nota</td><td>Tocar y escribir, o N</td><td>1040 px</td><td>Las dos a la vez</td><td>Un renglón más a la vista</td></tr>
+          <tr><td>R · Se escribe en el asa</td><td>Lápiz y cuenta</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Para releer hay que tocar la línea</td></tr>
+          <tr><td>S · Cuelga de arriba</td><td>Lápiz y cuenta</td><td>Tocar y escribir, o N</td><td>720 px</td><td>Las dos a la vez</td><td>Tapar los controles de la izquierda</td></tr>
+          <tr><td>T · Sin caja</td><td>Las tres últimas</td><td>Escribir directo</td><td>1040 px</td><td>Las dos a la vez</td><td>Se lee mal sobre los puntos</td></tr>
+          <tr class="elegida"><td>U · Bandejas gemelas</td><td>Una rayita junto a la otra</td><td>Tocar y escribir, o N</td><td>Todos</td><td>Al costado desde 1120 px</td><td>Dos asas juntas abajo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion" style="margin-bottom:0">
+      <div>
+        <h3>Recomiendo U · Bandejas gemelas, con la línea para escribir de R</h3>
+        <p><b>Lo único que le faltaba a P era el celular.</b> P, Q, R y T necesitan 1040 px para entrar al lado de la bandeja; abajo de eso pasan a otro objeto (el lápiz de la barra). U es la única que se comporta igual en todos los anchos: siempre son dos asas abajo.</p>
+        <p><b>Es la misma pieza dos veces.</b> Se construye una bandeja (<code>BandejaSala</code>) y se usa para tareas y para notas, con el mismo desvanecido y la misma rayita. No hay nada nuevo que aprender.</p>
+        <p><b>De R tomaría la línea para escribir al pie de la bandeja de notas</b>, con lo nuevo apilado justo arriba, porque anotar mientras estudiás tiene que ser un solo gesto.</p>
+        <p><b>Si preferís quedarte con P tal cual, Q es la mejora más barata:</b> leer la última nota sin abrir nada sirve para el caso típico, «¿qué era lo que tenía que preguntar?».</p>
+        <h4>Los puntos de fondo</h4>
+        <p><b>«Al centro», como en toda la sala.</b> La única que sufre con los puntos es T, porque su texto no tiene fondo propio. Con T habría que ir con fondo liso.</p>
+        <h4>En pantalla completa</h4>
+        <p><b>La X ahora esconde la barra de ajustes</b> para que veas la pantalla sola. H o la esquina de abajo a la derecha la traen de vuelta, y Esc sale de pantalla completa.</p>
+      </div>
+      <pre><span class="c-com">/* U · dos bandejas en la misma fila: la de notas se pega a la izquierda de la de tareas */</span>
+.bandeja-notas {
+  position: absolute; bottom: 0;
+  right: calc(50% + 288px);              <span class="c-com">/* 560 / 2 + 8 de aire */</span>
+  width: 64px;                            <span class="c-com">/* plegada: el asa con el lápiz */</span>
+  transform: translateY(calc(100% - 60px));
+}
+.bandeja-notas[data-abierta] {
+  transform: none;
+  width: min(var(--ancho-notas), calc(50% - 300px));
+}
+<span class="c-com">/* sin lugar al costado, abre encima de la de tareas */</span>
+@container sala (max-width: 1119px) {
+  .bandeja-notas[data-abierta] {
+    right: auto; left: max(12px, calc(50% - 280px));
+    width: min(calc(100% - 24px), 560px);
+  }
+}
+<span class="c-com">/* celular: la de tareas se corre y deja lugar al asa */</span>
+@container sala (max-width: 739px) {
+  .bandeja-tareas { left: calc(50% + 38px); width: calc(100% - 100px); }
+  .bandeja-notas  { right: auto; left: 12px; }
+}
+
+<span class="c-com">// src/pages/RoomPage.tsx</span>
+&lt;BandejaSala lado="tareas" … /&gt;
+&lt;BandejaSala lado="notas" notas={notas}
+             alAnotar={agregar} alDescartar={descartar} /&gt;</pre>
+    </div>
+  </section>
+</div>
+
+<template id="tpl-sala">
+  <header class="tb">
+    <button type="button" class="salir" data-salir-sala aria-label="Salir de la sala"><svg><use href="#i-volver"/></svg><span class="desv">Salir</span></button>
+    <div class="tb-der">
+      <span class="en-sala">3 en la sala</span>
+      <span class="avatares" aria-label="En la sala: vos, Ana y Tomi">
+        <span class="avatar" data-nombre="Vos">L</span><span class="avatar" data-nombre="Ana">A</span><span class="avatar" data-nombre="Tomi">T</span>
+      </span>
+      <button type="button" class="btn-notas" data-btn-notas aria-expanded="false" aria-label="Notas de la sesión" title="Notas de la sesión (N)"><svg><use href="#i-nota"/></svg><b data-notas-n></b></button>
+      <button type="button" class="btn-tareas" data-btn-tareas aria-expanded="false"><span class="tb-etq">Tareas</span><b data-n>6</b></button>
+    </div>
+  </header>
+  <div class="cuerpo-sala">
+    <main class="s-main">
+      <div class="zona" data-zona>
+        <div class="modo">
+          <button type="button" class="modo-btn" data-modo title="Cambiar de fase"><i></i><span data-modo-txt>Pomodoro</span></button>
+          <button type="button" class="flechita" data-crono title="Pasar a cronómetro" aria-label="Pasar a cronómetro"><svg><use href="#i-der"/></svg></button>
+        </div>
+        <div class="ctrl izq">
+          <button type="button" class="ic" data-compartir title="Compartir la sala" aria-label="Compartir la sala"><svg><use href="#i-compartir"/></svg></button>
+          <button type="button" class="ic" data-musica title="Música" aria-label="Música" aria-expanded="false"><svg><use href="#i-musica"/></svg></button>
+          <button type="button" class="ic" data-reiniciar title="Reiniciar" aria-label="Reiniciar el reloj"><svg><use href="#i-reiniciar"/></svg></button>
+          <div class="pop" data-pop role="dialog" aria-label="Música">
+            <div class="pestanas" role="tablist">
+              <button type="button" role="tab" aria-selected="true" data-mtab="amb">Ambiental</button>
+              <button type="button" role="tab" aria-selected="false" data-mtab="local">Solo yo</button>
+              <button type="button" role="tab" aria-selected="false" data-mtab="sala">Para la sala</button>
+            </div>
+            <div data-mpanel="amb">
+              <label class="sonido"><span>Lluvia</span><input type="range" min="0" max="100" value="0" data-vol></label>
+              <label class="sonido"><span>Cafetería</span><input type="range" min="0" max="100" value="0" data-vol></label>
+              <label class="sonido"><span>Fuego</span><input type="range" min="0" max="100" value="0" data-vol></label>
+              <label class="sonido"><span>Ruido blanco</span><input type="range" min="0" max="100" value="0" data-vol></label>
+            </div>
+            <div data-mpanel="local" hidden>
+              <input class="linea" placeholder="Pegá un link de YouTube o Spotify" aria-label="Link para escuchar solo vos">
+              <p class="ayuda">Suena solo para vos.</p>
+            </div>
+            <div data-mpanel="sala" hidden>
+              <input class="linea" placeholder="Pegá un link de YouTube" aria-label="Link para toda la sala">
+              <p class="ayuda">Suena sincronizado para los 3.</p>
+            </div>
+          </div>
+        </div>
+        <div class="reloj" data-reloj role="timer" aria-label="Tiempo restante">
+          <span class="grupo" data-mm></span><span class="dos-puntos" aria-hidden="true"><i></i><i></i></span><span class="grupo" data-ss></span>
+        </div>
+        <div class="ctrl der">
+          <button type="button" class="ic play" data-play aria-label="Iniciar"><svg class="i-play"><use href="#i-play"/></svg><svg class="i-pausa"><use href="#i-pausa"/></svg></button>
+          <button type="button" class="ic" data-pip title="Ventana flotante" aria-label="Abrir en ventana flotante"><svg><use href="#i-pip"/></svg></button>
+          <button type="button" class="ic" data-ajustes title="Tiempos del reloj" aria-label="Tiempos del reloj"><svg><use href="#i-ajustes"/></svg></button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="aviso" role="status"></div>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const leer = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const pulsar = (g, v) => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ── Ajustes globales (mismas claves que el home, más «Al correr») ── */
+  const grupos = {
+    tema: v => {
+      if (v === "negro") { raiz.dataset.theme = "dark"; raiz.dataset.negro = ""; }
+      else if (v) { raiz.dataset.theme = v; delete raiz.dataset.negro; }
+    },
+    barra: v => raiz.dataset.barra = v,
+    correr: v => raiz.dataset.correr = v,
+    blur: v => raiz.dataset.blur = v,
+    fondo: v => raiz.dataset.fondo = v,
+    vineta: v => raiz.dataset.vineta = v,
+    disp: v => v === "tactil" ? raiz.dataset.tactil = "" : delete raiz.dataset.tactil,
+  };
+  const temaInicial = () => raiz.hasAttribute("data-negro") ? "negro"
+    : raiz.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const defaults = { tema: null, barra: "desvanece", correr: "reloj", blur: "chico", fondo: "puntos", vineta: "centro", disp: "mouse" };
+  const ponerAjuste = {};
+  Object.keys(grupos).forEach(id => {
+    const g = document.getElementById(id);
+    const clave = (id === "correr" || id === "blur" ? "doro-sala-" : "doro-d4-") + id;
+    const poner = ponerAjuste[id] = v => { grupos[id](v); pulsar(g, id === "tema" ? temaInicial() : v); guardar(clave, v); };
+    g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => poner(b.dataset.v)));
+    const guardado = leer(clave, defaults[id]);
+    if (guardado) grupos[id](guardado);
+    pulsar(g, id === "tema" ? temaInicial() : guardado);
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => pulsar(document.getElementById("tema"), temaInicial()));
+
+  const ACENTOS = [
+    { id: "violeta", nombre: "Violeta", claro: "oklch(0.56 0.24 293)",  oscuro: "oklch(0.70 0.18 293)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.02 293)" },
+    { id: "azul",    nombre: "Azul",    claro: "oklch(0.55 0.19 258)",  oscuro: "oklch(0.72 0.14 252)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.16 0.03 258)" },
+    { id: "verde",   nombre: "Verde",   claro: "oklch(0.55 0.13 162)",  oscuro: "oklch(0.76 0.14 162)",  fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.03 162)" },
+    { id: "naranja", nombre: "Naranja", claro: "oklch(0.62 0.19 42)",   oscuro: "oklch(0.74 0.16 50)",   fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.04 42)" },
+    { id: "rosa",    nombre: "Rosa",    claro: "oklch(0.58 0.21 6)",    oscuro: "oklch(0.72 0.16 6)",    fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.17 0.04 6)" },
+    { id: "grafito", nombre: "Grafito", claro: "oklch(0.25 0.008 285)", oscuro: "oklch(0.93 0.004 285)", fgClaro: "oklch(0.99 0 0)", fgOscuro: "oklch(0.18 0.006 285)" },
+  ];
+  let acento = leer("doro-acento", "violeta");
+  const contMuestras = document.getElementById("muestras");
+  const aplicarAcento = () => {
+    const a = ACENTOS.find(x => x.id === acento) || ACENTOS[0];
+    const o = temaInicial() !== "light";
+    raiz.style.setProperty("--acento", o ? a.oscuro : a.claro);
+    raiz.style.setProperty("--acento-fg", o ? a.fgOscuro : a.fgClaro);
+    contMuestras.querySelectorAll(".muestra").forEach(b => {
+      b.style.setProperty("--c", ACENTOS.find(x => x.id === b.dataset.id)[o ? "oscuro" : "claro"]);
+      b.setAttribute("aria-pressed", b.dataset.id === acento);
+    });
+  };
+  const ponerAcento = id => { acento = id; guardar("doro-acento", id); aplicarAcento(); };
+  ACENTOS.forEach(a => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "muestra"; b.dataset.id = a.id; b.title = a.nombre; b.setAttribute("aria-label", "Acento " + a.nombre);
+    b.addEventListener("click", () => ponerAcento(a.id));
+    contMuestras.appendChild(b);
+  });
+  new MutationObserver(aplicarAcento).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aplicarAcento);
+  aplicarAcento();
+
+  /* ── Datos de ejemplo ── */
+  const MIAS = [
+    { titulo: "Terminar TP Redes", meta: "Uni", alta: true },
+    { titulo: "Repasar la unidad 3 de AyD", meta: "Uni", alta: true },
+    { titulo: "Avanzar TP IA", meta: "Uni" },
+    { titulo: "Poder agrupar tareas por etiqueta", meta: "Doro" },
+  ];
+  const SALA = [
+    { titulo: "Resolver el ejercicio 4 de la guía", meta: "Ana" },
+    { titulo: "Armar el resumen de la unidad 2", meta: "Vos" },
+  ];
+  const AJENAS = [
+    { titulo: "Traer las preguntas del parcial", meta: "Tomi" },
+    { titulo: "Pasar en limpio el ejercicio 6", meta: "Ana" },
+    { titulo: "Buscar el apunte de subredes", meta: "Tomi" },
+  ];
+  const FASES = { pomodoro: ["Pomodoro", 25 * 60], shortBreak: ["Descanso corto", 5 * 60], longBreak: ["Descanso largo", 15 * 60], stopwatch: ["Cronómetro", 0] };
+  const SIGUIENTE_FASE = { pomodoro: "shortBreak", shortBreak: "longBreak", longBreak: "pomodoro" };
+
+  const panelHTML = () => `
+    <div class="panel">
+      <div class="pestanas" role="tablist" aria-label="Qué tareas ver" style="--i:0">
+        <button type="button" role="tab" data-amb="mias" aria-selected="true">Mías <span class="n" data-n-mias></span></button>
+        <button type="button" role="tab" data-amb="sala" aria-selected="false">De la sala <span class="n" data-n-sala></span></button>
+      </div>
+      <label class="alta" style="--i:1"><svg><use href="#i-mas"/></svg><input data-alta placeholder="Nueva tarea… (#uni, !alta)" aria-label="Nueva tarea"></label>
+      <ul class="lista" data-lista></ul>
+    </div>`;
+  const asaHTML = () => `
+    <button type="button" class="asa" data-asa aria-expanded="false">
+      <span class="sig"><span class="tenue">Siguiente:</span> <b data-sig></b></span>
+      <span class="cuenta"><span data-n></span> tareas<svg><use href="#i-arriba"/></svg></span>
+    </button>`;
+
+  const tpl = document.getElementById("tpl-sala");
+  const mando = document.createElement("div");
+  mando.className = "mando"; mando.hidden = true;
+  mando.setAttribute("role", "toolbar"); mando.setAttribute("aria-label", "Pantalla completa");
+  document.body.appendChild(mando);
+  let actual = null;
+  const salas = [];
+
+  document.querySelectorAll(".opcion").forEach(op => {
+    const v = op.dataset.v;
+    const app = op.querySelector("[data-app]");
+    app.classList.add("v-" + v);
+    app.appendChild(tpl.content.cloneNode(true));
+    const cuerpoSala = app.querySelector(".cuerpo-sala");
+    const main = app.querySelector(".s-main");
+    const zona = app.querySelector("[data-zona]");
+
+    /* Cada variante pone las tareas en otro lugar */
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
+      const aside = document.createElement("aside");
+      aside.className = "bandeja" + (v === "b" ? " cajon" : "");
+      aside.setAttribute("aria-label", "Tareas");
+      aside.innerHTML = asaHTML() + `<div class="cuerpo" data-cuerpo>${panelHTML()}</div>`;
+      if (v === "b") {
+        cuerpoSala.appendChild(aside);
+        const r = document.createElement("button");
+        r.type = "button"; r.className = "rayita-lat"; r.dataset.rayita = "";
+        r.setAttribute("aria-label", "Abrir las tareas");
+        r.innerHTML = `<span class="rotulo">Tareas</span>`;
+        cuerpoSala.appendChild(r);
+      } else app.appendChild(aside);
+    } else if (v === "c") {
+      const asomo = document.createElement("div");
+      asomo.className = "asomo";
+      asomo.innerHTML = `<button type="button" data-asomo>Tareas · <span data-n></span><svg><use href="#i-abajo"/></svg></button>`;
+      cuerpoSala.after(asomo);
+      const sec = document.createElement("section");
+      sec.className = "debajo"; sec.setAttribute("aria-label", "Tareas");
+      sec.innerHTML = `<h2>Tareas</h2>${panelHTML()}`;
+      asomo.after(sec);
+      cuerpoSala.style.flex = "none";
+    } else if (v === "d") {
+      const ah = document.createElement("div");
+      ah.className = "ahora";
+      ah.innerHTML = `
+        <div class="ahora-fila">
+          <button type="button" class="check" data-check-ahora aria-label="Marcar como hecha"><svg><use href="#i-check"/></svg></button>
+          <button type="button" class="ahora-tit" data-ahora aria-expanded="false">
+            <span class="txt"><span class="tenue">Ahora:</span> <b data-sig></b></span>
+            <span class="cuenta"><span data-n></span> tareas<svg><use href="#i-arriba"/></svg></span>
+          </button>
+        </div>
+        <div class="despliegue"><div data-cuerpo>${panelHTML()}</div></div>`;
+      zona.appendChild(ah);
+    }
+
+
+    /* Agregados de la segunda ronda */
+    const reloj = app.querySelector("[data-reloj]");
+    if (v === "e") {
+      reloj.insertAdjacentHTML("afterbegin", `<svg class="aro" viewBox="0 0 200 200" aria-hidden="true"><circle class="relleno-aro" cx="100" cy="100" r="96"/><circle class="pista-aro" cx="100" cy="100" r="96" fill="none" stroke-width="2"/><circle class="arco-aro" data-arco cx="100" cy="100" r="96" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19"/></svg>`);
+      reloj.title = "Tocá para dar play o pausa";
+    }
+    if (["f", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) reloj.insertAdjacentHTML("beforeend", `<span class="hilo" aria-hidden="true"><i data-hilo></i></span>`);
+    if (v === "g") zona.insertAdjacentHTML("beforeend", `<ul class="gente" aria-label="Quién está y con qué">
+      <li><span class="avatar">L</span><span class="quien">Vos</span><span class="que" data-vos></span></li>
+      <li><span class="avatar">A</span><span class="quien">Ana</span><span class="que"><b>Resolver el ejercicio 4</b></span></li>
+      <li><span class="avatar">T</span><span class="quien">Tomi</span><span class="que">en descanso</span></li></ul>`);
+    if (v === "h") {
+      const fila = document.createElement("div"); fila.className = "fila-ctrl";
+      const medio = document.createElement("div"); medio.className = "ctrl medio";
+      const izq = zona.querySelector(".ctrl.izq"), der = zona.querySelector(".ctrl.der");
+      medio.appendChild(der.querySelector("[data-play]"));
+      fila.append(izq, medio, der); zona.appendChild(fila);
+    }
+    if (v === "k") {
+      const b = app.querySelector(".bandeja");
+      b.insertAdjacentHTML("afterbegin", `<span class="hilo-bandeja" aria-hidden="true"><i data-hilo2></i></span><div class="asa-reloj"><button type="button" class="ic play mini-play" data-play2 aria-label="Play o pausa"><svg class="i-play"><use href="#i-play"/></svg><svg class="i-pausa"><use href="#i-pausa"/></svg></button><span data-mini-t>25:00</span></div>`);
+    }
+    if (v === "c" || v === "j") {
+      const tb = app.querySelector(".tb");
+      tb.insertAdjacentHTML("beforeend", `<button type="button" class="mini-reloj" data-mini aria-label="Volver al reloj"><i></i><span data-mini-t>25:00</span></button>`);
+    }
+    /* Cuarta ronda: todas son A + F + I, y las notas viven en otro lugar en cada una */
+    const conNotas = ["m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v);
+    const conEsquina = ["p", "q", "r", "s", "t"].includes(v);
+    const notasHTML = (cerrar) => `
+      <div class="notas-bloque">
+        <div class="notas-cab"><b>Notas de la sesión</b><button type="button" data-notas-borrar hidden>Borrar todas</button>${cerrar ? `<button type="button" data-cerrar-notas aria-label="Cerrar las notas"><svg><use href="#i-x"/></svg></button>` : ""}</div>
+        <label class="alta"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo y Enter" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista></ul>
+        <p class="notas-aviso">Se borran al salir de la sala.</p>
+      </div>`;
+    if (conNotas) {
+      app.classList.add("v-i");
+      if (conEsquina) app.classList.add("con-esquina");
+      if (v === "m" || conEsquina) app.insertAdjacentHTML("beforeend", `<aside class="notas-cajon" aria-label="Notas de la sesión">${notasHTML(true)}</aside>`);
+      if (v === "n") {
+        app.querySelector(".bandeja .pestanas").insertAdjacentHTML("beforeend", `<button type="button" role="tab" data-amb="notas" aria-selected="false">Notas <span class="n" data-notas-n></span></button>`);
+        app.querySelector(".bandeja .panel").insertAdjacentHTML("beforeend", notasHTML(false));
+      }
+      if (v === "o") zona.insertAdjacentHTML("beforeend", `<div class="al-pie">
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label>
+        <ul class="notas-lista" data-notas-lista data-max="2"></ul>
+        <button type="button" class="ver-mas" data-notas-mas hidden></button></div>`);
+      if (["p", "q", "s"].includes(v)) app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <button type="button" class="esquina-asa" data-esquina aria-expanded="false"><svg><use href="#i-nota"/></svg><span class="esq-etq">Notas</span><span class="esq-ult" data-notas-ultima></span><b data-notas-n></b><svg class="flecha"><use href="#i-arriba"/></svg></button>
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div></aside>`);
+      if (v === "r") app.insertAdjacentHTML("beforeend", `<aside class="esquina" aria-label="Notas de la sesión">
+        <div class="esquina-cuerpo"><div data-esquina-cuerpo>${notasHTML(false)}</div></div>
+        <label class="esquina-asa esq-escribir"><svg><use href="#i-nota"/></svg><input data-notas-alta data-esquina-input placeholder="Anotá algo… (N)" aria-label="Nueva nota"><b data-notas-n></b></label></aside>`);
+      if (v === "t") app.insertAdjacentHTML("beforeend", `<aside class="suelta" aria-label="Notas de la sesión">
+        <button type="button" class="ver-mas" data-notas-mas hidden></button>
+        <ul class="notas-lista" data-notas-lista data-max="3"></ul>
+        <label class="anotar"><svg><use href="#i-nota"/></svg><input data-notas-alta placeholder="Anotá algo… (N)" aria-label="Nueva nota"></label></aside>`);
+      if (v === "u") app.insertAdjacentHTML("beforeend", `<aside class="gemela" aria-label="Notas de la sesión">
+        <button type="button" class="asa gemela-asa" data-gemela aria-expanded="false" aria-label="Notas de la sesión"><svg><use href="#i-nota"/></svg><span class="gem-etq">Notas</span><b data-notas-n></b></button>
+        <div class="cuerpo" data-gemela-cuerpo>${notasHTML(false)}</div></aside>`);
+    }
+    const $ = s => app.querySelector(s);
+    const $$ = s => app.querySelectorAll(s);
+    $("[data-alta]").id = "alta-" + v;
+    app.addEventListener("click", e => { if (e.target.closest('a[href="#"]')) e.preventDefault(); });
+
+    const aviso = $(".aviso");
+    const avisar = (t, ms = 2200) => { aviso.textContent = t; aviso.classList.add("ver"); clearTimeout(aviso._t); aviso._t = setTimeout(() => aviso.classList.remove("ver"), ms); };
+
+    /* ── Reloj ── */
+    const s = { modo: "pomodoro", total: FASES.pomodoro[1], restante: FASES.pomodoro[1], corriendo: false, ultimo: 0, empezado: false };
+    const mm = $("[data-mm]"), ss = $("[data-ss]");
+    const pintarGrupo = (el, txt) => {
+      while (el.children.length < txt.length) { const d = document.createElement("span"); d.className = "d"; el.appendChild(d); }
+      while (el.children.length > txt.length) el.lastChild.remove();
+      [...txt].forEach((c, i) => {
+        const d = el.children[i];
+        if (d.textContent === c) return;
+        d.textContent = c; d.classList.remove("entra"); void d.offsetWidth; d.classList.add("entra");
+      });
+    };
+    const pintarReloj = () => {
+      const t = Math.max(0, Math.floor(s.restante));
+      const m = String(Math.floor(t / 60)).padStart(2, "0"), sg = String(t % 60).padStart(2, "0");
+      pintarGrupo(mm, m); pintarGrupo(ss, sg);
+      const prog = s.modo === "stopwatch" ? (s.restante % 60) / 60 : 1 - s.restante / s.total;
+      const arco = app.querySelector("[data-arco]"); if (arco) arco.style.strokeDashoffset = 603.19 * (1 - prog);
+      const hilo = app.querySelector("[data-hilo]"); if (hilo) hilo.style.setProperty("--p", prog.toFixed(4));
+      const hilo2 = app.querySelector("[data-hilo2]"); if (hilo2) hilo2.style.setProperty("--p", prog.toFixed(4));
+      const mini = app.querySelector("[data-mini-t]"); if (mini) mini.textContent = `${m}:${sg}`;
+      $("[data-reloj]").setAttribute("aria-label", `${s.modo === "stopwatch" ? "Llevás" : "Quedan"} ${+m} minutos y ${+sg} segundos`);
+      app.classList.toggle("corriendo", s.corriendo);
+      app.classList.toggle("pausado-sin-empezar", !s.corriendo && !s.empezado);
+      $("[data-play]").setAttribute("aria-label", s.corriendo ? "Pausar" : "Iniciar");
+      $("[data-modo-txt]").textContent = FASES[s.modo][0];
+      const cr = $("[data-crono]");
+      cr.innerHTML = `<svg><use href="#i-${s.modo === "stopwatch" ? "izq" : "der"}"/></svg>`;
+      cr.title = cr.ariaLabel = s.modo === "stopwatch" ? "Volver al temporizador" : "Pasar a cronómetro";
+      if (s.modo === "stopwatch") $(".modo").prepend(cr); else $(".modo").append(cr);
+    };
+    const ponerFase = (modo, avisarFase) => {
+      s.modo = modo; s.total = FASES[modo][1]; s.restante = s.total; s.empezado = false;
+      pintarReloj(); evaluarQuietud();
+      if (avisarFase) avisar(FASES[modo][0]);
+    };
+    const alternar = () => {
+      s.corriendo = !s.corriendo; s.ultimo = performance.now(); s.empezado = true;
+      pintarReloj(); evaluarQuietud();
+    };
+    s.tic = ahora => {
+      if (!s.corriendo) return;
+      const dt = (ahora - s.ultimo) / 1000; s.ultimo = ahora;
+      if (s.modo === "stopwatch") s.restante += dt;
+      else {
+        s.restante -= dt;
+        if (s.restante <= 0) {
+          const sig = SIGUIENTE_FASE[s.modo];
+          s.corriendo = false; ponerFase(sig); avisar(`Terminó la fase. Sigue ${FASES[sig][0].toLowerCase()}`);
+          return;
+        }
+      }
+      pintarReloj();
+    };
+    s.alternar = alternar;
+    $("[data-play]").addEventListener("click", alternar);
+    if (v === "e") $("[data-reloj]").addEventListener("click", alternar);
+    const play2 = app.querySelector("[data-play2]"); if (play2) play2.addEventListener("click", e => { e.stopPropagation(); alternar(); });
+    $("[data-reiniciar]").addEventListener("click", () => { s.corriendo = false; ponerFase(s.modo); });
+    $("[data-modo]").addEventListener("click", () => { if (s.modo === "stopwatch") return; s.corriendo = false; ponerFase(SIGUIENTE_FASE[s.modo], true); });
+    $("[data-crono]").addEventListener("click", () => { s.corriendo = false; ponerFase(s.modo === "stopwatch" ? "pomodoro" : "stopwatch", true); });
+    $("[data-compartir]").addEventListener("click", () => avisar("Link de invitación copiado"));
+    $("[data-pip]").addEventListener("click", () => avisar("El reloj pasa a una ventana flotante (demo)"));
+    $("[data-ajustes]").addEventListener("click", () => avisar("Tiempos del reloj: 25 · 5 · 15 (demo)"));
+    $("[data-salir-sala]").addEventListener("click", () => s.salir ? s.salir() : avisar("¿Salir de la sala? Se confirma en un diálogo (demo)"));
+    pintarReloj();
+
+    /* Quietud: con el reloj corriendo y el puntero quieto 2,5 s, queda el reloj */
+    let tQuieto = null;
+    const algoAbierto = () => !!app.querySelector(".bandeja.abierta, .ahora.abierta, .pop.abierto, .notas-cajon.abierta, .esquina.abierta, .gemela.abierta") || app.contains(document.activeElement) && /INPUT/.test(document.activeElement.tagName);
+    function evaluarQuietud() {
+      clearTimeout(tQuieto); delete app.dataset.quieto; marcarGlobal();
+      if (!s.corriendo) return;
+      tQuieto = setTimeout(() => { if (s.corriendo && !algoAbierto()) { app.dataset.quieto = ""; marcarGlobal(); } }, 2500);
+    }
+    app.addEventListener("pointermove", evaluarQuietud);
+    app.addEventListener("keydown", evaluarQuietud);
+    app.addEventListener("focusin", evaluarQuietud);
+    s.app = app; salas.push(s);
+
+    /* Música */
+    const pop = $("[data-pop]"), btnM = $("[data-musica]");
+    const abrirPop = a => { pop.classList.toggle("abierto", a); btnM.setAttribute("aria-expanded", a); pop.inert = !a; evaluarQuietud(); };
+    abrirPop(false);
+    btnM.addEventListener("click", e => { e.stopPropagation(); abrirPop(!pop.classList.contains("abierto")); });
+    app.addEventListener("pointerdown", e => { if (pop.classList.contains("abierto") && !pop.contains(e.target) && !btnM.contains(e.target)) abrirPop(false); });
+    pop.querySelectorAll("[data-mtab]").forEach(b => b.addEventListener("click", () => {
+      pop.querySelectorAll("[data-mtab]").forEach(x => x.setAttribute("aria-selected", x === b));
+      pop.querySelectorAll("[data-mpanel]").forEach(p => p.hidden = p.dataset.mpanel !== b.dataset.mtab);
+    }));
+    pop.querySelectorAll("[data-vol]").forEach(r => r.addEventListener("input", () => {
+      const suena = [...pop.querySelectorAll("[data-vol]")].some(x => +x.value > 0);
+      suena ? btnM.dataset.suena = "" : delete btnM.dataset.suena;
+    }));
+    pop.querySelectorAll(".linea").forEach(inp => inp.addEventListener("keydown", e => {
+      if (e.key !== "Enter" || !inp.value.trim()) return;
+      const ok = /youtu|spotify/i.test(inp.value);
+      avisar(ok ? "Sonando (demo)" : "Ese link no es de YouTube ni de Spotify");
+      if (ok) { btnM.dataset.suena = ""; inp.value = ""; }
+    }));
+
+    /* ── Tareas ── */
+    const datos = { mias: MIAS.map(t => ({ ...t, hecha: false })), sala: SALA.map(t => ({ ...t, hecha: false })) };
+    let amb = "mias", noVistas = 0, ajena = 0, llega = null;
+    const ul = $("[data-lista]");
+    const pendientes = k => datos[k].filter(t => !t.hecha);
+    const pintarLista = () => {
+      $$(".panel").forEach(p => p.toggleAttribute("data-en-notas", amb === "notas"));
+      if (amb === "notas") return;
+      const l = datos[amb];
+      ul.innerHTML = l.length ? l.map((t, i) => `
+        <li class="tarea${t.hecha ? " hecha" : ""}${t === llega ? " llega" : ""}" style="--i:${i + 2}">
+          <button type="button" class="check" data-i="${i}" aria-label="${t.hecha ? "Desmarcar" : "Marcar como hecha"}: ${esc(t.titulo)}"><svg><use href="#i-check"/></svg></button>
+          <span class="titulo">${esc(t.titulo)}</span>
+          <span class="prio" ${t.alta ? 'title="Prioridad alta"' : "hidden"}></span>
+          <span class="meta">${esc(t.meta)}</span>
+          <button type="button" class="mover" data-mover="${i}" title="${amb === "mias" ? "Pasar a la sala" : "Pasar a mías"}" aria-label="${amb === "mias" ? "Pasar a la sala" : "Pasar a mías"}: ${esc(t.titulo)}"><svg><use href="#i-mover"/></svg></button>
+        </li>`).join("") : `<li class="vacio">${amb === "mias" ? "No tenés tareas. Escribí una arriba." : "La sala todavía no tiene tareas."}</li>`;
+      llega = null;
+    };
+    const pintarTodo = () => {
+      pintarLista();
+      const nm = pendientes("mias").length, ns = pendientes("sala").length;
+      $("[data-n-mias]").textContent = nm; $("[data-n-sala]").textContent = ns;
+      $$("[data-n]").forEach(n => n.textContent = nm + ns);
+      $("[data-btn-tareas]").setAttribute("aria-label", `Tareas: ${nm + ns} pendientes`);
+      const sig = pendientes("mias")[0] || pendientes("sala")[0];
+      $$("[data-sig]").forEach(b => {
+        const txt = sig ? sig.titulo : "nada, estás al día";
+        if (b.textContent && b.textContent !== txt && v === "d") {
+          b.classList.add("cambia"); setTimeout(() => { b.textContent = txt; b.classList.remove("cambia"); }, 280);
+        } else b.textContent = txt;
+      });
+      $$("[data-amb]").forEach(b => b.setAttribute("aria-selected", b.dataset.amb === amb));
+      const vos = app.querySelector("[data-vos]"); if (vos) vos.innerHTML = sig ? `<b>${esc(sig.titulo)}</b>` : "al día";
+      $('[data-amb="sala"]').classList.toggle("nuevas", noVistas > 0);
+      noVistas > 0 ? app.dataset.nuevas = "" : delete app.dataset.nuevas;
+    };
+    const cambiarAmb = a => {
+      if (a === amb) return;
+      amb = a; if (a === "sala") noVistas = 0;
+      ul.classList.add("cambia");
+      setTimeout(() => { pintarTodo(); ul.classList.remove("cambia"); }, 160);
+    };
+    $$("[data-amb]").forEach(b => b.addEventListener("click", () => cambiarAmb(b.dataset.amb)));
+    ul.addEventListener("click", e => {
+      const c = e.target.closest(".check");
+      if (c) { const t = datos[amb][+c.dataset.i]; t.hecha = !t.hecha; pintarTodo(); return; }
+      const m = e.target.closest("[data-mover]");
+      if (m) {
+        const [t] = datos[amb].splice(+m.dataset.mover, 1);
+        const destino = amb === "mias" ? "sala" : "mias";
+        t.meta = destino === "sala" ? "Vos" : (t.meta === "Vos" ? "General" : t.meta);
+        datos[destino].unshift(t); pintarTodo();
+        avisar(destino === "sala" ? "La pasaste a la sala: la ven todos" : "La pasaste a tus tareas");
+      }
+    });
+    $("[data-alta]").addEventListener("keydown", e => {
+      const inp = e.target;
+      if (e.key !== "Enter" || !inp.value.trim()) return;
+      const texto = inp.value.trim();
+      const cat = (texto.match(/#(\S+)/) || [])[1];
+      const t = { titulo: texto.replace(/[!#]\S+/g, "").trim() || texto, meta: amb === "sala" ? "Vos" : (cat ? cat[0].toUpperCase() + cat.slice(1) : "General"), alta: /!alta/i.test(texto), hecha: false };
+      datos[amb].unshift(t); llega = t; inp.value = ""; pintarTodo();
+    });
+    s.sumarAjena = () => {
+      const t = { ...AJENAS[ajena++ % AJENAS.length], hecha: false };
+      datos.sala.unshift(t);
+      if (amb !== "sala" || !estaAbierta()) noVistas++;
+      if (amb === "sala") llega = t;
+      pintarTodo(); avisar(`${t.meta} sumó una tarea a la sala`);
+    };
+
+    /* Abrir y cerrar, según la variante */
+    const btnT = $("[data-btn-tareas]");
+    let estaAbierta = () => false;
+    let alternarTareas = () => {};
+    let alAbrirTareas = () => {};
+    if (["a", "b", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"].includes(v)) {
+      const bandeja = $(".bandeja"), asa = $("[data-asa]"), cuerpo = $("[data-cuerpo]");
+      const abrir = a => {
+        bandeja.classList.toggle("abierta", a); asa.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
+        if (a) alAbrirTareas();
+        if (a && amb === "sala") { noVistas = 0; pintarTodo(); }
+        evaluarQuietud();
+      };
+      estaAbierta = () => bandeja.classList.contains("abierta");
+      alternarTareas = () => abrir(!estaAbierta());
+      abrir(false);
+      asa.addEventListener("click", alternarTareas);
+      if (v === "j") $("[data-mini]").addEventListener("click", () => abrir(false));
+      if (v === "b") $("[data-rayita]").addEventListener("click", () => abrir(true));
+      app.addEventListener("keydown", e => { if (e.key === "Escape" && estaAbierta()) { e.stopPropagation(); abrir(false); } });
+    } else if (v === "c") {
+      const sec = $(".debajo");
+      const bajar = () => { op.querySelector(".marco").scrollTo({ top: sec.offsetTop - 56, behavior: "smooth" }); btnT.setAttribute("aria-expanded", "true"); };
+      alternarTareas = bajar;
+      $("[data-asomo]").addEventListener("click", bajar);
+      const marcoC = op.querySelector(".marco");
+      const arriba = () => marcoC.scrollTo({ top: 0, behavior: "smooth" });
+      marcoC.addEventListener("scroll", () => {
+        const abajo = marcoC.scrollTop > 200;
+        if (abajo !== app.hasAttribute("data-abajo")) abajo ? app.dataset.abajo = "" : delete app.dataset.abajo;
+        if (marcoC.scrollTop < 40) btnT.setAttribute("aria-expanded", "false");
+      }, { passive: true });
+      $("[data-mini]").addEventListener("click", arriba);
+      main.addEventListener("click", e => { if (app.hasAttribute("data-abajo") && !e.target.closest("button, input, .pop")) arriba(); });
+      estaAbierta = () => op.querySelector(".marco").scrollTop > 120;
+    } else if (v === "d") {
+      const ah = $(".ahora"), tit = $("[data-ahora]"), cuerpo = $("[data-cuerpo]");
+      const abrir = a => {
+        ah.classList.toggle("abierta", a); tit.setAttribute("aria-expanded", a); btnT.setAttribute("aria-expanded", a); cuerpo.inert = !a;
+        if (a && amb === "sala") { noVistas = 0; pintarTodo(); }
+        evaluarQuietud();
+      };
+      estaAbierta = () => ah.classList.contains("abierta");
+      alternarTareas = () => abrir(!estaAbierta());
+      abrir(false);
+      tit.addEventListener("click", alternarTareas);
+      $("[data-check-ahora]").addEventListener("click", e => {
+        const t = pendientes("mias")[0] || pendientes("sala")[0];
+        if (!t) return;
+        const c = e.currentTarget; c.classList.add("hecho");
+        setTimeout(() => { t.hecha = true; c.classList.remove("hecho"); pintarTodo(); }, 420);
+      });
+      app.addEventListener("keydown", e => { if (e.key === "Escape" && estaAbierta()) { e.stopPropagation(); abrir(false); } });
+    }
+    btnT.addEventListener("click", alternarTareas);
+    app.addEventListener("keydown", e => { if (e.key === "Escape" && pop.classList.contains("abierto")) { e.stopPropagation(); abrirPop(false); btnM.focus(); } });
+    pintarTodo();
+
+    /* ── Notas rápidas: tuyas, en este navegador, se borran al salir ── */
+    if (conNotas) {
+      const clave = "doro-sala-notas-" + v;
+      const EJEMPLO = [
+        { texto: "Preguntarle a Ana cómo sacó la máscara del ejercicio 4", hora: "18:31", fase: "Pomodoro" },
+        { texto: "Ver el video de Dijkstra que pasó el profe", hora: "18:24", fase: "Descanso corto" },
+        { texto: "Pág. 47: el teorema que no entendí", hora: "18:09", fase: "Pomodoro" },
+      ];
+      let notas;
+      try { notas = JSON.parse(leer(clave, "null")); } catch (e) { notas = null; }
+      if (!Array.isArray(notas)) notas = EJEMPLO.map((n, i) => ({ ...n, id: "ej" + i }));
+      const guardarNotas = () => guardar(clave, JSON.stringify(notas));
+      let nueva = null, todas = false, salirPedido = 0;
+      const pintarNotas = () => {
+        $$("[data-notas-lista]").forEach(ul => {
+          const max = ul.dataset.max && !todas ? +ul.dataset.max : Infinity;
+          ul.innerHTML = notas.length ? notas.slice(0, max).map(n => `
+            <li class="nota${n.id === nueva ? " llega" : ""}">
+              <span class="nota-txt">${esc(n.texto)}</span>
+              <span class="nota-pie">${esc(n.hora)} · ${esc(n.fase)}</span>
+              <button type="button" class="quitar" data-quitar="${n.id}" aria-label="Descartar la nota: ${esc(n.texto)}" title="Descartar"><svg><use href="#i-x"/></svg></button>
+            </li>`).join("")
+            : ul.dataset.max ? "" : `<li class="notas-vacio">Lo que se te cruce mientras estudiás. Nada de esto se guarda.</li>`;
+        });
+        nueva = null;
+        $$("[data-notas-n]").forEach(e => e.textContent = notas.length || "");
+        $$("[data-notas-borrar]").forEach(b => b.hidden = notas.length < 2);
+        $$("[data-notas-ultima]").forEach(e => e.textContent = notas[0] ? notas[0].texto : "Anotá algo (N)");
+        $(".suelta")?.classList.toggle("todas", todas);
+        const mas = $("[data-notas-mas]"), corta = $("[data-notas-lista][data-max]");
+        if (mas) { const resto = notas.length - +corta.dataset.max; mas.hidden = resto <= 0; mas.textContent = todas ? "Ver menos" : `y ${resto} más`; }
+      };
+      app.addEventListener("keydown", e => {
+        const inp = e.target.closest("[data-notas-alta]");
+        if (!inp || e.key !== "Enter" || !inp.value.trim()) return;
+        const d = new Date();
+        const n = { id: "n" + d.getTime(), texto: inp.value.trim(), hora: `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`, fase: FASES[s.modo][0] };
+        notas.unshift(n); nueva = n.id; inp.value = ""; guardarNotas(); pintarNotas();
+      });
+      app.addEventListener("click", e => {
+        const q = e.target.closest("[data-quitar]");
+        if (q) {
+          const li = q.closest(".nota"); li.classList.add("se-va");
+          setTimeout(() => { notas = notas.filter(n => n.id !== q.dataset.quitar); guardarNotas(); pintarNotas(); }, 220);
+          return;
+        }
+        if (e.target.closest("[data-notas-borrar]")) { const k = notas.length; notas = []; guardarNotas(); pintarNotas(); avisar(`Borraste ${k} notas`); return; }
+        if (e.target.closest("[data-notas-mas]")) { todas = !todas; pintarNotas(); }
+      });
+
+      /* Abrir y cerrar según la variante; s.abrirNotas lo usa la tecla N */
+      const cajon = $(".notas-cajon"), btnN = $("[data-btn-notas]"), esquina = $(".esquina"), gemela = $(".gemela");
+      const umbral = v === "s" ? 720 : 1040;
+      const abrirCajon = a => {
+        if (!cajon) return;
+        cajon.classList.toggle("abierta", a); btnN.setAttribute("aria-expanded", a); cajon.inert = !a;
+        if (a && estaAbierta()) alternarTareas();
+        evaluarQuietud();
+      };
+      const abrirEsquina = a => {
+        esquina.classList.toggle("abierta", a); $("[data-esquina]")?.setAttribute("aria-expanded", a); $("[data-esquina-cuerpo]").inert = !a;
+        evaluarQuietud();
+      };
+      if (cajon) {
+        abrirCajon(false);
+        btnN.addEventListener("click", () => abrirCajon(!cajon.classList.contains("abierta")));
+        $("[data-cerrar-notas]").addEventListener("click", () => { abrirCajon(false); btnN.focus(); });
+        alAbrirTareas = () => abrirCajon(false);
+      }
+      if (esquina) { abrirEsquina(false); $("[data-esquina]")?.addEventListener("click", () => abrirEsquina(!esquina.classList.contains("abierta"))); }
+      /* R · se abre al escribir y se pliega sola cuando el foco sale de la esquina */
+      if (v === "r") {
+        esquina.addEventListener("focusin", () => abrirEsquina(true));
+        esquina.addEventListener("focusout", e => { if (!esquina.contains(e.relatedTarget)) setTimeout(() => { if (!esquina.contains(document.activeElement)) abrirEsquina(false); }, 150); });
+      }
+      /* U · la segunda bandeja; donde no entra al costado, una cierra la otra */
+      const abrirGemela = a => {
+        if (!gemela) return;
+        gemela.classList.toggle("abierta", a); $("[data-gemela]").setAttribute("aria-expanded", a); $("[data-gemela-cuerpo]").inert = !a;
+        if (a && estaAbierta() && app.clientWidth < 1120) alternarTareas();
+        evaluarQuietud();
+      };
+      if (gemela) {
+        abrirGemela(false);
+        $("[data-gemela]").addEventListener("click", () => abrirGemela(!gemela.classList.contains("abierta")));
+        alAbrirTareas = () => { if (app.clientWidth < 1120) abrirGemela(false); };
+      }
+      const enfocar = sel => setTimeout(() => $(sel)?.focus({ preventScroll: true }), 120);
+      s.abrirNotas = () => {
+        if (v === "m" || (conEsquina && app.clientWidth < umbral)) { abrirCajon(true); enfocar(".notas-cajon [data-notas-alta]"); }
+        else if (v === "t") enfocar(".suelta [data-notas-alta]");
+        else if (v === "r") enfocar("[data-esquina-input]");
+        else if (conEsquina) { abrirEsquina(true); enfocar(".esquina [data-notas-alta]"); }
+        else if (v === "u") { abrirGemela(true); enfocar(".gemela [data-notas-alta]"); }
+        else if (v === "n") { if (!estaAbierta()) alternarTareas(); cambiarAmb("notas"); enfocar(".bandeja [data-notas-alta]"); }
+        else enfocar(".al-pie [data-notas-alta]");
+      };
+      app.addEventListener("keydown", e => {
+        if (e.key === "Escape") {
+          if (cajon?.classList.contains("abierta")) { e.stopPropagation(); abrirCajon(false); return; }
+          if (esquina?.classList.contains("abierta")) { e.stopPropagation(); if (v === "r") document.activeElement.blur(); abrirEsquina(false); return; }
+          if (gemela?.classList.contains("abierta")) { e.stopPropagation(); abrirGemela(false); return; }
+        }
+        if (e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.stopPropagation(); s.abrirNotas(); }
+      });
+      s.salir = () => {
+        const k = notas.length;
+        if (!k) return avisar("Saliste de la sala (demo)");
+        if (Date.now() - salirPedido < 3500) {
+          notas = []; guardarNotas(); pintarNotas(); salirPedido = 0;
+          return avisar(k === 1 ? "Saliste: se borró tu nota (demo)" : `Saliste: se borraron tus ${k} notas (demo)`, 2600);
+        }
+        salirPedido = Date.now();
+        avisar(k === 1 ? "Al salir se borra tu nota. Tocá Salir otra vez" : `Al salir se borran tus ${k} notas. Tocá Salir otra vez`, 3500);
+      };
+      pintarNotas();
+    }
+
+    /* Marco: presets, medida en vivo y la tarea ajena */
+    const barra = op.querySelector("[data-barra]");
+    const marco = op.querySelector(".marco");
+    const PRESETS = [["Móvil", 390, 760], ["Tablet", 820, 720], ["Escritorio", 1180, 700]];
+    barra.innerHTML = `<div class="presets">${PRESETS.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn-chico btn-completa" data-completa><svg><use href="#i-expandir"/></svg>Pantalla completa</button>
+      <button type="button" class="btn-chico" data-ajena><svg><use href="#i-persona"/></svg>Alguien suma una tarea</button>
+      <span class="medida" aria-live="polite"></span><span class="pista">Arrastrá la esquina para redimensionar</span>`;
+    barra.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => {
+      marco.style.width = Math.min(+b.dataset.w, marco.parentElement.clientWidth) + "px";
+      marco.style.height = b.dataset.h + "px";
+    }));
+    barra.querySelector("[data-ajena]").addEventListener("click", () => s.sumarAjena());
+    const medida = barra.querySelector(".medida");
+    new ResizeObserver(() => {
+      const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
+      medida.textContent = t;
+      if (op === actual) mando.querySelector(".medida").textContent = t;
+    }).observe(marco);
+    barra.querySelector("[data-completa]").addEventListener("click", () => abrirCompleta(op));
+    s.op = op;
+  });
+
+  /* Un solo latido mueve todos los relojes */
+  const latir = t => { salas.forEach(s => s.tic(t)); requestAnimationFrame(latir); };
+  requestAnimationFrame(latir);
+
+  /* En pantalla completa, el mando también se apaga cuando la sala está quieta */
+  function marcarGlobal() {
+    const q = actual && salas.find(s => s.op === actual)?.app.hasAttribute("data-quieto");
+    q ? raiz.dataset.quietoGlobal = "" : delete raiz.dataset.quietoGlobal;
+  }
+
+  /* ── Pantalla completa ── */
+  const opciones = [...document.querySelectorAll(".opcion")];
+  const ciclar = (id, orden) => {
+    const actualV = id === "tema" ? temaInicial() : raiz.dataset[id];
+    ponerAjuste[id](orden[(orden.indexOf(actualV) + 1) % orden.length]);
+  };
+  mando.innerHTML = opciones.map(op => {
+    const letra = op.querySelector(".letra").textContent, nombre = op.querySelector(".nombre").textContent;
+    return `<button type="button" data-ir="${op.id}" title="${letra} · ${nombre}" aria-label="Variante ${letra}, ${nombre}">${letra}</button>`;
+  }).join("") + `<span class="sep"></span><span class="medida"></span>
+    <button type="button" data-play-mando title="Play o pausa (Espacio)" aria-label="Play o pausa"><svg><use href="#i-play"/></svg></button>
+    <button type="button" data-ciclo="fondo" title="Fondo liso o con puntos (F)" aria-label="Cambiar fondo"><svg><use href="#i-fondo"/></svg></button>
+    <button type="button" data-ciclo="vineta" title="Desvanecer puntos: no, a los lados, al centro (D)" aria-label="Cambiar desvanecido de los puntos"><svg><use href="#i-vineta"/></svg></button>
+    <button type="button" data-color title="Color de acento (C)" aria-label="Cambiar color de acento"><svg><use href="#i-color"/></svg></button>
+    <button type="button" data-ciclo="tema" title="Claro, oscuro o negro (T)" aria-label="Cambiar tema"><svg><use href="#i-tema"/></svg></button>
+    <button type="button" data-contraer title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa"><svg><use href="#i-contraer"/></svg></button>
+    <button type="button" data-ocultar title="Esconder esta barra (H)" aria-label="Esconder la barra de ajustes"><svg><use href="#i-x"/></svg></button>`;
+  const CICLOS = { fondo: ["liso", "puntos"], vineta: ["parejo", "bordes", "centro"], tema: ["light", "dark", "negro"] };
+  const NOMBRES = { liso: "Fondo liso", puntos: "Fondo con puntos", parejo: "Puntos sin desvanecer", bordes: "Puntos desvanecidos a los lados", centro: "Puntos desvanecidos al centro" };
+  const avisarMando = (t, ms = 1600) => {
+    if (!actual) return;
+    const a = actual.querySelector(".aviso");
+    a.textContent = t; a.classList.add("ver");
+    clearTimeout(a._t); a._t = setTimeout(() => a.classList.remove("ver"), ms);
+  };
+  /* La X esconde la barra para ver la pantalla sola; H o la esquina de abajo a la derecha la traen */
+  const volver = document.createElement("button");
+  volver.type = "button"; volver.className = "mando-volver"; volver.hidden = true;
+  volver.setAttribute("aria-label", "Mostrar la barra de ajustes");
+  document.body.appendChild(volver);
+  let mandoOculto = false;
+  const ocultarMando = o => {
+    mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual;
+    if (o) avisarMando("Barra escondida. H o la esquina de abajo a la derecha la traen", 2800);
+  };
+  volver.addEventListener("pointerenter", () => ocultarMando(false));
+  volver.addEventListener("click", () => ocultarMando(false));
+  const usarCiclo = id => { ciclar(id, CICLOS[id]); if (id !== "tema") avisarMando(NOMBRES[raiz.dataset[id]]); };
+  const playActual = () => { const s = salas.find(x => x.op === actual); if (s) s.alternar(); };
+  mando.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => mostrar(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll("[data-ciclo]").forEach(b => b.addEventListener("click", () => usarCiclo(b.dataset.ciclo)));
+  mando.querySelector("[data-play-mando]").addEventListener("click", playActual);
+  const siguienteAcento = () => {
+    const a = ACENTOS[(ACENTOS.findIndex(x => x.id === acento) + 1) % ACENTOS.length];
+    ponerAcento(a.id); avisarMando("Acento " + a.nombre.toLowerCase());
+  };
+  mando.querySelector("[data-color]").addEventListener("click", siguienteAcento);
+  mando.querySelector("[data-contraer]").addEventListener("click", () => cerrarCompleta());
+  mando.querySelector("[data-ocultar]").addEventListener("click", () => ocultarMando(true));
+  function mostrar(op) {
+    if (actual && actual !== op) actual.classList.remove("completa");
+    actual = op; op.classList.add("completa");
+    mando.querySelectorAll("[data-ir]").forEach(b => b.setAttribute("aria-current", b.dataset.ir === op.id));
+    const m = op.querySelector(".marco");
+    mando.querySelector(".medida").textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+    marcarGlobal();
+  }
+  function abrirCompleta(op) {
+    raiz.classList.add("en-completa"); mostrar(op); ocultarMando(false);
+    const pedido = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null;
+    if (pedido) pedido.catch(() => {});
+  }
+  function cerrarCompleta() {
+    if (!actual) return;
+    const op = actual;
+    op.classList.remove("completa"); actual = null; marcarGlobal();
+    raiz.classList.remove("en-completa"); mando.hidden = true; volver.hidden = true; mandoOculto = false;
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    op.scrollIntoView({ block: "start" });
+  }
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) cerrarCompleta(); });
+  document.addEventListener("keydown", e => {
+    if (!actual) return;
+    if (e.key === "Escape") { cerrarCompleta(); return; }
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+    const k = e.key.toLowerCase();
+    if (e.key === " " && !/BUTTON/.test(document.activeElement?.tagName || "")) { e.preventDefault(); return playActual(); }
+    if (k === "f") return usarCiclo("fondo");
+    if (k === "d") return usarCiclo("vineta");
+    if (k === "t") return usarCiclo("tema");
+    if (k === "c") return siguienteAcento();
+    if (k === "h") return ocultarMando(!mandoOculto);
+    if (k === "n") { e.preventDefault(); return salas.find(x => x.op === actual)?.abrirNotas?.(); }
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = opciones.indexOf(actual) + (e.key === "ArrowRight" ? 1 : -1);
+    mostrar(opciones[(i + opciones.length) % opciones.length]);
+  });
+})();
+</script>
