@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils"
 import type { Tarea } from "@/types/dominio"
 import { Icono, type NombreIcono } from "./Iconos"
 
-/** Tarjeta «clara» del dashboard: la superficie de --card con su borde. */
+/** Tarjeta del dashboard: la superficie de --caja con su borde y sombra. */
 export function Tarjeta({ children, className }: { children: ReactNode; className?: string }) {
-    return <section className={cn("flex min-h-0 min-w-0 flex-col gap-3 rounded-xl border bg-card px-[1.125rem] py-4", className)}>{children}</section>
+    return <section className={cn("flex min-h-0 min-w-0 flex-col gap-3 rounded-xl border bg-caja shadow-caja px-[1.125rem] py-4", className)}>{children}</section>
 }
 
 export function Etiqueta({ icono, children }: { icono: NombreIcono; children: ReactNode }) {

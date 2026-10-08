@@ -68,10 +68,12 @@ html {
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  /* Superficies hundidas (Tareas S2): cajas «oscuras» y tarjetas «más oscuras»,
-     por debajo del fondo y no por encima como --card. */
-  --hundido: oklch(0.955 0.004 285);
-  --hundido-2: oklch(0.925 0.005 285);
+  /* Superficies de toda la app (D · Elevada, 2026-10-07): la caja agrupa (la caja de
+     un tema, una tarjeta del Dashboard) y sube un escalón con sombra suave; la tarjeta
+     va adentro y baja un poco. Bandeja, paneles y menús siguen flotando con --card. */
+  --caja: oklch(1 0 0);
+  --tarjeta: oklch(0.975 0.002 285);
+  --sombra-caja: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.14);
   --ring: var(--brand);
   /* Color de marca (violeta). Antes estaba hardcodeado como `violet-500/600` en
      cada componente; ahora vive acá para poder cambiarlo en un solo lugar.
@@ -116,8 +118,9 @@ html {
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
-  --color-hundido: var(--hundido);
-  --color-hundido-2: var(--hundido-2);
+  --color-caja: var(--caja);
+  --color-tarjeta: var(--tarjeta);
+  --shadow-caja: var(--sombra-caja);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -158,9 +161,9 @@ html {
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  /* Misma distancia al fondo que en el boceto (0.025 y 0.05 por debajo) */
-  --hundido: oklch(0.118 0.004 285);
-  --hundido-2: oklch(0.093 0.003 285);
+  --caja: oklch(0.185 0.005 285);
+  --tarjeta: oklch(0.155 0.005 285);
+  --sombra-caja: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
   /* En oscuro el violeta se aclara para mantener contraste sobre el fondo zinc;
      el relleno sólido se queda en el mismo tono que en claro. */
   --brand: oklch(70.2% 0.183 293.541);
@@ -189,8 +192,8 @@ html {
   --accent: oklch(0.225 0.005 285);
   --sidebar-accent: oklch(0.225 0.005 285);
   --heatmap-0: oklch(0.18 0.004 285);
-  --hundido: oklch(0.098 0.003 285);
-  --hundido-2: oklch(0.075 0.002 285);
+  --caja: oklch(0.16 0.004 285);
+  --tarjeta: oklch(0.135 0.004 285);
 }
 
 @layer base {
@@ -393,36 +396,6 @@ html {
   }
   [data-abierta]:hover > .sumar-tipos {
     transition-delay: 0s;
-  }
-}
-
-/* Tareas: al abrir un tema, la caja vieja se va enseguida y la barra y el nombre viajan
-   al encabezado; al cerrar, la caja abierta se encoge hasta su lugar en la grilla. */
-::view-transition-group(barra-activa),
-::view-transition-group(nombre-activo),
-::view-transition-group(caja-activa) {
-  animation-duration: 0.5s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-:root[data-vt="entrar"]::view-transition-old(root) {
-  animation: vt-fuera 0.14s ease-out both;
-}
-:root[data-vt="entrar"]::view-transition-new(root) {
-  animation: vt-dentro 0.3s ease-out 0.08s both;
-}
-::view-transition-old(barra-activa),
-::view-transition-new(barra-activa) {
-  height: 100%;
-  object-fit: fill;
-}
-@keyframes vt-fuera {
-  to {
-    opacity: 0;
-  }
-}
-@keyframes vt-dentro {
-  from {
-    opacity: 0;
   }
 }
 

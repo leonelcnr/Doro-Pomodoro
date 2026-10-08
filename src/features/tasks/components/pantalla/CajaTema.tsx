@@ -31,7 +31,7 @@ export function CajaTema({ clave, nombre, icono, porcentaje, frase, items, onAbr
             onClick={onAbrir}
             className={cn(
                 caja,
-                "bg-hundido outline-none transition-[border-color,box-shadow,translate,scale] duration-250 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:border-muted-foreground/60 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring active:translate-y-0 active:scale-[.99]",
+                "bg-caja shadow-caja outline-none transition-[border-color,box-shadow,translate,scale] duration-250 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:border-muted-foreground/60 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring active:translate-y-0 active:scale-[.99]",
             )}
         >
             <span className="flex min-w-0 items-center gap-2.5 text-[0.96875rem] font-medium">

@@ -1,40 +1,73 @@
-// La animación entre la grilla de temas y la caja abierta (View Transitions).
-// Al entrar viajan la barra y el nombre de la caja tocada hasta el encabezado de la
-// caja abierta; al salir, la caja abierta entera se encoge hasta su lugar en la grilla.
-// Sin soporte o con movimiento reducido, el cambio pasa sin animación.
+// La animación entre la grilla de temas y la caja abierta, moviendo los elementos de
+// verdad (FLIP) y no fotos de la página: solo `transform` y `opacity`, lo más barato
+// de dibujar, así no se traba en navegadores sin aceleración por hardware.
+//
+// Al entrar, la barra y el nombre de la caja tocada viajan hasta el encabezado de la
+// caja abierta (con un clon que vuela por encima) mientras el resto aparece. Al salir,
+// la caja de la grilla nace del tamaño de la abierta y se encoge hasta su lugar.
+// Con movimiento reducido el cambio pasa sin animación.
 
 import { flushSync } from "react-dom";
 
-const PARTES_ENTRADA: [string, string][] = [
-    ["barra-activa", "[data-barra]"],
-    ["nombre-activo", "[data-nombre]"],
-];
+const SALIDA = "cubic-bezier(.16,1,.3,1)";
+
+/** Lleva `el` desde el rectángulo `desde` a donde está ahora, con traslación y escala. */
+const desdeRect = (desde: DOMRect, hasta: DOMRect) =>
+    `translate(${desde.left - hasta.left}px, ${desde.top - hasta.top}px) scale(${desde.width / Math.max(hasta.width, 1)}, ${desde.height / Math.max(hasta.height, 1)})`;
+
+/** Un clon de `el` que vuela por encima de la página de `desde` a `hasta`. */
+function volar(el: HTMLElement, desde: DOMRect, hasta: DOMRect) {
+    const clon = el.cloneNode(true) as HTMLElement;
+    Object.assign(clon.style, {
+        position: "fixed",
+        left: `${hasta.left}px`,
+        top: `${hasta.top}px`,
+        width: `${hasta.width}px`,
+        height: `${hasta.height}px`,
+        margin: "0",
+        zIndex: "40",
+        pointerEvents: "none",
+        transformOrigin: "top left",
+    });
+    document.body.appendChild(clon);
+    el.style.visibility = "hidden";
+    const anim = clon.animate([{ transform: desdeRect(desde, hasta) }, { transform: "none" }], { duration: 500, easing: SALIDA });
+    anim.finished.catch(() => {}).finally(() => {
+        clon.remove();
+        el.style.visibility = "";
+    });
+}
 
 export function transicionCaja(desde: Element | null, cambio: () => void, destino: () => Element | null, entrar: boolean) {
-    const sinAnimacion = !desde || !document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (sinAnimacion) {
+    if (!desde || matchMedia("(prefers-reduced-motion: reduce)").matches) {
         cambio();
         return;
     }
-    const partes: [string, string | null][] = entrar ? PARTES_ENTRADA : [["caja-activa", null]];
-    const nombrar = (raiz: Element | null, si: boolean) =>
-        partes.forEach(([nombre, selector]) => {
-            const el = raiz && (selector ? raiz.querySelector<HTMLElement>(selector) : (raiz as HTMLElement));
-            if (el) el.style.viewTransitionName = si ? nombre : "";
-        });
+    const antes = desde.getBoundingClientRect();
+    const partesAntes = entrar
+        ? (["[data-barra]", "[data-nombre]"] as const).map((sel) => desde.querySelector(sel)?.getBoundingClientRect())
+        : [];
 
-    nombrar(desde, true);
-    if (entrar) document.documentElement.dataset.vt = "entrar";
-    const t = document.startViewTransition(() => {
-        flushSync(cambio);
-        nombrar(destino(), true);
-    });
-    // Si se aborta (p. ej. con la pestaña en segundo plano) el cambio ya se aplicó: no es un error
-    t.ready.catch(() => {});
-    t.finished
-        .catch(() => {})
-        .finally(() => {
-            nombrar(destino(), false);
-            delete document.documentElement.dataset.vt;
+    flushSync(cambio);
+    const nuevo = destino() as HTMLElement | null;
+    if (!nuevo) return;
+
+    if (entrar) {
+        // El resto de la caja abierta aparece mientras la barra y el nombre viajan
+        nuevo.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 80, easing: "ease-out", fill: "backwards" });
+        (["[data-barra]", "[data-nombre]"] as const).forEach((sel, i) => {
+            const el = nuevo.querySelector<HTMLElement>(sel);
+            const r = partesAntes[i];
+            if (el && r) volar(el, r, el.getBoundingClientRect());
         });
+    } else {
+        // La caja de la grilla nace del tamaño de la abierta y se encoge a su lugar;
+        // las demás aparecen alrededor
+        Array.from(nuevo.parentElement?.children ?? [])
+            .filter((x) => x !== nuevo)
+            .forEach((x) => x.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 120, easing: "ease-out", fill: "backwards" }));
+        nuevo.style.transformOrigin = "top left";
+        nuevo.animate([{ transform: desdeRect(antes, nuevo.getBoundingClientRect()), zIndex: 10 }, { transform: "none", zIndex: 10 }], { duration: 500, easing: SALIDA })
+            .finished.catch(() => {}).finally(() => (nuevo.style.transformOrigin = ""));
+    }
 }

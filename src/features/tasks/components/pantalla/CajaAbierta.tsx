@@ -60,7 +60,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                             type="button"
                             aria-pressed={r.tipo === tipo}
                             onClick={() => onTipo(r.tipo)}
-                            className="grid flex-[1_0_12.5rem] grid-cols-[1rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 rounded-[0.625rem] border bg-hundido-2 px-3.5 py-[0.8125rem] text-left text-[0.90625rem] transition-colors hover:border-muted-foreground/60 aria-pressed:border-foreground"
+                            className="grid flex-[1_0_12.5rem] grid-cols-[1rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 rounded-[0.625rem] border bg-tarjeta px-3.5 py-[0.8125rem] text-left text-[0.90625rem] transition-colors hover:border-muted-foreground/60 aria-pressed:border-foreground"
                         >
                             <IconoTipo tipo={r.tipo} className="size-[0.9375rem] text-muted-foreground" />
                             <span>{INFO_TIPO[r.tipo].nombre}</span>
@@ -109,7 +109,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
             data-abierta
             aria-label={tema.nombre}
             onKeyDown={(e) => e.key === "Escape" && menu && (e.stopPropagation(), establecerMenu(false))}
-            className="flex min-w-0 flex-col gap-[1.125rem] rounded-2xl border bg-hundido px-[clamp(1.125rem,3cqi,2.125rem)] pt-6 pb-7 text-left"
+            className="flex min-w-0 flex-col gap-[1.125rem] rounded-2xl border bg-caja shadow-caja px-[clamp(1.125rem,3cqi,2.125rem)] pt-6 pb-7 text-left"
         >
             <div className="flex flex-col gap-3.5">
                 <div className="flex items-center gap-x-6 gap-y-3">

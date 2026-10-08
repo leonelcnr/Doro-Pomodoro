@@ -222,3 +222,4 @@ en claro y oscuro, y un commit propio.
 | 2026-10-07 | Fase 3, paso 6: pantalla de Tareas (S2) con cajas, caja abierta, detalle desde la esquina y calendario; se va la pantalla vieja de Calendario. |
 | 2026-10-07 | Fase 3, paso 7: Sala, Dashboard, Login, Invitación, Reloj flotante y Errores aplicados (Dashboard y las cuatro chicas con subagentes en paralelo). |
 | 2026-10-07 | Fase 3, paso 8: limpieza de plantillas y código sin uso. Fase 3 cerrada en código; falta probar la Sala en una sala real y desplegar. |
+| 2026-10-07 | Superficies unificadas (boceto `bocetos/tonos-superficies.html`, elegida **D · Elevada**): tokens `--caja` y `--tarjeta` para Tareas y Dashboard; se fueron `--hundido`. Tareas: calendario con los márgenes del boceto y animación de la caja sin View Transitions (FLIP), sin el destello blanco. |

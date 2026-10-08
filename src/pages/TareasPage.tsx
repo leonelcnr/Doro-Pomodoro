@@ -117,7 +117,8 @@ const TareasPage = () => {
     return (
         <div className="flex min-h-dvh flex-col">
             <EncabezadoApp />
-            <main className="@container flex flex-1 flex-col px-5 pt-8 pb-16" aria-busy={!listo}>
+            {/* Márgenes del boceto: crecen con el ancho (40 a 120 px) desde 720 px */}
+            <main className="@container flex flex-1 flex-col px-5 pt-8 pb-16 min-[45rem]:px-[clamp(2.5rem,7vw,7.5rem)] min-[45rem]:pt-11 min-[45rem]:pb-20" aria-busy={!listo}>
                 {listo && (
                 <div className={cn("flex w-full flex-col gap-9", enCalendario && !caja ? "mb-auto" : "m-auto max-w-[67.5rem]", caja && "gap-[1.125rem]")}>
                     <CabeceraTareas frase={frase(pendienteDe(tareas))} porcentaje={porcentajeDe(tareas)} vista={vista} onVista={establecerVista} ancha={enCalendario && !caja} />

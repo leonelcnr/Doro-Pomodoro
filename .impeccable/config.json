@@ -29,6 +29,24 @@
         ],
         "createdAt": "2026-10-07T20:01:56.059Z",
         "reason": "Claude: la etiqueta «Tareas» del contador se pliega con max-width tal como el boceto aprobado del home (bocetos/home-d4-bandeja.html); es un span de 5em, una vez por hover. El asa ya pasó a scale."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/tonos-superficies.html"
+        ],
+        "createdAt": "2026-10-07T22:07:33.960Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); los textos usan --fg/--tenue de la app."
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          "bocetos/tonos-superficies.html"
+        ],
+        "createdAt": "2026-10-07T22:07:33.967Z",
+        "reason": "Claude: son maquetas en miniatura de la app (post-its de 11,5 px como en la sala); el texto del boceto en sí es de 13 a 15 px."
       }
     ]
   }

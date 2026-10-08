@@ -15,7 +15,7 @@ interface TarjetaItemProps {
     onAlternarHecha: (tarea: Tarea) => void
 }
 
-const tarjeta = "flex min-w-0 flex-col gap-[0.6875rem] rounded-xl border bg-hundido-2 p-[1.125rem] pb-4 text-left transition-[border-color,box-shadow,translate] duration-250 ease-[cubic-bezier(.16,1,.3,1)]"
+const tarjeta = "flex min-w-0 flex-col gap-[0.6875rem] rounded-xl border bg-tarjeta p-[1.125rem] pb-4 text-left transition-[border-color,box-shadow,translate] duration-250 ease-[cubic-bezier(.16,1,.3,1)]"
 
 /** El pie de toda tarjeta: cuándo es, y el aviso si tiene. */
 function Pie({ tarea }: { tarea: Tarea }) {
