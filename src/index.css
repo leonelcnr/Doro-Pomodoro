@@ -82,8 +82,8 @@ html {
      cada componente; ahora vive acá para poder cambiarlo en un solo lugar.
      `brand` es el tono para texto, íconos y trazos; `brand-strong` es el relleno
      sólido que lleva texto blanco encima. */
-  --brand: oklch(60.6% 0.25 292.717);
-  --brand-strong: oklch(54.1% 0.281 293.009);
+  --brand: oklch(0.52 0.25 289);
+  --brand-strong: oklch(0.48 0.26 289);
   --brand-foreground: oklch(0.985 0 0);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
@@ -171,10 +171,11 @@ html {
   --sombra-caja: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
   --alto: oklch(0.225 0.006 285);
   --sombra-alta: 0 1px 2px oklch(0 0 0 / 0.4), 0 14px 34px -12px oklch(0 0 0 / 0.75);
-  /* En oscuro el violeta se aclara para mantener contraste sobre el fondo zinc;
-     el relleno sólido se queda en el mismo tono que en claro. */
-  --brand: oklch(70.2% 0.183 293.541);
-  --brand-strong: oklch(54.1% 0.281 293.009);
+  /* En oscuro el violeta se aclara para mantener contraste sobre el fondo zinc, sin
+     llegar a lavanda; el relleno sólido es el --brand del claro (Violeta profundo,
+     bocetos/violeta.html, 2026-10-08). */
+  --brand: oklch(0.63 0.22 289);
+  --brand-strong: oklch(0.52 0.25 289);
   --brand-foreground: oklch(0.985 0 0);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);

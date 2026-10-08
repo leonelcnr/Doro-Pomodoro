@@ -7,7 +7,7 @@ export const CLAVE_ACENTO = "doro-acento"
 
 // `muestra` es solo para dibujar el círculo del selector (tono del tema claro).
 export const ACENTOS = [
-    { id: "violeta", nombre: "Violeta", muestra: "oklch(0.56 0.24 293)" },
+    { id: "violeta", nombre: "Violeta", muestra: "oklch(0.52 0.25 289)" },
     { id: "azul", nombre: "Azul", muestra: "oklch(0.55 0.19 258)" },
     { id: "verde", nombre: "Verde", muestra: "oklch(0.55 0.13 162)" },
     { id: "naranja", nombre: "Naranja", muestra: "oklch(0.62 0.19 42)" },
