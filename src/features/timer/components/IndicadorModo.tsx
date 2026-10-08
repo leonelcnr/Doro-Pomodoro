@@ -27,14 +27,15 @@ export function IndicadorModo({ modo, estaActivo, onClickModo, onPomodoro, onCro
             onClick={esCronometro ? onPomodoro : onCronometro}
             title={esCronometro ? 'Volver al pomodoro' : 'Pasar a cronómetro'}
             aria-label={esCronometro ? 'Volver al pomodoro' : 'Pasar a cronómetro'}
-            className="grid size-6 place-items-center rounded-md text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-muted hover:text-foreground [@media(hover:none)]:opacity-70"
+            className="grid size-7 place-items-center rounded-md text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-muted hover:text-foreground [@media(hover:none)]:opacity-70"
         >
             {esCronometro ? <ChevronLeft className="size-3.5" /> : <ChevronRight className="size-3.5" />}
         </button>
     );
 
+    // z-[1]: con el reloj andando los dígitos crecen (scale) y tapaban la flecha, que no recibía el hover
     return (
-        <div className="zona-modo group relative inline-flex items-center gap-0.5 [grid-area:modo] justify-self-center">
+        <div className="zona-modo group relative z-[1] inline-flex items-center gap-0.5 [grid-area:modo] justify-self-center">
             {esCronometro && flecha}
             <button
                 type="button"

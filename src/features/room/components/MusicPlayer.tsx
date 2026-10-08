@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link2, Music, Pause, Play, User, Volume2, VolumeX, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link2, MonitorPlay, Music, Pause, Play, User, Volume2, VolumeX, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAuth } from "@/features/auth/context/useAuth";
 import { useMusicaSala } from "@/features/room/hooks/useMusicaSala";
@@ -12,6 +12,12 @@ import { parsearYoutube } from "./music/parsearUrlMedia";
 
 /** Con más de estos sonidos, la grilla muestra los primeros y «Ver los N» despliega el resto. */
 const A_LA_VISTA = 12;
+
+/** El video acepta órdenes por postMessage (volumen) solo con la API de iframes prendida. */
+const conApi = (url: string) => (url.includes("enablejsapi") ? url : `${url}${url.includes("?") ? "&" : "?"}enablejsapi=1`);
+
+const mandarVolumen = (video: HTMLIFrameElement | null, volumen: number) =>
+    video?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [volumen] }), "*");
 
 const botonChico = "grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground [&_svg]:size-3.5";
 
@@ -33,6 +39,10 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId, enLaSala }:
     const [cambiandoVideo, establecerCambiandoVideo] = useState(false);
     const [link, establecerLink] = useState("");
     const [error, establecerError] = useState<string | null>(null);
+    // El volumen del video es de cada uno, como «Silenciar para mí»: no toca `music_state`
+    const [volumenVideo, establecerVolumenVideo] = useState(70);
+    const video = useRef<HTMLIFrameElement>(null);
+    useEffect(() => mandarVolumen(video.current, volumenVideo), [volumenVideo]);
 
     const sonando = AMBIENT_SOUNDS.filter((s) => (volumenes[s.id] ?? 0) > 0);
     const videoSuena = Boolean(estadoSala.url) && !silenciada;
@@ -81,7 +91,10 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId, enLaSala }:
             {/* El video de la sala suena aunque el panel esté cerrado; silenciado, no se carga */}
             {videoSuena && (
                 <iframe
-                    src={estadoSala.url}
+                    ref={video}
+                    src={conApi(estadoSala.url)}
+                    // ponytail: el reproductor tarda en estar listo después del load; si se pierde la orden, queda en 100 hasta mover la barra
+                    onLoad={() => setTimeout(() => mandarVolumen(video.current, volumenVideo), 1000)}
                     title="Música de la sala"
                     allow="autoplay; encrypted-media"
                     className="pointer-events-none fixed -left-[200vw] size-px opacity-0"
@@ -108,6 +121,22 @@ export const MusicPlayer = React.memo(function MusicPlayer({ salaId, enLaSala }:
                         <p className={`${claseRotulo} m-0`}>
                             Ambiente <span className="ml-1 tracking-normal normal-case">solo vos</span>
                         </p>
+                        {videoSuena && (
+                            <label className="grid grid-cols-[1rem_4.5rem_minmax(0,1fr)_1.75rem] items-center gap-2 text-[0.84375rem]">
+                                <MonitorPlay className="size-4 text-brand" aria-hidden />
+                                <span className="truncate">Video</span>
+                                <input
+                                    type="range" min={0} max={100}
+                                    value={volumenVideo}
+                                    onChange={(e) => establecerVolumenVideo(Number(e.target.value))}
+                                    aria-label="Volumen del video de la sala"
+                                    className="w-full accent-[var(--brand)]"
+                                />
+                                <button type="button" onClick={() => establecerSilenciada(true)} aria-label="Silenciar el video para mí" title="Silenciar para mí" className={botonChico}>
+                                    <X />
+                                </button>
+                            </label>
+                        )}
                         {sonando.map((s) => (
                             <label key={s.id} className="grid grid-cols-[1rem_4.5rem_minmax(0,1fr)_1.75rem] items-center gap-2 text-[0.84375rem]">
                                 <s.icono className="size-4 text-brand" aria-hidden />

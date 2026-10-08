@@ -47,6 +47,24 @@
         ],
         "createdAt": "2026-10-07T22:07:33.967Z",
         "reason": "Claude: son maquetas en miniatura de la app (post-its de 11,5 px como en la sala); el texto del boceto en sí es de 13 a 15 px."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/tareas-ajustes.html"
+        ],
+        "createdAt": "2026-10-08T02:10:54.228Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en tonos-superficies.html); los textos usan --fg/--tenue de la app."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "bocetos/tareas-ajustes.html"
+        ],
+        "createdAt": "2026-10-08T02:11:17.865Z",
+        "reason": "Claude: copia fiel de la app: pestañas Temas|Calendario subrayadas sin padding lateral y filas del calendario con borde inferior, igual que CabeceraTareas y CalendarioTareas."
       }
     ]
   }

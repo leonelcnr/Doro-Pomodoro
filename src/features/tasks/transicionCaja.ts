@@ -71,3 +71,24 @@ export function transicionCaja(desde: Element | null, cambio: () => void, destin
             .finished.catch(() => {}).finally(() => (nuevo.style.transformOrigin = ""));
     }
 }
+
+/**
+ * Temas ↔ Calendario: las dos vistas comparten el marco, pero el contenido cambia de alto
+ * y la cabecera (centrada en alto) cambiaría de lugar de golpe. Se desliza a su lugar
+ * nuevo y lo de abajo la acompaña mientras aparece.
+ */
+export function transicionVista(cambio: () => void) {
+    const cabecera = document.querySelector<HTMLElement>("[data-cabecera-tareas]");
+    if (!cabecera || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        cambio();
+        return;
+    }
+    const antes = cabecera.getBoundingClientRect().top;
+    flushSync(cambio);
+    const dy = antes - cabecera.getBoundingClientRect().top;
+    if (dy) cabecera.animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: 450, easing: SALIDA });
+    cabecera.nextElementSibling?.animate(
+        [{ opacity: 0, transform: `translateY(${dy + 8}px)` }, { opacity: 1, transform: "none" }],
+        { duration: 450, easing: SALIDA },
+    );
+}

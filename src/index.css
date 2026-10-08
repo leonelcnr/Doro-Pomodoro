@@ -74,6 +74,9 @@ html {
   --caja: oklch(1 0 0);
   --tarjeta: oklch(0.975 0.002 285);
   --sombra-caja: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 8px 24px -12px oklch(0.2 0.01 285 / 0.14);
+  /* Lo elegido (el tipo que se ve, la tarjeta con el detalle abierto) sube un escalón más */
+  --alto: oklch(1 0 0);
+  --sombra-alta: 0 1px 2px oklch(0.2 0.01 285 / 0.08), 0 10px 28px -10px oklch(0.2 0.01 285 / 0.22);
   --ring: var(--brand);
   /* Color de marca (violeta). Antes estaba hardcodeado como `violet-500/600` en
      cada componente; ahora vive acá para poder cambiarlo en un solo lugar.
@@ -121,6 +124,8 @@ html {
   --color-caja: var(--caja);
   --color-tarjeta: var(--tarjeta);
   --shadow-caja: var(--sombra-caja);
+  --color-alto: var(--alto);
+  --shadow-alta: var(--sombra-alta);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -164,6 +169,8 @@ html {
   --caja: oklch(0.185 0.005 285);
   --tarjeta: oklch(0.155 0.005 285);
   --sombra-caja: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  --alto: oklch(0.225 0.006 285);
+  --sombra-alta: 0 1px 2px oklch(0 0 0 / 0.4), 0 14px 34px -12px oklch(0 0 0 / 0.75);
   /* En oscuro el violeta se aclara para mantener contraste sobre el fondo zinc;
      el relleno sólido se queda en el mismo tono que en claro. */
   --brand: oklch(70.2% 0.183 293.541);
@@ -194,6 +201,7 @@ html {
   --heatmap-0: oklch(0.18 0.004 285);
   --caja: oklch(0.16 0.004 285);
   --tarjeta: oklch(0.135 0.004 285);
+  --alto: oklch(0.2 0.005 285);
 }
 
 @layer base {

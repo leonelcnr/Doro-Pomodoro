@@ -1,5 +1,5 @@
 import { useTimer } from '../hooks/useTimerActions';
-import DialogShare from './Dialog-Share';
+import { CompartirSala } from './CompartirSala';
 import { RotateCcw } from 'lucide-react';
 import { useTimerStore } from '@/store/timerStore';
 import { useEffect } from 'react';
@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils';
 
 interface TimerDisplayProps {
     enlace: string;
-    codigo: string;
     salaId?: string;
     /** Cuántos hay en la sala («Cambia el reloj de los 3»). */
     enLaSala: number;
@@ -29,7 +28,7 @@ interface TimerDisplayProps {
  *
  * La sincronización con Supabase la maneja `useSincronizacionReloj` desde la sala.
  */
-export const TimerDisplay = ({ enlace, codigo, salaId, enLaSala }: TimerDisplayProps) => {
+export const TimerDisplay = ({ enlace, salaId, enLaSala }: TimerDisplayProps) => {
     const { tiempoRestante, estaActivo, modo, alternarTemporizador, manejarReinicio, ponerPomodoro, ponerDescansoLargo, ponerDescansoCorto, ponerCronometro } = useTimer();
     const { configuracion, establecerConfiguracion, tiempoInicial } = useTimerStore();
 
@@ -85,7 +84,7 @@ export const TimerDisplay = ({ enlace, codigo, salaId, enLaSala }: TimerDisplayP
                     onCronometro={ponerCronometro}
                 />
                 <div className="zona-controles mt-[1.125rem] flex gap-1.5 [grid-area:izq] justify-self-end @[43.75rem]/zona:mt-0">
-                    <DialogShare enlace={enlace} codigo={codigo} />
+                    <CompartirSala enlace={enlace} />
                     <MusicPlayer salaId={salaId} enLaSala={enLaSala} />
                     <button type="button" onClick={manejarReinicio} className={claseControl} title="Reiniciar" aria-label="Reiniciar el reloj">
                         <RotateCcw />

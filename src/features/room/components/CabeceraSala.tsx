@@ -32,7 +32,7 @@ export function CabeceraSala({ usuariosEnSala }: { usuariosEnSala: UsuarioEnSala
                         <span
                             key={u.id}
                             title={u.name}
-                            className="relative grid size-7 place-items-center overflow-hidden rounded-full border-2 border-background bg-muted text-[0.71875rem] font-semibold"
+                            className="relative grid size-7 place-items-center overflow-hidden rounded-full border-2 border-background bg-muted text-[0.71875rem] leading-none font-semibold"
                             style={{ marginLeft: i ? "-0.5rem" : 0 }}
                         >
                             {u.avatarUrl ? <img src={u.avatarUrl} alt="" className="size-full object-cover" /> : u.name.charAt(0).toUpperCase()}

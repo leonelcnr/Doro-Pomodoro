@@ -4,7 +4,7 @@ import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 import { TIPOS_ITEM, fraccion, itemsDelTema, sumarAvance, tipoDe } from "@/features/tasks/avance"
 import { INFO_TIPO, diasHasta, estaPendiente } from "@/features/tasks/bandeja"
 import { frase, fraseCorta, pendienteDe } from "@/features/tasks/frases"
-import { transicionCaja } from "@/features/tasks/transicionCaja"
+import { transicionCaja, transicionVista } from "@/features/tasks/transicionCaja"
 import { CabeceraTareas, type VistaTareas } from "@/features/tasks/components/pantalla/CabeceraTareas"
 import { CajaAbierta, type OpcionCaja } from "@/features/tasks/components/pantalla/CajaAbierta"
 import { CajaTema, NuevoTema } from "@/features/tasks/components/pantalla/CajaTema"
@@ -120,8 +120,8 @@ const TareasPage = () => {
             {/* Márgenes del boceto: crecen con el ancho (40 a 120 px) desde 720 px */}
             <main className="@container flex flex-1 flex-col px-5 pt-8 pb-16 min-[45rem]:px-[clamp(2.5rem,7vw,7.5rem)] min-[45rem]:pt-11 min-[45rem]:pb-20" aria-busy={!listo}>
                 {listo && (
-                <div className={cn("flex w-full flex-col gap-9", enCalendario && !caja ? "mb-auto" : "m-auto max-w-[67.5rem]", caja && "gap-[1.125rem]")}>
-                    <CabeceraTareas frase={frase(pendienteDe(tareas))} porcentaje={porcentajeDe(tareas)} vista={vista} onVista={establecerVista} ancha={enCalendario && !caja} />
+                <div className={cn("m-auto flex w-full max-w-[67.5rem] flex-col gap-9", caja && "gap-[1.125rem]")}>
+                    <CabeceraTareas frase={frase(pendienteDe(tareas))} porcentaje={porcentajeDe(tareas)} vista={vista} onVista={(v) => transicionVista(() => establecerVista(v))} />
 
                     {caja ? (
                         <CajaAbierta
@@ -146,7 +146,7 @@ const TareasPage = () => {
                     ) : enCalendario ? (
                         <CalendarioTareas filas={filasCalendario} elegido={elegido} onAbrir={(t) => establecerElegido(t.id)} />
                     ) : (
-                        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,14.5rem),1fr))] gap-3.5">
+                        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14.5rem),17rem))] justify-center gap-3.5">
                             {cajas.map((c) => (
                                 <CajaTema
                                     key={claveDe(c.temaId)}

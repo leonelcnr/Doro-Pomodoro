@@ -192,7 +192,7 @@ const RoomPage = () => {
                 ) : (
                     // I · Sube sin achicarse: con la bandeja abierta, el reloj se corre hacia arriba
                     <div className={cn("w-full transition-transform duration-[550ms] ease-[cubic-bezier(.16,1,.3,1)]", bandejaAbierta && "-translate-y-[min(22cqh,10rem)]")}>
-                        <TimerDisplay enlace={enlaceInvitacion || ""} codigo={invitacion?.code || ""} salaId={salaIdValida} enLaSala={Math.max(1, usuariosEnSala.length)} />
+                        <TimerDisplay enlace={enlaceInvitacion || ""} salaId={salaIdValida} enLaSala={Math.max(1, usuariosEnSala.length)} />
                     </div>
                 )}
             </main>

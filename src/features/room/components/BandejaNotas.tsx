@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"
+import { flushSync } from "react-dom"
 import { ArrowLeft, Pencil, X } from "lucide-react"
 import { IconoDeTema, IconoNota } from "@/features/tasks/components/IconosTareas"
+import { useAnimarAlto } from "@/hooks/useAnimarAlto"
 import { cn } from "@/lib/utils"
 import type { NotaSesion, Tema } from "@/types/dominio"
 
@@ -37,6 +39,38 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
     const entrada = useRef<HTMLInputElement>(null)
     const [texto, establecerTexto] = useState("")
     const [eligiendo, establecerEligiendo] = useState<string | null>(null)
+    // La nota que se está leyendo entera: se abre a lo ancho de la bandeja
+    const [leyendo, establecerLeyendo] = useState<string | null>(null)
+    const lista = useRef<HTMLUListElement>(null)
+    // La bandeja acompaña el cambio de alto (abrir una nota, elegir tema) en vez de saltar
+    const cuerpo = useAnimarAlto<HTMLDivElement>([leyendo, eligiendo], abierta)
+
+    // Abrir o cerrar una nota sin saltos (FLIP): la nota va de su tamaño anterior al nuevo
+    // mientras el texto aparece con un fundido (así no se ve cortarse al reacomodarse),
+    // y las demás se deslizan a su lugar nuevo
+    const alternarLectura = (id: string) => {
+        const items = () => Array.from(lista.current?.querySelectorAll<HTMLElement>("li[data-nota]") ?? [])
+        const antes = new Map(items().map((li) => [li.dataset.nota, li.getBoundingClientRect()]))
+        flushSync(() => establecerLeyendo(leyendo === id ? null : id))
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return
+        const curva = { duration: 380, easing: "cubic-bezier(.16,1,.3,1)" }
+        for (const li of items()) {
+            const a = antes.get(li.dataset.nota)
+            if (!a) continue
+            const b = li.getBoundingClientRect()
+            if (li.dataset.nota === id) {
+                li.style.overflow = "clip"
+                li.animate(
+                    [{ width: `${a.width}px`, height: `${a.height}px`, transform: `translate(${a.left - b.left}px, ${a.top - b.top}px)` },
+                     { width: `${b.width}px`, height: `${b.height}px`, transform: "none" }],
+                    curva,
+                ).finished.catch(() => {}).finally(() => (li.style.overflow = ""))
+                li.firstElementChild?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 120, easing: "ease-out", fill: "backwards" })
+            } else if (a.left !== b.left || a.top !== b.top) {
+                li.animate([{ transform: `translate(${a.left - b.left}px, ${a.top - b.top}px)` }, { transform: "none" }], curva)
+            }
+        }
+    }
     const elegida = notas.find((n) => n.id === eligiendo)
     const temaDe = (id: string | null | undefined) => temas.find((t) => t.id === id)
 
@@ -103,7 +137,7 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
                 )}
             </div>
 
-            <div inert={!abierta} className="flex min-h-0 flex-col gap-2.5 overflow-y-auto px-5 pt-1 pb-5">
+            <div ref={cuerpo} inert={!abierta} className="flex min-h-0 flex-col gap-2.5 overflow-y-auto px-5 pt-1 pb-5">
                 {elegida ? (
                     // Elegir tema: ocupa la bandeja, los temas con su nombre en dos columnas
                     <div className="flex animate-in flex-col gap-2.5 duration-250 fade-in slide-in-from-top-1">
@@ -139,15 +173,23 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
                     </div>
                 ) : (
                     <>
-                        <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2.5 p-0 pt-0.5">
+                        <ul ref={lista} className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2.5 p-0 pt-0.5">
                             {notas.length === 0 && (
                                 <li className="col-span-full py-2 text-[0.84375rem] text-muted-foreground">Lo que se te cruce mientras estudiás. Queda acá hasta que la descartes.</li>
                             )}
                             {[...notas].reverse().map((n) => {
                                 const tema = temaDe(n.temaId)
                                 return (
-                                    <li key={n.id} className="group relative flex aspect-square min-w-0 animate-in flex-col gap-1.5 rounded-[0.375rem_0.375rem_0.375rem_1rem] bg-muted p-3 pb-2.5 text-[0.84375rem] leading-[1.4] duration-500 zoom-in-95 fade-in hover:bg-muted/70">
-                                        <span className="line-clamp-4 [overflow-wrap:anywhere]">{n.texto}</span>
+                                    <li key={n.id} data-nota={n.id} className={cn("group relative flex min-w-0 animate-in flex-col gap-1.5 rounded-[0.375rem_0.375rem_0.375rem_1rem] bg-muted p-3 pb-2.5 text-[0.84375rem] leading-[1.4] duration-500 zoom-in-95 fade-in hover:bg-muted/70", leyendo === n.id ? "col-span-full pr-8" : "aspect-square")}>
+                                        {/* Tocar el texto lo abre entero a lo ancho de la bandeja; otro toque lo cierra */}
+                                        <button
+                                            type="button"
+                                            aria-expanded={leyendo === n.id}
+                                            onClick={() => alternarLectura(n.id)}
+                                            className={cn("min-h-0 text-left outline-none [overflow-wrap:anywhere] focus-visible:underline", leyendo !== n.id && "line-clamp-4")}
+                                        >
+                                            {n.texto}
+                                        </button>
                                         <span className="mt-auto flex items-center gap-1 text-[0.71875rem] text-muted-foreground tabular-nums">
                                             {tema && <IconoDeTema icono={tema.icon} className="size-3 shrink-0" />}
                                             {n.hora} · {n.fase}

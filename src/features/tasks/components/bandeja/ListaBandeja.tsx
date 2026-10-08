@@ -43,7 +43,8 @@ export function ListaBandeja(props: ListaBandejaProps) {
     const { items, opciones, elegido, verTemas, porTipo, onVerTemas, onElegirTema, onAlternarOrden, onCrear, onPlegar } = props
 
     return (
-        <div>
+        // Con el menú de temas abierto la bandeja crece hasta que entre entero (si la lista es corta, quedaba cortado)
+        <div className="animate-in duration-300 fade-in" style={verTemas ? { minHeight: `calc(3.75rem + min(16.25rem, ${opciones.length * 2.375 + 0.875}rem))` } : undefined}>
             <div data-menu-temas className="relative">
                 <h4 className="m-0 flex items-center gap-2 border-b pt-3 pb-[0.4375rem] text-[0.8125rem] font-semibold">
                     <button
@@ -68,7 +69,7 @@ export function ListaBandeja(props: ListaBandejaProps) {
                 </h4>
 
                 {verTemas && (
-                    <ul className="absolute top-10 -left-2 z-10 m-0 max-h-[16.25rem] w-[min(18.75rem,calc(100%+0.5rem))] animate-in list-none overflow-y-auto rounded-xl border bg-card p-1.5 shadow-lg duration-250 fade-in slide-in-from-top-1">
+                    <ul className="absolute top-10 -left-2 z-10 m-0 flex max-h-[16.25rem] flex-col gap-0.5 w-[min(18.75rem,calc(100%+0.5rem))] animate-in list-none overflow-y-auto rounded-xl border bg-card p-1.5 shadow-lg duration-250 fade-in slide-in-from-top-1">
                         {opciones.map((o) => (
                             <li key={o.id === undefined ? "todos" : (o.id ?? "general")}>
                                 <button
@@ -147,6 +148,7 @@ function LineaDeTiempo({ items, nombreTema, onEnfocar }: ListaBandejaProps) {
                                     </>
                                 )}
                             </span>
+                            <IconoTipo tipo={tipoDe(tarea)} className="size-[1.125rem] shrink-0 text-muted-foreground" />
                             <Titulo tarea={tarea} nombreTema={nombreTema} onEnfocar={onEnfocar} />
                         </div>
                         {cierra && <span className="absolute right-0 bottom-0 left-[4.375rem] h-px bg-border" />}
@@ -161,6 +163,7 @@ function LineaDeTiempo({ items, nombreTema, onEnfocar }: ListaBandejaProps) {
             )}
             {sinFecha.map((tarea) => (
                 <li key={tarea.id} className={cn("flex min-h-[2.875rem] items-center gap-2.5", recien(tarea) && "bandeja-llega")}>
+                    <IconoTipo tipo={tipoDe(tarea)} className="size-[1.125rem] shrink-0 text-muted-foreground" />
                     <Titulo tarea={tarea} nombreTema={nombreTema} onEnfocar={onEnfocar} />
                 </li>
             ))}

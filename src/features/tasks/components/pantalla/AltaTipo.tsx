@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Plus } from "lucide-react"
 import { INFO_TIPO } from "@/features/tasks/bandeja"
+import { SelectorFecha } from "@/features/tasks/components/SelectorFecha"
 import type { ItemChecklist, TareaPayload, TipoItem } from "@/types/dominio"
 
 const EJEMPLO: Record<TipoItem, string> = {
@@ -21,14 +22,17 @@ interface AltaTipoProps {
     /** null es «General». */
     temaId: string | null
     onCrear: (payload: TareaPayload) => void
+    /** Abre directo el formulario (al elegir el tipo desde «Sumar»). */
+    abiertaAlInicio?: boolean
 }
 
 /**
  * «Agregar práctico» al pie de las tarjetas: el botón punteado se vuelve un renglón
  * con lo que pide cada tipo (puntos y entrega, fecha y unidades, partes…).
  */
-export function AltaTipo({ tipo, temaId, onCrear }: AltaTipoProps) {
-    const [abierta, establecerAbierta] = useState(false)
+export function AltaTipo({ tipo, temaId, onCrear, abiertaAlInicio = false }: AltaTipoProps) {
+    const [abierta, establecerAbierta] = useState(abiertaAlInicio)
+    const [fecha, establecerFecha] = useState("")
     const uno = INFO_TIPO[tipo].uno
 
     if (!abierta) {
@@ -56,8 +60,9 @@ export function AltaTipo({ tipo, temaId, onCrear }: AltaTipoProps) {
             : tipo === "parcial" ? items(Array.from({ length: cantidad }, (_, i) => `Unidad ${i + 1}`))
             : tipo === "informe" ? items(partes.length ? partes : ["Introducción", "Desarrollo", "Conclusión"])
             : undefined
-        onCrear({ header: titulo, kind: tipo, topic_id: temaId, due_date: String(datos.get("fecha") ?? "") || null, checklist })
+        onCrear({ header: titulo, kind: tipo, topic_id: temaId, due_date: fecha || null, checklist })
         establecerAbierta(false)
+        establecerFecha("")
     }
 
     return (
@@ -85,7 +90,7 @@ export function AltaTipo({ tipo, temaId, onCrear }: AltaTipoProps) {
             {tipo !== "tarea" && (
                 <label className={campo}>
                     {tipo === "parcial" ? "Fecha" : "Entrega"}
-                    <input name="fecha" type="date" className={`${entrada} [color-scheme:light_dark]`} />
+                    <SelectorFecha valor={fecha} onCambiar={establecerFecha} className={`${entrada} w-[7.5rem]`} />
                 </label>
             )}
             <button type="submit" className="h-9 rounded-md bg-brand-strong px-3.5 text-[0.84375rem] text-brand-foreground hover:bg-brand-strong/90">

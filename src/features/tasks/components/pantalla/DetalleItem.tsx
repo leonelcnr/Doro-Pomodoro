@@ -4,6 +4,7 @@ import { tipoDe } from "@/features/tasks/avance"
 import { INFO_TIPO, diasHasta, estaRendido, relativo } from "@/features/tasks/bandeja"
 import { IconoTipo } from "@/features/tasks/components/IconosTareas"
 import { Regla } from "@/features/tasks/components/Regla"
+import { SelectorFecha } from "@/features/tasks/components/SelectorFecha"
 import { cn } from "@/lib/utils"
 import type { ItemChecklist, Tarea, TareaPayload, TipoItem } from "@/types/dominio"
 
@@ -60,13 +61,11 @@ export function DetalleItem({ tarea, nombreTema, onCerrar, onCambiar, onAlternar
 
     const fecha = (
         <Dato etiqueta={tipo === "parcial" ? (rendido ? "Fue el" : "Fecha") : tipo === "tarea" ? "Fecha" : "Entrega"}>
-            <input
-                type="date"
-                defaultValue={tarea.due_date ?? ""}
-                key={tarea.due_date ?? ""}
-                onChange={(e) => onCambiar({ due_date: e.target.value || null })}
+            <SelectorFecha
+                valor={tarea.due_date ?? ""}
+                onCambiar={(v) => onCambiar({ due_date: v || null })}
                 aria-label={tipo === "practico" || tipo === "informe" ? "Entrega" : "Fecha"}
-                className="w-fit bg-transparent text-[0.875rem] font-medium outline-none [color-scheme:light_dark] focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-fit text-[0.875rem] font-medium"
             />
             {dias != null && <small className="-mt-1 text-[0.75rem] text-muted-foreground">{relativo(dias)}</small>}
         </Dato>

@@ -1,0 +1,813 @@
+<title>Tareas: seleccionado, grilla y calendario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Tres preguntas de Tareas, una sección cada una; las maquetas usan los tokens reales de src/index.css (superficies D · Elevada). */
+:root {
+  --bg: oklch(1 0 0); --fg: oklch(0.141 0.005 285.823); --tenue: oklch(0.552 0.016 285.938);
+  --card: oklch(1 0 0); --campo: oklch(0.967 0.001 286.375); --linea: oklch(0.92 0.004 286.32);
+  --caja: oklch(1 0 0); --tarjeta: oklch(0.975 0.002 285); --alto: oklch(1 0 0);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / .06), 0 8px 24px -12px oklch(0.2 0.01 285 / .14);
+  --sombra-alta: 0 1px 2px oklch(0.2 0.01 285 / .08), 0 10px 28px -10px oklch(0.2 0.01 285 / .22);
+  --finde: oklch(0.967 0.001 286.375 / .7);
+  --acento: oklch(70.5% 0.187 47.6); --acento-fuerte: oklch(64.6% 0.222 41.1); --acento-fg: oklch(0.985 0 0);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.141 0.005 285.823); --fg: oklch(0.985 0 0); --tenue: oklch(0.705 0.015 286.067);
+    --card: oklch(0.21 0.006 285.885); --campo: oklch(0.274 0.006 286.033); --linea: oklch(1 0 0 / 10%);
+    --caja: oklch(0.185 0.005 285); --tarjeta: oklch(0.155 0.005 285); --alto: oklch(0.225 0.006 285);
+    --sombra: 0 1px 2px oklch(0 0 0 / .3), 0 12px 32px -16px oklch(0 0 0 / .6);
+    --sombra-alta: 0 1px 2px oklch(0 0 0 / .4), 0 14px 34px -12px oklch(0 0 0 / .75);
+    --finde: oklch(0.274 0.006 286.033 / .45);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.141 0.005 285.823); --fg: oklch(0.985 0 0); --tenue: oklch(0.705 0.015 286.067);
+  --card: oklch(0.21 0.006 285.885); --campo: oklch(0.274 0.006 286.033); --linea: oklch(1 0 0 / 10%);
+  --caja: oklch(0.185 0.005 285); --tarjeta: oklch(0.155 0.005 285); --alto: oklch(0.225 0.006 285);
+  --sombra: 0 1px 2px oklch(0 0 0 / .3), 0 12px 32px -16px oklch(0 0 0 / .6);
+  --sombra-alta: 0 1px 2px oklch(0 0 0 / .4), 0 14px 34px -12px oklch(0 0 0 / .75);
+  --finde: oklch(0.274 0.006 286.033 / .45);
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-negro] {
+  --bg: oklch(0.12 0.003 285); --card: oklch(0.165 0.004 285); --campo: oklch(0.225 0.005 285);
+  --caja: oklch(0.16 0.004 285); --tarjeta: oklch(0.135 0.004 285); --alto: oklch(0.2 0.005 285);
+  --finde: oklch(0.225 0.005 285 / .45);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 6px; }
+.pagina { max-width: 1680px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-inline: 32px; padding-block: 56px 120px; } }
+h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+.intro p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.intro b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 48px; border-block: 1px solid var(--linea); position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 20; }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste b { font-weight: 500; color: var(--fg); }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--campo); border: 1px solid var(--linea); }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; color: var(--tenue); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: var(--sombra); }
+.muestras { display: flex; gap: 6px; }
+.muestra { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: 0 0 0 1px var(--linea); }
+.muestra[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+.seccion { margin-bottom: 104px; }
+.seccion > header { margin-bottom: 28px; }
+.seccion > header h2 { font-size: 30px; letter-spacing: -0.03em; margin: 0 0 8px; font-weight: 600; }
+.seccion > header h2 .n { color: var(--tenue); font-weight: 400; margin-right: 10px; }
+.seccion > header p { margin: 0; color: var(--tenue); max-width: 70ch; }
+.barra-sec { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; margin: 0 0 28px; }
+.medida { font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+
+.opcion { margin-bottom: 64px; }
+.cabeza { display: grid; gap: 14px 48px; margin-bottom: 14px; }
+@media (min-width: 900px) { .cabeza { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); } }
+.cabeza h3 { margin: 0 0 6px; font-size: 21px; letter-spacing: -0.02em; font-weight: 600; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.cabeza h3 .letra { color: var(--acento); }
+.marca-rec { font-size: 12px; font-weight: 500; color: var(--acento); border: 1px solid color-mix(in oklch, var(--acento) 40%, transparent); padding: 2px 10px; border-radius: 999px; }
+.resumen { margin: 0; color: var(--tenue); max-width: 56ch; font-size: 14.5px; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h4 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.herr { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--linea); background: var(--bg); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; }
+.btn:hover { border-color: var(--tenue); }
+
+/* ───────── Marcos redimensionables ───────── */
+.marco { resize: both; overflow: hidden; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); width: 1280px; height: 720px; max-width: 100%; min-width: 320px; min-height: 360px; position: relative; }
+.app { height: 100%; overflow: auto; container-type: inline-size; display: flex; flex-direction: column; }
+.top { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; flex: none; }
+.logo { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--acento); }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--campo); }
+.main { flex: 1; display: flex; flex-direction: column; padding: 32px 20px 64px; }
+@container (min-width: 720px) { .main { padding: 44px clamp(40px, 7cqi, 120px) 80px; } }
+.bloque { display: flex; flex-direction: column; gap: 36px; width: 100%; }
+.bloque.centrado { margin: auto; max-width: 1080px; }
+.bloque.arriba { margin-bottom: auto; }
+.bloque.alto { margin-block: auto; }
+
+/* Cabecera */
+.cab { display: flex; flex-direction: column; gap: 18px; align-items: center; text-align: center; }
+.cab.ancha { align-items: stretch; text-align: left; }
+.cab h2 { margin: 0; font-size: clamp(22px, 3.4cqi, 32px); line-height: 1.15; font-weight: 600; letter-spacing: -0.035em; }
+.cab.ancha h2 { align-self: flex-start; }
+.barra { display: block; height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; }
+.barra.g { height: 4px; }
+.barra i { display: block; height: 100%; background: var(--acento); }
+.cab .barra { width: min(100%, 360px); }
+.cab.ancha .barra { width: 100%; }
+.vistas { display: flex; gap: 20px; font-size: 14px; }
+.cab.ancha .vistas { align-self: flex-start; }
+.vistas button { border: 0; border-bottom: 1.5px solid transparent; background: none; padding: 0 0 6px; display: inline-flex; gap: 6px; align-items: center; color: var(--tenue); }
+.vistas button[aria-pressed="true"] { border-color: var(--fg); color: var(--fg); }
+.vistas svg { width: 15px; height: 15px; }
+
+/* Grilla de temas */
+.grilla { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 232px), 1fr)); }
+.grilla.flex { display: flex; flex-wrap: wrap; justify-content: center; }
+.grilla.flex > * { flex: 0 1 272px; min-width: min(100%, 232px); }
+.grilla.cols { grid-template-columns: repeat(auto-fit, minmax(min(100%, 232px), 272px)); justify-content: center; }
+.ct { display: flex; flex-direction: column; gap: 12px; min-height: 150px; padding: 18px 18px 16px; border: 1px solid var(--linea); border-radius: 12px; background: var(--caja); box-shadow: var(--sombra); text-align: left; min-width: 0; }
+.ct .f { display: flex; align-items: center; gap: 10px; font-size: 15.5px; font-weight: 500; }
+.nom { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.nom span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ct svg { width: 18px; height: 18px; color: var(--tenue); flex: none; }
+.ct .pct { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.ct p { margin: 0; flex: 1; font-size: 13.5px; color: var(--tenue); line-height: 1.4; }
+.ct .cuenta { display: flex; gap: 14px; font-size: 12.5px; color: var(--tenue); }
+.ct .cuenta span { display: inline-flex; gap: 5px; align-items: center; }
+.ct .cuenta svg { width: 13px; height: 13px; }
+.nuevo { display: grid; place-items: center; min-height: 150px; border: 1px dashed var(--linea); border-radius: 12px; color: var(--tenue); font-size: 14px; }
+
+/* Calendario */
+.cal { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cal-scroll { overflow-x: auto; }
+.cal-grid { display: grid; grid-template-columns: 150px minmax(0, 1fr); min-width: 700px; }
+.cal-cab { grid-column: 2; position: relative; height: 28px; border-bottom: 1px solid var(--linea); font-size: 12px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.cal-cab span { position: absolute; bottom: 7px; transform: translateX(-50%); white-space: nowrap; }
+.cal-cab .hoy { color: var(--fg); font-weight: 600; }
+.fila-n { display: flex; align-items: center; border-bottom: 1px solid var(--linea); padding-right: 14px; font-size: 14px; min-width: 0; }
+.fila-n svg { width: 15px; height: 15px; color: var(--tenue); flex: none; }
+.pista { position: relative; overflow: hidden; border-bottom: 1px solid var(--linea); }
+.pista .fin { position: absolute; top: 0; bottom: 0; background: var(--finde); }
+.pista .lun { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--linea); }
+.pista .ahora { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--fg); opacity: .55; z-index: 1; }
+.blq { position: absolute; z-index: 2; height: 32px; display: flex; gap: 6px; align-items: center; max-width: 220px; min-width: 84px; padding: 0 9px; border: 1px solid var(--linea); border-radius: 6px; background: var(--card); font-size: 12.5px; overflow: hidden; white-space: nowrap; }
+.blq svg { width: 13px; height: 13px; color: var(--tenue); flex: none; }
+.blq .x { margin-left: auto; padding-left: 6px; color: var(--tenue); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.blq.parcial { border-left: 2px solid var(--fg); }
+.blq.informe { border-left: 2px solid var(--tenue); }
+.blq.tarea { border-style: dashed; }
+.blq .av { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--acento); }
+.leyenda { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--tenue); }
+
+/* ───────── Sección A: seleccionado ───────── */
+.minis { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.mini h3 { font-size: 17px; margin: 0 0 4px; font-weight: 600; letter-spacing: -0.015em; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mini h3 .letra { color: var(--acento); }
+.mini .resumen { margin-bottom: 12px; font-size: 13.5px; }
+.mini .notas { margin-top: 12px; font-size: 13px; }
+.lienzo { padding: 22px; border: 1px solid var(--linea); border-radius: 14px; background: var(--bg); }
+.abierta { display: flex; flex-direction: column; gap: 16px; padding: 20px 20px 22px; border: 1px solid var(--linea); border-radius: 16px; background: var(--caja); box-shadow: var(--sombra); }
+.abierta .t { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+.abierta .t svg { width: 19px; height: 19px; color: var(--tenue); }
+.abierta .t .pct { font-size: 13.5px; color: var(--tenue); font-weight: 400; }
+.tipos { display: flex; gap: 10px; }
+.tipo { flex: 1 1 0; min-width: 0; display: grid; grid-template-columns: 15px minmax(0, 1fr) auto; gap: 8px 10px; align-items: center; padding: 12px 13px; border: 1px solid var(--linea); border-radius: 10px; background: var(--tarjeta); font-size: 14px; text-align: left; transition: background-color .2s, border-color .2s, box-shadow .2s, color .2s, opacity .2s; position: relative; }
+.tipo svg { width: 15px; height: 15px; color: var(--tenue); }
+.tipo .n { font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.tipo .barra, .tipo small { grid-column: 2 / -1; }
+.tipo small { font-size: 12px; color: var(--tenue); }
+.tipo:hover { border-color: color-mix(in oklch, var(--tenue) 60%, transparent); }
+.tjs { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+.tj { display: flex; flex-direction: column; gap: 9px; padding: 16px 16px 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--tarjeta); text-align: left; min-width: 0; transition: background-color .2s, border-color .2s, box-shadow .2s, opacity .2s, translate .2s; }
+.tj b { font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+.tj .m, .tj .pie { font-size: 12.5px; color: var(--tenue); }
+.tj .av2 { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.tj .av2 strong { color: var(--fg); font-weight: 600; }
+.tj:hover { border-color: color-mix(in oklch, var(--tenue) 60%, transparent); }
+
+/* Variantes de seleccionado */
+.v-hoy .tipo[aria-pressed="true"], .v-hoy .tj[aria-pressed="true"] { border-color: var(--fg); }
+
+.v-sube .tipo[aria-pressed="true"], .v-sube .tj[aria-pressed="true"] { background: var(--alto); box-shadow: var(--sombra-alta); border-color: color-mix(in oklch, var(--fg) 16%, transparent); }
+.v-sube .tj[aria-pressed="true"] { translate: 0 -2px; }
+
+.v-apaga .tipo[aria-pressed="false"] { background: transparent; color: var(--tenue); }
+.v-apaga .tipo[aria-pressed="false"] .barra i { background: color-mix(in oklch, var(--tenue) 55%, transparent); }
+.v-apaga .tjs:has([aria-pressed="true"]) .tj[aria-pressed="false"] { opacity: .45; }
+.v-apaga .tj[aria-pressed="true"] { border-color: color-mix(in oklch, var(--fg) 22%, transparent); }
+
+.v-pest .tipo[aria-pressed="false"] { color: var(--tenue); }
+.v-pest .tipo[aria-pressed="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 1.5px; background: var(--fg); border-radius: 2px; }
+.v-pest .tj[aria-pressed="true"] { background: var(--alto); box-shadow: var(--sombra-alta); border-color: color-mix(in oklch, var(--fg) 16%, transparent); translate: 0 -2px; }
+
+
+/* Sección 1 en pantalla: la caja abierta de Tareas */
+.app .abierta { padding: 24px clamp(18px, 3cqi, 34px) 28px; gap: 18px; }
+.app .abierta .t { font-size: 22px; }
+.app .tipos { overflow-x: auto; padding-bottom: 2px; }
+.app .tipo { flex: 1 0 200px; }
+.app .tjs { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); align-items: start; }
+.sumar { display: flex; gap: 22px; font-size: 13.5px; color: var(--tenue); flex-wrap: wrap; }
+.sumar span { display: inline-flex; gap: 6px; align-items: center; }
+.sumar svg { width: 14px; height: 14px; }
+.h-tipo { margin: 0; display: flex; gap: 10px; align-items: center; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+.h-tipo svg { width: 17px; height: 17px; color: var(--tenue); }
+.h-tipo small { font-size: 13.5px; font-weight: 400; color: var(--tenue); }
+.agregar { align-self: flex-start; border: 1px dashed var(--linea); border-radius: 10px; padding: 10px 16px; font-size: 13.5px; color: var(--tenue); }
+
+/* Sección 4: notas */
+.notas-demo { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); }
+.bn { width: min(100%, 380px); border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; background: var(--card); box-shadow: var(--sombra); display: flex; flex-direction: column; max-height: 520px; }
+.bn-cab { display: flex; align-items: center; gap: 6px; height: 60px; padding: 0 20px; color: var(--tenue); font-size: 14px; flex: none; }
+.bn-cab b { color: var(--fg); font-weight: 500; }
+.bn-cab .borrar { margin-left: auto; font-size: 12.5px; border: 0; background: none; color: var(--tenue); }
+.bn-cuerpo { overflow-y: auto; padding: 4px 20px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.postits2 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.pi { aspect-ratio: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 12px 12px 10px; border-radius: 6px 6px 6px 16px; background: var(--campo); font-size: 13.5px; line-height: 1.4; text-align: left; border: 0; transition: background-color .2s; position: relative; }
+.pi .tx { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow-wrap: anywhere; }
+.pi .meta { margin-top: auto; font-size: 11.5px; color: var(--tenue); }
+.pi:hover { background: color-mix(in oklch, var(--campo) 75%, var(--card)); }
+.pi .mas { position: absolute; right: 8px; bottom: 8px; font-size: 11px; color: var(--tenue); }
+.entrada { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--campo); color: var(--tenue); font-size: 13.5px; }
+/* B · se abre en su lugar */
+.n-lugar li.abierta-n { grid-column: 1 / -1; }
+.n-lugar li.abierta-n .pi { aspect-ratio: auto; width: 100%; animation: aparecer .25s ease-out; }
+.n-lugar li.abierta-n .tx { -webkit-line-clamp: unset; display: block; }
+/* C · hoja de lectura */
+.hoja { display: flex; flex-direction: column; gap: 12px; animation: aparecer .25s ease-out; }
+.hoja .volver { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--tenue); border: 0; background: none; padding: 0; }
+.hoja .cuerpo-n { background: var(--campo); border-radius: 8px 8px 8px 18px; padding: 16px; font-size: 14.5px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow-y: auto; }
+.hoja .acciones { display: flex; gap: 8px; }
+.hoja .acciones button { border: 1px solid var(--linea); background: none; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; color: var(--tenue); }
+@keyframes aparecer { from { opacity: 0; transform: translateY(4px); } }
+/* D · crecen con el texto */
+.n-crecen .postits2 { display: block; columns: 3; column-gap: 10px; }
+.n-crecen .pi { aspect-ratio: auto; min-height: 92px; width: 100%; margin-bottom: 10px; break-inside: avoid; }
+.n-crecen .pi .tx { -webkit-line-clamp: 9; }
+
+/* Pantalla completa */
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: auto !important; height: auto !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 4px; align-items: center; padding: 5px; background: var(--card); border: 1px solid var(--linea); border-radius: 12px; box-shadow: var(--sombra); font-size: 12.5px; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 8px; color: var(--tenue); font-weight: 500; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando .cual { padding: 0 6px; color: var(--fg); white-space: nowrap; }
+.traer { position: fixed; z-index: 110; right: 0; bottom: 0; width: 48px; height: 48px; border: 0; background: transparent; }
+
+/* Cierre */
+.cierre { border-top: 1px solid var(--linea); padding-top: 56px; }
+.cierre h2 { font-size: 28px; letter-spacing: -0.03em; margin: 0 0 20px; font-weight: 600; }
+.cierre h3 { font-size: 17px; margin: 28px 0 10px; font-weight: 600; }
+.tabla { overflow-x: auto; margin-bottom: 24px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-size: 12.5px; font-weight: 600; color: var(--tenue); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+tr.rec td { background: color-mix(in oklch, var(--acento) 10%, var(--bg)); }
+.rec-grid { display: grid; gap: 32px; }
+@media (min-width: 960px) { .rec-grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } }
+.rec-grid p { margin: 0 0 12px; color: var(--tenue); max-width: 62ch; }
+.rec-grid p b { color: var(--fg); font-weight: 600; }
+pre { margin: 0 0 16px; background: var(--campo); border: 1px solid var(--linea); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.6; }
+.c { color: var(--tenue); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="llaves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></symbol>
+  <symbol id="red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7 6 16M13 7l5 9M7.2 18h9.6"/></symbol>
+  <symbol id="diagrama" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="14.5" y="14.5" width="6" height="6" rx="1.2"/><path d="M6.5 9.5v5a3 3 0 0 0 3 3h5"/></symbol>
+  <symbol id="sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 5h-11l6 7-6 7h11"/></symbol>
+  <symbol id="base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></symbol>
+  <symbol id="globo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.4 3.5 5.3 3.5 8.5s-1 6.1-3.5 8.5c-2.5-2.4-3.5-5.3-3.5-8.5s1-6.1 3.5-8.5z"/></symbol>
+  <symbol id="onda" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 12c2-5 4-5 6 0s4 5 6 0 4-5 6 0"/></symbol>
+  <symbol id="parcial" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5l2 2 4-4"/></symbol>
+  <symbol id="practico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h2M4 12h2M4 17h2M9 7h11M9 12h11M9 17h7"/></symbol>
+  <symbol id="informe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></symbol>
+  <symbol id="tarea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+  <symbol id="temas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
+  <symbol id="calendario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h9M4 12h14M4 17h6"/></symbol>
+</svg>
+
+<div class="pagina">
+  <header class="intro">
+    <h1>Tareas: seleccionado, grilla y calendario</h1>
+    <p>Tres ajustes que salieron de probar la pantalla real. <b>Arriba</b>, cómo marcar el recuadro de tipo y la tarjeta elegidos sin el borde blanco. <b>En el medio</b>, la grilla de temas centrada cuando hay pocos. <b>Abajo</b>, el calendario cuando hay pocos eventos y la transición entre Temas y Calendario.</p>
+    <p>Las maquetas de la grilla y el calendario se redimensionan desde la esquina, y cada una tiene pantalla completa (← → cambia de opción, T el tema, H esconde el mando, Esc sale). En las del calendario, tocá <b>Temas</b> y <b>Calendario</b> para ver la transición.</p>
+  </header>
+
+  <div class="ajustes" role="group" aria-label="Ajustes">
+    <div class="ajuste"><b>Tema</b><div class="seg" id="tema"><button type="button" data-v="light">Claro</button><button type="button" data-v="dark">Oscuro</button><button type="button" data-v="negro">Negro</button></div></div>
+    <div class="ajuste"><b>Acento</b><div class="muestras" id="muestras"></div></div>
+  </div>
+
+  <!-- ───────── A ───────── -->
+  <section class="seccion" id="sec-sel">
+    <header>
+      <h2><span class="n">1</span>El elegido, sin borde blanco</h2>
+      <p>Tocá los recuadros de tipo y las tarjetas. Cada opción resuelve las dos cosas juntas: el tipo que estás viendo y la tarjeta cuyo detalle está abierto. El anillo de foco del teclado sigue siendo el del acento en todas.</p>
+    </header>
+    <div class="minis" id="minis"></div>
+    <h3 style="font-size:21px;letter-spacing:-0.02em;margin:56px 0 6px;font-weight:600">B y D en la pantalla de Tareas</h3>
+    <p class="resumen" style="margin-bottom:20px">La caja abierta entera, como la ves en la app. Tocá los tipos y las tarjetas; la pantalla completa (← →) pasa de una a la otra en el mismo lugar.</p>
+    <div class="barra-sec"><div class="ajuste"><b>Tamaño</b><div class="seg tamanos" data-sec="sel"></div></div></div>
+    <div id="opciones-sel"></div>
+  </section>
+
+  <!-- ───────── B ───────── -->
+  <section class="seccion" id="sec-grilla">
+    <header>
+      <h2><span class="n">2</span>Pocos temas, centrados</h2>
+      <p>Hoy la grilla llena columnas desde la izquierda, así que con uno o dos temas queda corrida bajo una cabecera centrada. Cambiá cuántos temas hay para ver cómo se acomoda cada opción.</p>
+    </header>
+    <div class="barra-sec">
+      <div class="ajuste"><b>Temas</b><div class="seg" id="cuantos"></div></div>
+      <div class="ajuste"><b>Tamaño</b><div class="seg tamanos" data-sec="grilla"></div></div>
+    </div>
+    <div id="opciones-grilla"></div>
+  </section>
+
+  <!-- ───────── C ───────── -->
+  <section class="seccion" id="sec-cal">
+    <header>
+      <h2><span class="n">3</span>El calendario con pocos eventos, y cómo se llega</h2>
+      <p>Hoy la cabecera salta de centrada (Temas) a pegada arriba a la izquierda (Calendario), y con un solo evento queda todo arriba y la pantalla vacía. El cambio de vista no tiene animación. Probá ir y volver en cada opción.</p>
+    </header>
+    <div class="barra-sec">
+      <div class="ajuste"><b>Eventos</b><div class="seg" id="eventos"><button type="button" data-v="pocos" aria-pressed="true">Pocos</button><button type="button" data-v="muchos" aria-pressed="false">Muchos</button></div></div>
+      <div class="ajuste"><b>Tamaño</b><div class="seg tamanos" data-sec="cal"></div></div>
+    </div>
+    <div id="opciones-cal"></div>
+  </section>
+
+  <section class="seccion" id="sec-notas">
+    <header>
+      <h2><span class="n">4</span>Notas largas en la sala</h2>
+      <p>Hoy el post-it corta a las cuatro líneas y no hay forma de leer el resto. Tocá la nota larga (la de correr) en cada opción. Las tres respetan la bandeja actual: post-its de tres columnas, lo más nuevo abajo.</p>
+    </header>
+    <div class="notas-demo" id="notas-demo"></div>
+  </section>
+
+  <section class="cierre">
+    <h2>Comparación y recomendación</h2>
+    <div class="tabla">
+      <table>
+        <thead><tr><th>Opción</th><th>Qué marca</th><th>Acento</th><th>Lo que cambia en el código</th><th>Riesgo</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Hoy</td><td>Borde --foreground</td><td>No</td><td>—</td><td>El único borde blanco de la app</td></tr>
+          <tr><td>1 · Sube un escalón</td><td>Fondo un tono arriba y sombra</td><td>No</td><td>Clases en <code>CajaAbierta</code> y <code>TarjetaItem</code></td><td>En claro la diferencia es sutil</td></tr>
+          <tr><td>1 · Los otros se apagan</td><td>El resto pierde contraste</td><td>No</td><td>Clases y un <code>:has()</code></td><td>Lo apagado parece deshabilitado</td></tr>
+          <tr class="rec"><td>1 · Como las pestañas</td><td>Raya de Temas | Calendario, y la tarjeta sube</td><td>No</td><td>Un <code>::after</code> y clases</td><td>Ninguno grande</td></tr>
+          <tr><td>2 · Hoy</td><td>Columnas desde la izquierda</td><td>—</td><td>—</td><td>Desbalance con 1 a 3 temas</td></tr>
+          <tr><td>2 · Filas centradas</td><td>Cada fila, centrada</td><td>—</td><td><code>flex-wrap justify-center</code></td><td>La última fila no cae en columna</td></tr>
+          <tr class="rec"><td>2 · Columnas centradas</td><td>El bloque centrado, columnas parejas</td><td>—</td><td><code>auto-fit</code> con tope y <code>justify-center</code></td><td>Ninguno</td></tr>
+          <tr><td>3 · Hoy</td><td>Cabecera ancha arriba, sin animación</td><td>—</td><td>—</td><td>Salto y pantalla vacía</td></tr>
+          <tr><td>3 · Ancho, al medio</td><td>La cabecera viaja de centro a izquierda</td><td>—</td><td>FLIP de la cabecera</td><td>Mucho movimiento para una pestaña</td></tr>
+          <tr><td>3 · Mismo marco</td><td>Nada se mueve; el contenido se funde</td><td>—</td><td>Se va <code>ancha</code>; un fundido</td><td>Calendario más angosto (1080 px)</td></tr>
+          <tr class="rec"><td>3 · Las cajas se vuelven filas</td><td>Mismo marco y los nombres viajan</td><td>—</td><td>Lo anterior más <code>volar()</code> de <code>transicionCaja</code></td><td>Una animación más que mantener</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rec-grid">
+      <div>
+        <h3>Qué elegiría</h3>
+        <p><b>1 · Como las pestañas.</b> Los recuadros de tipo ya se comportan como pestañas, así que les queda la misma raya que <i>Temas | Calendario</i>. Una raya corta molesta mucho menos que un marco blanco entero. La tarjeta con el detalle abierto sube un escalón, que es como la app marca hoy lo que flota.</p>
+        <p><b>2 · Columnas centradas.</b> Con uno o dos temas el bloque queda bajo la cabecera, y con muchos las columnas siguen alineadas. Cada caja tiene un ancho tope de 272 px, así que no se estira a todo el ancho.</p>
+        <p><b>3 · Las cajas se vuelven filas.</b> El salto viene de que la cabecera cambia de lugar. Con el mismo marco no se mueve nada arriba, y que el nombre de cada tema viaje hasta su fila cuenta qué pasó. Usa la técnica de la caja abierta (un clon con <code>transform</code>), sin desenfoque. Elegiste <i>Mismo marco</i>, y ya está en la app con la cabecera que se desliza en vez de subir de golpe.</p>
+        <p><b>4 · Se abre en su lugar.</b> La nota larga se abre a lo ancho de la bandeja y se lee entera sin salir de ahí; las cortas no cambian. El post-it cortado muestra un «…» abajo para avisar que hay más. La <i>Hoja de lectura</i> es la alternativa si querés juntar ahí las acciones de la nota.</p>
+      </div>
+      <div>
+        <pre><span class="c">// 1 · CajaAbierta: el recuadro elegido, como una pestaña</span>
+aria-pressed:after:absolute aria-pressed:after:inset-x-3 aria-pressed:after:-bottom-px
+aria-pressed:after:h-[1.5px] aria-pressed:after:bg-foreground
+aria-[pressed=false]:text-muted-foreground
+<span class="c">// TarjetaItem: la elegida sube un escalón</span>
+elegida &amp;&amp; "-translate-y-0.5 bg-caja shadow-caja border-foreground/15"</pre>
+        <pre><span class="c">// 4 · BandejaNotas: la nota abierta ocupa la fila y muestra todo</span>
+abierta === n.id ? "col-span-full aspect-auto" : "aspect-square"
+&lt;span className={abierta === n.id ? "" : "line-clamp-4"}&gt;{n.texto}&lt;/span&gt;</pre>
+        <pre><span class="c">// 2 · TareasPage: la grilla de temas</span>
+grid-cols-[repeat(auto-fit,minmax(min(100%,14.5rem),17rem))] justify-center</pre>
+        <pre><span class="c">// 3 · TareasPage: el mismo marco en las dos vistas</span>
+&lt;div className={cn("m-auto flex w-full max-w-[67.5rem] flex-col gap-9", …)}&gt;
+&lt;CabeceraTareas … /&gt;   <span class="c">// sin `ancha`</span>
+<span class="c">// al cambiar de vista: transicionVista(desde, cambio) en transicionCaja.ts,</span>
+<span class="c">// que vuela [data-nombre] de cada caja a su fila y funde el resto</span></pre>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="mando" id="mando" hidden>
+  <button type="button" data-a="ant" aria-label="Opción anterior">←</button>
+  <span class="cual" id="mando-cual"></span>
+  <button type="button" data-a="sig" aria-label="Opción siguiente">→</button>
+  <button type="button" data-a="tema" title="Tema (T)">T</button>
+  <button type="button" data-a="esconder" title="Esconder (H)">×</button>
+  <button type="button" data-a="salir" title="Salir (Esc)">Esc</button>
+</div>
+<button type="button" class="traer" id="traer" hidden aria-label="Mostrar el mando"></button>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ico = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+const reducido = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ───── Tema y acento ───── */
+const raiz = document.documentElement;
+const TEMAS = ["light", "dark", "negro"];
+let tema = "negro";
+function ponerTema(v) {
+  tema = v;
+  raiz.dataset.theme = v === "light" ? "light" : "dark";
+  if (v === "negro") raiz.setAttribute("data-negro", ""); else raiz.removeAttribute("data-negro");
+  $$("#tema button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+}
+$$("#tema button").forEach((b) => b.addEventListener("click", () => ponerTema(b.dataset.v)));
+ponerTema(tema);
+
+const ACENTOS = [
+  ["Naranja", "oklch(70.5% 0.187 47.6)", "oklch(64.6% 0.222 41.1)"],
+  ["Violeta", "oklch(70.2% 0.183 293.541)", "oklch(54.1% 0.281 293.009)"],
+  ["Azul", "oklch(68.5% 0.169 237.3)", "oklch(58.8% 0.158 241.9)"],
+  ["Verde", "oklch(72.3% 0.192 149.6)", "oklch(62.7% 0.17 149.2)"],
+  ["Rosa", "oklch(71.8% 0.202 349.8)", "oklch(65.6% 0.241 354.3)"],
+  ["Gris", "oklch(70.5% 0.015 286.1)", "oklch(55.2% 0.016 285.9)"],
+];
+ACENTOS.forEach(([n, c, f], i) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "muestra"; b.title = n; b.setAttribute("aria-label", n);
+  b.style.setProperty("--c", c); b.setAttribute("aria-pressed", String(i === 0));
+  b.onclick = () => {
+    raiz.style.setProperty("--acento", c); raiz.style.setProperty("--acento-fuerte", f);
+    $$(".muestra").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  };
+  $("#muestras").append(b);
+});
+
+/* ───── 1 · Seleccionado ───── */
+const SEL = [
+  { id: "hoy", nombre: "Hoy", resumen: "Borde en --foreground para el tipo y para la tarjeta.", gana: ["Se ve enseguida"], pierde: ["El único borde blanco de la app", "Pesa más que el contenido"] },
+  { id: "sube", nombre: "Sube un escalón", resumen: "El elegido sube al tono de arriba con sombra, como lo que flota en la app.", gana: ["Usa la misma escala de superficies", "Sin líneas nuevas"], pierde: ["En claro se nota poco"] },
+  { id: "apaga", nombre: "Los otros se apagan", resumen: "El elegido queda igual y se apaga el resto: tipos sin fondo y tarjetas a media luz.", gana: ["La atención queda en una sola cosa"], pierde: ["Lo apagado puede leerse como deshabilitado", "Bajan las barras de los otros tipos"] },
+  { id: "pest", nombre: "Como las pestañas", resumen: "El tipo lleva la raya de Temas | Calendario; la tarjeta abierta sube un escalón.", gana: ["Reusa un gesto que ya está en la pantalla", "Raya corta en vez de marco"], pierde: ["Son dos tratamientos: uno para el tipo y otro para la tarjeta"], rec: true },
+];
+function cajaAbierta() {
+  return `<div class="abierta">
+    <div class="t">${ico("diagrama")}<span>Paradigmas</span><span class="pct">40 %</span></div>
+    <span class="barra g"><i style="width:40%"></i></span>
+    <div class="tipos" role="group" aria-label="Tipos">
+      <button type="button" class="tipo" aria-pressed="true">${ico("parcial")}<span>Parciales</span><span class="n">25 %</span><span class="barra"><i style="width:25%"></i></span><small>Uno por rendir</small></button>
+      <button type="button" class="tipo" aria-pressed="false">${ico("practico")}<span>Prácticos</span><span class="n">60 %</span><span class="barra"><i style="width:60%"></i></span><small>Dos por entregar</small></button>
+    </div>
+    <div class="tjs">
+      <button type="button" class="tj" aria-pressed="true"><b>Segundo parcial</b><span class="m">Repasaste 1 de 4 unidades</span><span class="av2"><span><strong>1</strong> de 4</span><span>25 %</span></span><span class="barra g"><i style="width:25%"></i></span><span class="pie">sáb 10/10 · en 3 días</span></button>
+      <button type="button" class="tj" aria-pressed="false"><b>Recuperatorio</b><span class="m">Todavía sin repasar</span><span class="av2"><span><strong>0</strong> de 4</span><span>0 %</span></span><span class="barra g"><i style="width:0%"></i></span><span class="pie">lun 2/11 · en 26 días</span></button>
+    </div>
+  </div>`;
+}
+$("#minis").innerHTML = SEL.map((o, i) => `
+  <article class="mini">
+    <h3><span class="letra">${String.fromCharCode(65 + i)}</span>${o.nombre}${o.rec ? '<span class="marca-rec">Recomendada</span>' : ""}</h3>
+    <p class="resumen">${o.resumen}</p>
+    <div class="lienzo v-${o.id}">${cajaAbierta()}</div>
+    <div class="notas"><div><h4>Qué gana</h4><ul>${o.gana.map((x) => `<li>${x}</li>`).join("")}</ul></div><div><h4>Qué pierde</h4><ul>${o.pierde.map((x) => `<li>${x}</li>`).join("")}</ul></div></div>
+  </article>`).join("");
+document.addEventListener("click", (e) => {
+  const t = e.target.closest(".tipo");
+  if (t) $$(".tipo", t.parentElement).forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+  const c = e.target.closest(".tj");
+  if (c) {
+    const ya = c.getAttribute("aria-pressed") === "true";
+    $$(".tj", c.parentElement).forEach((x) => x.setAttribute("aria-pressed", String(!ya && x === c)));
+  }
+});
+
+/* ───── Datos de las maquetas ───── */
+const TEMAS_DATOS = [
+  { k: "par", nombre: "Paradigmas", icono: "diagrama", pct: 25, frase: "Te queda un parcial", cuenta: [["parcial", 1]] },
+  { k: "red", nombre: "Redes", icono: "red", pct: 60, frase: "Dos prácticos por entregar", cuenta: [["practico", 3], ["parcial", 1]] },
+  { k: "alg", nombre: "Álgebra", icono: "sigma", pct: 10, frase: "Arrancaste el primer práctico", cuenta: [["practico", 2]] },
+  { k: "bd", nombre: "Bases de datos", icono: "base", pct: 80, frase: "Te falta la conclusión del informe", cuenta: [["informe", 1], ["practico", 1]] },
+  { k: "sis", nombre: "Sistemas operativos", icono: "llaves", pct: 45, frase: "Un parcial y un práctico", cuenta: [["parcial", 1], ["practico", 1]] },
+  { k: "ing", nombre: "Inglés", icono: "globo", pct: 100, frase: "Estás al día", cuenta: [["tarea", 4]] },
+  { k: "fis", nombre: "Física", icono: "onda", pct: 0, frase: "Nada empezado todavía", cuenta: [["practico", 1]] },
+];
+// Días desde hoy (mié 7/10/2026)
+const EVENTOS = {
+  pocos: [{ k: "par", items: [{ t: "Segundo parcial", tipo: "parcial", d: 3, m: [1, 4] }] }],
+  muchos: [
+    { k: "par", items: [{ t: "Segundo parcial", tipo: "parcial", d: 3, m: [1, 4] }] },
+    { k: "red", items: [{ t: "TP 4 — Enrutamiento", tipo: "practico", d: 5, m: [6, 10] }, { t: "Parcial de capa 3", tipo: "parcial", d: 16, m: [0, 3] }] },
+    { k: "alg", items: [{ t: "Práctico 2", tipo: "practico", d: 11, m: [1, 8] }] },
+    { k: "bd", items: [{ t: "Informe de normalización", tipo: "informe", d: 8, m: [2, 3] }] },
+    { k: "sis", items: [{ t: "Leer planificación", tipo: "tarea", d: 1 }, { t: "Primer parcial", tipo: "parcial", d: 20, m: [2, 5] }] },
+  ],
+};
+const HOY = new Date(2026, 9, 7);
+const DESDE = -3, DIAS = 28;
+const xd = (d) => ((d - DESDE) / DIAS) * 100;
+const fechaDe = (d) => new Date(HOY.getFullYear(), HOY.getMonth(), HOY.getDate() + d);
+
+/* ───── Piezas de la pantalla ───── */
+const FRASE = "Te queda un parcial.";
+function cabecera(vista, ancha) {
+  return `<div class="cab${ancha ? " ancha" : ""}">
+    <h2 data-cab="h">${FRASE}</h2>
+    <span class="barra g" data-cab="b"><i style="width:25%"></i></span>
+    <div class="vistas" data-cab="v" role="group" aria-label="Vista">
+      <button type="button" data-vista="temas" aria-pressed="${vista === "temas"}">${ico("temas")}Temas</button>
+      <button type="button" data-vista="calendario" aria-pressed="${vista === "calendario"}">${ico("calendario")}Calendario</button>
+    </div>
+  </div>`;
+}
+function grilla(cuantos, clase) {
+  return `<div class="grilla ${clase}" data-cont>${TEMAS_DATOS.slice(0, cuantos).map((t) => `
+    <button type="button" class="ct" data-k="${t.k}">
+      <span class="f"><span class="nom" data-nom="${t.k}">${ico(t.icono)}<span>${t.nombre}</span></span><span class="pct">${t.pct} %</span></span>
+      <span class="barra"><i style="width:${t.pct}%"></i></span>
+      <p>${t.frase}</p>
+      <span class="cuenta">${t.cuenta.map(([tipo, n]) => `<span>${ico(tipo)}${n}</span>`).join("")}</span>
+    </button>`).join("")}
+    <div class="nuevo">+ Nuevo tema</div>
+  </div>`;
+}
+function calendario(cuales) {
+  const dias = Array.from({ length: DIAS }, (_, i) => DESDE + i);
+  const lunes = dias.filter((d) => fechaDe(d).getDay() === 1);
+  const sabados = dias.filter((d) => fechaDe(d).getDay() === 6);
+  const fondo = sabados.map((d) => `<span class="fin" style="left:${xd(d)}%;width:${200 / DIAS}%"></span>`).join("")
+    + lunes.map((d) => `<span class="lun" style="left:${xd(d)}%"></span>`).join("")
+    + `<span class="ahora" style="left:${xd(0) + 50 / DIAS}%"></span>`;
+  const etiqueta = (d) => { const f = fechaDe(d); return `lun ${f.getDate()}/${f.getMonth() + 1}`; };
+  const filas = EVENTOS[cuales].map((fila) => {
+    const tema = TEMAS_DATOS.find((t) => t.k === fila.k);
+    const carriles = fila.items.length > 1 && fila.items[1].d - fila.items[0].d < 8 ? 2 : 1;
+    const blqs = fila.items.map((it, i) => {
+      const termina = it.tipo === "practico" || it.tipo === "informe";
+      const pos = termina ? `right:calc(100% - ${xd(it.d + 1)}%)` : `left:min(${xd(it.d)}%, calc(100% - 220px))`;
+      const top = 12 + (carriles > 1 ? i : 0) * 40;
+      const extra = it.m ? `<span class="x">${it.m[0]}/${it.m[1]}</span><span class="av" style="width:${Math.round((it.m[0] / it.m[1]) * 100)}%"></span>` : "";
+      return `<span class="blq ${it.tipo}" style="${pos};top:${top}px">${ico(it.tipo)}<span>${it.t}</span>${extra}</span>`;
+    }).join("");
+    return `<div class="fila-n"><span class="nom" data-nom="${tema.k}">${ico(tema.icono)}<span>${tema.nombre}</span></span></div>
+      <div class="pista" style="height:${16 + carriles * 40}px">${fondo}${blqs}</div>`;
+  }).join("");
+  return `<div class="cal" data-cont>
+    <div class="cal-scroll"><div class="cal-grid">
+      <div class="cal-cab">${lunes.filter((d) => Math.abs(d) > 1).map((d) => `<span style="left:${xd(d)}%">${etiqueta(d)}</span>`).join("")}<span class="hoy" style="left:${xd(0) + 50 / DIAS}%">hoy</span></div>
+      ${filas}
+    </div></div>
+    <p class="leyenda"><span>▎Parcial, empieza su día</span><span>▭ Práctico, termina el día de entrega</span><span>┆ Tarea con fecha</span><span>| Hoy</span></p>
+  </div>`;
+}
+const marcoApp = (dentro) => `<div class="app"><div class="top"><span class="logo"></span><span class="avatar"></span></div><div class="main">${dentro}</div></div>`;
+
+/* ───── Animación: la misma técnica que transicionCaja.ts (FLIP, solo transform y opacity) ───── */
+const SALIDA = "cubic-bezier(.16,1,.3,1)";
+const desdeRect = (a, b, escalar = true) => {
+  const sx = escalar ? a.width / Math.max(b.width, 1) : 1, sy = escalar ? a.height / Math.max(b.height, 1) : 1;
+  return `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${sx}, ${sy})`;
+};
+function volar(el, desde, hasta) {
+  const clon = el.cloneNode(true);
+  Object.assign(clon.style, { position: "fixed", left: hasta.left + "px", top: hasta.top + "px", width: hasta.width + "px", height: hasta.height + "px", margin: "0", zIndex: "120", pointerEvents: "none", transformOrigin: "top left", fontSize: getComputedStyle(el).fontSize, fontWeight: getComputedStyle(el).fontWeight, color: getComputedStyle(el).color, display: "inline-flex", alignItems: "center", gap: getComputedStyle(el).gap, whiteSpace: "nowrap" });
+  document.body.append(clon);
+  el.style.visibility = "hidden";
+  const a = clon.animate([{ transform: desdeRect(desde, hasta) }, { transform: "none" }], { duration: 500, easing: SALIDA });
+  a.finished.catch(() => {}).finally(() => { clon.remove(); el.style.visibility = ""; });
+}
+
+/* ───── 2 · Grilla ───── */
+const GRILLA = [
+  { id: "hoy", nombre: "Hoy", clase: "", resumen: "Columnas de al menos 232 px que llenan desde la izquierda.", gana: ["Con muchos temas queda prolija"], pierde: ["Con 1 a 3 temas queda corrida bajo la cabecera centrada"] },
+  { id: "flex", nombre: "Filas centradas", clase: "flex", resumen: "Cada fila se centra sola, incluida la última.", gana: ["Siempre simétrica", "Con 1 o 2 temas queda igual que la cabecera"], pierde: ["La última fila incompleta no cae en columna con las de arriba"] },
+  { id: "cols", nombre: "Columnas centradas", clase: "cols", resumen: "Columnas de 232 a 272 px; el bloque entero se centra y las columnas siguen alineadas.", gana: ["Centrada con pocos, ordenada con muchos", "Las cajas no se estiran a lo ancho"], pierde: ["Con muchos temas sobra un poco de margen a los costados"], rec: "Elegida · ya en la app" },
+];
+let cuantos = 1;
+[1, 2, 3, 5, 7].forEach((n) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = n; b.dataset.v = n; b.setAttribute("aria-pressed", String(n === cuantos));
+  b.onclick = () => { cuantos = n; $$("#cuantos button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); pintarGrillas(); };
+  $("#cuantos").append(b);
+});
+function cabezaOpcion(o, i) {
+  return `<div class="cabeza"><div><h3><span class="letra">${String.fromCharCode(65 + i)}</span>${o.nombre}${o.rec ? `<span class="marca-rec">${o.rec === true ? "Recomendada" : o.rec}</span>` : ""}</h3><p class="resumen">${o.resumen}</p></div>
+    <div class="notas"><div><h4>Qué gana</h4><ul>${o.gana.map((x) => `<li>${x}</li>`).join("")}</ul></div><div><h4>Qué pierde</h4><ul>${o.pierde.map((x) => `<li>${x}</li>`).join("")}</ul></div></div></div>
+    <div class="herr"><button type="button" class="btn" data-completa>Pantalla completa</button><span class="medida"></span></div>`;
+}
+$("#opciones-grilla").innerHTML = GRILLA.map((o, i) => `<article class="opcion" data-sec="grilla" data-opt="${o.id}" data-nombre="${o.nombre}">${cabezaOpcion(o, i)}<div class="marco"></div></article>`).join("");
+function pintarGrillas() {
+  $$('.opcion[data-sec="grilla"]').forEach((op) => {
+    const o = GRILLA.find((x) => x.id === op.dataset.opt);
+    $(".marco", op).innerHTML = marcoApp(`<div class="bloque centrado">${cabecera("temas", false)}${grilla(cuantos, o.clase)}</div>`);
+  });
+}
+pintarGrillas();
+
+/* ───── 3 · Calendario ───── */
+const CAL = [
+  { id: "hoy", nombre: "Hoy", resumen: "Temas centrado; Calendario con la cabecera ancha arriba a la izquierda. Sin animación.", gana: ["Con muchos eventos aprovecha todo el ancho"], pierde: ["La cabecera salta de lugar", "Con pocos eventos, la pantalla queda vacía abajo"] },
+  { id: "alto", nombre: "Ancho, al medio", resumen: "El calendario sigue a todo el ancho pero se centra en alto; la cabecera viaja del centro a la izquierda.", gana: ["Mantiene el ancho del calendario", "El viaje explica el cambio"], pierde: ["Se mueven el título, la barra y las pestañas: mucho para una pestaña"] },
+  { id: "marco", nombre: "Mismo marco", resumen: "Las dos vistas usan el mismo bloque centrado de 1080 px. Como el contenido cambia de alto, la cabecera se desliza a su lugar nuevo (antes subía de golpe) y lo de abajo la acompaña mientras aparece.", gana: ["La cabecera no cambia de forma, solo se desliza", "Animación barata: transform y opacity"], pierde: ["El calendario tiene 1080 px en vez de todo el ancho"], rec: "Elegida · ya en la app" },
+  { id: "filas", nombre: "Las cajas se vuelven filas", resumen: "Mismo marco, y el nombre de cada tema viaja de su caja a su fila (y vuelve).", gana: ["Cuenta que las filas son los mismos temas", "Misma técnica que abrir una caja"], pierde: ["Una animación más que mantener"] },
+];
+let eventos = "pocos";
+$$("#eventos button").forEach((b) => b.addEventListener("click", () => {
+  eventos = b.dataset.v;
+  $$("#eventos button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  $$('.opcion[data-sec="cal"]').forEach((op) => pintarCal(op));
+}));
+$("#opciones-cal").innerHTML = CAL.map((o, i) => `<article class="opcion" data-sec="cal" data-opt="${o.id}" data-nombre="${o.nombre}" data-vista="calendario">${cabezaOpcion(o, i)}<div class="marco"></div></article>`).join("");
+function pintarCal(op) {
+  const opt = op.dataset.opt, vista = op.dataset.vista;
+  const cuantosCal = EVENTOS.muchos.length;
+  let dentro;
+  if (vista === "temas") dentro = `<div class="bloque centrado">${cabecera("temas", false)}${grilla(eventos === "pocos" ? 1 : cuantosCal, "cols")}</div>`;
+  else if (opt === "hoy") dentro = `<div class="bloque arriba">${cabecera("calendario", true)}${calendario(eventos)}</div>`;
+  else if (opt === "alto") dentro = `<div class="bloque alto">${cabecera("calendario", true)}${calendario(eventos)}</div>`;
+  else dentro = `<div class="bloque centrado">${cabecera("calendario", false)}${calendario(eventos)}</div>`;
+  const app = $(".app", op);
+  const scroll = app ? app.scrollTop : 0;
+  $(".marco", op).innerHTML = marcoApp(dentro);
+  $(".app", op).scrollTop = scroll;
+}
+$$('.opcion[data-sec="cal"]').forEach((op) => pintarCal(op));
+
+function cambiarVista(op, vista) {
+  if (op.dataset.vista === vista) return;
+  const opt = op.dataset.opt;
+  const anima = opt !== "hoy" && !reducido();
+  const cab = Object.fromEntries($$("[data-cab]", op).map((el) => [el.dataset.cab, el.getBoundingClientRect()]));
+  const cabAntes = $(".cab", op).getBoundingClientRect().top;
+  const nombres = Object.fromEntries($$("[data-nom]", op).map((el) => [el.dataset.nom, el.getBoundingClientRect()]));
+  op.dataset.vista = vista;
+  pintarCal(op);
+  if (!anima) return;
+  const cont = $("[data-cont]", op);
+  if (opt === "marco" || opt === "filas") {
+    // Igual que transicionVista() en transicionCaja.ts
+    const dy = cabAntes - $(".cab", op).getBoundingClientRect().top;
+    if (dy) $(".cab", op).animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: 450, easing: SALIDA });
+    cont.animate([{ opacity: 0, transform: `translateY(${dy + 8}px)` }, { opacity: 1, transform: "none" }], { duration: 450, easing: SALIDA });
+  } else {
+    cont.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 320, delay: 60, easing: "ease-out", fill: "backwards" });
+  }
+  if (opt === "alto") {
+    $$("[data-cab]", op).forEach((el) => {
+      const antes = cab[el.dataset.cab]; if (!antes) return;
+      el.style.transformOrigin = "top left";
+      el.animate([{ transform: desdeRect(antes, el.getBoundingClientRect(), el.dataset.cab === "b") }, { transform: "none" }], { duration: 500, easing: SALIDA });
+    });
+  }
+  if (opt === "filas") {
+    $$("[data-nom]", op).forEach((el) => { const r = nombres[el.dataset.nom]; if (r) volar(el, r, el.getBoundingClientRect()); });
+  }
+}
+
+/* ───── Tamaños, medida en vivo y pantalla completa ───── */
+const TAMANOS = [["Teléfono", 390, 760], ["Tablet", 820, 720], ["Laptop", 1280, 720], ["Monitor", 1600, 860]];
+$$(".tamanos").forEach((seg) => {
+  TAMANOS.forEach(([n, w, h], i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = n; b.setAttribute("aria-pressed", String(i === 2));
+    b.onclick = () => {
+      $$(`.opcion[data-sec="${seg.dataset.sec}"] .marco`).forEach((m) => { m.style.width = w + "px"; m.style.height = h + "px"; });
+      $$("button", seg).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    };
+    seg.append(b);
+  });
+});
+const ro = new ResizeObserver((es) => es.forEach((e) => {
+  const op = e.target.closest(".opcion");
+  const r = e.target.getBoundingClientRect();
+  $(".medida", op).textContent = `${Math.round(r.width)} × ${Math.round(r.height)} px`;
+}));
+$$(".opcion .marco").forEach((m) => ro.observe(m));
+
+document.addEventListener("click", (e) => {
+  const v = e.target.closest("[data-vista]");
+  const op = e.target.closest('.opcion[data-sec="cal"]');
+  if (v && op && v.tagName === "BUTTON") cambiarVista(op, v.dataset.vista);
+  const c = e.target.closest("[data-completa]");
+  if (c) abrirCompleta(c.closest(".opcion"));
+});
+
+
+/* ───── 1 · B y D en la pantalla ───── */
+const SEL_PANT = [SEL[1], SEL[3]];
+function cajaGrande() {
+  const tj = (t, m, n, de, f, sel) => `<button type="button" class="tj" aria-pressed="${sel}"><b>${t}</b><span class="m">${m}</span><span class="av2"><span><strong>${n}</strong> de ${de}</span><span>${Math.round((n / de) * 100)} %</span></span><span class="barra g"><i style="width:${Math.round((n / de) * 100)}%"></i></span><span class="pie">${f}</span></button>`;
+  return `<div class="abierta">
+    <div class="t">${ico("diagrama")}<span>Paradigmas</span><span class="pct">40 %</span><span style="margin-left:auto;color:var(--tenue);font-size:18px;font-weight:400">×</span></div>
+    <span class="barra g"><i style="width:40%"></i></span>
+    <p class="frase" style="margin:0;color:var(--tenue);font-size:15px">Te queda un parcial y dos prácticos.</p>
+    <div class="tipos" role="group" aria-label="Tipos">
+      <button type="button" class="tipo" aria-pressed="true">${ico("parcial")}<span>Parciales</span><span class="n">25 %</span><span class="barra"><i style="width:25%"></i></span><small>Uno por rendir</small></button>
+      <button type="button" class="tipo" aria-pressed="false">${ico("practico")}<span>Prácticos</span><span class="n">60 %</span><span class="barra"><i style="width:60%"></i></span><small>Dos por entregar</small></button>
+      <button type="button" class="tipo" aria-pressed="false">${ico("informe")}<span>Informes</span><span class="n">80 %</span><span class="barra"><i style="width:80%"></i></span><small>Falta la conclusión</small></button>
+    </div>
+    <div class="sumar"><span>Sumar</span><span>${ico("tarea")}Tarea</span></div>
+    <h4 class="h-tipo">${ico("parcial")}Parciales<small>Uno por rendir</small></h4>
+    <div class="tjs">
+      ${tj("Segundo parcial", "Repasaste 1 de 4 unidades", 1, 4, "sáb 10/10 · en 3 días", true)}
+      ${tj("Recuperatorio", "Todavía sin repasar", 0, 4, "lun 2/11 · en 26 días", false)}
+      ${tj("Final", "Repasaste 3 de 9 unidades", 3, 9, "mié 9/12 · en 9 semanas", false)}
+    </div>
+    <span class="agregar">+ Agregar parcial</span>
+  </div>`;
+}
+$("#opciones-sel").innerHTML = SEL_PANT.map((o, i) => `<article class="opcion" data-sec="sel" data-opt="${o.id}" data-nombre="${o.nombre}">
+  <div class="cabeza"><div><h3><span class="letra">${i ? "D" : "B"}</span>${o.nombre}</h3><p class="resumen">${o.resumen}</p></div><div></div></div>
+  <div class="herr"><button type="button" class="btn" data-completa>Pantalla completa</button><span class="medida"></span></div>
+  <div class="marco">${marcoApp(`<div class="bloque centrado v-${o.id}" style="gap:18px">${cabecera("temas", false)}${cajaGrande()}</div>`)}</div></article>`).join("");
+$$('.opcion[data-sec="sel"] .marco').forEach((m) => ro.observe(m));
+{
+  const seg = $('.tamanos[data-sec="sel"]');
+  TAMANOS.forEach(([n, w, h], i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = n; b.setAttribute("aria-pressed", String(i === 2));
+    b.onclick = () => {
+      $$('.opcion[data-sec="sel"] .marco').forEach((m) => { m.style.width = w + "px"; m.style.height = h + "px"; });
+      $$("button", seg).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    };
+    seg.append(b);
+  });
+}
+
+/* ───── 4 · Notas largas ───── */
+const LARGA = "Salir a correr y trotar y hacer volteretas en el parque antes de que se haga de noche, y de paso comprar pan y llamar a la abuela para ver si necesita algo para el finde.";
+const NOTAS = [["a"], ["Repasar recursión de cola"], ["a"], ["Preguntar si el TP 4 va en grupo"], [LARGA, true], ["Mirar el video de mónadas"]];
+const NOTAS_OPC = [
+  { id: "hoy", nombre: "Hoy", resumen: "El post-it corta a las cuatro líneas.", gana: ["Grilla pareja"], pierde: ["No se puede leer una nota larga"] },
+  { id: "lugar", nombre: "Se abre en su lugar", resumen: "Tocar una nota cortada la abre a lo ancho de la bandeja con el texto entero; otro toque la vuelve a cerrar.", gana: ["No sale de la bandeja ni tapa nada", "Las cortas siguen igual"], pierde: ["La grilla se reacomoda al abrirla"], rec: true },
+  { id: "hoja", nombre: "Hoja de lectura", resumen: "Tocar la nota la abre ocupando la bandeja, como «Elegir tema»: el texto entero, pasarla a un tema y borrarla.", gana: ["Mucho espacio para leer", "Junta las acciones de la nota en un solo lugar"], pierde: ["Un paso más para volver a las notas"] },
+  { id: "crecen", nombre: "Crecen con el texto", resumen: "Los post-its dejan de ser cuadrados: cada uno toma el alto que pide su texto, hasta nueve líneas, en columnas.", gana: ["Se lee sin tocar nada"], pierde: ["Pierde la forma de post-it y la grilla pareja", "Una nota enorme sigue cortando"] },
+];
+const postit = (t, larga, i) => `<li><button type="button" class="pi" data-nota="${i}"><span class="tx">${t}</span><span class="meta">23:19 · Pomodoro</span>${larga ? '<span class="mas" aria-hidden="true">…</span>' : ""}</button></li>`;
+function pintarNotas(art, abierta) {
+  const o = NOTAS_OPC.find((x) => x.id === art.dataset.opt);
+  const cuerpo = $(".bn-cuerpo", art);
+  if (o.id === "hoja" && abierta != null) {
+    cuerpo.innerHTML = `<div class="hoja"><button type="button" class="volver" data-volver>← Volver a las notas</button><div class="cuerpo-n">${NOTAS[abierta][0]}</div><div class="meta" style="font-size:12px;color:var(--tenue)">23:19 · Pomodoro</div><div class="acciones"><button type="button">Pasar a un tema</button><button type="button">Borrar</button></div></div>`;
+    return;
+  }
+  cuerpo.innerHTML = `<ul class="postits2">${NOTAS.map(([t, l], i) => postit(t, l && o.id !== "crecen", i)).join("")}</ul><div class="entrada">✎ Anotá algo y Enter</div>`;
+  if (o.id === "lugar" && abierta != null) {
+    const el = $(`[data-nota="${abierta}"]`, cuerpo);
+    el.parentElement.classList.add("abierta-n");
+    $(".mas", el)?.remove();
+  }
+}
+$("#notas-demo").innerHTML = NOTAS_OPC.map((o, i) => `<article class="mini" data-opt="${o.id}">
+  <h3><span class="letra">${String.fromCharCode(65 + i)}</span>${o.nombre}${o.rec ? '<span class="marca-rec">Recomendada</span>' : ""}</h3>
+  <p class="resumen">${o.resumen}</p>
+  <div class="lienzo" style="display:flex;justify-content:center;padding-bottom:0"><div class="bn n-${o.id}"><div class="bn-cab">✎ <b>Notas</b> 6<button type="button" class="borrar">Borrar todas</button></div><div class="bn-cuerpo"></div></div></div>
+  <div class="notas"><div><h4>Qué gana</h4><ul>${o.gana.map((x) => `<li>${x}</li>`).join("")}</ul></div><div><h4>Qué pierde</h4><ul>${o.pierde.map((x) => `<li>${x}</li>`).join("")}</ul></div></div>
+</article>`).join("");
+$$("#notas-demo .mini").forEach((art) => pintarNotas(art));
+$("#notas-demo").addEventListener("click", (e) => {
+  const art = e.target.closest(".mini");
+  if (!art) return;
+  if (e.target.closest("[data-volver]")) return pintarNotas(art);
+  const n = e.target.closest("[data-nota]");
+  if (!n || art.dataset.opt === "hoy" || art.dataset.opt === "crecen") return;
+  const i = Number(n.dataset.nota);
+  pintarNotas(art, n.parentElement.classList.contains("abierta-n") ? null : i);
+});
+
+let completa = null;
+function abrirCompleta(op) {
+  if (completa) completa.classList.remove("completa");
+  completa = op;
+  op.classList.add("completa");
+  raiz.classList.add("en-completa");
+  $("#mando").hidden = false; $("#traer").hidden = true;
+  $("#mando-cual").textContent = op.dataset.nombre;
+}
+function salirCompleta() {
+  if (!completa) return;
+  completa.classList.remove("completa");
+  raiz.classList.remove("en-completa");
+  $("#mando").hidden = true; $("#traer").hidden = true;
+  completa.scrollIntoView({ block: "start" });
+  completa = null;
+}
+function moverCompleta(paso) {
+  if (!completa) return;
+  const hermanas = $$(`.opcion[data-sec="${completa.dataset.sec}"]`);
+  abrirCompleta(hermanas[(hermanas.indexOf(completa) + paso + hermanas.length) % hermanas.length]);
+}
+function esconderMando(si) { $("#mando").hidden = si; $("#traer").hidden = !si; }
+$("#mando").addEventListener("click", (e) => {
+  const a = e.target.closest("[data-a]")?.dataset.a;
+  if (a === "ant") moverCompleta(-1);
+  if (a === "sig") moverCompleta(1);
+  if (a === "tema") ponerTema(TEMAS[(TEMAS.indexOf(tema) + 1) % TEMAS.length]);
+  if (a === "esconder") esconderMando(true);
+  if (a === "salir") salirCompleta();
+});
+$("#traer").addEventListener("click", () => esconderMando(false));
+document.addEventListener("keydown", (e) => {
+  if (!completa || e.target.closest("input, textarea")) return;
+  if (e.key === "Escape") salirCompleta();
+  else if (e.key === "ArrowLeft") moverCompleta(-1);
+  else if (e.key === "ArrowRight") moverCompleta(1);
+  else if (e.key.toLowerCase() === "t") ponerTema(TEMAS[(TEMAS.indexOf(tema) + 1) % TEMAS.length]);
+  else if (e.key.toLowerCase() === "h") esconderMando(!$("#mando").hidden);
+});
+</script>

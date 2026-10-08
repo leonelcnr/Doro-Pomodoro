@@ -15,7 +15,7 @@ interface TarjetaItemProps {
     onAlternarHecha: (tarea: Tarea) => void
 }
 
-const tarjeta = "flex min-w-0 flex-col gap-[0.6875rem] rounded-xl border bg-tarjeta p-[1.125rem] pb-4 text-left transition-[border-color,box-shadow,translate] duration-250 ease-[cubic-bezier(.16,1,.3,1)]"
+const tarjeta = "flex min-w-0 flex-col gap-[0.6875rem] rounded-xl border bg-tarjeta p-[1.125rem] pb-4 text-left transition-[background-color,border-color,box-shadow,translate] duration-250 ease-[cubic-bezier(.16,1,.3,1)]"
 
 /** El pie de toda tarjeta: cuándo es, y el aviso si tiene. */
 function Pie({ tarea }: { tarea: Tarea }) {
@@ -50,7 +50,7 @@ export function TarjetaItem({ tarea, elegida, onAbrir, onAlternarHecha }: Tarjet
     if (tipoDe(tarea) === "tarea") {
         const hecha = tarea.status === "Completada"
         return (
-            <div className={cn(tarjeta, elegida && "border-foreground")}>
+            <div className={cn(tarjeta, elegida && "-translate-y-0.5 border-foreground/15 bg-alto shadow-alta")}>
                 <span className="flex items-start gap-3">
                     <button
                         type="button"
@@ -86,7 +86,7 @@ export function TarjetaItem({ tarea, elegida, onAbrir, onAlternarHecha }: Tarjet
             className={cn(
                 tarjeta,
                 "outline-none hover:-translate-y-px hover:border-muted-foreground/60 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring",
-                elegida && "border-foreground",
+                elegida && "-translate-y-0.5 border-foreground/15 bg-alto shadow-alta",
             )}
         >
             <span className="text-base leading-[1.3] font-medium tracking-[-0.01em] [overflow-wrap:anywhere]">{tarea.header}</span>

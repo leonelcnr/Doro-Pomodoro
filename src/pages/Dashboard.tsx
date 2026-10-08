@@ -67,15 +67,18 @@ export default function Dashboard() {
                             onAtras={(paso) => establecerAtras((n) => n + paso)}
                             onVista={establecerVista}
                         />
-                        {vista === "resumen" ? (
-                            <div className="flex min-h-[32rem] flex-1 flex-col @[62.5rem]:min-h-0 [&>section]:flex-1">
-                                <Resumen key={`${periodo}-${atras}`} escenas={escenas} />
-                            </div>
-                        ) : vista === "estudio" ? (
-                            <PanelEstudio x={x} onMeta={cambiarMeta} />
-                        ) : (
-                            <PanelTareas x={x} tareas={tareas} />
-                        )}
+                        {/* Al cambiar de pestaña, lo nuevo entra con un fundido corto */}
+                        <div key={vista} className="flex min-h-0 flex-1 animate-in flex-col duration-300 ease-out fade-in slide-in-from-bottom-1 [&>*]:flex-1">
+                            {vista === "resumen" ? (
+                                <div className="flex min-h-[32rem] flex-col @[62.5rem]:min-h-0 [&>section]:flex-1">
+                                    <Resumen key={`${periodo}-${atras}`} escenas={escenas} />
+                                </div>
+                            ) : vista === "estudio" ? (
+                                <PanelEstudio x={x} onMeta={cambiarMeta} />
+                            ) : (
+                                <PanelTareas x={x} tareas={tareas} />
+                            )}
+                        </div>
                     </div>
                 )}
             </main>

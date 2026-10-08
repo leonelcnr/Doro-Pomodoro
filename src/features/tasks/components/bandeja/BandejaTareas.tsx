@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from "react"
+import { useAnimarAlto } from "@/hooks/useAnimarAlto"
 import { ChevronUp, Plus } from "lucide-react"
 import { estaPendiente, marcasDe, porProximidad, diasHasta, relativo } from "@/features/tasks/bandeja"
 import { cn } from "@/lib/utils"
@@ -45,6 +46,9 @@ export function BandejaTareas(props: BandejaTareasProps) {
     const [verTemas, establecerVerTemas] = useState(false)
     const [porTipo, establecerPorTipo] = useState(false)
     const [crear, establecerCrear] = useState<TipoItem | null>(null)
+    // Al desplegar la lista, abrir el menú de temas o «Crear», la bandeja cambia de alto:
+    // se anima (crece o baja hacia arriba, anclada abajo)
+    const raiz = useAnimarAlto<HTMLElement>([verTodo, verTemas, crear, porTipo, temaElegido, abierta], abierta)
 
     const pendientes = porProximidad(tareas.filter(estaPendiente))
     const delTema = (id: string | null | undefined) =>
@@ -79,6 +83,7 @@ export function BandejaTareas(props: BandejaTareasProps) {
 
     return (
         <aside
+            ref={raiz}
             aria-label="Tareas"
             data-abierta={abierta || undefined}
             data-nuevas={nuevas || undefined}

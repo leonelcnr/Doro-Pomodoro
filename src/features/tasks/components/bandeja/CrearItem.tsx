@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react"
 import { TIPOS_ITEM } from "@/features/tasks/avance"
 import { INFO_TIPO, checklistInicial, nuevoDe } from "@/features/tasks/bandeja"
 import { IconoDeTema, IconoTipo } from "@/features/tasks/components/IconosTareas"
+import { SelectorFecha } from "@/features/tasks/components/SelectorFecha"
 import { cn } from "@/lib/utils"
 import type { Tema, TareaPayload, TipoItem } from "@/types/dominio"
 
@@ -120,15 +121,10 @@ export function CrearItem({ temas, tipoInicial, temaInicial, onCrear, onVolver }
                 </div>
             </div>
 
-            <label className="flex min-h-11 items-center gap-4">
+            <div className="flex min-h-11 items-center gap-4">
                 <span className="w-[4.5rem] shrink-0 text-[0.8125rem] text-muted-foreground">{tipo === "parcial" ? "Fecha" : "Entrega"}</span>
-                <input
-                    type="date"
-                    value={dia}
-                    onChange={(e) => establecerDia(e.target.value)}
-                    className="rounded-md bg-muted px-2 py-1 text-[0.78125rem] outline-none [color-scheme:light_dark] focus-visible:ring-2 focus-visible:ring-ring"
-                />
-            </label>
+                <SelectorFecha valor={dia} onCambiar={establecerDia} aria-label={tipo === "parcial" ? "Fecha" : "Entrega"} className="rounded-md bg-muted px-2 py-1 text-[0.78125rem]" />
+            </div>
 
             {marcas && (
                 <div className="flex min-h-11 items-center gap-4">

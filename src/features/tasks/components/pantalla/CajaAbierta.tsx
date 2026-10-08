@@ -5,6 +5,7 @@ import { INFO_TIPO } from "@/features/tasks/bandeja"
 import { resumenTipo } from "@/features/tasks/frases"
 import { BarraAvance } from "@/features/tasks/components/BarraAvance"
 import { IconoDeTema, IconoTipo } from "@/features/tasks/components/IconosTareas"
+import { useAnimarAlto } from "@/hooks/useAnimarAlto"
 import { cn } from "@/lib/utils"
 import type { IconoTema, Tarea, TareaPayload, TipoItem } from "@/types/dominio"
 import { AltaTipo } from "./AltaTipo"
@@ -43,6 +44,10 @@ interface CajaAbiertaProps {
 export function CajaAbierta(props: CajaAbiertaProps) {
     const { tema, opciones, frase, items, tipo, itemElegido, onTipo, onElegirTema, onCerrar, onAbrirItem, onAlternarHecha, onCrear, calendario } = props
     const [menu, establecerMenu] = useState(false)
+    // El tipo elegido desde «Sumar» abre directo su formulario de alta
+    const [sumando, establecerSumando] = useState<TipoItem | null>(null)
+    // Cada tipo tiene distinta cantidad de tarjetas: al cambiar, la caja cambia de alto suave
+    const raiz = useAnimarAlto<HTMLElement>([tipo, Boolean(calendario)])
     const recuadros = resumenPorTipo(items)
     const faltan = TIPOS_ITEM.filter((t) => t !== tipo && !recuadros.some((r) => r.tipo === t))
     const tarjetas = items
@@ -60,7 +65,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                             type="button"
                             aria-pressed={r.tipo === tipo}
                             onClick={() => onTipo(r.tipo)}
-                            className="grid flex-[1_0_12.5rem] grid-cols-[1rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 rounded-[0.625rem] border bg-tarjeta px-3.5 py-[0.8125rem] text-left text-[0.90625rem] transition-colors hover:border-muted-foreground/60 aria-pressed:border-foreground"
+                            className="grid flex-[1_0_12.5rem] grid-cols-[1rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 rounded-[0.625rem] border bg-tarjeta px-3.5 py-[0.8125rem] text-left text-[0.90625rem] transition-[background-color,border-color,box-shadow] duration-200 hover:border-muted-foreground/60 aria-pressed:border-foreground/15 aria-pressed:bg-alto aria-pressed:shadow-alta"
                         >
                             <IconoTipo tipo={r.tipo} className="size-[0.9375rem] text-muted-foreground" />
                             <span>{INFO_TIPO[r.tipo].nombre}</span>
@@ -76,7 +81,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                 <div className="sumar-tipos flex flex-wrap gap-x-[1.375rem] gap-y-1 text-[0.84375rem] text-muted-foreground">
                     <span className="py-1">Sumar</span>
                     {faltan.map((t) => (
-                        <button key={t} type="button" onClick={() => onTipo(t)} className="inline-flex items-center gap-1.5 py-1 hover:text-foreground">
+                        <button key={t} type="button" onClick={() => (establecerSumando(t), onTipo(t))} className="inline-flex items-center gap-1.5 py-1 hover:text-foreground">
                             <IconoTipo tipo={t} className="size-3.5" />
                             {INFO_TIPO[t].uno}
                         </button>
@@ -84,7 +89,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                 </div>
             )}
     
-            <section aria-label={INFO_TIPO[tipo].nombre} className="flex min-w-0 flex-col gap-3.5">
+            <section key={tipo} aria-label={INFO_TIPO[tipo].nombre} className="flex min-w-0 animate-in flex-col gap-3.5 duration-300 fade-in">
                 <h2 className="m-0 flex flex-wrap items-center gap-2.5 text-base font-semibold tracking-[-0.01em]">
                     <IconoTipo tipo={tipo} className="size-[1.0625rem] shrink-0 text-muted-foreground" />
                     {INFO_TIPO[tipo].nombre}
@@ -99,13 +104,14 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                 ) : (
                     <p className="m-0 pt-3 pb-1 text-[0.84375rem] text-muted-foreground">Sin {INFO_TIPO[tipo].nombre.toLowerCase()} todavía.</p>
                 )}
-                <AltaTipo key={tipo} tipo={tipo} temaId={tema.temaId} onCrear={onCrear} />
+                <AltaTipo key={tipo} tipo={tipo} abiertaAlInicio={sumando === tipo} temaId={tema.temaId} onCrear={onCrear} />
             </section>
         </>
     )
 
     return (
         <section
+            ref={raiz}
             data-abierta
             aria-label={tema.nombre}
             onKeyDown={(e) => e.key === "Escape" && menu && (e.stopPropagation(), establecerMenu(false))}
@@ -128,7 +134,7 @@ export function CajaAbierta(props: CajaAbiertaProps) {
                             <ChevronDown className={cn("size-[0.9375rem] text-muted-foreground transition-transform duration-250", menu && "rotate-180")} aria-hidden />
                         </button>
                         {menu && (
-                            <div role="menu" aria-label="Temas" className="absolute top-[calc(100%+0.375rem)] -left-2 z-20 flex max-h-[21.25rem] w-[min(20rem,80cqi)] animate-in flex-col overflow-y-auto rounded-xl border bg-card p-1.5 shadow-2xl duration-250 fade-in slide-in-from-bottom-2">
+                            <div role="menu" aria-label="Temas" className="absolute top-[calc(100%+0.375rem)] -left-2 z-20 flex max-h-[21.25rem] w-[min(20rem,80cqi)] animate-in flex-col gap-0.5 overflow-y-auto rounded-xl border bg-card p-1.5 shadow-2xl duration-250 fade-in slide-in-from-bottom-2">
                                 {opciones.map((o) => (
                                     <button
                                         key={o.temaId ?? "general"}

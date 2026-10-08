@@ -152,7 +152,7 @@ function Bloque({ tarea, dia, carril, elegido, onAbrir }: { tarea: Tarea; dia: n
             title={`${tarea.header} · ${tarea.due_date ? fechaLarga(tarea.due_date) : "sin fecha"}`}
             style={{ ...posicion, top: `${0.75 + carril * 2.5}rem` }}
             className={cn(
-                "absolute z-[2] flex h-8 w-max max-w-[13.75rem] min-w-[5.25rem] items-center gap-1.5 overflow-hidden rounded-md border bg-card px-[0.5625rem] text-left text-[0.78125rem] hover:border-muted-foreground aria-pressed:border-foreground aria-pressed:shadow-[0_0_0_1px_var(--foreground)]",
+                "absolute z-[2] flex h-8 w-max max-w-[13.75rem] min-w-[5.25rem] items-center gap-1.5 overflow-hidden rounded-md border bg-card px-[0.5625rem] text-left text-[0.78125rem] transition-[background-color,border-color,box-shadow,translate] duration-200 hover:border-muted-foreground aria-pressed:-translate-y-px aria-pressed:border-t-foreground/15 aria-pressed:border-r-foreground/15 aria-pressed:border-b-foreground/15 aria-pressed:bg-alto aria-pressed:shadow-alta",
                 tipo === "parcial" && "border-l-2 border-l-foreground",
                 tipo === "informe" && "border-l-2 border-l-muted-foreground",
                 (tipo === "tarea" || dia == null) && "border-dashed",

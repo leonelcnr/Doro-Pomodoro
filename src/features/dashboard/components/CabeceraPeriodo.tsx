@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { motion } from "motion/react"
 import { OFF_MAX, type Periodo } from "@/features/dashboard/datos"
 import { Icono, type NombreIcono } from "./Iconos"
 
@@ -10,6 +11,8 @@ const VISTAS: [VistaDashboard, string, NombreIcono][] = [
     ["tareas", "Tareas", "tarea"],
 ]
 const PERIODOS: [Periodo, string][] = [["semana", "Semana"], ["mes", "30 días"], ["ano", "Año"]]
+/** La raya de la pestaña y la pastilla del período viajan a la opción elegida. */
+const viaje = { type: "spring", bounce: 0, duration: 0.4 } as const
 const paso = "grid size-[1.875rem] place-items-center rounded-md border bg-card text-foreground transition-colors hover:enabled:border-muted-foreground disabled:opacity-35"
 
 interface CabeceraPeriodoProps {
@@ -49,10 +52,11 @@ export function CabeceraPeriodo({ titulo, fechas, periodo, atras, vista, onPerio
                             type="button"
                             aria-pressed={vista === v}
                             onClick={() => onVista(v)}
-                            className="inline-flex items-center gap-[0.4375rem] border-b-2 border-transparent pb-[0.4375rem] text-[0.90625rem] text-muted-foreground hover:text-foreground aria-pressed:border-foreground aria-pressed:font-medium aria-pressed:text-foreground"
+                            className="relative inline-flex items-center gap-[0.4375rem] border-b-2 border-transparent pb-[0.4375rem] text-[0.90625rem] text-muted-foreground transition-colors hover:text-foreground aria-pressed:font-medium aria-pressed:text-foreground"
                         >
                             <Icono nombre={icono} />
                             {t}
+                            {vista === v && <motion.span layoutId="raya-vista-dashboard" transition={viaje} className="absolute inset-x-0 -bottom-0.5 h-0.5 bg-foreground" />}
                         </button>
                     ))}
                 </div>
@@ -63,8 +67,9 @@ export function CabeceraPeriodo({ titulo, fechas, periodo, atras, vista, onPerio
                             type="button"
                             aria-pressed={periodo === p}
                             onClick={() => onPeriodo(p)}
-                            className="rounded-[7px] px-3.5 py-[0.3125rem] text-[0.8125rem] text-muted-foreground aria-pressed:bg-card aria-pressed:text-foreground aria-pressed:shadow-sm"
+                            className="relative isolate rounded-[7px] px-3.5 py-[0.3125rem] text-[0.8125rem] text-muted-foreground transition-colors aria-pressed:text-foreground"
                         >
+                            {periodo === p && <motion.span layoutId="pastilla-periodo-dashboard" transition={viaje} className="absolute inset-0 -z-10 rounded-[7px] bg-card shadow-sm" />}
                             {t}
                         </button>
                     ))}
