@@ -65,6 +65,15 @@
         ],
         "createdAt": "2026-10-08T02:11:17.865Z",
         "reason": "Claude: copia fiel de la app: pestañas Temas|Calendario subrayadas sin padding lateral y filas del calendario con borde inferior, igual que CabeceraTareas y CalendarioTareas."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/violeta.html"
+        ],
+        "createdAt": "2026-10-08T03:02:29.395Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); textos con --fg/--tenue y blanco sobre --brand-strong."
       }
     ]
   }
