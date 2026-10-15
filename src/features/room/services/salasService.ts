@@ -55,7 +55,6 @@ export async function crearSala(estadoInicial?: EstadoReloj): Promise<string> {
   const { data, error } = await supabase.rpc("create_room", {
     p_name: "Sala de estudio",
     p_is_public: false,
-    p_max_uses: null, // contrato de la RPC; join_room ya no mira el tope
     p_expires_minutes: null,
   });
   if (error) throw error;
