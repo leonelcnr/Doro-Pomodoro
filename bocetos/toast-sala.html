@@ -4,10 +4,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Avisos de la sala, 2ª ronda. Hoy: el toast de sonner con richColors abajo a la
-   derecha. Cuatro reemplazos sobre la sala tal como está hecha (TimerDisplay,
-   RelojDigital, IndicadorModo, ControlesTimer, BandejaTareas, BandejaNotas,
-   CabeceraSala). Tokens de index.css: violeta profundo (289), Claro, Oscuro y Negro. */
+/* Avisos de la sala, 3ª ronda. Hoy: el toast de sonner con richColors abajo a la
+   derecha. Cuatro toasts, cuatro variantes de «Bajo el reloj» y dos ideas con la
+   bandeja, sobre la sala tal como está hecha (TimerDisplay, RelojDigital,
+   IndicadorModo, ControlesTimer, BandejaTareas, BandejaNotas, CabeceraSala).
+   Tokens de index.css: violeta profundo (289), Claro, Oscuro y Negro. */
 :root {
   --bg: oklch(1 0 0);
   --superficie: oklch(1 0 0);
@@ -198,47 +199,118 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 .sonner.sale { opacity: 0; transform: translateY(100%); }
 @keyframes sonner-entra { from { opacity: 0; transform: translateY(100%); } }
 
-/* ───────── A · Sobrio, sobre el asa ───────── */
-.sobrio { position: absolute; left: 50%; bottom: 76px; z-index: 20; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 9px 14px 9px 12px; border-radius: 10px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: var(--sombra); font-size: 13.5px; white-space: nowrap; transform: translateX(-50%); animation: sobrio-entra .45s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
-.sobrio .txt { overflow: hidden; text-overflow: ellipsis; }
-.sobrio b { font-weight: 500; }
-.sobrio > .ic { font-size: 16px; color: var(--acento); }
-.sobrio.falla > .ic { color: var(--error); }
-.sobrio .accion { border: 0; background: none; padding: 0 0 0 10px; margin-left: 2px; border-left: 1px solid var(--linea); font-size: 13px; font-weight: 500; color: var(--acento); }
-.sobrio.sale { opacity: 0; transform: translate(-50%, 6px); }
-@keyframes sobrio-entra { from { opacity: 0; transform: translate(-50%, 10px); } }
 
-/* ───────── B · En el asa ───────── */
-.asa > .aviso { opacity: 0; transform: translateY(8px); pointer-events: none; }
-.bandeja[data-aviso] .asa > .normal { opacity: 0; transform: translateY(-8px); }
-.bandeja[data-aviso] .asa > .aviso { opacity: 1; transform: none; pointer-events: auto; }
-.aviso .lado { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
-.aviso .lado > .ic { font-size: 16px; color: var(--acento); }
-.aviso.falla .lado > .ic { color: var(--error); }
-.aviso .accion { flex-shrink: 0; border: 0; background: none; padding: 0; font-size: 13px; font-weight: 500; color: var(--acento); }
-.bandeja[data-aviso] { border-color: color-mix(in oklch, var(--acento) 30%, var(--linea)); }
-.bandeja[data-aviso="falla"] { border-color: color-mix(in oklch, var(--error) 35%, var(--linea)); }
+/* ───────── Toasts ───────── */
+/* T1 · Pastilla invertida, abajo al centro */
+.t1 { position: absolute; left: 50%; bottom: 80px; z-index: 20; display: inline-flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 9px 16px 9px 13px; border-radius: 999px; background: var(--fg); color: var(--bg); font-size: 13.5px; white-space: nowrap; box-shadow: 0 10px 30px -10px oklch(0 0 0 / .45); transform: translateX(-50%); animation: t1-entra .5s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
+.t1 .txt { overflow: hidden; text-overflow: ellipsis; }
+.t1 b { font-weight: 600; }
+.t1 > .ic { font-size: 16px; color: color-mix(in oklch, var(--acento) 70%, var(--bg)); }
+.t1.falla > .ic { color: color-mix(in oklch, var(--error) 75%, var(--bg)); }
+.t1 .accion { border: 0; background: none; padding: 0 0 0 12px; margin-left: 2px; border-left: 1px solid color-mix(in oklch, var(--bg) 25%, transparent); color: inherit; font-size: 13px; font-weight: 600; }
+.t1.sale { opacity: 0; transform: translate(-50%, 8px) scale(.97); }
+@keyframes t1-entra { from { opacity: 0; transform: translate(-50%, 14px) scale(.96); } }
 
-/* ───────── C · Línea bajo la barra (LineaAviso) ───────── */
-.linea { position: absolute; top: 56px; left: 20px; right: 20px; z-index: 5; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--linea); font-size: 13.5px; color: var(--tenue); text-align: center; animation: linea-entra .4s ease both; transition: opacity .4s ease; background: var(--bg); }
-@container sala (min-width: 720px) { .linea { left: 32px; right: 32px; } }
-.linea b { color: var(--fg); font-weight: 500; }
-.linea i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
-.linea.falla i { background: var(--error); }
-.linea .accion { border: 0; background: none; padding: 0; font-size: 13px; font-weight: 500; color: var(--acento); }
-.linea.sale { opacity: 0; }
-@keyframes linea-entra { from { opacity: 0; } }
+/* T2 · Tarjeta con el tiempo que le queda, arriba a la derecha bajo la barra */
+.t2 { position: absolute; top: 64px; right: 16px; z-index: 20; width: min(300px, calc(100% - 32px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 12px 14px 14px; border-radius: 12px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: var(--sombra); overflow: hidden; animation: t2-entra .5s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
+@container sala (min-width: 720px) { .t2 { right: 28px; } }
+.t2 > .ic { grid-row: span 2; font-size: 18px; color: var(--acento); }
+.t2.falla > .ic { color: var(--error); }
+.t2 .titulo { font-size: 14px; font-weight: 500; }
+.t2 .sub { grid-column: 2; font-size: 12.5px; color: var(--tenue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t2 .accion { grid-column: 3; grid-row: 1 / span 2; border: 0; background: var(--campo); padding: 5px 10px; border-radius: 7px; font-size: 12.5px; font-weight: 500; }
+.t2 .accion:hover { background: color-mix(in oklch, var(--fg) 10%, var(--campo)); }
+.t2 .resta { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--acento); transform-origin: left; animation: resta var(--dura) linear both; }
+.t2.falla .resta { background: var(--error); }
+.t2.sale { opacity: 0; transform: translateX(12px); }
+@keyframes t2-entra { from { opacity: 0; transform: translateX(24px); } }
+@keyframes resta { to { scale: 0 1; } }
+
+/* T3 · Con el tema: el ícono del tema y dos renglones, sobre el lápiz de las notas */
+.t3-pila { position: absolute; right: 16px; bottom: 72px; z-index: 20; display: flex; flex-direction: column-reverse; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+@container sala (min-width: 720px) { .t3-pila { right: 20px; } }
+.t3 { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: var(--sombra); pointer-events: auto; animation: t3-entra .5s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
+.t3 .cuadro { width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px; display: grid; place-items: center; background: color-mix(in oklch, var(--acento) 14%, var(--superficie)); color: var(--acento); font-size: 17px; }
+.t3.falla .cuadro { background: color-mix(in oklch, var(--error) 12%, var(--superficie)); color: var(--error); }
+.t3 .renglones { min-width: 0; flex: 1; display: grid; }
+.t3 .rotulo { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); font-weight: 500; }
+.t3 .txt { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t3 .txt b { font-weight: 500; }
+.t3 .accion { border: 0; background: none; padding: 0; font-size: 13px; font-weight: 500; color: var(--acento); }
+.t3.sale { opacity: 0; transform: translateY(6px); }
+@keyframes t3-entra { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+
+/* T4 · Isla arriba: una píldora sale del centro de la barra y se abre */
+.t4 { position: absolute; top: 10px; left: 50%; z-index: 20; height: 36px; display: inline-flex; align-items: center; gap: 10px; max-width: min(calc(100% - 200px), 460px); padding: 0 16px 0 12px; border-radius: 999px; background: var(--fg); color: var(--bg); font-size: 13px; white-space: nowrap; overflow: hidden; transform: translateX(-50%); animation: t4-entra .6s var(--salida) both; transition: opacity .3s ease, max-width .4s var(--salida); }
+@container sala (max-width: 520px) { .t4 { top: 62px; max-width: calc(100% - 32px); } }
+.t4 .txt { overflow: hidden; text-overflow: ellipsis; }
+.t4 b { font-weight: 600; }
+.t4 > .ic { font-size: 15px; color: color-mix(in oklch, var(--acento) 70%, var(--bg)); }
+.t4.falla > .ic { color: color-mix(in oklch, var(--error) 75%, var(--bg)); }
+.t4.sale { opacity: 0; max-width: 36px; }
+@keyframes t4-entra { from { max-width: 36px; opacity: 0; } 40% { opacity: 1; } }
 
 /* ───────── D · Bajo el reloj ───────── */
-.pildora-lugar { height: 34px; margin-top: 22px; display: grid; place-items: center; }
-.pildora { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: var(--campo); font-size: 13px; color: var(--fg); max-width: 100%; white-space: nowrap; animation: pildora-entra .45s var(--salida) both; transition: opacity .35s ease, transform .35s ease; }
-.pildora .txt { overflow: hidden; text-overflow: ellipsis; }
-.pildora i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
-.pildora.falla { background: color-mix(in oklch, var(--error) 12%, var(--campo)); }
-.pildora.falla i { background: var(--error); }
-.pildora.sale { opacity: 0; transform: scale(.96); }
-@keyframes pildora-entra { from { opacity: 0; transform: translateY(-6px) scale(.96); } }
+.lugar-d { height: 40px; margin-top: 22px; display: grid; place-items: center; width: 100%; }
+/* D1 · Solo el texto */
+.d1 { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; font-size: 14px; color: var(--tenue); white-space: nowrap; animation: d1-entra .5s var(--salida) both; transition: opacity .4s ease, translate .4s ease; }
+.d1 .txt { overflow: hidden; text-overflow: ellipsis; }
+.d1 b { color: var(--fg); font-weight: 500; }
+.d1 i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.d1.falla i { background: var(--error); }
+.d1 .accion { border: 0; background: none; padding: 0; margin-left: 4px; font-size: 13.5px; font-weight: 500; color: var(--acento); text-decoration: underline; text-decoration-color: color-mix(in oklch, var(--acento) 40%, transparent); text-underline-offset: 3px; }
+.d1.sale { opacity: 0; translate: 0 4px; }
+@keyframes d1-entra { from { opacity: 0; translate: 0 -6px; } }
+/* D3 · Píldora con ícono y acción */
+.d3 { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; height: 38px; padding: 0 6px 0 14px; border-radius: 999px; border: 1px solid var(--linea); background: color-mix(in oklch, var(--superficie) 80%, transparent); backdrop-filter: blur(8px); font-size: 13.5px; white-space: nowrap; box-shadow: var(--sombra); animation: d3-entra .5s var(--salida) both; transition: opacity .35s ease, transform .35s ease; }
+.d3 .txt { overflow: hidden; text-overflow: ellipsis; }
+.d3 b { font-weight: 500; }
+.d3 > .ic { font-size: 16px; color: var(--acento); }
+.d3.falla > .ic { color: var(--error); }
+.d3 .accion { border: 0; background: var(--campo); height: 28px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 500; }
+.d3.sin-accion { padding-right: 16px; }
+.d3.sale { opacity: 0; transform: scale(.96); }
+@keyframes d3-entra { from { opacity: 0; transform: translateY(-6px) scale(.96); } }
+/* D4 · Un punto que se abre: nace en el acento, se abre en la píldora y vuelve a ser punto */
+.d4 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; max-width: 32px; padding: 0 13px; border-radius: 999px; background: var(--acento-fuerte); color: var(--acento-fg); font-size: 13.5px; white-space: nowrap; overflow: hidden; animation: d4-entra .35s var(--salida) both; transition: max-width .6s var(--salida), padding .6s var(--salida), opacity .3s ease; }
+.d4.falla { background: var(--error); }
+.d4 .txt { opacity: 0; transition: opacity .25s ease; overflow: hidden; text-overflow: ellipsis; }
+.d4 b { font-weight: 600; }
+.d4.abierta { max-width: min(460px, 100%); padding: 0 18px; }
+.d4.abierta .txt { opacity: 1; transition-delay: .2s; }
+.d4.sale { opacity: 0; }
+@keyframes d4-entra { from { transform: scale(0); } }
 
+/* D2 · En lugar de la fase: el rótulo de arriba del reloj dice el aviso y vuelve */
+.modo { position: relative; }
+.modo .modo-txt, .modo .modo-aviso { transition: opacity .35s ease, translate .45s var(--salida); }
+.modo .modo-aviso { position: absolute; left: 50%; top: 50%; translate: -50% -50%; opacity: 0; white-space: nowrap; letter-spacing: normal; text-transform: none; font-size: 13.5px; font-weight: 400; color: var(--fg); pointer-events: none; }
+.modo .modo-aviso b { font-weight: 500; }
+.modo[data-aviso] .modo-txt { opacity: 0; translate: 0 -6px; }
+.modo[data-aviso] .modo-aviso { opacity: 1; }
+.modo .modo-aviso { display: inline-flex; align-items: center; gap: 8px; }
+.modo .modo-aviso::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
+.modo[data-aviso="falla"] .modo-aviso::before { background: var(--error); }
+.modo > i { transition: opacity .2s ease; }
+.modo[data-aviso] > i { opacity: 0; }
+
+/* ───────── Otras ───────── */
+/* O1 · El contador salta: la cuenta del asa cambia con un golpe y un punto viaja desde el reloj */
+.asa .num { display: inline-block; font-weight: 500; color: var(--fg); transition: color .3s; }
+.asa .num.salta { animation: salta .6s var(--salida); color: var(--acento); }
+@keyframes salta { 30% { transform: translateY(-5px) scale(1.25); } }
+.viajero { position: absolute; z-index: 25; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 6px color-mix(in oklch, var(--acento) 18%, transparent); pointer-events: none; transition: left .7s cubic-bezier(.5,0,.3,1), top .7s cubic-bezier(.6,-0.3,.7,1), opacity .2s ease .65s, scale .7s ease; }
+.bandeja[data-golpe] { animation: golpe .5s var(--salida); }
+@keyframes golpe { 35% { transform: translateX(-50%) translateY(-4px); } }
+/* O2 · Mensaje en la cuenta: el texto de la derecha del asa dice lo que pasó, el resto queda */
+.asa .lado-der { position: relative; display: inline-grid; justify-items: end; }
+.asa .lado-der > * { grid-area: 1 / 1; transition: opacity .35s ease, translate .45s var(--salida); }
+.asa .lado-der .msg { opacity: 0; translate: 0 6px; white-space: nowrap; color: var(--acento); font-weight: 500; }
+.asa .lado-der .msg.falla { color: var(--error); }
+.asa[data-msg] .lado-der .cuenta { opacity: 0; translate: 0 -6px; }
+.asa[data-msg] .lado-der .msg { opacity: 1; translate: 0 0; }
+
+.asa[data-msg] > .normal, .bandeja[data-golpe] .asa > .normal { opacity: 1; }
 /* ───────── Cierre ───────── */
 .cierre h2 { font-size: 24px; letter-spacing: -0.02em; margin: 0 0 16px; }
 .tabla { overflow-x: auto; margin-bottom: 32px; }
@@ -250,6 +322,9 @@ td:first-child { font-weight: 500; white-space: nowrap; }
 .recomendacion { max-width: 72ch; }
 .recomendacion p { margin: 0 0 12px; }
 pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; }
+
+.marca-nueva { font-size: 12px; font-weight: 500; color: var(--tenue); border: 1px solid var(--linea); border-radius: 999px; padding: 1px 8px; }
+.grupo-titulo { margin: 0 0 32px; padding-top: 24px; border-top: 1px solid var(--linea); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
@@ -274,14 +349,15 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
     <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
     <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
     <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></symbol>
+    <symbol id="i-libro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></symbol>
   </defs>
 </svg>
 
 <div class="pagina">
   <header class="cabecera">
     <h1>Avisos de la sala</h1>
-    <p>Hoy, al crear una tarea, marcarla hecha o completar un informe desde la sala, aparece el toast de <b>sonner</b> con <code>richColors</code>: una tarjeta verde abajo a la derecha, con su X, encima del lápiz de las notas. Es lo único de la sala con color propio y no se parece a nada de lo demás.</p>
-    <p>Cuatro reemplazos sobre la sala <b>como está hecha hoy</b>: la fase en mayúsculas chicas, los números con los dos puntos redondos y el hilo, los controles de 40 px a los costados (compartir, música y reiniciar; play, ventana flotante y tiempos) que bajan en angosto, la bandeja y el lápiz de las notas. Los botones disparan los <b>cuatro avisos reales</b> de <code>RoomPage</code>; el play pausa el reloj de verdad. Cada maqueta se estira desde la esquina y tiene <b>pantalla completa</b>: ahí el mando de arriba al centro cambia de opción y de aviso, Esc sale y H lo esconde (tocar arriba al centro lo trae de vuelta).</p>
+    <p><b>3ª ronda.</b> Ninguna de las cuatro anteriores convenció, así que van tres familias: <b>cuatro toasts</b> distintos al de hoy, <b>cuatro variantes de «Bajo el reloj»</b> (la D de la ronda anterior) y <b>dos ideas nuevas</b> que usan la cuenta de la bandeja. La 2ª ronda queda en <code>toast-sala-ronda2.html</code>.</p>
+    <p>La sala es la de hoy: la fase, los números con el hilo, los controles a los costados (abajo en angosto), la bandeja y el lápiz de las notas. Los botones disparan los <b>cuatro avisos reales</b> de <code>RoomPage</code>; el play pausa el reloj. Cada maqueta se estira desde la esquina y tiene <b>pantalla completa</b>, con un mando arriba al centro para cambiar de opción y de aviso (Esc sale, H lo esconde).</p>
   </header>
 
   <div class="ajustes">
@@ -294,105 +370,37 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
     </div>
   </div>
 
-  <nav class="indice" aria-label="Opciones">
-    <a href="#hoy"><b>0</b>Hoy</a>
-    <a href="#sobrio"><b>A</b>Sobrio, sobre el asa</a>
-    <a href="#asa"><b>B</b>En el asa</a>
-    <a href="#linea"><b>C</b>Una línea bajo la barra</a>
-    <a href="#pildora"><b>D</b>Bajo el reloj</a>
-    <a href="#cierre"><b>→</b>Comparación</a>
-  </nav>
-
-  <section class="opcion" id="hoy" data-op="hoy">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">0</span> <span class="nombre">Hoy</span></h2>
-        <p class="resumen">El <code>Toaster</code> global de <code>HomeLayout</code>: abajo a la derecha, verde para lo que salió bien, rojo para los errores, con X y 4 segundos.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Ya existe y es el mismo en toda la app.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El verde no es de Doro: choca con el acento.</li><li>Tapa el lápiz de las notas.</li><li>Lejos de la bandeja, donde fue la tarea.</li><li>La X sobra en algo que se va solo.</li></ul></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="opcion" id="sobrio" data-op="sobrio">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">A</span> <span class="nombre">Sobrio, sobre el asa</span></h2>
-        <p class="resumen">Sigue siendo sonner, pero con la superficie de la app: sin verde, sin X, <b>abajo al centro, justo arriba del asa</b>, el ícono en el acento y una acción («Ver») cuando sirve.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Es solo configurar el <code>Toaster</code>: cambia en toda la app de una vez.</li><li>Sale de donde fue la tarea.</li><li>Errores en rojo solo en el ícono.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Sigue siendo una tarjeta flotando sobre la sala.</li><li>En Tareas no hay asa: ahí queda abajo al centro sin referencia.</li></ul></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="opcion" id="asa" data-op="asa">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">B</span> <span class="nombre">En el asa</span> <span class="marca-rec">Recomendada</span></h2>
-        <p class="resumen">El aviso <b>reemplaza por tres segundos el texto del asa</b> de la bandeja («Siguiente: …») y vuelve solo. No aparece nada nuevo en la sala: lo que cambia es el lugar adonde fue la tarea.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Ningún elemento nuevo flotando sobre el reloj.</li><li>Dice dónde quedó la tarea, en el mismo lugar.</li><li>El asa se enciende un momento y vuelve a desvanecerse.</li><li>Sirve igual en el home, que tiene la misma bandeja.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Hay que tocar <code>BandejaTareas</code> (un prop <code>aviso</code>).</li><li>Los errores que no son de tareas (la música) siguen en el toast: conviene darle a éste el estilo A.</li></ul></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="opcion" id="linea" data-op="linea">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">C</span> <span class="nombre">Una línea bajo la barra</span></h2>
-        <p class="resumen">La <code>LineaAviso</code> de los errores (4 · Según qué se corta): una línea centrada debajo de la barra de la sala, con el punto en el acento.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Reusa un componente que ya existe.</li><li>Mismo idioma que «Sin conexión».</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Arriba, lejos de la bandeja donde se creó la tarea.</li><li>Con el mouse quieto la barra se desvanece y la línea queda sola.</li><li>Mezcla avisos de estado («Sin conexión») con confirmaciones.</li></ul></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="opcion" id="pildora" data-op="pildora">
-    <div class="opcion-cabeza">
-      <div>
-        <h2><span class="letra">D</span> <span class="nombre">Bajo el reloj</span></h2>
-        <p class="resumen">Una píldora chica debajo de los números y los controles, que entra y se va. El aviso queda como parte del reloj.</p>
-      </div>
-      <div class="notas">
-        <div><h3>Qué gana</h3><ul><li>Imposible no verlo.</li><li>Tranquilo: sin borde ni sombra.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Compite con el reloj, que es lo único que debería estar ahí.</li><li>Un hueco fijo bajo los controles, o el reloj salta.</li></ul></div>
-      </div>
-    </div>
-  </section>
+  <nav class="indice" id="indice" aria-label="Opciones"></nav>
+  <div id="opciones"></div>
 
   <section class="cierre" id="cierre">
     <h2>Comparación</h2>
     <div class="tabla">
       <table>
-        <thead><tr><th></th><th>Cerca de la tarea</th><th>Nada nuevo flotando</th><th>Tapa algo</th><th>Cambio de código</th><th>Sirve fuera de la sala</th></tr></thead>
+        <thead><tr><th></th><th>Dónde</th><th>Tapa algo</th><th>Se ve con el reloj quieto</th><th>Cambio de código</th><th>Sirve fuera de la sala</th></tr></thead>
         <tbody>
-          <tr><td>0 · Hoy</td><td>No</td><td>No</td><td>Las notas</td><td>—</td><td>Sí</td></tr>
-          <tr><td>A · Sobrio</td><td class="si">Sí</td><td>No</td><td>Un poco el reloj</td><td>Props del <code>Toaster</code></td><td>Sí</td></tr>
-          <tr><td>B · En el asa</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Nada</td><td>Prop <code>aviso</code> en la bandeja</td><td>Home sí; Tareas usa A</td></tr>
-          <tr><td>C · Línea</td><td>No</td><td class="si">Sí</td><td class="si">Nada</td><td>Reusa <code>LineaAviso</code></td><td>Sí</td></tr>
-          <tr><td>D · Píldora</td><td>No</td><td class="si">Sí</td><td>El aire del reloj</td><td>Hueco en el reloj</td><td>No</td></tr>
+          <tr><td>T1 · Pastilla</td><td>Abajo al centro</td><td>Un poco el reloj</td><td class="si">Sí</td><td>Estilo del <code>Toaster</code></td><td class="si">Sí</td></tr>
+          <tr><td>T2 · Con el tiempo</td><td>Arriba a la derecha</td><td class="si">Nada</td><td class="si">Sí</td><td>Toast propio (<code>toast.custom</code>)</td><td class="si">Sí</td></tr>
+          <tr><td>T3 · Con el tema</td><td>Sobre el lápiz</td><td class="si">Nada</td><td class="si">Sí</td><td>Toast propio con el tema</td><td class="si">Sí</td></tr>
+          <tr><td>T4 · Isla</td><td>Arriba al centro</td><td class="si">Nada</td><td class="si">Sí</td><td>Toast propio</td><td class="si">Sí</td></tr>
+          <tr><td>D1 · Solo el texto</td><td>Bajo los controles</td><td class="si">Nada</td><td>Débil</td><td>Hueco fijo en el reloj</td><td>No</td></tr>
+          <tr><td>D2 · En la fase</td><td>Arriba del reloj</td><td class="si">Nada</td><td class="si">Sí</td><td>Prop en <code>IndicadorModo</code></td><td>No</td></tr>
+          <tr><td>D3 · Píldora con acción</td><td>Bajo los controles</td><td class="si">Nada</td><td class="si">Sí</td><td>Hueco fijo en el reloj</td><td>No</td></tr>
+          <tr><td>D4 · El punto que se abre</td><td>Bajo los controles</td><td class="si">Nada</td><td class="si">Sí</td><td>Hueco fijo en el reloj</td><td>No</td></tr>
+          <tr><td>O1 · El contador salta</td><td>La bandeja</td><td class="si">Nada</td><td>Débil</td><td>Animación en el asa</td><td>Home sí</td></tr>
+          <tr><td>O2 · En la cuenta</td><td>La bandeja</td><td class="si">Nada</td><td>Débil</td><td>Prop en <code>BandejaTareas</code></td><td>Home sí</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion">
-      <p><b>Elegiría B, con A como estilo de fondo.</b> Las confirmaciones de tareas van al asa: la tarea se crea en la bandeja y el aviso aparece ahí mismo, sin sumar nada sobre el reloj. Para todo lo demás (el error de la música, el login, Tareas) el <code>Toaster</code> pasa a la versión A, así deja de haber verde en la app.</p>
-      <pre><code>// BandejaTareas: el asa muestra el aviso tres segundos y vuelve sola
-interface AvisoAsa { id: number; texto: ReactNode; falla?: boolean; accion?: { nombre: string; onClick: () =&gt; void } }
-// RoomPage
-const [aviso, avisar] = useAvisoAsa()          // setTimeout de 3 s, se reinicia con cada aviso
-avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, accion: { nombre: "Ver", onClick: abrirBandeja } })
+      <p><b>Mis dos candidatas: D2 · En la fase y T2 · Con el tiempo.</b> D2 no agrega nada a la sala: usa el rótulo que ya está arriba del reloj, donde la vista ya está puesta, y vuelve solo a «Pomodoro». T2 es un toast de verdad pero tranquilo: arriba a la derecha, donde no hay nada, con el tiempo que le queda dibujado y una acción a mano. Si querés uno solo para toda la app (Tareas, login, música), T2; si es solo para la sala, D2, con T2 para lo demás.</p>
+      <pre><code>// D2 · IndicadorModo recibe el aviso y lo muestra en lugar del nombre de la fase
+&lt;IndicadorModo … aviso={aviso} /&gt;          // { texto: ReactNode; falla?: boolean } | null
+const [aviso, avisar] = useAvisoSala()      // 3 s y vuelve a «Pomodoro»
 
-// HomeLayout: el Toaster de fondo (A)
-&lt;Toaster position="bottom-center" duration={3000} offset="5rem"
-  toastOptions={{ unstyled: true, classNames: { toast: "flex items-center gap-2.5 rounded-[0.625rem] border bg-popover px-3.5 py-2 text-[0.84375rem] shadow-lg", icon: "text-brand", error: "[&amp;_[data-icon]]:text-destructive" } }} /&gt;</code></pre>
+// T2 · un toast propio con sonner, para toda la app
+toast.custom((id) =&gt; &lt;AvisoDoro id={id} titulo="Tarea creada" detalle="Física · se ve en la bandeja"
+  accion={{ nombre: "Ver", onClick: abrirBandeja }} /&gt;, { duration: 3500, position: "top-right" })</code></pre>
     </div>
   </section>
 </div>
@@ -422,7 +430,7 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
       <div class="centro">
         <div class="zona-cont">
           <div class="zona">
-            <button type="button" class="modo" title="Cambiar de fase"><i></i>Pomodoro</button>
+            <button type="button" class="modo" title="Cambiar de fase"><i></i><span class="modo-txt">Pomodoro</span><span class="modo-aviso" role="status"></span></button>
             <div class="ctl izq">
               <button type="button" aria-label="Compartir la sala" title="Compartir"><svg class="ic"><use href="#i-compartir"/></svg></button>
               <button type="button" aria-label="Música" title="Música"><svg class="ic"><use href="#i-musica"/></svg></button>
@@ -441,12 +449,11 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
             </div>
           </div>
         </div>
-        <div class="pildora-lugar" hidden></div>
+        <div class="lugar-d" role="status" hidden></div>
       </div>
       <aside class="bandeja" aria-label="Tareas">
         <div class="asa">
-          <div class="normal"><span class="texto"><span class="tenue">Siguiente:</span> <b>Informe de laboratorio</b><span class="tenue"> · mañana</span></span><span class="cuenta">4 pendientes <svg class="ic"><use href="#i-arriba"/></svg></span></div>
-          <div class="aviso"><span class="lado"></span></div>
+          <div class="normal"><span class="texto"><span class="tenue">Siguiente:</span> <b>Informe de laboratorio</b><span class="tenue"> · mañana</span></span><span class="lado-der"><span class="cuenta"><span><span class="num">4</span> pendientes</span><svg class="ic"><use href="#i-arriba"/></svg></span><span class="msg" role="status"></span></span></div>
         </div>
       </aside>
       <button type="button" class="notas-asa" aria-label="Notas de la sesión"><svg class="ic"><use href="#i-lapiz"/></svg></button>
@@ -475,17 +482,84 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
   try { guardado = localStorage.getItem('toast-sala-tema'); } catch {}
   ponerTema(TEMAS.includes(guardado) ? guardado : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // Los cuatro avisos de RoomPage, con el texto de hoy
+  // Los cuatro avisos de RoomPage, con el texto de hoy y lo que pide cada variante
   const AVISOS = {
-    crear: { html: 'Tarea creada en <b>Física</b>', plano: 'Tarea creada en Física', icono: 'tarea', accion: 'Ver', corto: 'Crear' },
-    hecha: { html: 'Hecha. Volvés a <b>Informe de laboratorio</b>', plano: 'Hecha. Volvés a Informe de laboratorio', icono: 'ok', corto: 'Hecha' },
-    lista: { html: '<b>Informe</b> listo para entregar', plano: 'Informe listo para entregar', icono: 'ok', corto: 'Informe' },
-    falla: { html: 'No se pudo guardar el cambio', plano: 'No se pudo guardar el cambio', icono: 'falla', accion: 'Reintentar', falla: true, corto: 'Falla' },
+    crear: { html: 'Tarea creada en <b>Física</b>', plano: 'Tarea creada en Física', icono: 'tarea', accion: 'Ver', corto: 'Crear',
+             titulo: 'Tarea creada', sub: 'Física · ya está en la bandeja', rotulo: 'Física', msg: '+1 en Física', delta: 1 },
+    hecha: { html: 'Hecha. Volvés a <b>Informe de laboratorio</b>', plano: 'Hecha. Volvés a Informe de laboratorio', icono: 'ok', corto: 'Hecha',
+             titulo: 'Hecha', sub: 'Volvés a Informe de laboratorio', rotulo: 'Física · hecha', msg: 'Una menos', delta: -1 },
+    lista: { html: '<b>Informe</b> listo para entregar', plano: 'Informe listo para entregar', icono: 'ok', corto: 'Informe',
+             titulo: 'Informe listo', sub: 'Están todos los puntos. Falta entregarlo.', rotulo: 'Informe', msg: 'Informe listo', delta: 0 },
+    falla: { html: 'No se pudo guardar el cambio', plano: 'No se pudo guardar el cambio', icono: 'falla', accion: 'Reintentar', falla: true, corto: 'Falla',
+             titulo: 'No se pudo guardar', sub: 'Revisá la conexión y probá de nuevo.', rotulo: 'Sin guardar', msg: 'No se guardó', delta: 0 },
   };
-  const DURA = 3000;
-  const maquetas = new Map();
+  const DURA = 3200;
 
+  const GRUPOS = { hoy: 'Para comparar', t: 'Toasts', d: 'Bajo el reloj', o: 'Otras ideas' };
+  const OPCIONES = [
+    { id: 'hoy', letra: '0', nombre: 'Hoy', grupo: 'hoy',
+      resumen: 'El <code>Toaster</code> global de <code>HomeLayout</code>: verde con <code>richColors</code>, abajo a la derecha, con X y 4 segundos. Queda para comparar.',
+      gana: ['Ya existe y es el mismo en toda la app.'], pierde: ['El verde no es de Doro.', 'Tapa el lápiz de las notas.', 'La X sobra en algo que se va solo.'] },
+    { id: 't1', letra: 'T1', nombre: 'Pastilla', grupo: 't',
+      resumen: 'Una pastilla <b>en el color del texto</b> (oscura en claro, clara en oscuro), abajo al centro sobre el asa. Un ícono, una línea y la acción.',
+      gana: ['Se ve en cualquier tema sin color nuevo.', 'Corta y firme: se lee de reojo.', 'Es configurar el <code>Toaster</code>.'], pierde: ['Es el elemento más fuerte de la pantalla por 3 s.', 'Flota sobre la sala.'] },
+    { id: 't2', letra: 'T2', nombre: 'Con el tiempo', grupo: 't', rec: true,
+      resumen: 'Una tarjeta <b>arriba a la derecha</b>, bajo los avatares, con título y detalle. Una raya fina abajo <b>muestra cuánto le queda</b> antes de irse.',
+      gana: ['Ocupa el único rincón vacío de la sala.', 'Dos renglones: qué pasó y dónde.', 'La raya dice que se va sola, sin X.', 'Sirve igual en Tareas y en el login.'], pierde: ['Lejos de la bandeja.', 'Más alta que un toast de una línea.'] },
+    { id: 't3', letra: 'T3', nombre: 'Con el tema', grupo: 't',
+      resumen: 'Sale <b>sobre el lápiz de las notas</b>, sin taparlo, con el ícono del tema en un cuadrado y el tema como rótulo. Si llegan dos, se apilan.',
+      gana: ['Dice en qué tema quedó la tarea, con su ícono.', 'No tapa nada de lo que se usa.'], pierde: ['Más grande que los demás.', 'Para los errores no hay tema: queda genérico.'] },
+    { id: 't4', letra: 'T4', nombre: 'Isla', grupo: 't',
+      resumen: 'Una píldora <b>nace en el centro de la barra</b>, entre «Salir» y los avatares, se abre con el mensaje y se vuelve a cerrar. En angosto baja debajo de la barra.',
+      gana: ['Un lugar que siempre está libre.', 'El movimiento de abrir y cerrar es claro.'], pierde: ['Arriba, lejos de donde se creó la tarea.', 'Con el mouse quieto la barra se apaga y la isla se nota de más.'] },
+    { id: 'd1', letra: 'D1', nombre: 'Solo el texto', grupo: 'd',
+      resumen: 'Debajo de los controles, <b>sin fondo ni borde</b>: un punto en el acento y la frase en gris, con la acción subrayada.',
+      gana: ['Lo más tranquilo posible.', 'No compite con los números.'], pierde: ['Con el reloj quieto puede pasar de largo.', 'Necesita un hueco fijo bajo los controles.'] },
+    { id: 'd2', letra: 'D2', nombre: 'En la fase', grupo: 'd', rec: true,
+      resumen: '<b>El rótulo de arriba del reloj</b> («● POMODORO») cambia por el aviso tres segundos y vuelve. El punto toma el color del aviso.',
+      gana: ['No agrega nada: usa un lugar que ya existe.', 'Está justo donde está la vista.', 'Sin hueco nuevo: el reloj no se mueve.'], pierde: ['El rótulo también es un botón (cambia de fase): mientras dura el aviso, conviene que no lo sea.', 'Una línea sola: textos largos se cortan.'] },
+    { id: 'd3', letra: 'D3', nombre: 'Píldora con acción', grupo: 'd',
+      resumen: 'La píldora de la ronda anterior con <b>ícono y botón</b> («Ver», «Reintentar»), borde fino y un poco de vidrio.',
+      gana: ['La acción queda a mano.', 'Se ve sin gritar.'], pierde: ['Un hueco fijo bajo los controles.', 'Compite un poco con el reloj.'] },
+    { id: 'd4', letra: 'D4', nombre: 'El punto que se abre', grupo: 'd',
+      resumen: 'Bajo los controles aparece <b>un punto en el acento</b>, se abre en una píldora con el mensaje y se vuelve a cerrar en punto antes de irse.',
+      gana: ['El movimiento llama la atención una vez y se va.', 'Mismo punto que la fase: es del reloj.'], pierde: ['Acento lleno: es lo más vistoso.', 'Sin lugar para una acción.'] },
+    { id: 'o1', letra: 'O1', nombre: 'El contador salta', grupo: 'o',
+      resumen: 'Sin texto: <b>un punto viaja del reloj a la bandeja</b> y la cuenta del asa salta de 4 a 5 (o baja al marcar hecha). Los errores sí van con la pastilla (T1).',
+      gana: ['Nada para leer: se entiende con el movimiento.', 'Muestra dónde quedó la tarea.'], pierde: ['No dice en qué tema.', 'El informe listo no cambia la cuenta: solo un golpecito.'] },
+    { id: 'o2', letra: 'O2', nombre: 'En la cuenta', grupo: 'o',
+      resumen: 'El asa sigue diciendo «Siguiente: …», pero <b>la cuenta de la derecha</b> («4 pendientes») cambia por el aviso corto («+1 en Física») y vuelve.',
+      gana: ['Mínimo: cambia una palabra.', 'Lo siguiente no se mueve.'], pierde: ['Muy chico: con la bandeja desvanecida puede no verse.', 'Solo entra un mensaje corto.'] },
+  ];
+
+  // Arma el índice y las secciones
+  const indice = document.getElementById('indice');
+  const contenedor = document.getElementById('opciones');
+  let grupoPrevio = null;
+  OPCIONES.forEach((o) => {
+    indice.insertAdjacentHTML('beforeend', `<a href="#${o.id}"><b>${o.letra}</b>${o.nombre}</a>`);
+    if (o.grupo !== grupoPrevio) { contenedor.insertAdjacentHTML('beforeend', `<p class="grupo-titulo">${GRUPOS[o.grupo]}</p>`); grupoPrevio = o.grupo; }
+    contenedor.insertAdjacentHTML('beforeend', `
+      <section class="opcion" id="${o.id}" data-op="${o.id}">
+        <div class="opcion-cabeza">
+          <div>
+            <h2><span class="letra">${o.letra}</span> <span class="nombre">${o.nombre}</span>${o.rec ? ' <span class="marca-rec">Candidata</span>' : ''}</h2>
+            <p class="resumen">${o.resumen}</p>
+          </div>
+          <div class="notas">
+            <div><h3>Qué gana</h3><ul>${o.gana.map((g) => `<li>${g}</li>`).join('')}</ul></div>
+            <div><h3>Qué pierde</h3><ul>${o.pierde.map((g) => `<li>${g}</li>`).join('')}</ul></div>
+          </div>
+        </div>
+      </section>`);
+  });
+  indice.insertAdjacentHTML('beforeend', '<a href="#cierre"><b>→</b>Comparación</a>');
+
+  const maquetas = new Map();
+  let actual = null, mando = null;
   const molde = document.getElementById('t-sala');
+  const sacar = (el, despues = 400) => { if (!el) return; el.classList.add('sale'); setTimeout(() => el.remove(), despues); };
+
   document.querySelectorAll('.opcion[data-op]').forEach((sec) => {
     const op = sec.dataset.op;
     sec.appendChild(molde.content.cloneNode(true));
@@ -493,16 +567,20 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
     const sala = sec.querySelector('.sala');
     const medida = sec.querySelector('.medida');
     const bandeja = sec.querySelector('.bandeja');
-    const ladoAviso = sec.querySelector('.asa .aviso');
-    const lugarPildora = sec.querySelector('.pildora-lugar');
+    const asa = sec.querySelector('.asa');
+    const num = sec.querySelector('.asa .num');
+    const msg = sec.querySelector('.asa .msg');
+    const modo = sec.querySelector('.modo');
+    const modoAviso = sec.querySelector('.modo-aviso');
+    const lugarD = sec.querySelector('.lugar-d');
     const hilo = sec.querySelector('.hilo i');
-    if (op === 'pildora') lugarPildora.hidden = false;
+    if (op.startsWith('d') && op !== 'd2') lugarD.hidden = false;
 
     // Tamaño en vivo y presets
     new ResizeObserver(() => {
       const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
       medida.textContent = t;
-      if (actual === sec) mando.querySelector('.medida').textContent = t;
+      if (actual === sec && mando) mando.querySelector('.medida').textContent = t;
     }).observe(marco);
     sec.querySelectorAll('.presets button').forEach((b) => b.addEventListener('click', () => {
       marco.style.width = Math.min(+b.dataset.ancho, marco.parentElement.clientWidth) + 'px';
@@ -518,16 +596,14 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
       const texto = String(valor).padStart(2, '0');
       const viejo = previo[clave];
       if (texto === viejo) return;
-      if (!viejo) { ranuras[clave].innerHTML = [...texto].map((d) => `<span class="d">${d}</span>`).join(''); }
-      else {
-        [...texto].forEach((d, i) => {
-          if (d === viejo[i]) return;
-          const nuevo = document.createElement('span');
-          nuevo.className = 'd' + (animar ? ' entra' : '');
-          nuevo.textContent = d;
-          ranuras[clave].children[i].replaceWith(nuevo);
-        });
-      }
+      if (!viejo) ranuras[clave].innerHTML = [...texto].map((d) => `<span class="d">${d}</span>`).join('');
+      else [...texto].forEach((d, i) => {
+        if (d === viejo[i]) return;
+        const nuevo = document.createElement('span');
+        nuevo.className = 'd' + (animar ? ' entra' : '');
+        nuevo.textContent = d;
+        ranuras[clave].children[i].replaceWith(nuevo);
+      });
       previo[clave] = texto;
     };
     const pintar = (animar = true) => {
@@ -546,74 +622,139 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
     });
     sec.querySelector('[aria-label="Reiniciar el reloj"]').addEventListener('click', () => { resta = TOTAL; pintar(); });
 
-    let reloj = 0, actualAviso = null;
-    const sacar = (el, despues = 400) => { if (!el) return; el.classList.add('sale'); setTimeout(() => el.remove(), despues); };
+    let reloj = 0, otroReloj = 0, actualAviso = null, pendientes = 4;
+    const ponerCuenta = (delta) => {
+      if (!delta) return;
+      pendientes = Math.max(0, pendientes + delta);
+      num.textContent = pendientes;
+      num.classList.remove('salta'); void num.offsetWidth; num.classList.add('salta');
+    };
+    const accionHtml = (a, clase = 'accion') => a.accion ? `<button type="button" class="${clase}">${a.accion}</button>` : '';
+    const pastilla = (a) => {
+      sacar(actualAviso, 300);
+      const t = document.createElement('div');
+      t.className = 't1' + (a.falla ? ' falla' : '');
+      t.setAttribute('role', 'status');
+      t.innerHTML = `${ic(a.icono)}<span class="txt">${a.html}</span>${accionHtml(a)}`;
+      sala.appendChild(t); actualAviso = t;
+      reloj = setTimeout(() => sacar(t, 300), DURA);
+    };
 
     const mostrar = (clave) => {
       const a = AVISOS[clave];
-      clearTimeout(reloj);
-      if (op === 'hoy') {
-        const pila = sala.querySelector('.sonner-pila') || sala.appendChild(Object.assign(document.createElement('div'), { className: 'sonner-pila' }));
-        const t = document.createElement('div');
-        t.className = 'sonner ' + (a.falla ? 'falla' : (clave === 'crear' ? 'exito' : ''));
-        t.setAttribute('role', 'status');
-        t.innerHTML = `<button type="button" class="x" aria-label="Cerrar">${ic('x')}</button>${clave === 'crear' || a.falla ? ic(a.falla ? 'falla' : 'ok') : ''}<span>${a.plano}</span>`;
-        t.querySelector('.x').addEventListener('click', () => sacar(t));
-        pila.appendChild(t);
-        // sonner apila: los de atrás se achican
-        [...pila.children].reverse().forEach((el, i) => { el.style.transform = i ? `translateY(-${i * 14}px) scale(${1 - i * 0.05})` : ''; el.style.zIndex = 10 - i; });
-        setTimeout(() => sacar(t), 4000);
-        return;
-      }
-      if (op === 'sobrio') {
-        sacar(actualAviso, 300);
-        const t = document.createElement('div');
-        t.className = 'sobrio' + (a.falla ? ' falla' : '');
-        t.setAttribute('role', 'status');
-        t.innerHTML = `${ic(a.icono)}<span class="txt">${a.html}</span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
-        sala.appendChild(t); actualAviso = t;
-        reloj = setTimeout(() => sacar(t, 300), DURA);
-        return;
-      }
-      if (op === 'asa') {
-        ladoAviso.className = 'aviso' + (a.falla ? ' falla' : '');
-        ladoAviso.setAttribute('role', 'status');
-        ladoAviso.innerHTML = `<span class="lado">${ic(a.icono)}<span class="texto">${a.html}</span></span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
-        bandeja.dataset.aviso = a.falla ? 'falla' : 'ok';
-        reloj = setTimeout(() => { delete bandeja.dataset.aviso; }, DURA);
-        return;
-      }
-      if (op === 'linea') {
-        sacar(actualAviso, 300);
-        const t = document.createElement('div');
-        t.className = 'linea' + (a.falla ? ' falla' : '');
-        t.setAttribute('role', 'status');
-        t.innerHTML = `<i></i><span>${a.html}</span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
-        sala.appendChild(t); actualAviso = t;
-        reloj = setTimeout(() => sacar(t), DURA);
-        return;
-      }
-      if (op === 'pildora') {
-        lugarPildora.replaceChildren();
-        const t = document.createElement('span');
-        t.className = 'pildora' + (a.falla ? ' falla' : '');
-        t.setAttribute('role', 'status');
-        t.innerHTML = `<i></i><span class="txt">${a.plano}</span>`;
-        lugarPildora.appendChild(t);
-        reloj = setTimeout(() => sacar(t, 350), DURA);
+      clearTimeout(reloj); clearTimeout(otroReloj);
+      switch (op) {
+        case 'hoy': {
+          const pila = sala.querySelector('.sonner-pila') || sala.appendChild(Object.assign(document.createElement('div'), { className: 'sonner-pila' }));
+          const t = document.createElement('div');
+          t.className = 'sonner ' + (a.falla ? 'falla' : (clave === 'crear' ? 'exito' : ''));
+          t.setAttribute('role', 'status');
+          t.innerHTML = `<button type="button" class="x" aria-label="Cerrar">${ic('x')}</button>${clave === 'crear' || a.falla ? ic(a.falla ? 'falla' : 'ok') : ''}<span>${a.plano}</span>`;
+          t.querySelector('.x').addEventListener('click', () => sacar(t));
+          pila.appendChild(t);
+          [...pila.children].reverse().forEach((el, i) => { el.style.transform = i ? `translateY(-${i * 14}px) scale(${1 - i * 0.05})` : ''; el.style.zIndex = 10 - i; });
+          setTimeout(() => sacar(t), 4000);
+          return;
+        }
+        case 't1': return pastilla(a);
+        case 't2': {
+          sacar(actualAviso, 300);
+          const t = document.createElement('div');
+          t.className = 't2' + (a.falla ? ' falla' : '');
+          t.setAttribute('role', 'status');
+          t.style.setProperty('--dura', (DURA + 300) + 'ms');
+          t.innerHTML = `${ic(a.icono)}<span class="titulo">${a.titulo}</span>${accionHtml(a)}<span class="sub">${a.sub}</span><span class="resta"></span>`;
+          sala.appendChild(t); actualAviso = t;
+          reloj = setTimeout(() => sacar(t, 300), DURA + 300);
+          return;
+        }
+        case 't3': {
+          const pila = sala.querySelector('.t3-pila') || sala.appendChild(Object.assign(document.createElement('div'), { className: 't3-pila' }));
+          while (pila.children.length >= 2) pila.firstElementChild.remove();
+          const t = document.createElement('div');
+          t.className = 't3' + (a.falla ? ' falla' : '');
+          t.setAttribute('role', 'status');
+          t.innerHTML = `<span class="cuadro">${ic(a.falla ? 'falla' : 'libro')}</span><span class="renglones"><span class="rotulo">${a.rotulo}</span><span class="txt">${a.html}</span></span>${accionHtml(a)}`;
+          pila.appendChild(t);
+          setTimeout(() => sacar(t, 300), DURA);
+          return;
+        }
+        case 't4': {
+          sacar(actualAviso, 300);
+          const t = document.createElement('div');
+          t.className = 't4' + (a.falla ? ' falla' : '');
+          t.setAttribute('role', 'status');
+          t.innerHTML = `${ic(a.icono)}<span class="txt">${a.html}</span>`;
+          sala.appendChild(t); actualAviso = t;
+          reloj = setTimeout(() => sacar(t, 450), DURA);
+          return;
+        }
+        case 'd1': case 'd3': case 'd4': {
+          lugarD.replaceChildren();
+          const t = document.createElement('span');
+          if (op === 'd1') { t.className = 'd1' + (a.falla ? ' falla' : ''); t.innerHTML = `<i></i><span class="txt">${a.html}</span>${accionHtml(a)}`; }
+          if (op === 'd3') { t.className = 'd3' + (a.falla ? ' falla' : '') + (a.accion ? '' : ' sin-accion'); t.innerHTML = `${ic(a.icono)}<span class="txt">${a.html}</span>${accionHtml(a)}`; }
+          if (op === 'd4') {
+            t.className = 'd4' + (a.falla ? ' falla' : '');
+            t.innerHTML = `<span class="txt">${a.html}</span>`;
+            setTimeout(() => t.classList.add('abierta'), 320);
+            otroReloj = setTimeout(() => t.classList.remove('abierta'), DURA - 500);
+          }
+          lugarD.appendChild(t);
+          reloj = setTimeout(() => sacar(t, 350), DURA + (op === 'd4' ? 200 : 0));
+          return;
+        }
+        case 'd2': {
+          modoAviso.innerHTML = a.html;
+          modo.dataset.aviso = a.falla ? 'falla' : 'ok';
+          reloj = setTimeout(() => { delete modo.dataset.aviso; }, DURA);
+          return;
+        }
+        case 'o1': {
+          if (a.falla) return pastilla(a);
+          // Un punto viaja del reloj a la cuenta del asa, y la cuenta salta
+          const base = sala.getBoundingClientRect();
+          const desde = sec.querySelector('.digital').getBoundingClientRect();
+          const hasta = num.getBoundingClientRect();
+          const v = document.createElement('span');
+          v.className = 'viajero';
+          const ida = a.delta >= 0;
+          const [x0, y0] = ida ? [desde.left + desde.width / 2, desde.bottom] : [hasta.left + hasta.width / 2, hasta.top + hasta.height / 2];
+          const [x1, y1] = ida ? [hasta.left + hasta.width / 2, hasta.top + hasta.height / 2] : [desde.left + desde.width / 2, desde.bottom];
+          v.style.left = (x0 - base.left) + 'px'; v.style.top = (y0 - base.top) + 'px';
+          sala.appendChild(v);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            v.style.left = (x1 - base.left) + 'px'; v.style.top = (y1 - base.top) + 'px'; v.style.opacity = '0'; v.style.scale = ida ? '.6' : '1.4';
+          }));
+          setTimeout(() => {
+            v.remove();
+            if (a.delta) ponerCuenta(a.delta);
+            bandeja.removeAttribute('data-golpe'); void bandeja.offsetWidth; bandeja.setAttribute('data-golpe', '');
+            otroReloj = setTimeout(() => bandeja.removeAttribute('data-golpe'), 1600);
+          }, 700);
+          return;
+        }
+        case 'o2': {
+          msg.textContent = a.msg;
+          msg.className = 'msg' + (a.falla ? ' falla' : '');
+          asa.dataset.msg = '';
+          if (a.delta) ponerCuenta(a.delta);
+          reloj = setTimeout(() => { delete asa.dataset.msg; }, DURA);
+          return;
+        }
       }
     };
     maquetas.set(sec, mostrar);
     sec.querySelectorAll('.disparos [data-aviso]').forEach((b) => b.addEventListener('click', () => mostrar(b.dataset.aviso)));
     sec.querySelector('[data-completa]').addEventListener('click', () => abrirCompleta(sec));
-    // Estado inicial: cada maqueta arranca mostrando el aviso de «crear»
-    setTimeout(() => mostrar('crear'), 600);
+    // Estado inicial: cada maqueta muestra el aviso de «crear» al llegar
+    setTimeout(() => mostrar('crear'), 700);
   });
 
   /* ── Pantalla completa: el marco ocupa la ventana y un mando chico arriba al centro, sin tapar la bandeja ── */
   const opciones = [...maquetas.keys()];
-  let actual = null, mandoOculto = false;
-  const mando = document.createElement('div');
+  let mandoOculto = false;
+  mando = document.createElement('div');
   mando.className = 'mando'; mando.hidden = true;
   mando.setAttribute('role', 'toolbar'); mando.setAttribute('aria-label', 'Pantalla completa');
   mando.innerHTML = opciones.map((op) => {
@@ -638,6 +779,7 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
     mando.querySelectorAll('[data-ir]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.ir === op.id)));
     const m = op.querySelector('.marco');
     mando.querySelector('.medida').textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+    setTimeout(() => maquetas.get(op)('crear'), 250);
   }
   function abrirCompleta(op) {
     raiz.classList.add('en-completa');
