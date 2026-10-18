@@ -92,6 +92,24 @@
         ],
         "createdAt": "2026-10-18T18:36:15.092Z",
         "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); contraste revisado en una captura en claro."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "bocetos/toast-sala.html"
+        ],
+        "createdAt": "2026-10-18T18:36:56.681Z",
+        "reason": "Claude: copia fiel de LineaAviso (línea con borde inferior sin padding lateral, como en la app) y botones de texto sin fondo en el asa."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "bocetos/compartir.html"
+        ],
+        "createdAt": "2026-10-18T18:36:56.691Z",
+        "reason": "Claude: imitaciones de las tarjetas de WhatsApp y Discord (imagen al borde de la tarjeta, como las muestran esas apps) y la og:image a sangre."
       }
     ]
   }
