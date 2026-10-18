@@ -39,7 +39,9 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
 3. ~~**Título de la pestaña: «Doro - Pomodoro».**~~ ✅ 2026-10-18 (solo `<title>`; el
    `og:title` va con el punto 4). *(nota de Leo)* Hoy es «Doro · Pomodoro
    para estudiar, solo o con amigos» (`index.html:12`, y `og:title`).
-4. **Descripción e imagen al compartir.** *(nota de Leo)* `og:description`,
+4. ~~**Descripción e imagen al compartir.**~~ ✅ 2026-10-18: elegida **B · La sala, en
+   oscuro**, exportada a `public/compartir.png` (1200 × 630) desde el boceto; `og:*` y
+   `description` nuevos en `index.html`. *(nota de Leo)* `og:description`,
    `twitter:*`, `description` y `og:image` (`/Home.png`) en `index.html`. Falta definir el
    texto y la imagen nueva (1200×630); conviene bocetar la imagen.
    🖍️ 2026-10-18: boceto `bocetos/compartir.html`
