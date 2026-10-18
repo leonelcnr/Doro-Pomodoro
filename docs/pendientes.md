@@ -42,6 +42,8 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
 4. **Descripción e imagen al compartir.** *(nota de Leo)* `og:description`,
    `twitter:*`, `description` y `og:image` (`/Home.png`) en `index.html`. Falta definir el
    texto y la imagen nueva (1200×630); conviene bocetar la imagen.
+   🖍️ 2026-10-18: boceto `bocetos/compartir.html`
+   (https://claude.ai/artifact/4PA81RsJzZonVdFchJR9kM), esperando elección.
 5. ~~**El anónimo aparece como «Usuario».**~~ ✅ 2026-10-18: la presencia usa
    `usuario.name` (el apodo del anónimo o el nombre de la cuenta); se cambia desde el
    menú de la cuenta, que ahora también está en la sala (punto 7). `usePresenciaSala.ts:45` arma el nombre con el
@@ -51,6 +53,8 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
    `RoomPage.tsx:134-160` («Tarea creada en *tema*», «Hecha. Volvés a…», «Informe listo
    para entregar») con el `Toaster` global de `HomeLayout.tsx`. Bocetar antes: puede
    ser otro estilo del `Toaster` o un aviso propio de la sala (p. ej. `LineaAviso`).
+   🖍️ 2026-10-18: boceto `bocetos/toast-sala.html`
+   (https://claude.ai/artifact/1mFhYtzyhci7tNBX4p6Hxp), esperando elección.
 7. ~~**Ajustes del home dentro de la sala.**~~ ✅ 2026-10-18: `MenuCuentaApp` (el menú
    conectado) lo usan `EncabezadoApp` y la sala; en `CabeceraSala` tu avatar va último,
    fuera de la pila, y abre el menú. *(nota de Leo)* Al tocar la foto de usuario en

@@ -74,6 +74,24 @@
         ],
         "createdAt": "2026-10-08T03:02:29.395Z",
         "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); textos con --fg/--tenue y blanco sobre --brand-strong."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/toast-sala.html"
+        ],
+        "createdAt": "2026-10-18T18:34:01.124Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); el asa al 45 % copia el fade «Queda el asa» de la app."
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "bocetos/compartir.html"
+        ],
+        "createdAt": "2026-10-18T18:36:15.092Z",
+        "reason": "Claude: el scanner cruza los tokens del tema oscuro con el fondo claro (mismo falso positivo que en los otros bocetos); contraste revisado en una captura en claro."
       }
     ]
   }
