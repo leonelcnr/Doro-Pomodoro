@@ -34,7 +34,7 @@ Fuentes HTML de los bocetos publicados como Artifact. Se abren directo en el nav
 | `errores.html` | Errores y vacíos (404, algo se trabó, sin conexión, sala que no está, vacíos de Tareas, Dashboard y bandeja), **aprobado** (2026-10-06): 4 · Según qué se corta; 2ª ronda con los vacíos sobre las pantallas aprobadas. 1 a 3 quedan como referencia. | https://claude.ai/artifact/63CSJ5pWGe59DSRqai98tV |
 | `reloj-flotante.html` | Reloj flotante (Document PiP), **aprobado** (2026-10-06): 6 · Un poco más grande, la ventana de hoy con Geist y el acento. 5 y 7 quedan como referencia. | https://claude.ai/artifact/4HJ5JfVQQSLfVEaJHcUzzc |
 | `reloj-flotante-ronda1.html` | Reloj flotante, 1ª ronda (1 La sala en chico, 2 Solo los números, 3 El anillo, 4 Crece con la ventana), guardada como referencia. | — |
-| `toast-sala.html` | Avisos de la sala, 1ª ronda: 0 Hoy (sonner verde), A Sobrio sobre el asa, B En el asa (recomendada), C Una línea bajo la barra, D Bajo el reloj. | https://claude.ai/artifact/1mFhYtzyhci7tNBX4p6Hxp |
+| `toast-sala.html` | Avisos de la sala, 2ª ronda (el reloj y los controles como están hechos, pantalla completa): 0 Hoy (sonner verde), A Sobrio sobre el asa, B En el asa (recomendada), C Una línea bajo la barra, D Bajo el reloj. | https://claude.ai/artifact/1mFhYtzyhci7tNBX4p6Hxp |
 | `compartir.html` | Vista previa al compartir (og:image 1200 × 630 y texto), **elegida B · La sala, en oscuro** (2026-10-18), exportada a `public/compartir.png`. A El reloj y C El anillo quedan como referencia. | https://claude.ai/artifact/4PA81RsJzZonVdFchJR9kM |
 | `primary-violeta-zinc.html` | `--primary`: violeta de hoy, violeta unificado y zinc (Fase 2 del plan). | https://claude.ai/artifact/U46oemu9pANPzBVX1nAfEd |
 

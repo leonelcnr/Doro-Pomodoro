@@ -4,9 +4,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Avisos de la sala, primera ronda. Hoy: el toast de sonner con richColors abajo a la
-   derecha. Cuatro reemplazos sobre la sala real (reloj, bandeja T43, notas). Tokens de
-   index.css: violeta profundo (289), temas Claro, Oscuro y Negro. */
+/* Avisos de la sala, 2ª ronda. Hoy: el toast de sonner con richColors abajo a la
+   derecha. Cuatro reemplazos sobre la sala tal como está hecha (TimerDisplay,
+   RelojDigital, IndicadorModo, ControlesTimer, BandejaTareas, BandejaNotas,
+   CabeceraSala). Tokens de index.css: violeta profundo (289), Claro, Oscuro y Negro. */
 :root {
   --bg: oklch(1 0 0);
   --superficie: oklch(1 0 0);
@@ -16,6 +17,7 @@
   --campo: oklch(0.967 0.001 286.4);
   --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 10px 28px -14px oklch(0.2 0.01 285 / 0.2);
   --acento: oklch(0.52 0.25 289);
+  --acento-fuerte: oklch(0.48 0.26 289);
   --acento-fg: oklch(0.985 0 0);
   --error: oklch(0.577 0.245 27.3);
   --verde-fondo: oklch(0.962 0.044 156.7);
@@ -29,7 +31,7 @@
     --bg: oklch(0.141 0.005 285.8); --superficie: oklch(0.21 0.006 285.9); --fg: oklch(0.985 0 0);
     --tenue: oklch(0.705 0.015 286.1); --linea: oklch(1 0 0 / 10%); --campo: oklch(0.274 0.006 286);
     --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 14px 34px -16px oklch(0 0 0 / 0.7);
-    --acento: oklch(0.63 0.22 289); --error: oklch(0.704 0.191 22.2);
+    --acento: oklch(0.63 0.22 289); --acento-fuerte: oklch(0.52 0.25 289); --error: oklch(0.704 0.191 22.2);
     --verde-fondo: oklch(0.26 0.06 155); --verde-texto: oklch(0.86 0.1 155); --verde-borde: oklch(0.34 0.08 155);
     color-scheme: dark;
   }
@@ -38,7 +40,7 @@
   --bg: oklch(0.141 0.005 285.8); --superficie: oklch(0.21 0.006 285.9); --fg: oklch(0.985 0 0);
   --tenue: oklch(0.705 0.015 286.1); --linea: oklch(1 0 0 / 10%); --campo: oklch(0.274 0.006 286);
   --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 14px 34px -16px oklch(0 0 0 / 0.7);
-  --acento: oklch(0.63 0.22 289); --error: oklch(0.704 0.191 22.2);
+  --acento: oklch(0.63 0.22 289); --acento-fuerte: oklch(0.52 0.25 289); --error: oklch(0.704 0.191 22.2);
   --verde-fondo: oklch(0.26 0.06 155); --verde-texto: oklch(0.86 0.1 155); --verde-borde: oklch(0.34 0.08 155);
   color-scheme: dark;
 }
@@ -51,6 +53,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-
 :focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
 button { font: inherit; color: inherit; cursor: pointer; }
 code { font-size: .88em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+.ic { width: 1em; height: 1em; flex-shrink: 0; }
 
 /* ───────── Página ───────── */
 .pagina { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 96px; }
@@ -87,73 +90,120 @@ h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.
 
 .barra-marco { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--tenue); }
 .grupo { display: inline-flex; flex-wrap: wrap; gap: 4px; }
-.grupo button { border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
+.grupo button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linea); background: var(--superficie); border-radius: 6px; padding: 4px 10px; font-size: 12.5px; color: var(--tenue); }
 .grupo button:hover { color: var(--fg); border-color: var(--tenue); }
-.grupo.disparos button { color: var(--fg); }
+.grupo.disparos button, .btn-completa { color: var(--fg); }
+.btn-completa .ic { font-size: 14px; }
 .medida { font-variant-numeric: tabular-nums; color: var(--fg); }
 
-.marco { resize: both; overflow: hidden; width: 100%; max-width: 100%; height: 620px; min-width: 320px; min-height: 420px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
+.marco { resize: both; overflow: hidden; width: 100%; max-width: 100%; height: 640px; min-width: 320px; min-height: 440px; border: 1px solid var(--linea); border-radius: 12px; background: var(--bg); }
 @media (max-width: 400px) { .marco { min-width: 0; } }
 
-/* ───────── Maqueta de la sala ───────── */
-.sala { container: sala / inline-size; position: relative; height: 100%; background: var(--bg); display: flex; flex-direction: column; overflow: hidden; }
-.sala-barra { display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 12px 0 10px; flex-shrink: 0; }
+/* ───────── Pantalla completa ───────── */
+html.en-completa, html.en-completa body { overflow: hidden; }
+.opcion.completa .marco { position: fixed; inset: 0; z-index: 100; width: 100% !important; height: 100% !important; max-width: none; border: 0; border-radius: 0; resize: none; }
+.mando { position: fixed; z-index: 110; left: 50%; transform: translateX(-50%); top: calc(8px + env(safe-area-inset-top, 0px)); display: flex; justify-content: center; align-items: center; gap: 2px; padding: 5px; flex-wrap: wrap; max-width: calc(100% - 32px); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); font-size: 12.5px; color: var(--tenue); }
+.mando[hidden] { display: none; }
+.mando button { border: 0; background: none; height: 30px; min-width: 30px; padding: 0 8px; border-radius: 6px; color: var(--tenue); display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; font-size: 12.5px; }
+.mando button:hover { background: var(--campo); color: var(--fg); }
+.mando button[aria-current="true"] { background: var(--acento-fuerte); color: var(--acento-fg); }
+.mando .ic { font-size: 15px; }
+.mando .sep { width: 1px; height: 18px; background: var(--linea); margin: 0 4px; }
+.mando .medida { padding: 0 6px; }
+@media (max-width: 760px) { .mando .medida, .mando .txt-largo { display: none; } }
+.mando-volver { position: fixed; z-index: 110; left: 50%; top: 0; width: 160px; margin-left: -80px; height: 40px; border: 0; background: none; padding: 0; opacity: 0; cursor: default; }
+.mando-volver[hidden] { display: none; }
+
+/* ───────── Maqueta de la sala (como está hecha) ───────── */
+.sala { container: sala / inline-size; position: relative; height: 100%; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; overflow: hidden; }
+
+/* CabeceraSala */
+.sala-barra { position: relative; z-index: 6; display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 12px 0 10px; flex-shrink: 0; }
 @container sala (min-width: 720px) { .sala-barra { padding: 0 28px 0 22px; } }
 .salir { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border: 0; background: none; border-radius: 8px; font-size: 14px; color: var(--tenue); }
-.salir svg { width: 17px; height: 17px; }
+.salir:hover { background: var(--campo); color: var(--fg); }
+.salir .ic { font-size: 17px; }
 .gente { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--tenue); }
 .gente .cuantos { display: none; font-variant-numeric: tabular-nums; }
 @container sala (min-width: 520px) { .gente .cuantos { display: inline; } }
-.avatares { display: flex; }
+.avatares { display: flex; align-items: center; }
 .avatares span { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg); background: var(--campo); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--fg); }
 .avatares span + span { margin-left: -8px; }
-.avatares span:last-child { background: color-mix(in oklch, var(--acento) 20%, var(--campo)); }
+.avatares .propio { background: color-mix(in oklch, var(--acento) 22%, var(--campo)); }
 
-.reloj { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 16px 96px; }
-.fase { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--acento); font-weight: 500; letter-spacing: .02em; }
-.fase i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.digitos { font-size: clamp(64px, 19cqw, 168px); font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
-.controles { display: flex; gap: 8px; }
-.controles button { width: 40px; height: 40px; border-radius: 10px; border: 0; background: none; color: var(--tenue); display: grid; place-items: center; }
-.controles button:hover { background: var(--campo); color: var(--fg); }
-.controles .principal { background: var(--acento); color: var(--acento-fg); width: 48px; }
-.controles .principal:hover { background: var(--acento); color: var(--acento-fg); filter: brightness(1.08); }
-.controles svg { width: 18px; height: 18px; }
+/* TimerDisplay: fase arriba, números al centro, controles a los costados; en angosto bajan */
+.centro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 104px; min-width: 0; }
+.zona-cont { container: zona / inline-size; width: 100%; }
+.zona { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "modo modo" "reloj reloj" "izq der"; align-items: center; column-gap: 8px; row-gap: 10px; justify-content: center; }
+@container zona (min-width: 700px) {
+  .zona { grid-template-columns: 1fr auto 1fr; grid-template-areas: ". modo ." "izq reloj der"; column-gap: clamp(28px, 5cqi, 64px); row-gap: 6px; }
+  .zona .ctl { margin-top: 0; }
+}
+.modo { grid-area: modo; justify-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 0; background: none; border-radius: 8px; font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tenue); }
+.modo:hover { background: var(--campo); color: var(--fg); }
+.modo i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.sala[data-corre] .modo i { animation: latido 2.4s ease-in-out infinite; }
+@keyframes latido { 50% { scale: .55; opacity: .6; } }
 
-/* Bandeja T43 cerrada: queda el asa, desvanecida hasta que la mirás */
-.bandeja { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(calc(100% - 24px), 560px); height: 60px; border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; background: var(--superficie); box-shadow: 0 -8px 24px -18px oklch(0 0 0 / .25); }
+.digital { grid-area: reloj; justify-self: center; position: relative; display: flex; align-items: center; font-size: clamp(56px, 17cqi, 184px); line-height: 1; font-weight: 600; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; user-select: none; transition: scale .9s var(--salida); }
+.sala[data-corre] .digital { scale: 1.035; }
+.digital .par { display: inline-flex; }
+.digital .d { display: inline-block; width: .6em; text-align: center; }
+.digital .d.entra { animation: digito .42s var(--salida); }
+@keyframes digito { from { opacity: 0; translate: 0 -0.16em; } }
+.digital .dos { margin: 0 .14em; display: inline-flex; flex-direction: column; gap: .2em; }
+.digital .dos i { width: .1em; height: .1em; border-radius: 50%; background: color-mix(in oklch, var(--tenue) 70%, transparent); }
+.hilo { position: absolute; left: .14em; right: .14em; bottom: -.2em; height: 2px; border-radius: 2px; overflow: hidden; background: var(--linea); opacity: 0; transition: opacity .6s ease .3s; }
+.sala[data-corre] .hilo { opacity: 1; transition-delay: 0s; }
+.hilo i { position: absolute; inset: 0; transform-origin: left; background: var(--acento); transition: scale 1s linear; }
+
+.ctl { display: flex; gap: 6px; margin-top: 18px; }
+.ctl.izq { grid-area: izq; justify-self: end; }
+.ctl.der { grid-area: der; justify-self: start; }
+.ctl button { width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center; border-radius: 10px; border: 1px solid transparent; background: none; color: var(--tenue); font-size: 19px; transition: background-color .15s, color .15s; }
+.ctl button:hover { background: var(--campo); color: var(--fg); }
+.ctl .play { background: var(--acento-fuerte); color: var(--acento-fg); }
+.ctl .play:hover { background: color-mix(in oklch, var(--acento-fuerte) 90%, transparent); color: var(--acento-fg); }
+.sala[data-corre] .ctl .play { background: none; border-color: var(--linea); color: var(--fg); }
+.sala[data-corre] .ctl .play:hover { background: var(--campo); }
+.ctl .play .ic { fill: currentColor; }
+
+/* BandejaTareas cerrada: queda el asa, desvanecida hasta que la mirás */
+.bandeja { position: absolute; z-index: 10; left: 50%; bottom: 0; transform: translateX(-50%); width: min(calc(100% - 24px), 560px); height: 60px; border: 1px solid var(--linea); border-bottom: 0; border-radius: 16px 16px 0 0; background: var(--superficie); box-shadow: 0 -8px 24px -18px oklch(0 0 0 / .25); transition: border-color .3s; }
 @container sala (min-width: 900px) { .bandeja { width: min(calc(100% - 200px), 720px); } }
 .asa { position: relative; height: 60px; display: grid; padding: 4px 20px 0; font-size: 14px; }
+.asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 32px; height: 4px; margin-left: -16px; border-radius: 4px; background: color-mix(in oklch, var(--tenue) 45%, transparent); }
 .asa > * { grid-area: 1 / 1; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; transition: opacity .35s ease, transform .45s var(--salida); }
-.asa::before { content: ""; position: absolute; top: 7px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 4px; background: var(--linea); }
 .asa .texto { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .asa .tenue { color: var(--tenue); }
 .asa b { font-weight: 500; }
-.asa .cuenta { flex-shrink: 0; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
-.bandeja .asa > .normal { opacity: .45; }
+.asa .cuenta { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.asa .cuenta .ic { font-size: 16px; }
+.bandeja .asa > .normal { opacity: .5; }
 .bandeja:hover .asa > .normal { opacity: 1; }
 
-.btn-notas { position: absolute; right: 16px; bottom: 16px; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--linea); background: var(--superficie); display: grid; place-items: center; color: var(--tenue); box-shadow: var(--sombra); }
-.btn-notas svg { width: 18px; height: 18px; }
-@container sala (max-width: 640px) { .btn-notas { bottom: 72px; right: 12px; } }
+/* BandejaNotas plegada: el lápiz tenue abajo a la derecha */
+.notas-asa { position: absolute; z-index: 10; right: 20px; bottom: 0; width: 64px; height: 60px; display: grid; place-items: center; border: 1px solid transparent; border-bottom: 0; border-radius: 16px 16px 0 0; background: transparent; color: var(--tenue); font-size: 15px; transition: background-color .35s, border-color .35s; }
+.notas-asa .ic { opacity: .5; }
+.notas-asa:hover { background: var(--superficie); border-color: var(--linea); }
+.notas-asa:hover .ic { opacity: 1; }
 
 /* ───────── 0 · Hoy: sonner con richColors abajo a la derecha ───────── */
-.sonner-pila { position: absolute; right: 24px; bottom: 24px; width: min(356px, calc(100% - 32px)); display: grid; z-index: 5; pointer-events: none; }
+.sonner-pila { position: absolute; right: 24px; bottom: 24px; width: min(356px, calc(100% - 32px)); display: grid; z-index: 20; pointer-events: none; }
 .sonner { grid-area: 1 / 1; align-self: end; position: relative; display: flex; align-items: center; gap: 6px; padding: 16px; border-radius: 8px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: 0 4px 12px oklch(0 0 0 / .1); font-size: 13px; font-weight: 500; animation: sonner-entra .4s ease both; pointer-events: auto; transition: transform .4s ease, opacity .4s ease; }
 .sonner.exito { background: var(--verde-fondo); color: var(--verde-texto); border-color: var(--verde-borde); }
 .sonner.falla { background: color-mix(in oklch, var(--error) 10%, var(--superficie)); color: var(--error); border-color: color-mix(in oklch, var(--error) 25%, var(--superficie)); }
-.sonner svg { width: 20px; height: 20px; flex-shrink: 0; }
-.sonner .x { position: absolute; left: -6px; top: -6px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--linea); background: var(--superficie); color: var(--fg); display: grid; place-items: center; padding: 0; }
-.sonner .x svg { width: 10px; height: 10px; }
+.sonner > .ic { font-size: 20px; }
+.sonner .x { position: absolute; left: -6px; top: -6px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--linea); background: var(--superficie); color: var(--fg); display: grid; place-items: center; padding: 0; font-size: 10px; }
 .sonner.sale { opacity: 0; transform: translateY(100%); }
 @keyframes sonner-entra { from { opacity: 0; transform: translateY(100%); } }
 
 /* ───────── A · Sobrio, sobre el asa ───────── */
-.sobrio { position: absolute; left: 50%; bottom: 76px; z-index: 5; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 9px 14px 9px 12px; border-radius: 10px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: var(--sombra); font-size: 13.5px; white-space: nowrap; transform: translateX(-50%); animation: sobrio-entra .45s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
+.sobrio { position: absolute; left: 50%; bottom: 76px; z-index: 20; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 9px 14px 9px 12px; border-radius: 10px; border: 1px solid var(--linea); background: var(--superficie); box-shadow: var(--sombra); font-size: 13.5px; white-space: nowrap; transform: translateX(-50%); animation: sobrio-entra .45s var(--salida) both; transition: opacity .3s ease, transform .3s ease; }
 .sobrio .txt { overflow: hidden; text-overflow: ellipsis; }
-.sobrio .tenue { color: var(--tenue); }
-.sobrio svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--acento); }
-.sobrio.falla svg { color: var(--error); }
+.sobrio b { font-weight: 500; }
+.sobrio > .ic { font-size: 16px; color: var(--acento); }
+.sobrio.falla > .ic { color: var(--error); }
 .sobrio .accion { border: 0; background: none; padding: 0 0 0 10px; margin-left: 2px; border-left: 1px solid var(--linea); font-size: 13px; font-weight: 500; color: var(--acento); }
 .sobrio.sale { opacity: 0; transform: translate(-50%, 6px); }
 @keyframes sobrio-entra { from { opacity: 0; transform: translate(-50%, 10px); } }
@@ -163,14 +213,15 @@ h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.
 .bandeja[data-aviso] .asa > .normal { opacity: 0; transform: translateY(-8px); }
 .bandeja[data-aviso] .asa > .aviso { opacity: 1; transform: none; pointer-events: auto; }
 .aviso .lado { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
-.aviso svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--acento); }
-.aviso.falla svg { color: var(--error); }
+.aviso .lado > .ic { font-size: 16px; color: var(--acento); }
+.aviso.falla .lado > .ic { color: var(--error); }
 .aviso .accion { flex-shrink: 0; border: 0; background: none; padding: 0; font-size: 13px; font-weight: 500; color: var(--acento); }
-.bandeja[data-aviso] { border-color: color-mix(in oklch, var(--acento) 30%, var(--linea)); transition: border-color .3s; }
+.bandeja[data-aviso] { border-color: color-mix(in oklch, var(--acento) 30%, var(--linea)); }
 .bandeja[data-aviso="falla"] { border-color: color-mix(in oklch, var(--error) 35%, var(--linea)); }
 
-/* ───────── C · Línea bajo la barra ───────── */
-.linea { position: absolute; top: 56px; left: 20px; right: 20px; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--linea); font-size: 13.5px; color: var(--tenue); text-align: center; animation: linea-entra .4s ease both; transition: opacity .4s ease; background: var(--bg); }
+/* ───────── C · Línea bajo la barra (LineaAviso) ───────── */
+.linea { position: absolute; top: 56px; left: 20px; right: 20px; z-index: 5; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--linea); font-size: 13.5px; color: var(--tenue); text-align: center; animation: linea-entra .4s ease both; transition: opacity .4s ease; background: var(--bg); }
+@container sala (min-width: 720px) { .linea { left: 32px; right: 32px; } }
 .linea b { color: var(--fg); font-weight: 500; }
 .linea i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
 .linea.falla i { background: var(--error); }
@@ -179,7 +230,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.
 @keyframes linea-entra { from { opacity: 0; } }
 
 /* ───────── D · Bajo el reloj ───────── */
-.pildora-lugar { height: 34px; display: grid; place-items: center; }
+.pildora-lugar { height: 34px; margin-top: 22px; display: grid; place-items: center; }
 .pildora { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: var(--campo); font-size: 13px; color: var(--fg); max-width: 100%; white-space: nowrap; animation: pildora-entra .45s var(--salida) both; transition: opacity .35s ease, transform .35s ease; }
 .pildora .txt { overflow: hidden; text-overflow: ellipsis; }
 .pildora i { width: 6px; height: 6px; border-radius: 50%; background: var(--acento); flex-shrink: 0; }
@@ -203,11 +254,34 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 
+<!-- Íconos de lucide, los mismos que usa la sala -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+    <symbol id="i-compartir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m15.41 6.51-6.82 3.98"/></symbol>
+    <symbol id="i-musica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-reiniciar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+    <symbol id="i-pausa" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
+    <symbol id="i-pip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 9V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h4"/><rect width="10" height="7" x="12" y="13" rx="2"/></symbol>
+    <symbol id="i-ajustes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-lapiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+    <symbol id="i-arriba" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-falla" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-tarea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-expandir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+    <symbol id="i-contraer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
+    <symbol id="i-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></symbol>
+  </defs>
+</svg>
+
 <div class="pagina">
   <header class="cabecera">
     <h1>Avisos de la sala</h1>
-    <p>Hoy, al crear una tarea, marcarla hecha o completar un informe desde la sala, aparece el toast de <b>sonner</b> con <code>richColors</code>: una tarjeta verde abajo a la derecha, con su X, arriba del botón de las notas. Es el único elemento de la sala con color propio y no se parece a nada de lo demás.</p>
-    <p>Cuatro reemplazos. En cada maqueta, los botones disparan los <b>cuatro avisos reales</b> de <code>RoomPage</code>; el reloj corre y el marco se estira desde la esquina.</p>
+    <p>Hoy, al crear una tarea, marcarla hecha o completar un informe desde la sala, aparece el toast de <b>sonner</b> con <code>richColors</code>: una tarjeta verde abajo a la derecha, con su X, encima del lápiz de las notas. Es lo único de la sala con color propio y no se parece a nada de lo demás.</p>
+    <p>Cuatro reemplazos sobre la sala <b>como está hecha hoy</b>: la fase en mayúsculas chicas, los números con los dos puntos redondos y el hilo, los controles de 40 px a los costados (compartir, música y reiniciar; play, ventana flotante y tiempos) que bajan en angosto, la bandeja y el lápiz de las notas. Los botones disparan los <b>cuatro avisos reales</b> de <code>RoomPage</code>; el play pausa el reloj de verdad. Cada maqueta se estira desde la esquina y tiene <b>pantalla completa</b>: ahí el mando de arriba al centro cambia de opción y de aviso, Esc sale y H lo esconde (tocar arriba al centro lo trae de vuelta).</p>
   </header>
 
   <div class="ajustes">
@@ -232,12 +306,12 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <section class="opcion" id="hoy" data-op="hoy">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">0</span> Hoy</h2>
+        <h2><span class="letra">0</span> <span class="nombre">Hoy</span></h2>
         <p class="resumen">El <code>Toaster</code> global de <code>HomeLayout</code>: abajo a la derecha, verde para lo que salió bien, rojo para los errores, con X y 4 segundos.</p>
       </div>
       <div class="notas">
         <div><h3>Qué gana</h3><ul><li>Ya existe y es el mismo en toda la app.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>El verde no es de Doro: choca con el acento.</li><li>Tapa el botón de las notas.</li><li>Lejos de la bandeja, donde fue la tarea.</li><li>La X sobra en algo que se va solo.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>El verde no es de Doro: choca con el acento.</li><li>Tapa el lápiz de las notas.</li><li>Lejos de la bandeja, donde fue la tarea.</li><li>La X sobra en algo que se va solo.</li></ul></div>
       </div>
     </div>
   </section>
@@ -245,12 +319,12 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <section class="opcion" id="sobrio" data-op="sobrio">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">A</span> Sobrio, sobre el asa</h2>
+        <h2><span class="letra">A</span> <span class="nombre">Sobrio, sobre el asa</span></h2>
         <p class="resumen">Sigue siendo sonner, pero con la superficie de la app: sin verde, sin X, <b>abajo al centro, justo arriba del asa</b>, el ícono en el acento y una acción («Ver») cuando sirve.</p>
       </div>
       <div class="notas">
         <div><h3>Qué gana</h3><ul><li>Es solo configurar el <code>Toaster</code>: cambia en toda la app de una vez.</li><li>Sale de donde fue la tarea.</li><li>Errores en rojo solo en el ícono.</li></ul></div>
-        <div><h3>Qué pierde</h3><ul><li>Sigue siendo una tarjeta flotando sobre el reloj.</li><li>En el home y en Tareas no hay asa: ahí queda abajo al centro sin referencia.</li></ul></div>
+        <div><h3>Qué pierde</h3><ul><li>Sigue siendo una tarjeta flotando sobre la sala.</li><li>En Tareas no hay asa: ahí queda abajo al centro sin referencia.</li></ul></div>
       </div>
     </div>
   </section>
@@ -258,7 +332,7 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <section class="opcion" id="asa" data-op="asa">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">B</span> En el asa <span class="marca-rec">Recomendada</span></h2>
+        <h2><span class="letra">B</span> <span class="nombre">En el asa</span> <span class="marca-rec">Recomendada</span></h2>
         <p class="resumen">El aviso <b>reemplaza por tres segundos el texto del asa</b> de la bandeja («Siguiente: …») y vuelve solo. No aparece nada nuevo en la sala: lo que cambia es el lugar adonde fue la tarea.</p>
       </div>
       <div class="notas">
@@ -271,7 +345,7 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <section class="opcion" id="linea" data-op="linea">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">C</span> Una línea bajo la barra</h2>
+        <h2><span class="letra">C</span> <span class="nombre">Una línea bajo la barra</span></h2>
         <p class="resumen">La <code>LineaAviso</code> de los errores (4 · Según qué se corta): una línea centrada debajo de la barra de la sala, con el punto en el acento.</p>
       </div>
       <div class="notas">
@@ -284,8 +358,8 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <section class="opcion" id="pildora" data-op="pildora">
     <div class="opcion-cabeza">
       <div>
-        <h2><span class="letra">D</span> Bajo el reloj</h2>
-        <p class="resumen">Una píldora chica debajo de los controles del reloj, que entra y se va. El reloj sigue siendo el centro y el aviso es parte de él.</p>
+        <h2><span class="letra">D</span> <span class="nombre">Bajo el reloj</span></h2>
+        <p class="resumen">Una píldora chica debajo de los números y los controles, que entra y se va. El aviso queda como parte del reloj.</p>
       </div>
       <div class="notas">
         <div><h3>Qué gana</h3><ul><li>Imposible no verlo.</li><li>Tranquilo: sin borde ni sombra.</li></ul></div>
@@ -326,9 +400,9 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
 <template id="t-sala">
   <div class="barra-marco">
     <span class="grupo presets" aria-label="Tamaño">
-      <button type="button" data-ancho="390" data-alto="720">Teléfono</button>
-      <button type="button" data-ancho="820" data-alto="620">Tablet</button>
-      <button type="button" data-ancho="1180" data-alto="660">Escritorio</button>
+      <button type="button" data-ancho="390" data-alto="760">Teléfono</button>
+      <button type="button" data-ancho="820" data-alto="640">Tablet</button>
+      <button type="button" data-ancho="1180" data-alto="680">Escritorio</button>
     </span>
     <span class="medida">—</span>
     <span class="grupo disparos" aria-label="Avisos">
@@ -337,30 +411,45 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
       <button type="button" data-aviso="lista">Completar el informe</button>
       <button type="button" data-aviso="falla">Que falle</button>
     </span>
+    <span class="grupo"><button type="button" class="btn-completa" data-completa><svg class="ic"><use href="#i-expandir"/></svg>Pantalla completa</button></span>
   </div>
   <div class="marco">
-    <div class="sala">
-      <div class="sala-barra">
-        <button type="button" class="salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Salir</button>
-        <div class="gente"><span class="cuantos">3 en la sala</span><span class="avatares"><span>A</span><span>B</span><span>L</span></span></div>
-      </div>
-      <div class="reloj">
-        <span class="fase"><i></i>Pomodoro</span>
-        <span class="digitos">24:13</span>
-        <div class="controles">
-          <button type="button" aria-label="Reiniciar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
-          <button type="button" class="principal" data-play aria-label="Pausar"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
-          <button type="button" aria-label="Saltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 4 10 8-10 8z"/><path d="M19 5v14"/></svg></button>
+    <div class="sala" data-corre>
+      <header class="sala-barra">
+        <button type="button" class="salir"><svg class="ic"><use href="#i-flecha"/></svg>Salir</button>
+        <div class="gente"><span class="cuantos">3 en la sala</span><span class="avatares"><span title="Ana">A</span><span title="Bruno">B</span><span class="propio" title="Vos">L</span></span></div>
+      </header>
+      <div class="centro">
+        <div class="zona-cont">
+          <div class="zona">
+            <button type="button" class="modo" title="Cambiar de fase"><i></i>Pomodoro</button>
+            <div class="ctl izq">
+              <button type="button" aria-label="Compartir la sala" title="Compartir"><svg class="ic"><use href="#i-compartir"/></svg></button>
+              <button type="button" aria-label="Música" title="Música"><svg class="ic"><use href="#i-musica"/></svg></button>
+              <button type="button" aria-label="Reiniciar el reloj" title="Reiniciar"><svg class="ic"><use href="#i-reiniciar"/></svg></button>
+            </div>
+            <div class="digital" role="timer" aria-label="Tiempo restante">
+              <span class="par" data-min></span>
+              <span class="dos" aria-hidden="true"><i></i><i></i></span>
+              <span class="par" data-seg></span>
+              <span class="hilo" aria-hidden="true"><i></i></span>
+            </div>
+            <div class="ctl der">
+              <button type="button" class="play" aria-label="Pausar"><svg class="ic"><use href="#i-pausa"/></svg></button>
+              <button type="button" aria-label="Abrir en ventana flotante" title="Ventana flotante"><svg class="ic"><use href="#i-pip"/></svg></button>
+              <button type="button" aria-label="Tiempos del reloj" title="Tiempos del reloj"><svg class="ic"><use href="#i-ajustes"/></svg></button>
+            </div>
+          </div>
         </div>
         <div class="pildora-lugar" hidden></div>
       </div>
-      <div class="bandeja">
+      <aside class="bandeja" aria-label="Tareas">
         <div class="asa">
-          <div class="normal"><span class="texto"><span class="tenue">Siguiente:</span> <b>Informe de laboratorio</b><span class="tenue"> · mañana</span></span><span class="cuenta">4 pendientes</span></div>
+          <div class="normal"><span class="texto"><span class="tenue">Siguiente:</span> <b>Informe de laboratorio</b><span class="tenue"> · mañana</span></span><span class="cuenta">4 pendientes <svg class="ic"><use href="#i-arriba"/></svg></span></div>
           <div class="aviso"><span class="lado"></span></div>
         </div>
-      </div>
-      <button type="button" class="btn-notas" aria-label="Notas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></svg></button>
+      </aside>
+      <button type="button" class="notas-asa" aria-label="Notas de la sesión"><svg class="ic"><use href="#i-lapiz"/></svg></button>
     </div>
   </div>
 </template>
@@ -368,9 +457,14 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
 <script>
 (() => {
   const raiz = document.documentElement;
+  const ic = (id) => `<svg class="ic"><use href="#i-${id}"/></svg>`;
+
   // Tema: Claro, Oscuro, Negro (Negro = oscuro con fondos más profundos)
+  const TEMAS = ['light', 'dark', 'negro'];
+  let tema = 'light';
   const botonesTema = document.querySelectorAll('#temas button');
   const ponerTema = (t) => {
+    tema = t;
     raiz.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
     raiz.toggleAttribute('data-negro', t === 'negro');
     botonesTema.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t)));
@@ -379,22 +473,17 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
   botonesTema.forEach((b) => b.addEventListener('click', () => ponerTema(b.dataset.tema)));
   let guardado = null;
   try { guardado = localStorage.getItem('toast-sala-tema'); } catch {}
-  ponerTema(guardado || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  ponerTema(TEMAS.includes(guardado) ? guardado : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  const ICONO = {
-    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>',
-    falla: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5"/><path d="M12 16h.01"/></svg>',
-    tarea: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>',
-    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
-  };
   // Los cuatro avisos de RoomPage, con el texto de hoy
   const AVISOS = {
-    crear: { html: 'Tarea creada en <b>Física</b>', plano: 'Tarea creada en Física', icono: 'tarea', accion: 'Ver' },
-    hecha: { html: 'Hecha. Volvés a <b>Informe de laboratorio</b>', plano: 'Hecha. Volvés a Informe de laboratorio', icono: 'ok' },
-    lista: { html: '<b>Informe</b> listo para entregar', plano: 'Informe listo para entregar', icono: 'ok' },
-    falla: { html: 'No se pudo guardar el cambio', plano: 'No se pudo guardar el cambio', icono: 'falla', accion: 'Reintentar', falla: true },
+    crear: { html: 'Tarea creada en <b>Física</b>', plano: 'Tarea creada en Física', icono: 'tarea', accion: 'Ver', corto: 'Crear' },
+    hecha: { html: 'Hecha. Volvés a <b>Informe de laboratorio</b>', plano: 'Hecha. Volvés a Informe de laboratorio', icono: 'ok', corto: 'Hecha' },
+    lista: { html: '<b>Informe</b> listo para entregar', plano: 'Informe listo para entregar', icono: 'ok', corto: 'Informe' },
+    falla: { html: 'No se pudo guardar el cambio', plano: 'No se pudo guardar el cambio', icono: 'falla', accion: 'Reintentar', falla: true, corto: 'Falla' },
   };
   const DURA = 3000;
+  const maquetas = new Map();
 
   const molde = document.getElementById('t-sala');
   document.querySelectorAll('.opcion[data-op]').forEach((sec) => {
@@ -403,31 +492,61 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
     const marco = sec.querySelector('.marco');
     const sala = sec.querySelector('.sala');
     const medida = sec.querySelector('.medida');
-    const digitos = sec.querySelector('.digitos');
     const bandeja = sec.querySelector('.bandeja');
     const ladoAviso = sec.querySelector('.asa .aviso');
     const lugarPildora = sec.querySelector('.pildora-lugar');
+    const hilo = sec.querySelector('.hilo i');
     if (op === 'pildora') lugarPildora.hidden = false;
 
     // Tamaño en vivo y presets
-    new ResizeObserver(() => { medida.textContent = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`; }).observe(marco);
+    new ResizeObserver(() => {
+      const t = `${Math.round(marco.clientWidth)} × ${Math.round(marco.clientHeight)} px`;
+      medida.textContent = t;
+      if (actual === sec) mando.querySelector('.medida').textContent = t;
+    }).observe(marco);
     sec.querySelectorAll('.presets button').forEach((b) => b.addEventListener('click', () => {
       marco.style.width = Math.min(+b.dataset.ancho, marco.parentElement.clientWidth) + 'px';
       marco.style.height = b.dataset.alto + 'px';
     }));
 
-    // El reloj corre de verdad
+    // El reloj corre de verdad: cada dígito que cambia entra desde arriba
+    const TOTAL = 25 * 60;
     let resta = 24 * 60 + 13, corriendo = true;
-    const play = sec.querySelector('[data-play]');
-    const pintar = () => { digitos.textContent = `${String(Math.floor(resta / 60)).padStart(2, '0')}:${String(resta % 60).padStart(2, '0')}`; };
+    const ranuras = { min: sec.querySelector('[data-min]'), seg: sec.querySelector('[data-seg]') };
+    const previo = { min: '', seg: '' };
+    const pintarPar = (clave, valor, animar) => {
+      const texto = String(valor).padStart(2, '0');
+      const viejo = previo[clave];
+      if (texto === viejo) return;
+      if (!viejo) { ranuras[clave].innerHTML = [...texto].map((d) => `<span class="d">${d}</span>`).join(''); }
+      else {
+        [...texto].forEach((d, i) => {
+          if (d === viejo[i]) return;
+          const nuevo = document.createElement('span');
+          nuevo.className = 'd' + (animar ? ' entra' : '');
+          nuevo.textContent = d;
+          ranuras[clave].children[i].replaceWith(nuevo);
+        });
+      }
+      previo[clave] = texto;
+    };
+    const pintar = (animar = true) => {
+      pintarPar('min', Math.floor(resta / 60), animar);
+      pintarPar('seg', resta % 60, animar);
+      hilo.style.scale = `${1 - resta / TOTAL} 1`;
+    };
+    pintar(false);
     setInterval(() => { if (corriendo && resta > 0) { resta--; pintar(); } }, 1000);
+    const play = sec.querySelector('.play');
     play.addEventListener('click', () => {
       corriendo = !corriendo;
-      play.setAttribute('aria-label', corriendo ? 'Pausar' : 'Seguir');
-      play.innerHTML = corriendo ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>';
+      sala.toggleAttribute('data-corre', corriendo);
+      play.setAttribute('aria-label', corriendo ? 'Pausar' : 'Iniciar');
+      play.innerHTML = ic(corriendo ? 'pausa' : 'play');
     });
+    sec.querySelector('[aria-label="Reiniciar el reloj"]').addEventListener('click', () => { resta = TOTAL; pintar(); });
 
-    let reloj = 0, actual = null;
+    let reloj = 0, actualAviso = null;
     const sacar = (el, despues = 400) => { if (!el) return; el.classList.add('sale'); setTimeout(() => el.remove(), despues); };
 
     const mostrar = (clave) => {
@@ -438,7 +557,7 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
         const t = document.createElement('div');
         t.className = 'sonner ' + (a.falla ? 'falla' : (clave === 'crear' ? 'exito' : ''));
         t.setAttribute('role', 'status');
-        t.innerHTML = `<button type="button" class="x" aria-label="Cerrar">${ICONO.x}</button>${clave === 'crear' || a.falla ? ICONO[a.falla ? 'falla' : 'ok'] : ''}<span>${a.plano}</span>`;
+        t.innerHTML = `<button type="button" class="x" aria-label="Cerrar">${ic('x')}</button>${clave === 'crear' || a.falla ? ic(a.falla ? 'falla' : 'ok') : ''}<span>${a.plano}</span>`;
         t.querySelector('.x').addEventListener('click', () => sacar(t));
         pila.appendChild(t);
         // sonner apila: los de atrás se achican
@@ -447,30 +566,30 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
         return;
       }
       if (op === 'sobrio') {
-        sacar(actual, 300);
+        sacar(actualAviso, 300);
         const t = document.createElement('div');
         t.className = 'sobrio' + (a.falla ? ' falla' : '');
         t.setAttribute('role', 'status');
-        t.innerHTML = `${ICONO[a.icono]}<span class="txt">${a.html.replace(/<b>/g, '<b style="font-weight:500">')}</span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
-        sala.appendChild(t); actual = t;
+        t.innerHTML = `${ic(a.icono)}<span class="txt">${a.html}</span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
+        sala.appendChild(t); actualAviso = t;
         reloj = setTimeout(() => sacar(t, 300), DURA);
         return;
       }
       if (op === 'asa') {
         ladoAviso.className = 'aviso' + (a.falla ? ' falla' : '');
         ladoAviso.setAttribute('role', 'status');
-        ladoAviso.innerHTML = `<span class="lado">${ICONO[a.icono]}<span class="texto">${a.html}</span></span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
+        ladoAviso.innerHTML = `<span class="lado">${ic(a.icono)}<span class="texto">${a.html}</span></span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
         bandeja.dataset.aviso = a.falla ? 'falla' : 'ok';
         reloj = setTimeout(() => { delete bandeja.dataset.aviso; }, DURA);
         return;
       }
       if (op === 'linea') {
-        sacar(actual, 300);
+        sacar(actualAviso, 300);
         const t = document.createElement('div');
         t.className = 'linea' + (a.falla ? ' falla' : '');
         t.setAttribute('role', 'status');
         t.innerHTML = `<i></i><span>${a.html}</span>${a.accion ? `<button type="button" class="accion">${a.accion}</button>` : ''}`;
-        sala.appendChild(t); actual = t;
+        sala.appendChild(t); actualAviso = t;
         reloj = setTimeout(() => sacar(t), DURA);
         return;
       }
@@ -484,9 +603,68 @@ avisar({ texto: &lt;&gt;Tarea creada en &lt;b&gt;{tema}&lt;/b&gt;&lt;/&gt;, acci
         reloj = setTimeout(() => sacar(t, 350), DURA);
       }
     };
-    sec.querySelectorAll('[data-aviso]').forEach((b) => b.addEventListener('click', () => mostrar(b.dataset.aviso)));
+    maquetas.set(sec, mostrar);
+    sec.querySelectorAll('.disparos [data-aviso]').forEach((b) => b.addEventListener('click', () => mostrar(b.dataset.aviso)));
+    sec.querySelector('[data-completa]').addEventListener('click', () => abrirCompleta(sec));
     // Estado inicial: cada maqueta arranca mostrando el aviso de «crear»
     setTimeout(() => mostrar('crear'), 600);
+  });
+
+  /* ── Pantalla completa: el marco ocupa la ventana y un mando chico arriba al centro, sin tapar la bandeja ── */
+  const opciones = [...maquetas.keys()];
+  let actual = null, mandoOculto = false;
+  const mando = document.createElement('div');
+  mando.className = 'mando'; mando.hidden = true;
+  mando.setAttribute('role', 'toolbar'); mando.setAttribute('aria-label', 'Pantalla completa');
+  mando.innerHTML = opciones.map((op) => {
+    const l = op.querySelector('.letra').textContent, n = op.querySelector('.nombre').textContent;
+    return `<button type="button" data-ir="${op.id}" title="${l} · ${n}" aria-label="Opción ${l}, ${n}">${l}</button>`;
+  }).join('')
+    + '<span class="sep"></span>'
+    + Object.entries(AVISOS).map(([k, a]) => `<button type="button" data-aviso="${k}" title="${a.plano}">${a.corto}</button>`).join('')
+    + `<span class="sep"></span><button type="button" data-tema-ciclo title="Cambiar de tema">${ic('tema')}<span class="txt-largo">Tema</span></button>`
+    + '<span class="medida"></span>'
+    + `<button type="button" data-salir title="Salir de pantalla completa (Esc)" aria-label="Salir de pantalla completa">${ic('contraer')}</button>`;
+  document.body.appendChild(mando);
+  const volver = document.createElement('button');
+  volver.type = 'button'; volver.className = 'mando-volver'; volver.hidden = true; volver.setAttribute('aria-label', 'Mostrar el mando');
+  volver.addEventListener('click', () => ocultarMando(false));
+  document.body.appendChild(volver);
+
+  function ocultarMando(o) { mandoOculto = o; mando.hidden = o || !actual; volver.hidden = !o || !actual; }
+  function mostrarOpcion(op) {
+    if (actual && actual !== op) actual.classList.remove('completa');
+    actual = op; op.classList.add('completa');
+    mando.querySelectorAll('[data-ir]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.ir === op.id)));
+    const m = op.querySelector('.marco');
+    mando.querySelector('.medida').textContent = `${m.clientWidth} × ${m.clientHeight} px`;
+  }
+  function abrirCompleta(op) {
+    raiz.classList.add('en-completa');
+    mostrarOpcion(op);
+    ocultarMando(false);
+    const p = raiz.requestFullscreen && !document.fullscreenElement ? raiz.requestFullscreen() : null;
+    if (p) p.catch(() => {});
+  }
+  function cerrarCompleta() {
+    if (!actual) return;
+    const op = actual;
+    op.classList.remove('completa'); actual = null;
+    raiz.classList.remove('en-completa');
+    mando.hidden = true; volver.hidden = true; mandoOculto = false;
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    op.scrollIntoView({ block: 'start' });
+  }
+  mando.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => mostrarOpcion(document.getElementById(b.dataset.ir))));
+  mando.querySelectorAll('[data-aviso]').forEach((b) => b.addEventListener('click', () => actual && maquetas.get(actual)(b.dataset.aviso)));
+  mando.querySelector('[data-tema-ciclo]').addEventListener('click', () => ponerTema(TEMAS[(TEMAS.indexOf(tema) + 1) % TEMAS.length]));
+  mando.querySelector('[data-salir]').addEventListener('click', cerrarCompleta);
+  // Si el navegador sale de pantalla completa (Esc del sistema), cerramos también la vista
+  document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && actual) cerrarCompleta(); });
+  document.addEventListener('keydown', (e) => {
+    if (!actual || e.target.closest?.('input, textarea')) return;
+    if (e.key === 'Escape') cerrarCompleta();
+    else if (e.key.toLowerCase() === 'h') ocultarMando(!mandoOculto);
   });
 })();
 </script>
