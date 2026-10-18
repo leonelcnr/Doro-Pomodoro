@@ -2,7 +2,6 @@ import type { ReactNode } from "react"
 import { IconInnerShadowTop } from "@tabler/icons-react"
 import { Menu } from "lucide-react"
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
-import { useTheme } from "next-themes"
 
 import {
     DropdownMenu,
@@ -10,12 +9,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/features/auth/context/useAuth"
-import { useAcento } from "@/hooks/useAcento"
 import { formatearHora } from "@/features/home/saludo"
 import { useHoraActual } from "@/features/home/hooks/useHoraActual"
 import { cn } from "@/lib/utils"
-import { MenuCuenta } from "./MenuCuenta"
+import { MenuCuentaApp } from "./MenuCuentaApp"
 
 // Secciones de la app. El calendario vive adentro de Tareas.
 const SECCIONES = [
@@ -36,22 +33,10 @@ interface EncabezadoAppProps {
  * completo. Las reglas viven en index.css (`.encabezado .desvanece`).
  */
 export function EncabezadoApp({ extra }: EncabezadoAppProps) {
-    const { user, cargando, signOut } = useAuth()
-    const { theme, setTheme } = useTheme()
-    const [acento, cambiarAcento] = useAcento()
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const hora = formatearHora(useHoraActual())
 
-    // La cuenta se elige en /login, que después vuelve a esta misma página
-    const irALogin = () =>
-        navigate(pathname === "/" ? "/login" : `/login?redirect=${encodeURIComponent(pathname)}`)
-
-    // El nombre del anónimo vive en localStorage; se recarga para que lo tome toda la app
-    const guardarNombre = (nombre: string) => {
-        localStorage.setItem("anon_name", nombre)
-        window.location.reload()
-    }
 
     return (
         <header className="encabezado flex h-14 shrink-0 items-center gap-6 px-5 md:px-8">
@@ -85,17 +70,7 @@ export function EncabezadoApp({ extra }: EncabezadoAppProps) {
             <div className="ml-auto flex items-center gap-3.5">
                 <span className="desvanece text-sm tabular-nums text-muted-foreground">{hora}</span>
                 {extra}
-                <MenuCuenta
-                    usuario={user}
-                    cargando={cargando}
-                    tema={theme}
-                    onCambiarTema={setTheme}
-                    acento={acento}
-                    onCambiarAcento={cambiarAcento}
-                    onEntrar={irALogin}
-                    onCerrarSesion={signOut}
-                    onGuardarNombre={guardarNombre}
-                />
+                <MenuCuentaApp />
 
                 {/* En pantallas angostas las secciones van en un menú */}
                 <DropdownMenu>

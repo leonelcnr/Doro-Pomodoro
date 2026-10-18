@@ -10,6 +10,7 @@ import { usePresenciaSala } from "@/features/room/hooks/usePresenciaSala";
 import { useNotas } from "@/features/room/hooks/useNotas";
 import { useSincronizacionReloj } from "@/features/timer/hooks/useSincronizacionReloj";
 import { CabeceraSala } from "@/features/room/components/CabeceraSala";
+import { MenuCuentaApp } from "@/components/encabezado/MenuCuentaApp";
 import { BandejaNotas } from "@/features/room/components/BandejaNotas";
 import { PestanasTareas, TareasDeLaSala, type AmbitoBandeja } from "@/features/room/components/TareasDeLaSala";
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas";
@@ -184,7 +185,11 @@ const RoomPage = () => {
 
     return (
         <div data-quieto={quieto || undefined} className="sala @container flex min-h-dvh flex-col overflow-x-clip">
-            <CabeceraSala usuariosEnSala={usuariosEnSala} />
+            <CabeceraSala
+                usuariosEnSala={usuariosEnSala}
+                idPropio={usuario?.id}
+                cuenta={<MenuCuentaApp claseAvatar="size-7 border-2 border-background" />}
+            />
 
             <main className="flex min-w-0 flex-1 flex-col items-center justify-center px-4 pt-6 pb-[6.5rem]">
                 {cargandoInvitacion ? (

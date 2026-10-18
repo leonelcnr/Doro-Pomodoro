@@ -17,7 +17,11 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
 ## P1 · Cerrar el deploy
 
 2. **Migraciones que esperaban al deploy** (el frontend nuevo ya está en producción).
-   ✍️ 2026-10-15: escritas y probadas en un Postgres local, **sin aplicar en producción**:
+   ✍️ 2026-10-15: escritas y probadas en un Postgres local, **sin aplicar en producción**.
+   2026-10-18: intento de aplicar la primera desde la sesión de Claude: las escrituras
+   por el MCP de Supabase se cortan a los 60 s sin llegar a la base (las lecturas andan)
+   y la red de la sesión no llega a `*.supabase.co`. Queda para aplicarla a mano
+   (SQL Editor o `supabase db push`).
    - `20261015120000_borrar_calendario_y_topes.sql` → aplicar ya (borra las 15 filas
      que quedan en `calendar_events`, descartadas por decisión).
    - `20261015130000_create_room_sin_max_uses.sql` → aplicar **después** de desplegar
@@ -32,19 +36,24 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
 
 ## P2 · Rápidos y visibles
 
-3. **Título de la pestaña: «Doro - Pomodoro».** *(nota de Leo)* Hoy es «Doro · Pomodoro
+3. ~~**Título de la pestaña: «Doro - Pomodoro».**~~ ✅ 2026-10-18 (solo `<title>`; el
+   `og:title` va con el punto 4). *(nota de Leo)* Hoy es «Doro · Pomodoro
    para estudiar, solo o con amigos» (`index.html:12`, y `og:title`).
 4. **Descripción e imagen al compartir.** *(nota de Leo)* `og:description`,
    `twitter:*`, `description` y `og:image` (`/Home.png`) en `index.html`. Falta definir el
    texto y la imagen nueva (1200×630); conviene bocetar la imagen.
-5. **El anónimo aparece como «Usuario».** `usePresenciaSala.ts:45` arma el nombre con el
+5. ~~**El anónimo aparece como «Usuario».**~~ ✅ 2026-10-18: la presencia usa
+   `usuario.name` (el apodo del anónimo o el nombre de la cuenta); se cambia desde el
+   menú de la cuenta, que ahora también está en la sala (punto 7). `usePresenciaSala.ts:45` arma el nombre con el
    email: leer primero `user_metadata.nombre` y dejar cambiarlo desde la sala.
 6. **Rehacer el toast de la sala.** *(nota de Leo)* El aviso (sonner) al crear una
    tarea, un informe o similar desde la sala se ve feo. Son los `toast(...)` de
    `RoomPage.tsx:134-160` («Tarea creada en *tema*», «Hecha. Volvés a…», «Informe listo
    para entregar») con el `Toaster` global de `HomeLayout.tsx`. Bocetar antes: puede
    ser otro estilo del `Toaster` o un aviso propio de la sala (p. ej. `LineaAviso`).
-7. **Ajustes del home dentro de la sala.** *(nota de Leo)* Al tocar la foto de usuario en
+7. ~~**Ajustes del home dentro de la sala.**~~ ✅ 2026-10-18: `MenuCuentaApp` (el menú
+   conectado) lo usan `EncabezadoApp` y la sala; en `CabeceraSala` tu avatar va último,
+   fuera de la pila, y abre el menú. *(nota de Leo)* Al tocar la foto de usuario en
    la sala, abrir el mismo `MenuCuenta` del home (tema, acento y el resto de opciones).
    Reusar el componente, no duplicarlo. Archivos: `CabeceraSala.tsx`,
    `components/encabezado/MenuCuenta`.
