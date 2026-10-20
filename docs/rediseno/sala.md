@@ -561,6 +561,12 @@ apagan. Un ajuste prueba «Se pega al borde» (imán al costado más cercano), p
 recomiendo dejarlas libres. Para la app: `NotaSesion.fija?: { x, y }` en el mismo
 localStorage y un componente `NotasSueltas` en la sala.
 
+**¿Rosado?** A Leo el gris de las notas le daba una sensación rojiza o rosada. Medido, es
+el `--muted` de la app (zinc, `oklch(0.967 0.001 286.4)` = 244, 244, 245): gris con un
+toque frío y nada de rojo. Para ver si cambia la sensación, el boceto suma el ajuste «Gris
+de las notas» (Hoy / Neutro con croma 0 / Cálido, tono 80), que cambia solo los grises de
+las notas: fondo, sombra, texto tenue y línea.
+
 **Estado:** falta que Leo elija. No se tocó código de `src/`.
 
 ## Propuestas transversales
