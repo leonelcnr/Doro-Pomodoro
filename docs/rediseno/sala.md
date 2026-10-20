@@ -576,8 +576,17 @@ las notas: fondo, sombra, texto tenue y línea.
 - **Gris:** el rosado solo se nota en el tema claro; en oscuro y negro, el gris de hoy está
   bien. El ajuste del boceto cambia solo el claro (Hoy / Neutro / Cálido).
 
-**Estado:** B elegida. Falta decidir el gris del tema claro (Neutro o Cálido) y aplicarlo
-al código. No se tocó código de `src/`.
+**Gris:** queda el de hoy (Leo, 2026-10-20). No se cambia.
+
+**Teléfono:** en pantallas táctiles no se arrastra desde la bandeja, porque peleaba con
+el scroll de la lista. Por debajo de `sm` (640 px) no hay notas sueltas: una tarjeta de 15
+rem taparía media pantalla y el reloj. El alfiler se esconde ahí y las notas fijadas siguen
+guardadas, así que reaparecen en una pantalla más grande.
+
+**APLICADA (2026-10-20):** `BandejaNotas` con la tarjeta B (`.nota-pestana` en
+index.css), `NotasSueltas` (las sueltas, en % de la ventana), `useSacarNota` (arrastrar
+afuera, solo con mouse o lápiz) y `useNotas.fijar` (`NotaSesion.fija`, en el mismo
+localStorage).
 
 ## Propuestas transversales
 

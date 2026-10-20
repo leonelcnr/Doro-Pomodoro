@@ -61,6 +61,13 @@ export interface NotaSesion {
   hora: string;           // "18:31", cuando se anotó
   fase: string;           // «Pomodoro», «Descanso corto»… en la que se anotó
   temaId?: string | null; // null o sin definir = sin tema
+  fija?: PosicionNota | null; // suelta en la sala; null o sin definir = solo en la bandeja
+}
+
+/** Dónde quedó una nota suelta, en % del ancho y del alto de la ventana. */
+export interface PosicionNota {
+  x: number;
+  y: number;
 }
 
 /**

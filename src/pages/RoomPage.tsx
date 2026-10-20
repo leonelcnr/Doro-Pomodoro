@@ -12,6 +12,7 @@ import { useSincronizacionReloj } from "@/features/timer/hooks/useSincronizacion
 import { CabeceraSala } from "@/features/room/components/CabeceraSala";
 import { MenuCuentaApp } from "@/components/encabezado/MenuCuentaApp";
 import { BandejaNotas } from "@/features/room/components/BandejaNotas";
+import { NotasSueltas } from "@/features/room/components/NotasSueltas";
 import { PestanasTareas, TareasDeLaSala, type AmbitoBandeja } from "@/features/room/components/TareasDeLaSala";
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas";
 import { DetalleItem } from "@/features/tasks/components/pantalla/DetalleItem";
@@ -64,7 +65,8 @@ const RoomPage = () => {
     const usuariosEnSala = usePresenciaSala(salaIdValida);
     const { tareas, crearTarea, actualizarTareaCampos } = useTareas(salaIdValida);
     const { temas } = useTemas();
-    const { notas, agregar, quitar, borrarTodas, ponerTema } = useNotas();
+    const { notas, agregar, quitar, borrarTodas, ponerTema, fijar } = useNotas();
+    const sueltas = useMemo(() => notas.filter((n) => n.fija), [notas]);
     useSincronizacionReloj(salaIdValida);
     const { estaActivo, modo } = useTimerStore();
     const quieto = useQuieto(estaActivo);
@@ -251,6 +253,8 @@ const RoomPage = () => {
                 }
             />
 
+            <NotasSueltas notas={sueltas} temas={temas} onMover={fijar} onDevolver={(id) => fijar(id, null)} />
+
             <BandejaNotas
                 notas={notas}
                 temas={temas}
@@ -260,6 +264,7 @@ const RoomPage = () => {
                 onQuitar={quitar}
                 onBorrarTodas={borrarTodas}
                 onPonerTema={ponerTema}
+                onFijar={fijar}
             />
 
             {tareaEditada && (

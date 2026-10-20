@@ -340,6 +340,27 @@ html {
   }
 }
 
+/* Notas · B · Tarjeta con pestaña (bocetos/notas-sala.html): la misma pestaña que
+   cuelga del borde de arriba, en la bandeja y suelta en la sala. */
+.nota-pestana::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 2.125rem;
+  height: 0.3125rem;
+  margin-left: -1.0625rem;
+  border-radius: 0 0 3px 3px;
+  background: color-mix(in oklch, var(--muted-foreground) 45%, transparent);
+}
+/* Las sueltas, con el reloj corriendo y el mouse quieto, se apagan como el lápiz */
+.nota-suelta {
+  transition: opacity 0.45s ease 0.5s, scale 0.2s ease, rotate 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+}
+[data-quieto] .nota-suelta:not(:hover) {
+  opacity: 0.35;
+}
+
 /* Avisos de la sala (R2 · El punto que se abre, bocetos/toast-sala.html): un punto en
    el acento nace con un rebote, se abre hacia la izquierda con el mensaje, se cierra
    y cae. Los estados los pone AvisoPunto en data-estado. */
