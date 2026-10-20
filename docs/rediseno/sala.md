@@ -539,6 +539,28 @@ hay un muestrario con las siete juntas y abajo cada una en la sala.
 - **V5 · Tinta:** la nota invertida (fondo del color del texto).
 - **V6 · Contorno:** sin relleno, solo un borde fino y redondo.
 
+Le gustaron algunas, pero el problema de fondo es que **las notas largas no se leen
+bien, y rectangulares se leen mejor**. Mandó dos fotos de referencia: la nota a lo ancho
+de la bandeja y la nota de Tareas (`.nota-tj`, con pestaña). Pidió además poder **dejar
+notas en la pantalla de la sala y moverlas libremente, como un post-it**. La 2ª ronda
+quedó en `bocetos/notas-sala-ronda2.html`.
+
+### 3ª ronda (2026-10-20): rectangulares y sueltas en la sala
+
+Misma URL (versión 3). La bandeja tiene el mismo ancho que hoy.
+- **A · Renglón** (foto 1): una nota por fila, en gris, 14 px, hasta 4 renglones.
+- **B · Tarjeta con pestaña** (foto 2, recomendada): la nota de Tareas, con borde fino,
+  pestaña arriba al centro, fondo un escalón más hondo (`--tarjeta`), 14,5 px y hasta 5
+  renglones. Con el ancho de hoy queda una por fila; si la bandeja se ensancha, pasan a dos.
+- **C · Renglón doblado:** A con la esquina doblada de V1.
+
+**Notas sueltas (en A, B y C):** un alfiler en cada nota la deja en la sala. Se arrastra a
+cualquier lado (pointer events, posición en por ciento de la sala) y el alfiler tachado la
+devuelve a la bandeja sin borrarla. Con el reloj corriendo y el mouse quieto 3 s se
+apagan. Un ajuste prueba «Se pega al borde» (imán al costado más cercano), pero
+recomiendo dejarlas libres. Para la app: `NotaSesion.fija?: { x, y }` en el mismo
+localStorage y un componente `NotasSueltas` en la sala.
+
 **Estado:** falta que Leo elija. No se tocó código de `src/`.
 
 ## Propuestas transversales
