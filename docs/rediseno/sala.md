@@ -519,6 +519,26 @@ para comparar.
 - **N4 · La última, grande:** la nota recién anotada va a todo el ancho y con letra
   más grande. Las anteriores quedan como cuadrados chicos.
 
+**No gustó ninguna.** Leo no quiere cambiar el ancho ni el acomodo sino el aspecto de
+cada nota. La 1ª ronda quedó en `bocetos/notas-sala-ronda1.html`.
+
+### 2ª ronda (2026-10-20): solo el aspecto
+
+Misma URL (versión 2). La bandeja tiene el mismo ancho, la misma grilla y el mismo
+comportamiento que hoy. Cambia el material, el borde y los detalles de cada nota. Arriba
+hay un muestrario con las siete juntas y abajo cada una en la sala.
+
+- **V1 · Hoja doblada** (recomendada): el mismo gris, con esquinas rectas y la esquina de
+  abajo doblada de verdad (`clip-path` + un triángulo un tono más oscuro). «Pasar a un tema»
+  sube junto a la X.
+- **V2 · Cuaderno:** hoja blanca con renglones finos y una línea de margen.
+- **V3 · Solo texto** (plan B): sin caja. La hora va arriba y una línea fina separa las
+  notas.
+- **V4 · Con cinta:** hoja blanca apenas torcida, pegada con cinta gris translúcida. Se
+  endereza al pasar el mouse.
+- **V5 · Tinta:** la nota invertida (fondo del color del texto).
+- **V6 · Contorno:** sin relleno, solo un borde fino y redondo.
+
 **Estado:** falta que Leo elija. No se tocó código de `src/`.
 
 ## Propuestas transversales

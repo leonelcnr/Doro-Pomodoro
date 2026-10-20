@@ -4,9 +4,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <style>
-/* Notas de la sala, 1ª ronda del rediseño visual. Parte de BandejaNotas tal como está
-   hecha (4 · Queda el lápiz, junto a la bandeja T43) y prueba cuatro formas de que los
-   post-it respiren más. Tokens de index.css: violeta profundo (289), Claro, Oscuro y Negro.
+/* Notas de la sala, 2ª ronda: solo el aspecto. Misma BandejaNotas (4 · Queda el lápiz,
+   junto a la bandeja T43), mismo ancho, misma grilla y mismo comportamiento; cambia cómo
+   se ve cada nota. La 1ª ronda (anchos y acomodos) quedó en notas-sala-ronda1.html.
+   Tokens de index.css: violeta profundo (289), Claro, Oscuro y Negro.
    Layout: la sala real en cada maqueta, con la bandeja de notas abierta abajo a la derecha. */
 :root {
   --bg: oklch(1 0 0);
@@ -213,35 +214,66 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 .bn-entrada input::placeholder { color: var(--tenue); }
 .bn-pie { margin: 0; font-size: 12px; color: var(--tenue); }
 
-/* ── 0 · Hoy: cuadrados de 104 px, 4 renglones ── */
-.sala[data-v="hoy"] .postit { aspect-ratio: 1; }
+/* ── Todas: mismo lugar, mismo ancho y misma grilla que hoy; solo cambia cómo se ve la nota ── */
+.postit { aspect-ratio: 1; }
 
-/* ── N1 · Más anchas: bandeja de hasta 600 px, post-its 3:2 ── */
-.sala[data-v="n1"] .bn { --ancho: clamp(320px, calc(50cqi - 40px), 600px); }
-.sala[data-v="n1"] .bn-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 172px), 1fr)); }
-.sala[data-v="n1"] .postit { aspect-ratio: 3 / 2; font-size: 14px; padding: 14px 14px 10px; --lineas: 4; }
+/* ── V1 · Hoja doblada: papel con la esquina de abajo doblada de verdad ── */
+[data-v="v1"] .postit { border-radius: 3px; background: var(--campo); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%); padding: 13px 13px 10px; }
+[data-v="v1"] .postit::after { content: ""; position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; border-top-left-radius: 3px; background: linear-gradient(315deg, transparent 50%, color-mix(in oklch, var(--fg) 13%, var(--campo)) 50%); }
+[data-v="v1"] .postit:hover { background: var(--campo-hover); }
+[data-v="v1"] .postit .atema { top: 4px; bottom: auto; right: 30px; }
 
-/* ── N2 · Tiras: una nota por renglón, a lo ancho ── */
-.sala[data-v="n2"] .bn { --ancho: clamp(320px, calc(50cqi - 60px), 560px); }
-.sala[data-v="n2"] .bn-lista { display: flex; flex-direction: column; gap: 6px; }
-.sala[data-v="n2"] .postit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 16px; padding: 11px 14px; font-size: 14px; border-radius: 6px 6px 6px 14px; --lineas: 2; }
-.sala[data-v="n2"] .postit .meta { margin: 0; padding-top: 2px; transition: opacity .15s; }
-.sala[data-v="n2"] .postit:hover .meta, .sala[data-v="n2"] .postit:focus-within .meta { opacity: 0; }
-.sala[data-v="n2"] .postit .quitar { top: 8px; right: 6px; }
-.sala[data-v="n2"] .postit .atema { top: 8px; bottom: auto; right: 32px; }
-.sala[data-v="n2"] .postit.leyendo { padding-right: 14px; }
+/* ── V2 · Cuaderno: renglones finos y un margen, el texto apoyado en la línea ── */
+[data-v="v2"] .postit { --renglon: 20px; border-radius: 3px; border: 1px solid var(--linea); padding: 9px 10px 8px 22px; line-height: var(--renglon);
+  background: linear-gradient(90deg, transparent 13px, color-mix(in oklch, var(--tenue) 30%, transparent) 13px 14px, transparent 14px),
+              repeating-linear-gradient(to bottom, transparent 0 calc(var(--renglon) - 1px), var(--linea) calc(var(--renglon) - 1px) var(--renglon)) 0 9px / 100% calc(100% - 9px) no-repeat,
+              var(--superficie); }
+[data-v="v2"] .postit:hover { border-color: color-mix(in oklch, var(--tenue) 45%, transparent); }
+[data-v="v2"] .postit { gap: 0; }
+[data-v="v2"] .postit .meta { line-height: var(--renglon); }
+[data-v="v2"] .bn-entrada { border-radius: 3px; background: var(--superficie); border: 1px solid var(--linea); }
 
-/* ── N3 · Según lo que dicen: el alto lo pone el texto, en dos columnas ── */
-.sala[data-v="n3"] .bn { --ancho: clamp(320px, calc(50cqi - 40px), 600px); }
-.sala[data-v="n3"] .bn-lista { display: block; columns: 172px; column-gap: 10px; }
-.sala[data-v="n3"] .postit { break-inside: avoid; margin-bottom: 10px; min-height: 76px; font-size: 14px; padding: 14px 14px 10px; --lineas: 7; }
-.sala[data-v="n3"] .postit .meta { margin-top: 4px; }
+/* ── V3 · Solo texto: sin caja; una línea fina arriba separa una nota de otra ── */
+[data-v="v3"] .bn-lista { gap: 4px 18px; }
+[data-v="v3"] .postit { aspect-ratio: auto; min-height: 96px; border-radius: 0; background: none; border-top: 1px solid var(--linea); padding: 10px 0 8px; font-size: 14px; }
+[data-v="v3"] .postit:hover { background: none; border-top-color: var(--fg); }
+[data-v="v3"] .postit .meta { order: -1; margin: 0 0 2px; }
+[data-v="v3"] .postit .quitar { top: 6px; right: -6px; }
+[data-v="v3"] .postit .atema { bottom: 2px; right: -6px; }
+[data-v="v3"] .bn-entrada { background: none; border-radius: 0; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); padding: 0 2px; }
 
-/* ── N4 · La última, grande: la recién anotada a lo ancho, las otras chicas arriba ── */
-.sala[data-v="n4"] .bn { --ancho: clamp(320px, calc(50cqi - 40px), 560px); }
-.sala[data-v="n4"] .bn-lista { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
-.sala[data-v="n4"] .postit { aspect-ratio: 1; --lineas: 4; }
-.sala[data-v="n4"] .postit:last-child { grid-column: 1 / -1; aspect-ratio: auto; min-height: 104px; padding: 16px 16px 12px; font-size: 16px; line-height: 1.45; --lineas: 3; }
+/* ── V4 · Con cinta: hoja blanca pegada con un pedazo de cinta, apenas torcida ── */
+[data-v="v4"] .bn-lista { gap: 16px 12px; padding-top: 10px; }
+[data-v="v4"] .postit { overflow: visible; border-radius: 2px; background: var(--superficie); border: 1px solid var(--linea); box-shadow: 0 1px 2px oklch(0 0 0 / .06), 0 6px 14px -8px oklch(0 0 0 / .25); padding-top: 16px; rotate: -1.2deg; transition: rotate .4s var(--salida); }
+[data-v="v4"] .postit:nth-child(3n+2) { rotate: .9deg; }
+[data-v="v4"] .postit:nth-child(3n) { rotate: -.3deg; }
+[data-v="v4"] .postit:hover, [data-v="v4"] .postit.leyendo { rotate: 0deg; background: var(--superficie); }
+[data-v="v4"] .postit::before { content: ""; position: absolute; top: -7px; left: 50%; width: 44px; height: 14px; margin-left: -22px; rotate: -4deg; background: color-mix(in oklch, var(--tenue) 24%, transparent); border-inline: 1px dashed color-mix(in oklch, var(--tenue) 30%, transparent); }
+[data-v="v4"] .postit:nth-child(2n)::before { rotate: 5deg; margin-left: -14px; }
+
+/* ── V5 · Tinta: la nota invertida, el color del texto de fondo ── */
+[data-v="v5"] .postit { background: var(--fg); color: var(--bg); border-radius: 6px 6px 6px 16px; }
+[data-v="v5"] .postit:hover { background: color-mix(in oklch, var(--fg) 88%, var(--bg)); }
+[data-v="v5"] .postit .meta { color: color-mix(in oklch, var(--bg) 62%, var(--fg)); }
+[data-v="v5"] .postit .acc { color: color-mix(in oklch, var(--bg) 70%, var(--fg)); }
+[data-v="v5"] .postit .acc:hover { background: color-mix(in oklch, var(--bg) 16%, var(--fg)); color: var(--bg); }
+
+/* ── V6 · Contorno: sin relleno, solo el borde; la hora a la derecha arriba ── */
+[data-v="v6"] .postit { background: none; border: 1px solid var(--linea); border-radius: 12px; padding: 12px; }
+[data-v="v6"] .postit:hover { background: none; border-color: color-mix(in oklch, var(--tenue) 60%, transparent); }
+[data-v="v6"] .postit .meta { order: -1; margin: 0; justify-content: space-between; }
+[data-v="v6"] .postit .quitar { top: 6px; }
+[data-v="v6"] .postit:hover .meta, [data-v="v6"] .postit:focus-within .meta { visibility: hidden; }
+[data-v="v6"] .bn-entrada { background: none; border: 1px solid var(--linea); border-radius: 12px; }
+
+/* ───────── Muestrario: las siete juntas, una bandeja chica cada una ───────── */
+.muestrario { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 72px; }
+.muestra { display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: inherit; }
+.muestra-nombre { font-size: 13.5px; color: var(--tenue); }
+.muestra-nombre b { color: var(--acento); font-weight: 600; margin-right: 6px; }
+.muestra:hover .muestra-nombre { color: var(--fg); }
+.muestra-panel { width: 100%; max-width: 340px; padding: 18px 20px 20px; border: 1px solid var(--linea); border-radius: 16px; background: var(--superficie); box-shadow: var(--sombra-lg); }
+.muestra-panel .bn-lista { pointer-events: none; }
 
 /* ───────── Cierre ───────── */
 .cierre h2 { font-size: 24px; letter-spacing: -0.02em; margin: 0 0 16px; }
@@ -286,7 +318,8 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
 <div class="pagina">
   <header class="cabecera">
     <h1>Notas de la sala</h1>
-    <p><b>1ª ronda del rediseño visual de las notas.</b> La sala es la aprobada (4 · Queda el lápiz, con la bandeja T43 plegada al centro) y la bandeja de notas está abierta abajo a la derecha, con seis notas de ejemplo: cortas, medianas y una larga, dos con tema. La de hoy queda primera para comparar.</p>
+    <p><b>2ª ronda: solo el aspecto.</b> La 1ª tocaba anchos y acomodos y no gustó ninguna (quedó en <code>notas-sala-ronda1.html</code>). Acá la bandeja mide lo mismo que hoy, la grilla es la misma y todo funciona igual: lo único que cambia es <b>de qué está hecha cada nota</b>, o sea su material, su borde, su tipografía y sus detalles. Todas usan un solo acento y nada de colores por nota.</p>
+    <p>Arriba están las siete juntas para compararlas de un vistazo. Abajo, cada una dentro de la sala aprobada, con seis notas de ejemplo (cortas, medianas, una larga y dos con tema).</p>
     <p>Todo funciona: anotá algo y Enter, tocá el texto de una nota para leerla entera, la X la descarta y el lápiz pliega la bandeja. El reloj corre. Cada maqueta se estira desde la esquina, tiene presets y muestra en vivo cuánto mide la sala y la bandeja. En <b>pantalla completa</b> el mando de arriba cambia de opción (← →), N abre o pliega las notas, T cambia el tema, H esconde el mando y Esc sale.</p>
   </header>
 
@@ -301,32 +334,41 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   </div>
 
   <nav class="indice" id="indice" aria-label="Opciones"></nav>
+  <div class="muestrario" id="muestrario"></div>
   <div id="opciones"></div>
 
   <section class="cierre" id="cierre">
     <h2>Comparación</h2>
     <div class="tabla">
       <table>
-        <thead><tr><th></th><th>Bandeja a 1180 / 1440 px</th><th>Forma de la nota</th><th>Notas por fila</th><th>Renglones antes de cortar</th><th>Qué cambia en el código</th></tr></thead>
+        <thead><tr><th></th><th>Material</th><th>Borde y forma</th><th>Se lee como</th><th>Peso en la sala</th><th>En claro y en oscuro</th></tr></thead>
         <tbody>
-          <tr><td>0 · Hoy</td><td>300 / 380</td><td>Cuadrado de 104 px</td><td>2–3</td><td>4, en ~13 letras por renglón</td><td>—</td></tr>
-          <tr><td>N1 · Más anchas</td><td>550 / 600</td><td>Apaisada 3:2</td><td>2–3</td><td>4, en ~28 letras por renglón</td><td class="si">El ancho, la grilla y el aspecto</td></tr>
-          <tr><td>N2 · Tiras</td><td>530 / 560</td><td>Renglón a lo ancho</td><td>1</td><td>2, en ~55 letras por renglón</td><td>Grilla → lista; la hora a la derecha</td></tr>
-          <tr><td>N3 · Según lo que dicen</td><td>550 / 600</td><td>Alto según el texto</td><td>2–3 columnas</td><td>7</td><td>Grilla → <code>columns</code>; la animación al abrir cambia</td></tr>
-          <tr><td>N4 · La última, grande</td><td>550 / 560</td><td>La nueva ancha, las otras cuadradas</td><td>1 + 4–5</td><td>3 en grande, 4 en chico</td><td>Una regla para el último post-it</td></tr>
+          <tr><td>0 · Hoy</td><td>Gris lleno</td><td>Esquina redonda abajo</td><td>Botón o casilla</td><td>Medio</td><td>Igual</td></tr>
+          <tr><td>V1 · Hoja doblada</td><td>Gris lleno</td><td>Recto, esquina doblada</td><td class="si">Post-it</td><td>Medio</td><td>Igual</td></tr>
+          <tr><td>V2 · Cuaderno</td><td>Hoja rayada</td><td>Borde fino, margen</td><td class="si">Apunte</td><td>Medio</td><td>Los renglones se pierden un poco en Negro</td></tr>
+          <tr><td>V3 · Solo texto</td><td>Nada</td><td>Una línea arriba</td><td>Lista</td><td class="si">El más liviano</td><td>Igual</td></tr>
+          <tr><td>V4 · Con cinta</td><td>Hoja blanca</td><td>Torcida, con cinta</td><td class="si">Post-it pegado</td><td>Alto</td><td>En oscuro la hoja es gris y la sombra casi no se ve</td></tr>
+          <tr><td>V5 · Tinta</td><td>Invertido</td><td>Esquina redonda abajo</td><td>Etiqueta</td><td>El más pesado</td><td>Se invierte: notas blancas en oscuro</td></tr>
+          <tr><td>V6 · Contorno</td><td>Nada</td><td>Borde fino, redondo</td><td>Tarjeta</td><td>Liviano</td><td>Igual</td></tr>
         </tbody>
       </table>
     </div>
     <div class="recomendacion">
-      <p><b>Mi recomendación: N1 · Más anchas.</b> Es la idea de partida y la que menos cambia: siguen siendo post-its en grilla, con la misma esquina doblada, las mismas acciones al pasar y la misma animación al abrir una nota. Lo que gana es que cada renglón entra el doble de texto, así que una nota mediana se lee sin abrirla, y la bandeja deja de verse como una columna angosta pegada al borde.</p>
-      <p><b>Plan B: N2 · Tiras</b>, si Leo prefiere leer las notas como una lista. Es lo más prolijo con muchas notas, pero pierde el aire de post-it, que fue parte de lo que se eligió en la sala. N3 queda vistosa pero desordenada para el minimalismo de Doro, y N4 suma una jerarquía que solo sirve a la nota recién escrita.</p>
-      <p>En el código, el ancho pasa de <code>vw</code> a la misma fórmula (en el boceto es <code>cqi</code> de la sala, que en pantalla completa es igual al ancho de la ventana). Con la bandeja de tareas abierta, por debajo de 1384 px abrir una sigue cerrando la otra, como hoy.</p>
-      <pre><code>// BandejaNotas.tsx · N1 (boceto en px ÷ 16 → rem)
-abierta ? "w-[clamp(20rem,calc(50vw-2.5rem),37.5rem)] translate-y-0" : "w-16 translate-y-[calc(100%-3.75rem)]"
+      <p><b>Mi recomendación: V1 · Hoja doblada.</b> Es la que más se parece a una nota de papel sin sumar color ni texto. La esquina redonda de hoy ya quería decir «esquina doblada»; V1 la dobla de verdad, y con eso alcanza para que se lea como post-it y no como un botón gris. Sigue siendo una sola superficie gris con un solo detalle, en la línea del home D4.</p>
+      <p><b>Plan B: V3 · Solo texto</b>, si la sala tiene que pesar lo menos posible. Es la más tranquila, pero deja de ser un post-it, que fue parte de lo que se eligió. V4 es la más simpática y la que más llama la atención: puede gustar, pero la cinta y la inclinación suman ruido. V5 marca demasiado para algo secundario.</p>
+      <pre><code>// BandejaNotas.tsx · V1 (solo cambian las clases del &lt;li&gt;; la esquina va en index.css)
+&lt;li className={cn("nota-hoja group relative flex min-w-0 flex-col gap-1.5 rounded-[0.1875rem] bg-muted p-[0.8125rem] pb-2.5 …", …)}&gt;
+  …
+  {/* «Pasar a un tema» sube junto a la X, porque abajo a la derecha está el doblez */}
+  &lt;button className="absolute top-1 right-[1.875rem] …"&gt;
 
-&lt;ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,10.75rem),1fr))] gap-2.5 …"&gt;
-&lt;li className={cn("… p-3.5 pb-2.5 text-[0.875rem] …", leyendo === n.id ? "col-span-full pr-8" : "aspect-[3/2]")}&gt;
-  &lt;button className={cn("…", leyendo !== n.id &amp;&amp; "line-clamp-4")}&gt;{n.texto}&lt;/button&gt;</code></pre>
+/* index.css */
+.nota-hoja { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%); }
+.nota-hoja::after {
+  content: ""; position: absolute; right: 0; bottom: 0; width: 1rem; height: 1rem;
+  border-top-left-radius: 0.1875rem;
+  background: linear-gradient(315deg, transparent 50%, color-mix(in oklch, var(--foreground) 13%, var(--muted)) 50%);
+}</code></pre>
     </div>
   </section>
 </div>
@@ -425,23 +467,29 @@ abierta ? "w-[clamp(20rem,calc(50vw-2.5rem),37.5rem)] translate-y-0" : "w-16 tra
     { texto: 'Repasar Faraday antes del jueves', hora: '19:08', fase: 'Pomodoro' },
   ];
 
-  const GRUPOS = { hoy: 'Para comparar', n: 'Propuestas' };
+  const GRUPOS = { hoy: 'Para comparar', v: 'Propuestas' };
   const OPCIONES = [
     { id: 'hoy', letra: '0', nombre: 'Hoy', grupo: 'hoy',
-      resumen: 'La bandeja de hoy: entre <b>300 y 380 px</b> de ancho, cuadrados de 104 px como mínimo y 4 renglones antes de cortar. Queda para comparar.',
-      gana: ['Compacta: no le quita lugar al reloj.', 'Los cuadrados se leen como post-its.'], pierde: ['En cada renglón entran unas 13 letras: casi toda nota corta palabras o queda cortada.', 'En pantallas grandes sobra lugar y la bandeja sigue angosta.'] },
-    { id: 'n1', letra: 'N1', nombre: 'Más anchas', grupo: 'n', rec: true,
-      resumen: 'La idea de partida. La bandeja crece con la pantalla, <b>de 320 a 600 px</b>, y los post-its pasan de cuadrados a <b>apaisados 3:2</b>, de 172 px como mínimo. Todo lo demás queda como está.',
-      gana: ['El doble de letras por renglón: una nota mediana se lee entera sin abrirla.', 'Sigue siendo la misma pieza; el cambio en el código es chico.', 'En una pantalla grande la bandeja usa el lugar que tiene.'], pierde: ['Ocupa más de la sala: con 1180 px llega cerca del asa de tareas.', 'Con una sola nota corta, el post-it ancho se ve vacío.'] },
-    { id: 'n2', letra: 'N2', nombre: 'Tiras', grupo: 'n',
-      resumen: 'Una nota por renglón, a lo ancho de la bandeja, con la hora a la derecha. Muestra <b>2 renglones</b> y el resto se abre tocando. Al pasar, la hora deja lugar a las acciones.',
-      gana: ['Lo más ordenado con muchas notas: se leen de arriba abajo, como una lista.', 'Cada renglón entra casi entero.'], pierde: ['Se pierde el post-it: parece una lista de tareas más.', 'Con muchas notas cortas sobra ancho en cada renglón.'] },
-    { id: 'n3', letra: 'N3', nombre: 'Según lo que dicen', grupo: 'n',
-      resumen: 'La bandeja ancha de N1, pero <b>cada post-it mide lo que pide su texto</b> (hasta 7 renglones) y se acomodan en columnas, como un corcho.',
-      gana: ['Lo corto queda chico y lo largo se lee sin abrir.', 'Es la que más se parece a un tablero de post-its.'], pierde: ['El orden se lee por columnas, no por filas: cuesta saber cuál es la última.', 'Bordes desparejos: lo menos sereno de las cuatro.'] },
-    { id: 'n4', letra: 'N4', nombre: 'La última, grande', grupo: 'n',
-      resumen: '<b>La nota recién anotada ocupa todo el ancho</b>, con letra más grande, justo arriba de la línea para escribir. Las anteriores quedan como cuadrados chicos arriba.',
-      gana: ['Se ve lo que acabás de escribir, sin abrirlo.', 'Las viejas ocupan poco.'], pierde: ['Las viejas siguen con el problema de hoy.', 'Cada nota nueva mueve todas las demás.'] },
+      resumen: 'Un cuadrado gris lleno con la esquina de abajo a la izquierda más redonda. Queda para comparar.',
+      gana: ['Sobrio y del mismo gris que todo lo demás.'], pierde: ['Parece una casilla o un botón más que una nota.', 'La esquina redonda casi no se ve.'] },
+    { id: 'v1', letra: 'V1', nombre: 'Hoja doblada', grupo: 'v', rec: true,
+      resumen: 'El mismo gris, con esquinas rectas y <b>la esquina de abajo doblada de verdad</b>: un triángulo un tono más oscuro, como una hoja a la que se le levanta la punta.',
+      gana: ['Se lee como un papel sin agregar color.', 'Un solo detalle, el mismo en todas.', 'La esquina de hoy ya quería decir esto.'], pierde: ['El «pasar a un tema» sube junto a la X, porque abajo está el doblez.'] },
+    { id: 'v2', letra: 'V2', nombre: 'Cuaderno', grupo: 'v',
+      resumen: 'Una hoja blanca con <b>renglones finos y una línea de margen</b>. El texto se apoya en los renglones, como un apunte en la carpeta.',
+      gana: ['Es lo más «de estudiar» de todas.', 'Se distingue de las tareas de un vistazo.'], pierde: ['Los renglones son líneas de más en una pantalla que busca calma.', 'En Negro casi no se ven.'] },
+    { id: 'v3', letra: 'V3', nombre: 'Solo texto', grupo: 'v',
+      resumen: '<b>Sin caja.</b> Cada nota es su texto con la hora arriba, y una línea fina encima la separa de la anterior. Al pasar el mouse, la línea se oscurece.',
+      gana: ['Lo más liviano: casi no pesa en la sala.', 'Es el idioma del home D4, con líneas finas y nada de cajas.'], pierde: ['Deja de ser un post-it.', 'Con notas cortas quedan muchos huecos.'] },
+    { id: 'v4', letra: 'V4', nombre: 'Con cinta', grupo: 'v',
+      resumen: 'Una hoja blanca <b>pegada con un pedazo de cinta</b>, apenas torcida. Se endereza al pasar el mouse o al abrirla. La cinta es gris translúcida, sin acento.',
+      gana: ['La más cálida y la más reconocible como post-it.', 'Torcer y enderezar le da vida al pasar el mouse.'], pierde: ['Es la que más llama la atención: cinta, sombra e inclinación juntas.', 'En oscuro la sombra se pierde.'] },
+    { id: 'v5', letra: 'V5', nombre: 'Tinta', grupo: 'v',
+      resumen: 'La nota se invierte: <b>fondo del color del texto y letra del color del fondo</b>. En oscuro quedan notas blancas.',
+      gana: ['Contraste máximo: se lee perfecto.', 'Mantiene la forma de hoy.'], pierde: ['Es lo más pesado de la pantalla, más que el reloj.', 'Seis notas oscuras juntas hacen un bloque.'] },
+    { id: 'v6', letra: 'V6', nombre: 'Contorno', grupo: 'v',
+      resumen: '<b>Sin relleno, solo un borde fino</b> y redondo, con la hora arriba. Al pasar el mouse, la hora deja lugar a las acciones y el borde se oscurece.',
+      gana: ['Liviana pero sigue siendo una caja.', 'La línea para escribir se ve igual que las notas.'], pierde: ['Se parece a cualquier tarjeta de la app.', 'Sin relleno, la nota pierde el «objeto».'] },
   ];
 
   const indice = document.getElementById('indice');
@@ -465,6 +513,14 @@ abierta ? "w-[clamp(20rem,calc(50vw-2.5rem),37.5rem)] translate-y-0" : "w-16 tra
       </section>`);
   });
   indice.insertAdjacentHTML('beforeend', '<a href="#cierre"><b>→</b>Comparación</a>');
+
+  // Muestrario: cada aspecto en una bandeja chica, con las mismas cuatro notas
+  const notaHtml = (n) => `<li class="postit"><span class="txt">${esc(n.texto)}</span><span class="meta">${n.tema ? ic('libro') : ''}${n.hora} · ${n.fase}</span></li>`;
+  document.getElementById('muestrario').innerHTML = OPCIONES.map((o) => `
+    <a class="muestra" href="#${o.id}" data-v="${o.id}">
+      <span class="muestra-nombre"><b>${o.letra}</b>${o.nombre}</span>
+      <span class="muestra-panel"><ul class="bn-lista">${[0, 2, 3, 4].map((i) => notaHtml(EJEMPLO[i])).join('')}</ul></span>
+    </a>`).join('');
 
   const maquetas = new Map();
   let actual = null, mando = null;
