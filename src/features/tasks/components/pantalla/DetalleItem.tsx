@@ -1,8 +1,9 @@
 import { useEffect, useRef, type ReactNode } from "react"
-import { Check, ChevronDown, X } from "lucide-react"
+import { Check, X } from "lucide-react"
 import { tipoDe } from "@/features/tasks/avance"
 import { INFO_TIPO, diasHasta, estaRendido, relativo } from "@/features/tasks/bandeja"
-import { IconoTipo } from "@/features/tasks/components/IconosTareas"
+import { IconoDeTema, IconoTipo } from "@/features/tasks/components/IconosTareas"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Regla } from "@/features/tasks/components/Regla"
 import { SelectorFecha } from "@/features/tasks/components/SelectorFecha"
 import { cn } from "@/lib/utils"
@@ -34,6 +35,7 @@ function Dato({ etiqueta, children }: { etiqueta: ReactNode; children: ReactNode
     )
 }
 
+const SIN_TEMA = "general"
 const opcional = <small className="text-[0.75rem]">· opcional</small>
 const campoTexto = "w-full resize-y rounded-lg border bg-background px-3.5 py-3 text-[0.875rem] leading-normal outline-none placeholder:text-muted-foreground/65 focus:border-brand"
 
@@ -211,20 +213,24 @@ export function DetalleItem({ tarea, nombreTema, temas, onCerrar, onCambiar, onA
             <div className="grid grid-cols-2 gap-4 border-t pt-3.5">
                 {fecha}
                 <Dato etiqueta="Tema">
-                    <label className="relative flex w-fit items-center gap-1">
-                        <select
-                            value={tarea.topic_id ?? ""}
-                            onChange={(e) => onCambiar({ topic_id: e.target.value || null })}
-                            aria-label="Tema"
-                            className="max-w-full cursor-pointer appearance-none truncate bg-transparent pr-5 text-[0.875rem] font-medium outline-none focus-visible:shadow-[inset_0_-1.5px_0_var(--brand)]"
-                        >
+                    {/* Radix no deja "" como valor: «General» (sin tema) va como SIN_TEMA */}
+                    <Select value={tarea.topic_id ?? SIN_TEMA} onValueChange={(v) => onCambiar({ topic_id: v === SIN_TEMA ? null : v })}>
+                        <SelectTrigger size="sm" aria-label="Tema" className="max-w-full text-[0.875rem] font-medium">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent position="popper" align="start">
                             {temas.map((t) => (
-                                <option key={t.id} value={t.id}>{t.name}</option>
+                                <SelectItem key={t.id} value={t.id}>
+                                    <IconoDeTema icono={t.icon} className="size-4" />
+                                    {t.name}
+                                </SelectItem>
                             ))}
-                            <option value="">General</option>
-                        </select>
-                        <ChevronDown className="pointer-events-none absolute right-0 size-3.5 text-muted-foreground" aria-hidden />
-                    </label>
+                            <SelectItem value={SIN_TEMA}>
+                                <IconoDeTema icono="bandeja" className="size-4" />
+                                General
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </Dato>
             </div>
 
