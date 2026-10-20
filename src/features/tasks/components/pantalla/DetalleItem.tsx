@@ -1,12 +1,12 @@
 import { useEffect, useRef, type ReactNode } from "react"
-import { Check, X } from "lucide-react"
+import { Check, ChevronDown, X } from "lucide-react"
 import { tipoDe } from "@/features/tasks/avance"
 import { INFO_TIPO, diasHasta, estaRendido, relativo } from "@/features/tasks/bandeja"
 import { IconoTipo } from "@/features/tasks/components/IconosTareas"
 import { Regla } from "@/features/tasks/components/Regla"
 import { SelectorFecha } from "@/features/tasks/components/SelectorFecha"
 import { cn } from "@/lib/utils"
-import type { ItemChecklist, Tarea, TareaPayload, TipoItem } from "@/types/dominio"
+import type { ItemChecklist, Tarea, TareaPayload, Tema, TipoItem } from "@/types/dominio"
 
 const EJEMPLO_OBS: Record<TipoItem, string> = {
     parcial: "Ej.: El profe dijo que repasemos el punto 16 del práctico 7",
@@ -18,6 +18,8 @@ const EJEMPLO_OBS: Record<TipoItem, string> = {
 interface DetalleItemProps {
     tarea: Tarea
     nombreTema: string
+    /** Los temas a los que se puede pasar (más «General»). */
+    temas: Tema[]
     onCerrar: () => void
     onCambiar: (datos: TareaPayload) => void
     onAlternarHecha: (tarea: Tarea) => void
@@ -37,9 +39,9 @@ const campoTexto = "w-full resize-y rounded-lg border bg-background px-3.5 py-3 
 
 /**
  * El detalle de lo que tocaste, «desde la esquina»: se despliega desde abajo a la
- * derecha como un menú. Lo que se escribe se guarda al salir del campo.
+ * derecha como un menú. Lo que se escribe (también el nombre) se guarda al salir del campo.
  */
-export function DetalleItem({ tarea, nombreTema, onCerrar, onCambiar, onAlternarHecha }: DetalleItemProps) {
+export function DetalleItem({ tarea, nombreTema, temas, onCerrar, onCambiar, onAlternarHecha }: DetalleItemProps) {
     const cerrarRef = useRef<HTMLButtonElement>(null)
     const tipo = tipoDe(tarea)
     const lista = tarea.checklist ?? []
@@ -168,12 +170,30 @@ export function DetalleItem({ tarea, nombreTema, onCerrar, onCambiar, onAlternar
             className="detalle-esquina fixed right-4 bottom-4 z-30 flex max-h-[calc(100dvh-5.5rem)] w-[min(23.75rem,calc(100%-2rem))] origin-bottom-right flex-col gap-3.5 overflow-y-auto rounded-[0.875rem] border bg-card px-5 pt-[1.125rem] pb-[1.375rem] shadow-2xl"
         >
             <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                     <p className="m-0 mb-1.5 flex items-center gap-1.5 text-[0.8125rem] text-muted-foreground">
                         <IconoTipo tipo={tipo} className="size-3.5" />
                         {INFO_TIPO[tipo].uno} · {nombreTema}
                     </p>
-                    <h3 className="m-0 text-[1.125rem] leading-[1.2] font-semibold tracking-[-0.02em] text-balance [overflow-wrap:anywhere]">{tarea.header}</h3>
+                    {/* El nombre se edita en el lugar: Enter confirma, vacío vuelve al que tenía */}
+                    <textarea
+                        defaultValue={tarea.header}
+                        rows={1}
+                        maxLength={160}
+                        aria-label="Nombre"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                                e.currentTarget.blur()
+                            }
+                        }}
+                        onBlur={(e) => {
+                            const header = e.target.value.replace(/\s+/g, " ").trim()
+                            if (!header) e.target.value = tarea.header
+                            else if (header !== tarea.header) onCambiar({ header })
+                        }}
+                        className="m-0 -mx-1 block min-w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] resize-none overflow-hidden rounded-md bg-transparent px-1 text-[1.125rem] leading-[1.2] font-semibold tracking-[-0.02em] [field-sizing:content] outline-none hover:bg-muted focus:bg-transparent focus:shadow-[inset_0_-1.5px_0_var(--brand)]"
+                    />
                 </div>
                 <button
                     ref={cerrarRef}
@@ -191,7 +211,20 @@ export function DetalleItem({ tarea, nombreTema, onCerrar, onCambiar, onAlternar
             <div className="grid grid-cols-2 gap-4 border-t pt-3.5">
                 {fecha}
                 <Dato etiqueta="Tema">
-                    <b className="font-medium">{nombreTema}</b>
+                    <label className="relative flex w-fit items-center gap-1">
+                        <select
+                            value={tarea.topic_id ?? ""}
+                            onChange={(e) => onCambiar({ topic_id: e.target.value || null })}
+                            aria-label="Tema"
+                            className="max-w-full cursor-pointer appearance-none truncate bg-transparent pr-5 text-[0.875rem] font-medium outline-none focus-visible:shadow-[inset_0_-1.5px_0_var(--brand)]"
+                        >
+                            {temas.map((t) => (
+                                <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                            <option value="">General</option>
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-0 size-3.5 text-muted-foreground" aria-hidden />
+                    </label>
                 </Dato>
             </div>
 

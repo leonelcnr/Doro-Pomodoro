@@ -171,6 +171,7 @@ const TareasPage = () => {
                     key={tareaElegida.id}
                     tarea={tareaElegida}
                     nombreTema={nombreTema(tareaElegida)}
+                    temas={temas}
                     onCerrar={() => establecerElegido(null)}
                     onCambiar={(datos) => void guardar(tareaElegida.id, datos)}
                     onAlternarHecha={alternarHecha}

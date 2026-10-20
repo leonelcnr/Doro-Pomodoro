@@ -5,6 +5,7 @@ import { AnilloSala } from "@/features/home/components/AnilloSala"
 import { ContadorTareas } from "@/features/home/components/ContadorTareas"
 import { useSalaNueva } from "@/features/home/hooks/useSalaNueva"
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas"
+import { DetalleItem } from "@/features/tasks/components/pantalla/DetalleItem"
 import { INFO_TIPO, estaPendiente } from "@/features/tasks/bandeja"
 import { tipoDe } from "@/features/tasks/avance"
 import { useTareas } from "@/features/tasks/hooks/useTareas"
@@ -32,6 +33,9 @@ const Home = () => {
     const [metaDiaria] = useMetaDiaria()
     const { creando, crearSala, unirse } = useSalaNueva()
     const [bandejaAbierta, establecerBandejaAbierta] = useState(false)
+    // La que se está editando en el detalle «desde la esquina»
+    const [editando, establecerEditando] = useState<number | null>(null)
+    const tareaEditada = tareas.find((t) => t.id === editando)
     const pendientes = tareas.filter(estaPendiente).length
 
     const actualizar = async (id: number, datos: TareaPayload) => {
@@ -104,8 +108,21 @@ const Home = () => {
                 onSoltar={soltar}
                 onMarcarHecha={marcarHecha}
                 onCambiarChecklist={cambiarChecklist}
+                onEditar={(t) => establecerEditando(t.id)}
                 onCrear={crear}
             />
+
+            {tareaEditada && (
+                <DetalleItem
+                    key={tareaEditada.id}
+                    tarea={tareaEditada}
+                    nombreTema={temas.find((t) => t.id === tareaEditada.topic_id)?.name ?? "General"}
+                    temas={temas}
+                    onCerrar={() => establecerEditando(null)}
+                    onCambiar={(datos) => void actualizar(tareaEditada.id, datos)}
+                    onAlternarHecha={(t) => void actualizar(t.id, { status: t.status === "Completada" ? "Sin Empezar" : "Completada" })}
+                />
+            )}
         </div>
     )
 }

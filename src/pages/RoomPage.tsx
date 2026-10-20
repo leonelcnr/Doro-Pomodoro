@@ -14,6 +14,7 @@ import { MenuCuentaApp } from "@/components/encabezado/MenuCuentaApp";
 import { BandejaNotas } from "@/features/room/components/BandejaNotas";
 import { PestanasTareas, TareasDeLaSala, type AmbitoBandeja } from "@/features/room/components/TareasDeLaSala";
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas";
+import { DetalleItem } from "@/features/tasks/components/pantalla/DetalleItem";
 import { INFO_TIPO, estaPendiente } from "@/features/tasks/bandeja";
 import { tipoDe } from "@/features/tasks/avance";
 import { useTimerStore } from "@/store/timerStore";
@@ -74,6 +75,9 @@ const RoomPage = () => {
 
     const [bandejaAbierta, establecerBandejaAbierta] = useState(false);
     const [notasAbiertas, establecerNotasAbiertas] = useState(false);
+    // La tuya que se está editando en el detalle «desde la esquina»
+    const [editando, establecerEditando] = useState<number | null>(null);
+    const tareaEditada = mias.find((t) => t.id === editando);
     // El aviso global se para encima del lápiz, o al lado de las notas abiertas; al salir vuelve a la esquina
     const ponerLugar = useAvisoStore((s) => s.ponerLugar);
     useEffect(() => {
@@ -218,6 +222,7 @@ const RoomPage = () => {
                 onSoltar={soltar}
                 onMarcarHecha={marcarHecha}
                 onCambiarChecklist={cambiarChecklist}
+                onEditar={(t) => establecerEditando(t.id)}
                 onCrear={(p) => void crear(p)}
                 pendientesExtra={deLaSala.filter(estaPendiente).length}
                 nuevas={nuevas}
@@ -256,6 +261,18 @@ const RoomPage = () => {
                 onBorrarTodas={borrarTodas}
                 onPonerTema={ponerTema}
             />
+
+            {tareaEditada && (
+                <DetalleItem
+                    key={tareaEditada.id}
+                    tarea={tareaEditada}
+                    nombreTema={temas.find((t) => t.id === tareaEditada.topic_id)?.name ?? "General"}
+                    temas={temas}
+                    onCerrar={() => establecerEditando(null)}
+                    onCambiar={(datos) => void guardar(tareaEditada.id, datos)}
+                    onAlternarHecha={alternarHecha}
+                />
+            )}
         </div>
     );
 };
