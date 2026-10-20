@@ -567,7 +567,17 @@ toque frío y nada de rojo. Para ver si cambia la sensación, el boceto suma el 
 de las notas» (Hoy / Neutro con croma 0 / Cálido, tono 80), que cambia solo los grises de
 las notas: fondo, sombra, texto tenue y línea.
 
-**Estado:** falta que Leo elija. No se tocó código de `src/`.
+**ELEGIDA (2026-10-20): B · Tarjeta con pestaña**, con estos agregados:
+- **Arrastrar desde la bandeja:** una nota se saca de la bandeja arrastrándola hasta la
+  sala. Pasados 6 px sale como suelta y sigue al puntero (las sueltas pasan por encima de
+  la bandeja mientras dura). Si se la suelta de nuevo sobre la bandeja, vuelve a como
+  estaba. El alfiler queda como segunda forma.
+- **Queda donde la dejás:** sin imán al borde (se sacó «Se pega al borde»).
+- **Gris:** el rosado solo se nota en el tema claro; en oscuro y negro, el gris de hoy está
+  bien. El ajuste del boceto cambia solo el claro (Hoy / Neutro / Cálido).
+
+**Estado:** B elegida. Falta decidir el gris del tema claro (Neutro o Cálido) y aplicarlo
+al código. No se tocó código de `src/`.
 
 ## Propuestas transversales
 

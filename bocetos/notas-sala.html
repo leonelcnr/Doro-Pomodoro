@@ -244,6 +244,11 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 .postit .fijar { top: 4px; right: 30px; }
 .postit .fijar[aria-pressed="true"] { opacity: 1; color: var(--fg); }
 .fijadas { position: absolute; inset: 0; z-index: 9; pointer-events: none; }
+/* Mientras se arrastra una nota desde la bandeja, las sueltas pasan por encima de la bandeja */
+.sala[data-sacando] .fijadas { z-index: 13; }
+.bn-lista .postit { touch-action: pan-y; }
+.bn-lista .postit.afuera { opacity: .35; }
+.sala[data-sacando] .bn-lista { cursor: grabbing; }
 .fija { position: absolute; width: min(240px, calc(100% - 24px)); pointer-events: auto; touch-action: none; cursor: grab; user-select: none; aspect-ratio: auto !important; box-shadow: var(--sombra); --lineas: 7; animation: pega .45s var(--salida) both; transition: left .35s var(--salida), top .35s var(--salida), scale .2s ease, rotate .3s var(--salida), box-shadow .2s, opacity .4s ease; }
 @keyframes pega { from { opacity: 0; scale: .9; translate: 0 8px; } }
 .fija .txt { pointer-events: none; }
@@ -258,14 +263,10 @@ html.en-completa, html.en-completa body { overflow: hidden; }
 /* Con el reloj corriendo y el mouse quieto, las sueltas se apagan como el lápiz */
 .sala[data-quieto] .fija:not(:hover) { opacity: .35; }
 
-/* ───────── Gris de las notas: Hoy (zinc, tono 286), Neutro (sin color) o Cálido ─────────
+/* ───────── Gris de las notas en el tema claro: Hoy (zinc, tono 286), Neutro o Cálido ─────────
    Solo dentro de las notas (bandeja, sueltas y muestrario): el resto de la sala queda igual. */
-:root[data-gris="neutro"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.967 0 0); --campo-hover: oklch(0.945 0 0); --tarjeta: oklch(0.985 0 0); --tenue: oklch(0.552 0 0); --linea: oklch(0.92 0 0); --sombra: 0 1px 2px oklch(0.2 0 0 / 0.06), 0 10px 28px -14px oklch(0.2 0 0 / 0.2); }
-:root[data-gris="calido"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.967 0.004 80); --campo-hover: oklch(0.945 0.005 80); --tarjeta: oklch(0.985 0.003 80); --tenue: oklch(0.552 0.012 75); --linea: oklch(0.92 0.005 80); --sombra: 0 1px 2px oklch(0.2 0.01 70 / 0.06), 0 10px 28px -14px oklch(0.2 0.01 70 / 0.2); }
-:root[data-theme="dark"][data-gris="neutro"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.274 0 0); --campo-hover: oklch(0.3 0 0); --tarjeta: oklch(0.165 0 0); --tenue: oklch(0.705 0 0); --linea: oklch(1 0 0 / 10%); }
-:root[data-theme="dark"][data-gris="calido"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.274 0.006 75); --campo-hover: oklch(0.3 0.006 75); --tarjeta: oklch(0.165 0.005 75); --tenue: oklch(0.705 0.012 75); --linea: oklch(1 0 0 / 10%); }
-:root[data-theme="dark"][data-negro][data-gris="neutro"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.225 0 0); --campo-hover: oklch(0.25 0 0); --tarjeta: oklch(0.135 0 0); }
-:root[data-theme="dark"][data-negro][data-gris="calido"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.225 0.005 75); --campo-hover: oklch(0.25 0.005 75); --tarjeta: oklch(0.135 0.004 75); }
+:root[data-theme="light"][data-gris="neutro"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.967 0 0); --campo-hover: oklch(0.945 0 0); --tarjeta: oklch(0.985 0 0); --tenue: oklch(0.552 0 0); --linea: oklch(0.92 0 0); --sombra: 0 1px 2px oklch(0.2 0 0 / 0.06), 0 10px 28px -14px oklch(0.2 0 0 / 0.2); }
+:root[data-theme="light"][data-gris="calido"] :is(.bn, .fijadas, .muestra-panel) { --campo: oklch(0.967 0.004 80); --campo-hover: oklch(0.945 0.005 80); --tarjeta: oklch(0.985 0.003 80); --tenue: oklch(0.552 0.012 75); --linea: oklch(0.92 0.005 80); --sombra: 0 1px 2px oklch(0.2 0.01 70 / 0.06), 0 10px 28px -14px oklch(0.2 0.01 70 / 0.2); }
 
 /* ───────── Muestrario: las siete juntas, una bandeja chica cada una ───────── */
 .muestrario { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 72px; }
@@ -322,7 +323,7 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
   <header class="cabecera">
     <h1>Notas de la sala</h1>
     <p><b>3ª ronda.</b> De la 2ª quedó claro que el problema es leer las notas largas, y que <b>se leen mejor rectangulares</b>. Acá están los dos estilos de tus fotos, A · Renglón y B · Tarjeta con pestaña (la nota de Tareas), más una mezcla, C, que es A con la esquina doblada de V1. La 2ª ronda quedó en <code>notas-sala-ronda2.html</code>.</p>
-    <p><b>Lo nuevo: dejar notas en la sala.</b> En cada nota hay un alfiler, que se ve al pasar el mouse. La nota sale de la bandeja a la sala y <b>se arrastra a cualquier lado</b>, como un post-it. Cada maqueta arranca con una suelta. Con el reloj corriendo y el mouse quieto unos segundos, las sueltas se apagan. En pantalla completa el mando cambia de opción (← →), N abre las notas, T cambia el tema, G cambia el gris de las notas, H esconde el mando y Esc sale.</p>
+    <p><b>Elegida: B.</b> Las notas se pueden dejar en la sala. <b>Arrastrá una nota desde la bandeja hasta la sala</b> y queda donde la soltás; si la soltás de nuevo sobre la bandeja, vuelve. También se puede tocar el alfiler, que se ve al pasar el mouse. Ya suelta, <b>se arrastra a cualquier lado</b>, como un post-it. Cada maqueta arranca con una suelta. Con el reloj corriendo y el mouse quieto unos segundos, las sueltas se apagan. En pantalla completa el mando cambia de opción (← →), N abre las notas, T cambia el tema, G cambia el gris de las notas, H esconde el mando y Esc sale.</p>
   </header>
 
   <div class="ajustes">
@@ -333,17 +334,11 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
         <button type="button" data-tema="negro" aria-pressed="false">Negro</button>
       </div>
     </div>
-    <div class="ajuste"><span class="ajuste-nombre">Gris de las notas</span>
+    <div class="ajuste"><span class="ajuste-nombre">Gris de las notas en claro</span>
       <div class="segmentado" id="grises">
         <button type="button" data-gris="hoy" aria-pressed="true">Hoy</button>
         <button type="button" data-gris="neutro" aria-pressed="false">Neutro</button>
         <button type="button" data-gris="calido" aria-pressed="false">Cálido</button>
-      </div>
-    </div>
-    <div class="ajuste"><span class="ajuste-nombre">Al soltar una nota</span>
-      <div class="segmentado" id="soltar">
-        <button type="button" data-soltar="libre" aria-pressed="true">Queda donde la dejás</button>
-        <button type="button" data-soltar="borde" aria-pressed="false">Se pega al borde</button>
       </div>
     </div>
   </div>
@@ -366,8 +361,9 @@ pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 1
       </table>
     </div>
     <div class="recomendacion">
-      <p><b>Mi recomendación: B · Tarjeta con pestaña.</b> Es rectangular y se lee bien, es la misma nota que ya está en Tareas, y es la que mejor funciona suelta en la sala: la pestaña de arriba es lo que la hace parecer pegada. <b>Plan B: A</b>, si en la bandeja preferís algo más liviano. Se pueden mezclar: A en la bandeja y B cuando se suelta.</p>
-      <p><b>Las sueltas:</b> el alfiler de la nota la deja en la sala. Se arrastra a cualquier lado y su lugar se guarda en por ciento, para que no se pierda al cambiar el tamaño de la ventana. El alfiler tachado la devuelve a la bandeja sin borrarla. Con el reloj corriendo y el mouse quieto se apagan, como el lápiz. El ajuste «Al soltar» de arriba prueba un imán que las lleva al borde más cercano para que no tapen el reloj. Lo dejaría libre: Leo pidió moverlas como un post-it.</p>
+      <p><b>Elegida: B · Tarjeta con pestaña.</b> Es rectangular y se lee bien, es la misma nota que ya está en Tareas, y es la que mejor funciona suelta en la sala: la pestaña de arriba es lo que la hace parecer pegada.</p>
+      <p><b>Las sueltas:</b> una nota se saca de la sala de dos formas. Se puede <b>arrastrar directo desde la bandeja</b>: pasados unos píxeles sale como suelta y sigue al puntero, y si se la suelta de nuevo sobre la bandeja vuelve a como estaba. También se puede tocar el alfiler. Ya suelta, se arrastra a cualquier lado y <b>queda donde la dejás</b>, sin imán. Su lugar se guarda en por ciento, para que no se pierda al cambiar el tamaño de la ventana. El alfiler tachado la devuelve a la bandeja sin borrarla. Con el reloj corriendo y el mouse quieto, se apagan como el lápiz.</p>
+      <p><b>El gris:</b> en el tema claro el gris zinc de hoy puede leerse rosado; en oscuro y en negro no hay problema. El ajuste de arriba cambia solo el gris del tema claro.</p>
       <p>Para la app, <code>NotaSesion</code> suma <code>fija?: { x: number; y: number }</code> (en por ciento de la sala), en el mismo localStorage. Las sueltas van en un <code>NotasSueltas</code> aparte, dentro de la sala, con pointer events y sin librería.</p>
       <pre><code>// BandejaNotas.tsx · B (boceto en px ÷ 16 → rem)
 &lt;ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,12.25rem),1fr))] gap-3 pt-1"&gt;
@@ -481,11 +477,6 @@ onPointerUp={() =&gt; { guardarPosicion(nota.id); inicio.current = null }}</code
   let grisGuardado = null;
   try { grisGuardado = localStorage.getItem('notas-sala-gris'); } catch {}
   ponerGris(GRISES.includes(grisGuardado) ? grisGuardado : 'hoy');
-  let modoSoltar = 'libre';
-  document.querySelectorAll('#soltar button').forEach((b) => b.addEventListener('click', () => {
-    modoSoltar = b.dataset.soltar;
-    document.querySelectorAll('#soltar button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-  }));
   let guardado = null;
   try { guardado = localStorage.getItem('notas-sala-tema'); } catch {}
   ponerTema(TEMAS.includes(guardado) ? guardado : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
@@ -526,7 +517,7 @@ onPointerUp={() =&gt; { guardarPosicion(nota.id); inicio.current = null }}</code
       <section class="opcion" id="${o.id}" data-op="${o.id}">
         <div class="opcion-cabeza">
           <div>
-            <h2><span class="letra">${o.letra}</span> <span class="nombre">${o.nombre}</span>${o.rec ? ' <span class="marca-rec">Recomendada</span>' : ''}</h2>
+            <h2><span class="letra">${o.letra}</span> <span class="nombre">${o.nombre}</span>${o.rec ? ' <span class="marca-rec">Elegida</span>' : ''}</h2>
             <p class="resumen">${o.resumen}</p>
           </div>
           <div class="notas-op">
@@ -660,6 +651,54 @@ onPointerUp={() =&gt; { guardarPosicion(nota.id); inicio.current = null }}</code
       else if (e.target.closest('.atema')) { const n = notas.find((x) => x.id === id); n.tema = !n.tema; fijadas.querySelector(`[data-id="${id}"]`)?.remove(); pintarNotas(); }
       else if (e.target.closest('.txt')) { leyendo = leyendo === id ? null : id; pintarNotas(); }
     });
+    // Arrastrar desde la bandeja: pasados 6 px la nota sale como suelta y sigue al puntero.
+    // Si se suelta sobre la bandeja, vuelve a como estaba; si no, queda donde se dejó.
+    let recienArrastrada = false;
+    lista.addEventListener('pointerdown', (e) => {
+      const li = e.target.closest('.postit');
+      if (!li || e.target.closest('.acc') || e.button > 0) return;
+      const n = notas.find((x) => x.id === +li.dataset.id);
+      const antes = n.fija && { ...n.fija };
+      const desde = { x: e.clientX, y: e.clientY };
+      const rLi = li.getBoundingClientRect();
+      let el = null, r = null, dx = 0, dy = 0;
+      li.setPointerCapture(e.pointerId);
+      const mover = (ev) => {
+        if (!el) {
+          if (Math.hypot(ev.clientX - desde.x, ev.clientY - desde.y) < 6) return;
+          r = sala.getBoundingClientRect();
+          fijadas.querySelector(`[data-id="${n.id}"]`)?.remove();
+          n.fija = { x: 0, y: 0 };
+          pintarFijadas();
+          el = fijadas.querySelector(`[data-id="${n.id}"]`);
+          el.classList.add('arrastrando');
+          el.style.animation = 'none';
+          dx = Math.min(desde.x - rLi.left, el.offsetWidth - 24); dy = Math.min(desde.y - rLi.top, 40);
+          li.classList.add('afuera');
+          sala.setAttribute('data-sacando', '');
+        }
+        n.fija.x = Math.min(Math.max((ev.clientX - dx - r.left) / r.width * 100, 0), 100 - el.offsetWidth / r.width * 100);
+        n.fija.y = Math.min(Math.max((ev.clientY - dy - r.top) / r.height * 100, 0), 100 - el.offsetHeight / r.height * 100);
+        el.style.left = n.fija.x + '%'; el.style.top = n.fija.y + '%';
+      };
+      const soltar = (ev) => {
+        li.removeEventListener('pointermove', mover);
+        if (!el) return;
+        recienArrastrada = true;
+        sala.removeAttribute('data-sacando');
+        const rb = bn.getBoundingClientRect();
+        const sobreBandeja = bn.hasAttribute('data-abierta') && ev.clientX >= rb.left && ev.clientX <= rb.right && ev.clientY >= rb.top && ev.clientY <= rb.bottom;
+        if (sobreBandeja) { el.remove(); n.fija = antes; }
+        else el.classList.remove('arrastrando');
+        pintarNotas();
+      };
+      li.addEventListener('pointermove', mover);
+      li.addEventListener('pointerup', soltar, { once: true });
+      li.addEventListener('pointercancel', soltar, { once: true });
+    });
+    // El clic que termina un arrastre no abre la nota
+    lista.addEventListener('click', (e) => { if (recienArrastrada) { recienArrastrada = false; e.stopImmediatePropagation(); } }, true);
+
     fijadas.addEventListener('click', (e) => { const b = e.target.closest('.soltar'); if (b) alternarFija(+b.closest('.fija').dataset.id); });
 
     // Arrastrar una suelta: la posición se guarda en por ciento de la sala
@@ -681,11 +720,6 @@ onPointerUp={() =&gt; { guardarPosicion(nota.id); inicio.current = null }}</code
       const soltar = () => {
         el.classList.remove('arrastrando');
         el.removeEventListener('pointermove', mover);
-        if (modoSoltar === 'borde') {
-          const w = el.offsetWidth / r.width * 100, margen = 16 / r.width * 100;
-          n.fija.x = n.fija.x + w / 2 < 50 ? margen : 100 - w - margen;
-          el.style.left = n.fija.x + '%';
-        }
       };
       el.addEventListener('pointermove', mover);
       el.addEventListener('pointerup', soltar, { once: true });
