@@ -501,6 +501,26 @@ opcional sin dejar de ser notas).
 
 Sigue la Fase 2/3 del plan: aplicarlo al código.
 
+## Notas: rediseño visual (2026-10-20)
+
+Leo quiere cambiar un poco cómo se ven los post-it de `BandejaNotas`. La idea de partida
+es que sean más anchos. Boceto: `bocetos/notas-sala.html`,
+https://claude.ai/artifact/WbAkU9XuWEg8jdCeiYeidd (versión 1). Todo sobre la sala
+aprobada, con la bandeja de notas abierta y seis notas de ejemplo. La de hoy (0) queda
+para comparar.
+
+- **N1 · Más anchas** (recomendada): la bandeja va de 320 a 600 px
+  (`clamp(320px, 50vw − 40px, 600px)`) y los post-its pasan a ser apaisados 3:2, de
+  172 px como mínimo. Entra el doble de texto por renglón y el resto queda como está.
+- **N2 · Tiras** (plan B): una nota por renglón a lo ancho, 2 renglones visibles y la
+  hora a la derecha. Al pasar el mouse aparecen las acciones.
+- **N3 · Según lo que dicen:** cada post-it tiene el alto que pide su texto (hasta 7
+  renglones), en columnas como un corcho.
+- **N4 · La última, grande:** la nota recién anotada va a todo el ancho y con letra
+  más grande. Las anteriores quedan como cuadrados chicos.
+
+**Estado:** falta que Leo elija. No se tocó código de `src/`.
+
 ## Propuestas transversales
 
 - **La bandeja del home** muestra las mismas tareas: si se elige una bandeja nueva para la
