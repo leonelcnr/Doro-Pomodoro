@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Check, X } from "lucide-react"
+import { Check, Pencil, X } from "lucide-react"
 import { tipoDe } from "@/features/tasks/avance"
 import { cuandoCorto, diasHasta, estaRendido } from "@/features/tasks/bandeja"
 import { IconoTipo } from "@/features/tasks/components/IconosTareas"
@@ -13,14 +13,16 @@ interface FocoTareaProps {
     onSoltar: () => void
     onMarcarHecha: (tarea: Tarea) => void
     onCambiarChecklist: (tarea: Tarea, checklist: ItemChecklist[]) => void
+    /** Abre el detalle para editarla: el lápiz o doble clic en la tarjeta. */
+    onEditar: (tarea: Tarea) => void
 }
 
 /**
  * «Ahora»: lo que elegiste para la sesión, arriba de la bandeja. Un práctico o un
  * parcial traen su regla (puntos o unidades), un informe sus partes y una tarea
- * suelta el botón para marcarla.
+ * suelta el botón para marcarla. El lápiz (o doble clic en la tarjeta) abre el detalle.
  */
-export function FocoTarea({ foco, nombreTema, onSoltar, onMarcarHecha, onCambiarChecklist }: FocoTareaProps) {
+export function FocoTarea({ foco, nombreTema, onSoltar, onMarcarHecha, onCambiarChecklist, onEditar }: FocoTareaProps) {
     // Al marcarla, la tarjeta se va hacia la derecha antes de dar paso a lo que sigue
     const [saliendo, establecerSaliendo] = useState<number | null>(null)
     const marcar = (tarea: Tarea) => {
@@ -93,6 +95,8 @@ export function FocoTarea({ foco, nombreTema, onSoltar, onMarcarHecha, onCambiar
     return (
         <div
             key={foco.id}
+            // Doble clic en la tarjeta edita; en un botón (la regla, las partes) solo cuenta como dos clics
+            onDoubleClick={(e) => !(e.target as Element).closest("button") && onEditar(foco)}
             className={cn(
                 "rounded-[0.875rem] bg-muted px-4 py-3.5 transition-[opacity,translate] duration-300 ease-out",
                 saliendo === foco.id && "translate-x-2.5 opacity-0",
@@ -105,6 +109,15 @@ export function FocoTarea({ foco, nombreTema, onSoltar, onMarcarHecha, onCambiar
                     <b className="text-[0.9375rem] leading-[1.35] font-semibold">{foco.header}</b>
                     <small className="text-[0.78125rem] text-muted-foreground">{[nombreTema, cuando].filter(Boolean).join(" · ")}</small>
                 </div>
+                <button
+                    type="button"
+                    onClick={() => onEditar(foco)}
+                    aria-label="Editar"
+                    title="Editar"
+                    className="grid size-7 shrink-0 place-items-center rounded-[0.4375rem] text-muted-foreground hover:bg-card hover:text-foreground"
+                >
+                    <Pencil className="size-3.5" aria-hidden />
+                </button>
                 <button
                     type="button"
                     onClick={onSoltar}

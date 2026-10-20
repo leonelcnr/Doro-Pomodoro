@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useAuth } from "@/features/auth/context/useAuth"
-import type { NotaSesion } from "@/types/dominio"
+import type { NotaSesion, PosicionNota } from "@/types/dominio"
 
 const claveDe = (usuarioId: string | undefined) => `doro-notas-${usuarioId ?? "anonimo"}`
 
@@ -53,6 +53,9 @@ export function useNotas() {
     const borrarTodas = () => cambiar(() => [])
     const ponerTema = (id: string, temaId: string | null) =>
         cambiar((l) => l.map((n) => (n.id === id ? { ...n, temaId } : n)))
+    // Dejarla suelta en la sala (o moverla); null la devuelve a la bandeja sin borrarla
+    const fijar = (id: string, fija: PosicionNota | null) =>
+        cambiar((l) => l.map((n) => (n.id === id ? { ...n, fija } : n)))
 
-    return { notas, agregar, quitar, borrarTodas, ponerTema }
+    return { notas, agregar, quitar, borrarTodas, ponerTema, fijar }
 }

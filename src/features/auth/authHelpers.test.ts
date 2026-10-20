@@ -11,7 +11,6 @@ const auth = vi.hoisted(() => ({
 const funciones = vi.hoisted(() => ({ invoke: vi.fn() }));
 
 vi.mock("@/lib/supabase", () => ({ default: { auth, functions: funciones } }));
-vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 function conSesion(sesion: { access_token?: string; user: { id: string; is_anonymous: boolean } } | null) {
   auth.getSession.mockResolvedValue({ data: { session: sesion } });

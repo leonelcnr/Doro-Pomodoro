@@ -1,0 +1,359 @@
+<title>Vista previa de Doro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Vista previa al compartir doro.page (og:image 1200×630 + título y descripción). Tres
+   imágenes, cada una en claro u oscuro, mostradas como las ve WhatsApp y Discord.
+   Tokens de index.css: violeta profundo (289). La imagen usa cqw: a 1200 px de ancho,
+   1cqw = 12 px, y así se exporta. */
+:root {
+  --bg: oklch(1 0 0);
+  --superficie: oklch(1 0 0);
+  --fg: oklch(0.141 0.005 285.8);
+  --tenue: oklch(0.552 0.016 285.9);
+  --linea: oklch(0.92 0.004 286.3);
+  --campo: oklch(0.967 0.001 286.4);
+  --sombra: 0 1px 2px oklch(0.2 0.01 285 / 0.06), 0 10px 28px -14px oklch(0.2 0.01 285 / 0.2);
+  --acento: oklch(0.52 0.25 289);
+  --wa-fondo: oklch(0.93 0.02 85);
+  --wa-burbuja: oklch(0.93 0.09 140);
+  --wa-tarjeta: oklch(0.89 0.07 140);
+  --wa-texto: oklch(0.2 0.01 150);
+  --wa-tenue: oklch(0.45 0.02 150);
+  --dc-fondo: oklch(0.985 0.002 260);
+  --dc-tarjeta: oklch(0.955 0.004 260);
+  --dc-borde: oklch(0.85 0.01 260);
+  --dc-link: oklch(0.5 0.17 255);
+  --dc-texto: oklch(0.3 0.01 260);
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.141 0.005 285.8); --superficie: oklch(0.21 0.006 285.9); --fg: oklch(0.985 0 0);
+    --tenue: oklch(0.705 0.015 286.1); --linea: oklch(1 0 0 / 10%); --campo: oklch(0.274 0.006 286);
+    --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 14px 34px -16px oklch(0 0 0 / 0.7);
+    --acento: oklch(0.63 0.22 289);
+    --wa-fondo: oklch(0.2 0.01 200); --wa-burbuja: oklch(0.38 0.07 165); --wa-tarjeta: oklch(0.33 0.06 165); --wa-texto: oklch(0.95 0.005 150); --wa-tenue: oklch(0.78 0.02 150);
+    --dc-fondo: oklch(0.29 0.01 270); --dc-tarjeta: oklch(0.25 0.01 270); --dc-borde: oklch(0.4 0.01 270); --dc-link: oklch(0.72 0.12 250); --dc-texto: oklch(0.86 0.01 270);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.141 0.005 285.8); --superficie: oklch(0.21 0.006 285.9); --fg: oklch(0.985 0 0);
+  --tenue: oklch(0.705 0.015 286.1); --linea: oklch(1 0 0 / 10%); --campo: oklch(0.274 0.006 286);
+  --sombra: 0 1px 2px oklch(0 0 0 / 0.3), 0 14px 34px -16px oklch(0 0 0 / 0.7);
+  --acento: oklch(0.63 0.22 289);
+  --wa-fondo: oklch(0.2 0.01 200); --wa-burbuja: oklch(0.38 0.07 165); --wa-tarjeta: oklch(0.33 0.06 165); --wa-texto: oklch(0.95 0.005 150); --wa-tenue: oklch(0.78 0.02 150);
+  --dc-fondo: oklch(0.29 0.01 270); --dc-tarjeta: oklch(0.25 0.01 270); --dc-borde: oklch(0.4 0.01 270); --dc-link: oklch(0.72 0.12 250); --dc-texto: oklch(0.86 0.01 270);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+code { font-size: .88em; background: var(--campo); padding: 1px 5px; border-radius: 4px; }
+
+.pagina { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 96px; }
+@media (min-width: 720px) { .pagina { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); padding-block: 56px 120px; } }
+h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 12px; font-weight: 600; text-wrap: balance; }
+.cabecera p { margin: 0 0 10px; color: var(--tenue); max-width: 72ch; }
+.cabecera b { color: var(--fg); font-weight: 500; }
+
+.ajustes { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; padding: 14px 0; margin: 24px 0 48px; border-block: 1px solid var(--linea); }
+.ajuste { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+.ajuste-nombre { font-weight: 500; color: var(--fg); }
+.segmentado { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 8px; background: var(--campo); border: 1px solid var(--linea); }
+.segmentado button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--tenue); }
+.segmentado button[aria-pressed="true"] { background: var(--superficie); color: var(--fg); box-shadow: var(--sombra); }
+
+/* ───────── Texto ───────── */
+.texto { display: grid; gap: 24px; margin-bottom: 72px; }
+@media (min-width: 900px) { .texto { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.texto h2, .opcion h2, .cierre h2 { margin: 0 0 8px; font-size: 24px; letter-spacing: -0.02em; font-weight: 600; }
+.campos { display: grid; gap: 14px; font-size: 14px; }
+.campo-og { display: grid; gap: 2px; }
+.campo-og dt { font-size: 12.5px; color: var(--tenue); font-family: ui-monospace, monospace; }
+.campo-og dd { margin: 0; }
+.campo-og .antes { color: var(--tenue); text-decoration: line-through; text-decoration-color: color-mix(in oklch, var(--tenue) 60%, transparent); }
+.cuenta-car { font-size: 12px; color: var(--tenue); font-variant-numeric: tabular-nums; }
+
+/* ───────── Opciones ───────── */
+.opcion { margin-bottom: 88px; }
+.opcion h2 .letra { color: var(--acento); margin-right: 8px; }
+.marca-rec { font-size: 13px; font-weight: 500; color: var(--acento); margin-left: 8px; }
+.resumen { margin: 0 0 8px; color: var(--tenue); max-width: 70ch; }
+.resumen b { color: var(--fg); font-weight: 500; }
+.notas { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; font-size: 14px; margin: 12px 0 20px; max-width: 760px; }
+@media (max-width: 520px) { .notas { grid-template-columns: 1fr; } }
+.notas h3 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+.notas ul { margin: 0; padding-left: 18px; color: var(--tenue); }
+.vistas { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 980px) { .vistas { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); } }
+.rotulo { font-size: 12.5px; color: var(--tenue); margin: 0 0 8px; }
+.previas { display: grid; gap: 20px; }
+
+/* ───────── La imagen og (1200×630) ───────── */
+.og-marco { container-type: inline-size; width: 100%; max-width: 100%; aspect-ratio: 1200 / 630; border-radius: 10px; overflow: hidden; border: 1px solid var(--linea); }
+.og { --o-bg: oklch(0.985 0.002 285); --o-fg: oklch(0.16 0.006 285); --o-tenue: oklch(0.5 0.014 285); --o-linea: oklch(0.91 0.005 285); --o-campo: oklch(0.955 0.004 285); --o-acento: oklch(0.52 0.25 289);
+  position: relative; width: 100%; height: 100%; background: var(--o-bg); color: var(--o-fg); font-family: var(--f-sans); overflow: hidden; }
+.og[data-tono="oscuro"] { --o-bg: oklch(0.13 0.005 285); --o-fg: oklch(0.97 0.002 285); --o-tenue: oklch(0.7 0.014 285); --o-linea: oklch(0.27 0.006 285); --o-campo: oklch(0.2 0.006 285); --o-acento: oklch(0.66 0.21 289); }
+.og-marca { position: absolute; left: 6cqw; top: 5.5cqw; display: flex; align-items: center; gap: 1.1cqw; font-size: 2.6cqw; font-weight: 600; letter-spacing: -0.02em; }
+.og-marca svg { width: 3cqw; height: 3cqw; color: var(--o-acento); }
+.og-dominio { position: absolute; right: 6cqw; top: 6cqw; font-size: 1.7cqw; color: var(--o-tenue); }
+
+/* A · El reloj */
+.og-a .hora { position: absolute; left: 6cqw; bottom: 9cqw; font-size: 21cqw; font-weight: 600; letter-spacing: -0.06em; line-height: .8; font-variant-numeric: tabular-nums; }
+.og-a .hora span { color: var(--o-acento); }
+.og-a .lema { position: absolute; right: 6cqw; bottom: 9.4cqw; width: 32cqw; font-size: 2.6cqw; line-height: 1.25; color: var(--o-tenue); text-wrap: balance; }
+.og-a .lema b { color: var(--o-fg); font-weight: 500; }
+.og-a .fase { position: absolute; left: 6.4cqw; top: 15cqw; display: flex; align-items: center; gap: .9cqw; font-size: 1.9cqw; color: var(--o-acento); font-weight: 500; }
+.og-a .fase i { width: .7cqw; height: .7cqw; border-radius: 50%; background: currentColor; }
+.og-a .hilo { position: absolute; left: 6cqw; right: 6cqw; bottom: 5cqw; height: .35cqw; border-radius: 1cqw; background: var(--o-linea); }
+.og-a .hilo::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 37%; border-radius: inherit; background: var(--o-acento); }
+
+/* B · La sala */
+.og-b .titular { position: absolute; left: 6cqw; top: 15cqw; width: 40cqw; font-size: 4.8cqw; line-height: 1.05; font-weight: 600; letter-spacing: -0.035em; text-wrap: balance; }
+.og-b .titular span { color: var(--o-acento); }
+.og-b .bajada { position: absolute; left: 6cqw; top: 33cqw; width: 36cqw; font-size: 2.1cqw; line-height: 1.35; color: var(--o-tenue); }
+.og-b .ventana { position: absolute; right: -2cqw; top: 9cqw; width: 50cqw; height: 40cqw; border-radius: 1.6cqw; border: .12cqw solid var(--o-linea); background: var(--o-bg); box-shadow: 0 2cqw 6cqw -2cqw oklch(0.2 0.02 289 / .25); display: flex; flex-direction: column; }
+.og-b .v-barra { display: flex; align-items: center; justify-content: space-between; padding: 1.6cqw 2.4cqw; font-size: 1.4cqw; color: var(--o-tenue); }
+.og-b .avs { display: flex; }
+.og-b .avs span { width: 3cqw; height: 3cqw; border-radius: 50%; border: .25cqw solid var(--o-bg); background: var(--o-campo); display: grid; place-items: center; font-size: 1.3cqw; font-weight: 600; color: var(--o-fg); }
+.og-b .avs span + span { margin-left: -.9cqw; }
+.og-b .avs span:nth-child(2) { background: color-mix(in oklch, var(--o-acento) 25%, var(--o-campo)); }
+.og-b .v-reloj { flex: 1; display: grid; place-content: center; justify-items: center; gap: 1cqw; padding-bottom: 4cqw; }
+.og-b .v-fase { font-size: 1.4cqw; color: var(--o-acento); font-weight: 500; }
+.og-b .v-hora { font-size: 10cqw; font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+.og-b .v-asa { margin: 0 2.4cqw; height: 4.6cqw; border: .12cqw solid var(--o-linea); border-bottom: 0; border-radius: 1.4cqw 1.4cqw 0 0; background: var(--o-campo); display: flex; align-items: center; padding: 0 1.8cqw; font-size: 1.35cqw; color: var(--o-tenue); gap: .6cqw; }
+.og-b .v-asa b { color: var(--o-fg); font-weight: 500; }
+
+/* C · El anillo */
+.og-c .anillo { position: absolute; left: 50%; top: 50%; width: 30cqw; height: 30cqw; transform: translate(-50%, -54%); }
+.og-c .anillo svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.og-c .anillo .base { stroke: var(--o-linea); }
+.og-c .anillo .arco { stroke: var(--o-acento); }
+.og-c .centro { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .4cqw; }
+.og-c .centro b { font-size: 6.4cqw; font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+.og-c .centro span { font-size: 1.6cqw; color: var(--o-tenue); }
+.og-c .lema { position: absolute; left: 0; right: 0; bottom: 6.5cqw; text-align: center; font-size: 2.8cqw; font-weight: 500; letter-spacing: -0.02em; }
+.og-c .lema span { color: var(--o-tenue); font-weight: 400; }
+
+/* ───────── Cómo se ve al compartir ───────── */
+.wa { background: var(--wa-fondo); border-radius: 12px; padding: 16px; }
+.wa-burbuja { margin-left: auto; max-width: 340px; background: var(--wa-burbuja); border-radius: 10px 2px 10px 10px; padding: 4px 4px 6px; color: var(--wa-texto); font-family: system-ui, sans-serif; }
+.wa-tarjeta { background: var(--wa-tarjeta); border-radius: 7px; overflow: hidden; }
+.wa-tarjeta .og-marco { border: 0; border-radius: 0; }
+.wa-datos { padding: 7px 10px 8px; }
+.wa-datos b { display: block; font-size: 13.5px; font-weight: 600; }
+.wa-datos p { margin: 1px 0 0; font-size: 12.5px; color: var(--wa-tenue); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.wa-datos small { display: block; margin-top: 3px; font-size: 12px; color: var(--wa-tenue); }
+.wa-msj { padding: 6px 6px 0; font-size: 14px; }
+.wa-msj a { color: oklch(0.5 0.13 230); }
+:root[data-theme="dark"] .wa-msj a { color: oklch(0.78 0.11 220); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .wa-msj a { color: oklch(0.78 0.11 220); } }
+.wa-hora { text-align: right; font-size: 11px; color: var(--wa-tenue); padding: 0 6px; }
+
+.dc { background: var(--dc-fondo); border-radius: 12px; padding: 16px; font-family: system-ui, sans-serif; color: var(--dc-texto); font-size: 14px; }
+.dc-msj { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 0 12px; }
+.dc-av { width: 36px; height: 36px; border-radius: 50%; background: oklch(0.62 0.15 30); }
+.dc-nombre { font-weight: 600; color: var(--fg); font-size: 14px; }
+.dc-nombre small { font-weight: 400; color: var(--tenue); font-size: 11.5px; margin-left: 6px; }
+.dc-embed { grid-column: 2; margin-top: 6px; max-width: 420px; background: var(--dc-tarjeta); border-left: 4px solid var(--acento); border-radius: 4px; padding: 10px 14px 14px 12px; }
+.dc-embed small { font-size: 12px; color: var(--tenue); }
+.dc-embed b { display: block; color: var(--dc-link); font-weight: 600; margin: 2px 0 4px; }
+.dc-embed p { margin: 0 0 12px; font-size: 13.5px; line-height: 1.35; }
+.dc-embed .og-marco { border-radius: 4px; border: 0; }
+
+/* ───────── Cierre ───────── */
+.tabla { overflow-x: auto; margin-bottom: 28px; }
+table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font-weight: 600; font-size: 13px; color: var(--tenue); }
+td:first-child { font-weight: 500; white-space: nowrap; }
+.recomendacion { max-width: 72ch; }
+.recomendacion p { margin: 0 0 12px; }
+pre { background: var(--campo); border: 1px solid var(--linea); border-radius: 10px; padding: 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; }
+</style>
+
+<div class="pagina">
+  <header class="cabecera">
+    <h1>Vista previa de Doro</h1>
+    <p>Lo que aparece cuando alguien pega <b>doro.page</b> o el link de una sala en WhatsApp o Discord. Hoy la imagen es <code>Home.png</code>, una captura de la pantalla vieja, y el texto es largo.</p>
+    <p>Las tres imágenes están armadas en HTML a 1200 × 630, como se van a exportar. Cada una va en claro o en oscuro: la imagen no sigue el tema de quien la mira.</p>
+  </header>
+
+  <div class="ajustes">
+    <div class="ajuste"><span class="ajuste-nombre">Página</span>
+      <div class="segmentado" id="temas">
+        <button type="button" data-tema="light" aria-pressed="true">Claro</button>
+        <button type="button" data-tema="dark" aria-pressed="false">Oscuro</button>
+      </div>
+    </div>
+    <div class="ajuste"><span class="ajuste-nombre">Imagen</span>
+      <div class="segmentado" id="tonos">
+        <button type="button" data-tono="claro" aria-pressed="false">Clara</button>
+        <button type="button" data-tono="oscuro" aria-pressed="true">Oscura</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="texto">
+    <div>
+      <h2>El texto</h2>
+      <p class="resumen">WhatsApp corta la descripción en dos renglones (unos 100 caracteres) y Discord la muestra entera. Va primero lo que es y después lo que lo distingue.</p>
+    </div>
+    <dl class="campos">
+      <div class="campo-og"><dt>og:title</dt><dd><span class="antes">Doro · Pomodoro para estudiar, solo o con amigos</span><br>Doro - Pomodoro</dd></div>
+      <div class="campo-og"><dt>og:description</dt><dd><span class="antes">Salas con reloj compartido, tareas por materia y estadísticas de tu enfoque. Sin crear cuenta.</span><br><span id="desc">Pomodoro para estudiar solo o con amigos: el mismo reloj para toda la sala. Sin crear cuenta.</span> <span class="cuenta-car" id="desc-n"></span></dd></div>
+      <div class="campo-og"><dt>description</dt><dd>Reloj Pomodoro gratis para estudiar solo o con amigos: salas con el mismo reloj para todos, tareas por materia y tus horas de estudio. Sin crear cuenta.</dd></div>
+    </dl>
+  </section>
+
+  <section class="opcion" data-op="a">
+    <h2><span class="letra">A</span>El reloj</h2>
+    <p class="resumen">La hora enorme, como en la sala, con el hilo de avance y una línea que dice qué es. <b>Se reconoce chica</b>: en la miniatura de WhatsApp sigue leyéndose «25:00».</p>
+    <div class="notas">
+      <div><h3>Qué gana</h3><ul><li>Se entiende en una miniatura.</li><li>Es la pantalla principal de la app.</li></ul></div>
+      <div><h3>Qué pierde</h3><ul><li>No muestra que es en grupo; lo dice el texto.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="opcion" data-op="b">
+    <h2><span class="letra">B</span>La sala <span class="marca-rec">Elegida · 2026-10-18</span></h2>
+    <p class="resumen">Un titular a la izquierda y la ventana de la sala a la derecha, con tres avatares, el reloj y el asa de la bandeja.</p>
+    <div class="notas">
+      <div><h3>Qué gana</h3><ul><li>Muestra lo que la distingue: estudiar con otros.</li><li>Va bien con los links de invitación.</li></ul></div>
+      <div><h3>Qué pierde</h3><ul><li>En la miniatura de WhatsApp el titular queda chico.</li><li>Hay que rehacerla si cambia la sala.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="opcion" data-op="c">
+    <h2><span class="letra">C</span>El anillo</h2>
+    <p class="resumen">El anillo del home, que crea la sala y muestra el avance del día, solo y centrado, con el lema abajo.</p>
+    <div class="notas">
+      <div><h3>Qué gana</h3><ul><li>Es la puerta de entrada de la app.</li><li>La más tranquila.</li></ul></div>
+      <div><h3>Qué pierde</h3><ul><li>Fuera de contexto, un anillo no dice «Pomodoro».</li></ul></div>
+    </div>
+  </section>
+
+  <section class="cierre">
+    <h2>Comparación</h2>
+    <div class="tabla">
+      <table>
+        <thead><tr><th></th><th>Se lee en miniatura</th><th>Dice qué es</th><th>Dice que es en grupo</th><th>Mantenimiento</th></tr></thead>
+        <tbody>
+          <tr><td>A · El reloj</td><td>Sí</td><td>Sí</td><td>Por el texto</td><td>Ninguno</td></tr>
+          <tr><td>B · La sala</td><td>A medias</td><td>Sí</td><td>Sí</td><td>Si cambia la sala</td></tr>
+          <tr><td>C · El anillo</td><td>Sí</td><td>No</td><td>No</td><td>Si cambia el home</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="recomendacion">
+      <p><b>Elegida: B · La sala, en oscuro</b> (Leo, 2026-10-18). Exportada a <code>public/compartir.png</code>; la ventana se acortó para que el asa entre entera.</p>
+      <p>Recomendación original: A en oscuro. Es la que se entiende en la miniatura chica de WhatsApp, donde se ve casi siempre, y no envejece cuando cambia la interfaz. Lo de estudiar en grupo lo cuenta la descripción. En oscuro resalta más en los chats de fondo claro y en Discord.</p>
+      <p>La imagen se exporta desde este mismo HTML con Playwright a 1200 × 630 y queda en <code>public/compartir.png</code>.</p>
+      <pre><code>&lt;title&gt;Doro - Pomodoro&lt;/title&gt;
+&lt;meta name="description" content="Reloj Pomodoro gratis para estudiar solo o con amigos: …" /&gt;
+&lt;meta property="og:title" content="Doro - Pomodoro" /&gt;
+&lt;meta property="og:description" content="Pomodoro para estudiar solo o con amigos: …" /&gt;
+&lt;meta property="og:image" content="https://doro.page/compartir.png" /&gt;
+&lt;meta property="og:image:width" content="1200" /&gt;
+&lt;meta property="og:image:height" content="630" /&gt;
+&lt;meta property="og:image:alt" content="«Estudiá con el mismo reloj que tus amigos», junto a una sala de Doro" /&gt;</code></pre>
+    </div>
+  </section>
+</div>
+
+<template id="t-a">
+  <div class="og og-a">
+    <div class="og-marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728a9 9 0 0 0 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></svg>Doro</div>
+    <div class="og-dominio">doro.page</div>
+    <div class="fase"><i></i>Pomodoro</div>
+    <div class="hora">25<span>:</span>00</div>
+    <div class="lema"><b>Pomodoro para estudiar,</b> solo o con amigos.</div>
+    <div class="hilo"></div>
+  </div>
+</template>
+<template id="t-b">
+  <div class="og og-b">
+    <div class="og-marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728a9 9 0 0 0 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></svg>Doro</div>
+    <div class="titular">Estudiá con el <span>mismo reloj</span> que tus amigos.</div>
+    <div class="bajada">Pomodoro, tareas por materia y tus horas de estudio. Sin crear cuenta.</div>
+    <div class="ventana">
+      <div class="v-barra"><span>← Salir</span><span class="avs"><span>A</span><span>M</span><span>L</span></span></div>
+      <div class="v-reloj"><span class="v-fase">● Pomodoro</span><span class="v-hora">18:42</span></div>
+      <div class="v-asa"><span>Siguiente:</span> <b>Parcial de Análisis</b></div>
+    </div>
+  </div>
+</template>
+<template id="t-c">
+  <div class="og og-c">
+    <div class="og-marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728a9 9 0 0 0 -12.728 -12.728z"/><path d="M16.243 7.757a6 6 0 0 0 -8.486 0"/></svg>Doro</div>
+    <div class="og-dominio">doro.page</div>
+    <div class="anillo">
+      <svg viewBox="0 0 100 100"><circle class="base" cx="50" cy="50" r="44" fill="none" stroke-width="3.2"/><circle class="arco" cx="50" cy="50" r="44" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="99"/></svg>
+      <div class="centro"><b>2 h 10</b><span>de 3 h hoy</span></div>
+    </div>
+    <div class="lema">Pomodoro para estudiar <span>· solo o con amigos</span></div>
+  </div>
+</template>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  const tonos = document.querySelectorAll('#tonos button');
+  const temas = document.querySelectorAll('#temas button');
+  let tono = 'oscuro';
+  const leer = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+
+  const ponerTema = (t) => { raiz.setAttribute('data-theme', t); temas.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t))); guardar('compartir-tema', t); };
+  temas.forEach((b) => b.addEventListener('click', () => ponerTema(b.dataset.tema)));
+  ponerTema(leer('compartir-tema') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+  const desc = document.getElementById('desc').textContent.trim();
+  document.getElementById('desc-n').textContent = `(${desc.length} caracteres)`;
+
+  const og = (op) => {
+    const marco = document.createElement('div');
+    marco.className = 'og-marco';
+    marco.appendChild(document.getElementById('t-' + op).content.cloneNode(true));
+    return marco;
+  };
+
+  document.querySelectorAll('.opcion[data-op]').forEach((sec) => {
+    const op = sec.dataset.op;
+    const vistas = document.createElement('div');
+    vistas.className = 'vistas';
+    const izq = document.createElement('div');
+    izq.innerHTML = '<p class="rotulo">og:image · 1200 × 630</p>';
+    izq.appendChild(og(op));
+    const der = document.createElement('div');
+    der.className = 'previas';
+    der.innerHTML = `
+      <div><p class="rotulo">En WhatsApp</p><div class="wa"><div class="wa-burbuja"><div class="wa-tarjeta"></div><div class="wa-msj">Entren: <a>doro.page/invitacion/7F3A9C21</a></div><div class="wa-hora">21:04</div></div></div></div>
+      <div><p class="rotulo">En Discord</p><div class="dc"><div class="dc-msj"><div class="dc-av"></div><div><div class="dc-nombre">Mica <small>hoy a las 21:04</small></div><div>doro.page/invitacion/7F3A9C21</div></div><div class="dc-embed"><small>Doro</small><b>Doro - Pomodoro</b><p></p></div></div></div></div>`;
+    const tarjeta = der.querySelector('.wa-tarjeta');
+    tarjeta.appendChild(og(op));
+    tarjeta.insertAdjacentHTML('beforeend', `<div class="wa-datos"><b>Doro - Pomodoro</b><p></p><small>doro.page</small></div>`);
+    tarjeta.querySelector('p').textContent = desc;
+    const embed = der.querySelector('.dc-embed');
+    embed.querySelector('p').textContent = desc;
+    embed.appendChild(og(op));
+    vistas.append(izq, der);
+    sec.appendChild(vistas);
+  });
+
+  const ponerTono = (t) => {
+    tono = t;
+    document.querySelectorAll('.og').forEach((el) => el.dataset.tono = t);
+    tonos.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tono === t)));
+    guardar('compartir-tono', t);
+  };
+  tonos.forEach((b) => b.addEventListener('click', () => ponerTono(b.dataset.tono)));
+  ponerTono(leer('compartir-tono') || 'oscuro');
+})();
+</script>

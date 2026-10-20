@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { toast } from "sonner"
+import { avisar } from "@/store/avisoStore"
 import { parsearInvitacion } from "@/features/home/parsearInvitacion"
 import * as salasService from "@/features/room/services/salasService"
 import { useTimerStore } from "@/store/timerStore"
@@ -35,7 +35,7 @@ export function useSalaNueva() {
             navigate(`/room/${await salasService.crearSala(estadoInicial)}`)
         } catch (error: unknown) {
             console.error(error)
-            toast.error("No se pudo crear la sala")
+            avisar("No se pudo crear la sala", { falla: true })
             // Solo se rehabilita si falló: en el camino feliz ya se navegó
             establecerCreando(false)
         }
@@ -45,14 +45,14 @@ export function useSalaNueva() {
     const unirse = async (texto: string) => {
         const codigo = parsearInvitacion(texto)
         if (!codigo) {
-            toast.error("Ese link o código no parece válido")
+            avisar("Ese link o código no parece válido", { falla: true })
             return
         }
         try {
             navigate(`/room/${await salasService.unirseASala(codigo)}`)
         } catch (error: unknown) {
             console.error(error)
-            toast.error(error instanceof Error && error.message ? error.message : "No se pudo entrar a la sala")
+            avisar(error instanceof Error && error.message ? error.message : "No se pudo entrar a la sala", { falla: true })
         }
     }
 

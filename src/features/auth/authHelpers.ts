@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { avisar } from "@/store/avisoStore";
 import type { Session } from "@supabase/supabase-js";
 import supabase from "@/lib/supabase";
 import type { Usuario } from "@/types/dominio";
@@ -141,20 +141,18 @@ export function resolverRegresoOAuth(): void {
       });
     })().catch((error: unknown) => {
       console.error(error);
-      toast.error("No se pudo entrar a tu cuenta.");
+      avisar("No se pudo entrar a tu cuenta", { falla: true });
     });
     return;
   }
 
   if (codigoError === "identity_already_exists") {
-    toast.error("Esa cuenta ya es de otro usuario", {
-      description: "Entrá con ella desde «Entrar» para usarla.",
-    });
+    avisar("Esa cuenta ya es de otro usuario: entrá desde «Entrar»", { falla: true });
   } else {
     const descripcionError = paramsHash.get("error_description") || paramsConsulta.get("error_description");
-    toast.error("No se pudo entrar", {
-      description: descripcionError?.replace(/\+/g, " ") || "Probá de nuevo en un momento.",
-    });
+    // El detalle del proveedor va a la consola; en pantalla, sin detalle técnico
+    if (descripcionError) console.error("Error del proveedor:", descripcionError.replace(/\+/g, " "));
+    avisar("No se pudo entrar. Probá de nuevo en un momento", { falla: true });
   }
 }
 
@@ -179,11 +177,11 @@ export async function cerrarEntradaPendiente(): Promise<EntradaCerrada | null> {
 
   const nombre = NOMBRES_PROVEEDOR[entrada.proveedor];
   if (entrada.vinculando) {
-    toast.success(`Listo: lo que hiciste quedó en tu cuenta de ${nombre}`);
+    avisar(`Listo: lo que hiciste quedó en tu cuenta de ${nombre}`);
     return { volverA: entrada.volverA, sumado: false };
   }
   if (!entrada.cuentaExistente) {
-    toast.success(`Entraste con ${nombre}`);
+    avisar(`Entraste con ${nombre}`);
     return { volverA: entrada.volverA, sumado: false };
   }
 
@@ -192,14 +190,12 @@ export async function cerrarEntradaPendiente(): Promise<EntradaCerrada | null> {
       body: { token_anonimo: entrada.tokenAnonimo },
     });
     if (!error) {
-      toast.success(`Listo: lo que hiciste se sumó a tu cuenta de ${nombre}`);
+      avisar(`Listo: lo que hiciste se sumó a tu cuenta de ${nombre}`);
       return { volverA: entrada.volverA, sumado: true };
     }
     console.error("No se pudo sumar lo del anónimo:", error);
   }
-  toast.success(`Entraste a tu cuenta de ${nombre}`, {
-    description: "No se pudo sumar lo que hiciste sin cuenta.",
-  });
+  avisar("Entraste, pero no se pudo sumar lo que hiciste sin cuenta", { falla: true });
   return { volverA: entrada.volverA, sumado: false };
 }
 

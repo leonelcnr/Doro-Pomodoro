@@ -501,6 +501,93 @@ opcional sin dejar de ser notas).
 
 Sigue la Fase 2/3 del plan: aplicarlo al código.
 
+## Notas: rediseño visual (2026-10-20)
+
+Leo quiere cambiar un poco cómo se ven los post-it de `BandejaNotas`. La idea de partida
+es que sean más anchos. Boceto: `bocetos/notas-sala.html`,
+https://claude.ai/artifact/WbAkU9XuWEg8jdCeiYeidd (versión 1). Todo sobre la sala
+aprobada, con la bandeja de notas abierta y seis notas de ejemplo. La de hoy (0) queda
+para comparar.
+
+- **N1 · Más anchas** (recomendada): la bandeja va de 320 a 600 px
+  (`clamp(320px, 50vw − 40px, 600px)`) y los post-its pasan a ser apaisados 3:2, de
+  172 px como mínimo. Entra el doble de texto por renglón y el resto queda como está.
+- **N2 · Tiras** (plan B): una nota por renglón a lo ancho, 2 renglones visibles y la
+  hora a la derecha. Al pasar el mouse aparecen las acciones.
+- **N3 · Según lo que dicen:** cada post-it tiene el alto que pide su texto (hasta 7
+  renglones), en columnas como un corcho.
+- **N4 · La última, grande:** la nota recién anotada va a todo el ancho y con letra
+  más grande. Las anteriores quedan como cuadrados chicos.
+
+**No gustó ninguna.** Leo no quiere cambiar el ancho ni el acomodo sino el aspecto de
+cada nota. La 1ª ronda quedó en `bocetos/notas-sala-ronda1.html`.
+
+### 2ª ronda (2026-10-20): solo el aspecto
+
+Misma URL (versión 2). La bandeja tiene el mismo ancho, la misma grilla y el mismo
+comportamiento que hoy. Cambia el material, el borde y los detalles de cada nota. Arriba
+hay un muestrario con las siete juntas y abajo cada una en la sala.
+
+- **V1 · Hoja doblada** (recomendada): el mismo gris, con esquinas rectas y la esquina de
+  abajo doblada de verdad (`clip-path` + un triángulo un tono más oscuro). «Pasar a un tema»
+  sube junto a la X.
+- **V2 · Cuaderno:** hoja blanca con renglones finos y una línea de margen.
+- **V3 · Solo texto** (plan B): sin caja. La hora va arriba y una línea fina separa las
+  notas.
+- **V4 · Con cinta:** hoja blanca apenas torcida, pegada con cinta gris translúcida. Se
+  endereza al pasar el mouse.
+- **V5 · Tinta:** la nota invertida (fondo del color del texto).
+- **V6 · Contorno:** sin relleno, solo un borde fino y redondo.
+
+Le gustaron algunas, pero el problema de fondo es que **las notas largas no se leen
+bien, y rectangulares se leen mejor**. Mandó dos fotos de referencia: la nota a lo ancho
+de la bandeja y la nota de Tareas (`.nota-tj`, con pestaña). Pidió además poder **dejar
+notas en la pantalla de la sala y moverlas libremente, como un post-it**. La 2ª ronda
+quedó en `bocetos/notas-sala-ronda2.html`.
+
+### 3ª ronda (2026-10-20): rectangulares y sueltas en la sala
+
+Misma URL (versión 3). La bandeja tiene el mismo ancho que hoy.
+- **A · Renglón** (foto 1): una nota por fila, en gris, 14 px, hasta 4 renglones.
+- **B · Tarjeta con pestaña** (foto 2, recomendada): la nota de Tareas, con borde fino,
+  pestaña arriba al centro, fondo un escalón más hondo (`--tarjeta`), 14,5 px y hasta 5
+  renglones. Con el ancho de hoy queda una por fila; si la bandeja se ensancha, pasan a dos.
+- **C · Renglón doblado:** A con la esquina doblada de V1.
+
+**Notas sueltas (en A, B y C):** un alfiler en cada nota la deja en la sala. Se arrastra a
+cualquier lado (pointer events, posición en por ciento de la sala) y el alfiler tachado la
+devuelve a la bandeja sin borrarla. Con el reloj corriendo y el mouse quieto 3 s se
+apagan. Un ajuste prueba «Se pega al borde» (imán al costado más cercano), pero
+recomiendo dejarlas libres. Para la app: `NotaSesion.fija?: { x, y }` en el mismo
+localStorage y un componente `NotasSueltas` en la sala.
+
+**¿Rosado?** A Leo el gris de las notas le daba una sensación rojiza o rosada. Medido, es
+el `--muted` de la app (zinc, `oklch(0.967 0.001 286.4)` = 244, 244, 245): gris con un
+toque frío y nada de rojo. Para ver si cambia la sensación, el boceto suma el ajuste «Gris
+de las notas» (Hoy / Neutro con croma 0 / Cálido, tono 80), que cambia solo los grises de
+las notas: fondo, sombra, texto tenue y línea.
+
+**ELEGIDA (2026-10-20): B · Tarjeta con pestaña**, con estos agregados:
+- **Arrastrar desde la bandeja:** una nota se saca de la bandeja arrastrándola hasta la
+  sala. Pasados 6 px sale como suelta y sigue al puntero (las sueltas pasan por encima de
+  la bandeja mientras dura). Si se la suelta de nuevo sobre la bandeja, vuelve a como
+  estaba. El alfiler queda como segunda forma.
+- **Queda donde la dejás:** sin imán al borde (se sacó «Se pega al borde»).
+- **Gris:** el rosado solo se nota en el tema claro; en oscuro y negro, el gris de hoy está
+  bien. El ajuste del boceto cambia solo el claro (Hoy / Neutro / Cálido).
+
+**Gris:** queda el de hoy (Leo, 2026-10-20). No se cambia.
+
+**Teléfono:** en pantallas táctiles no se arrastra desde la bandeja, porque peleaba con
+el scroll de la lista. Por debajo de `sm` (640 px) no hay notas sueltas: una tarjeta de 15
+rem taparía media pantalla y el reloj. El alfiler se esconde ahí y las notas fijadas siguen
+guardadas, así que reaparecen en una pantalla más grande.
+
+**APLICADA (2026-10-20):** `BandejaNotas` con la tarjeta B (`.nota-pestana` en
+index.css), `NotasSueltas` (las sueltas, en % de la ventana), `useSacarNota` (arrastrar
+afuera, solo con mouse o lápiz) y `useNotas.fijar` (`NotaSesion.fija`, en el mismo
+localStorage).
+
 ## Propuestas transversales
 
 - **La bandeja del home** muestra las mismas tareas: si se elige una bandeja nueva para la

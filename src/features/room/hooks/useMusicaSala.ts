@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { avisar } from "@/store/avisoStore";
 import * as salasService from "@/features/room/services/salasService";
 import type { EstadoMusicaSala } from "@/types/dominio";
 
@@ -48,7 +48,7 @@ export function useMusicaSala(salaId?: string) {
       await salasService.guardarEstadoMusica(salaId, estadoFinal);
     } catch (error) {
       console.error("Error de Supabase sincronizando música:", error);
-      toast.error("No se pudo sincronizar la música con la sala.");
+      avisar("No se pudo sincronizar la música con la sala", { falla: true });
     }
   };
 

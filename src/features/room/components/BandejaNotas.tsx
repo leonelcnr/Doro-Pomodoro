@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import { flushSync } from "react-dom"
-import { ArrowLeft, Pencil, X } from "lucide-react"
+import { createPortal, flushSync } from "react-dom"
+import { ArrowLeft, Pencil, Pin, PinOff, X } from "lucide-react"
 import { IconoDeTema, IconoNota } from "@/features/tasks/components/IconosTareas"
+import { CLASE_NOTA, MetaNota } from "@/features/room/components/NotasSueltas"
+import { useSacarNota } from "@/features/room/hooks/useSacarNota"
 import { useAnimarAlto } from "@/hooks/useAnimarAlto"
 import { cn } from "@/lib/utils"
-import type { NotaSesion, Tema } from "@/types/dominio"
+import type { NotaSesion, PosicionNota, Tema } from "@/types/dominio"
 
 interface BandejaNotasProps {
     notas: NotaSesion[]
@@ -15,6 +17,7 @@ interface BandejaNotasProps {
     onQuitar: (id: string) => void
     onBorrarTodas: () => void
     onPonerTema: (id: string, temaId: string | null) => void
+    onFijar: (id: string, fija: PosicionNota | null) => void
 }
 
 /** Pasar una nota a un tema: la bandeja con una flecha que baja. */
@@ -30,11 +33,13 @@ function IconoATema({ className }: { className?: string }) {
 
 /**
  * Notas de la sala (4 · Queda el lápiz): abajo a la derecha, plegada es el lápiz con la
- * cantidad; abierta, post-its con lo más nuevo abajo, junto a la línea para escribir.
+ * cantidad; abierta, tarjetas con pestaña (B, bocetos/notas-sala.html) con lo más nuevo
+ * abajo, junto a la línea para escribir. Una nota se deja suelta en la sala con el
+ * alfiler o arrastrándola afuera (con mouse).
  * Se pliega sola si el foco se va afuera o con un clic afuera; la N la abre.
  * El desvanecido vive en index.css (`.bandeja-notas`).
  */
-export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuitar, onBorrarTodas, onPonerTema }: BandejaNotasProps) {
+export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuitar, onBorrarTodas, onPonerTema, onFijar }: BandejaNotasProps) {
     const raiz = useRef<HTMLElement>(null)
     const entrada = useRef<HTMLInputElement>(null)
     const [texto, establecerTexto] = useState("")
@@ -44,6 +49,11 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
     const lista = useRef<HTMLUListElement>(null)
     // La bandeja acompaña el cambio de alto (abrir una nota, elegir tema) en vez de saltar
     const cuerpo = useAnimarAlto<HTMLDivElement>([leyendo, eligiendo], abierta)
+    const { arrastre, alApretar, recienSoltada } = useSacarNota(raiz, onFijar)
+    const sacada = arrastre && notas.find((n) => n.id === arrastre.id)
+    // Con el alfiler, cada suelta nueva cae un poco más abajo que la anterior, arriba a la izquierda
+    const cuantasSueltas = notas.filter((n) => n.fija).length % 6
+    const lugarNuevo = { x: 4 + cuantasSueltas * 3, y: 14 + cuantasSueltas * 6 }
 
     // Abrir o cerrar una nota sin saltos (FLIP): la nota va de su tamaño anterior al nuevo
     // mientras el texto aparece con un fundido (así no se ve cortarse al reacomodarse),
@@ -173,31 +183,54 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
                     </div>
                 ) : (
                     <>
-                        <ul ref={lista} className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2.5 p-0 pt-0.5">
+                        <ul
+                            ref={lista}
+                            onClickCapture={(e) => recienSoltada.current && e.stopPropagation()}
+                            className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(100%,12.25rem),1fr))] gap-3 p-0 pt-1"
+                        >
                             {notas.length === 0 && (
                                 <li className="col-span-full py-2 text-[0.84375rem] text-muted-foreground">Lo que se te cruce mientras estudiás. Queda acá hasta que la descartes.</li>
                             )}
                             {[...notas].reverse().map((n) => {
                                 const tema = temaDe(n.temaId)
                                 return (
-                                    <li key={n.id} data-nota={n.id} className={cn("group relative flex min-w-0 animate-in flex-col gap-1.5 rounded-[0.375rem_0.375rem_0.375rem_1rem] bg-muted p-3 pb-2.5 text-[0.84375rem] leading-[1.4] duration-500 zoom-in-95 fade-in hover:bg-muted/70", leyendo === n.id ? "col-span-full pr-8" : "aspect-square")}>
+                                    <li
+                                        key={n.id}
+                                        data-nota={n.id}
+                                        onPointerDown={(e) => alApretar(n.id, e)}
+                                        className={cn(
+                                            CLASE_NOTA,
+                                            "min-h-[6.75rem] animate-in duration-500 zoom-in-95 fade-in transition-[border-color,rotate,translate,opacity] hover:-translate-y-px hover:-rotate-[0.5deg] hover:border-muted-foreground/60",
+                                            leyendo === n.id && "col-span-full pr-8",
+                                            arrastre?.id === n.id && "opacity-35",
+                                        )}
+                                    >
                                         {/* Tocar el texto lo abre entero a lo ancho de la bandeja; otro toque lo cierra */}
                                         <button
                                             type="button"
                                             aria-expanded={leyendo === n.id}
                                             onClick={() => alternarLectura(n.id)}
-                                            className={cn("min-h-0 text-left outline-none [overflow-wrap:anywhere] focus-visible:underline", leyendo !== n.id && "line-clamp-4")}
+                                            className={cn("min-h-0 pr-10 text-left outline-none [overflow-wrap:anywhere] focus-visible:underline", leyendo !== n.id && "line-clamp-5")}
                                         >
                                             {n.texto}
                                         </button>
-                                        <span className="mt-auto flex items-center gap-1 text-[0.71875rem] text-muted-foreground tabular-nums">
-                                            {tema && <IconoDeTema icono={tema.icon} className="size-3 shrink-0" />}
-                                            {n.hora} · {n.fase}
-                                        </span>
-                                        <button type="button" onClick={() => onQuitar(n.id)} aria-label={`Descartar la nota: ${n.texto}`} title="Descartar" className="absolute top-1 right-1 grid size-6 place-items-center rounded-[0.4375rem] text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-card hover:text-foreground [@media(hover:none)]:opacity-70">
+                                        <MetaNota nota={n} tema={tema} />
+                                        {/* El alfiler la deja suelta en la sala; en el teléfono no hay sueltas */}
+                                        <button
+                                            type="button"
+                                            data-accion
+                                            onClick={() => onFijar(n.id, n.fija ? null : lugarNuevo)}
+                                            aria-pressed={!!n.fija}
+                                            aria-label={`${n.fija ? "Sacarla de la sala" : "Dejarla en la sala"}: ${n.texto}`}
+                                            title={n.fija ? "Sacarla de la sala" : "Dejarla en la sala (o arrastrala afuera)"}
+                                            className="absolute top-1 right-[1.875rem] grid size-6 place-items-center rounded-[0.4375rem] text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-muted hover:text-foreground aria-pressed:text-foreground aria-pressed:opacity-100 max-sm:hidden [@media(hover:none)]:opacity-70"
+                                        >
+                                            {n.fija ? <PinOff className="size-3.5" aria-hidden /> : <Pin className="size-3.5" aria-hidden />}
+                                        </button>
+                                        <button type="button" data-accion onClick={() => onQuitar(n.id)} aria-label={`Descartar la nota: ${n.texto}`} title="Descartar" className="absolute top-1 right-1 grid size-6 place-items-center rounded-[0.4375rem] text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-muted hover:text-foreground [@media(hover:none)]:opacity-70">
                                             <X className="size-3.5" aria-hidden />
                                         </button>
-                                        <button type="button" onClick={() => establecerEligiendo(n.id)} aria-label={`${tema ? "Cambiar de tema" : "Pasar a un tema"}: ${n.texto}`} title={tema ? "Cambiar de tema" : "Pasar a un tema"} className="absolute right-1 bottom-1 grid size-6 place-items-center rounded-[0.4375rem] text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-card hover:text-foreground [@media(hover:none)]:opacity-70">
+                                        <button type="button" data-accion onClick={() => establecerEligiendo(n.id)} aria-label={`${tema ? "Cambiar de tema" : "Pasar a un tema"}: ${n.texto}`} title={tema ? "Cambiar de tema" : "Pasar a un tema"} className="absolute right-1 bottom-1 grid size-6 place-items-center rounded-[0.4375rem] text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-muted hover:text-foreground [@media(hover:none)]:opacity-70">
                                             <IconoATema className="size-3.5" />
                                         </button>
                                     </li>
@@ -225,6 +258,21 @@ export function BandejaNotas({ notas, temas, abierta, onAbrir, onAgregar, onQuit
                     </>
                 )}
             </div>
+
+            {/* La nota que se está sacando sigue al puntero; va al body porque la bandeja,
+                con su translate, encerraría a un `fixed` */}
+            {arrastre && sacada &&
+                createPortal(
+                    <div
+                        aria-hidden
+                        style={{ left: arrastre.x - arrastre.dx, top: arrastre.y - arrastre.dy }}
+                        className={cn(CLASE_NOTA, "pointer-events-none fixed z-30 w-60 scale-[1.03] -rotate-[1.5deg] shadow-alta")}
+                    >
+                        <p className="m-0 line-clamp-7 [overflow-wrap:anywhere]">{sacada.texto}</p>
+                        <MetaNota nota={sacada} tema={temaDe(sacada.temaId)} />
+                    </div>,
+                    document.body,
+                )}
         </aside>
     )
 }

@@ -41,6 +41,8 @@ interface MenuCuentaProps {
     onEntrar: () => void
     onCerrarSesion: () => void
     onGuardarNombre: (nombre: string) => void
+    /** Clases extra del avatar (en la sala va encimado con los de los demás). */
+    claseAvatar?: string
 }
 
 /**
@@ -60,6 +62,7 @@ export function MenuCuenta({
     onEntrar,
     onCerrarSesion,
     onGuardarNombre,
+    claseAvatar,
 }: MenuCuentaProps) {
     const [editandoNombre, establecerEditandoNombre] = useState(false)
     const [nombreNuevo, establecerNombreNuevo] = useState("")
@@ -78,7 +81,7 @@ export function MenuCuenta({
     const anonimo = !usuario || usuario.isAnonymous
     const inicial = usuario && !usuario.isAnonymous ? usuario.name.charAt(0).toUpperCase() : ""
 
-    if (cargando) return <span className="size-8" aria-hidden />
+    if (cargando) return <span className={cn("size-8", claseAvatar)} aria-hidden />
 
     return (
         <>
@@ -87,7 +90,7 @@ export function MenuCuenta({
                     className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     aria-label="Tu cuenta"
                 >
-                    <Avatar className="size-8 border border-border">
+                    <Avatar className={cn("size-8 border border-border", claseAvatar)}>
                         {usuario?.avatar_url && <AvatarImage src={usuario.avatar_url} alt="" />}
                         <AvatarFallback className="bg-muted text-xs font-semibold">
                             {inicial || <User className="size-4" aria-hidden />}

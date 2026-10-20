@@ -42,7 +42,8 @@ export function usePresenciaSala(salaId?: string) {
         if (status === "SUBSCRIBED") {
           await canal.track({
             id: usuario.id,
-            name: usuario.email?.split("@")[0] || "Usuario",
+            // `name` ya resuelve el apodo del anónimo y el nombre de la cuenta (mapearUsuario)
+            name: usuario.name,
             avatarUrl: usuario.avatar_url,
           });
         }

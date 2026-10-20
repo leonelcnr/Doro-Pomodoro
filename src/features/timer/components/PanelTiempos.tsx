@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Minus, Plus, Settings } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
@@ -19,11 +20,13 @@ interface PanelTiemposProps {
 
 /**
  * Los tiempos del reloj (C1): un panel chico pegado al engranaje, con un renglón por
- * fase (− número +) y el descanso automático. Se aplica al toque, sin «Guardar».
+ * fase (− número +, y el número se puede escribir) y el descanso automático. Se aplica al toque, sin «Guardar».
  */
 export function PanelTiempos({ configuracion, onCambiar, enLaSala }: PanelTiemposProps) {
-    const ajustar = (clave: (typeof FASES)[number]['clave'], paso: number, max: number) =>
-        onCambiar({ ...configuracion, [clave]: Math.max(1, Math.min(max, configuracion[clave] + paso)) });
+    const fijar = (clave: (typeof FASES)[number]['clave'], minutos: number, max: number) => {
+        const acotado = Math.max(1, Math.min(max, minutos));
+        if (acotado !== configuracion[clave]) onCambiar({ ...configuracion, [clave]: acotado });
+    };
 
     return (
         <Popover>
@@ -35,11 +38,11 @@ export function PanelTiempos({ configuracion, onCambiar, enLaSala }: PanelTiempo
                 {FASES.map(({ clave, nombre, max }) => (
                     <div key={clave} className="flex min-h-12 items-center gap-2 border-b">
                         <span className="flex-1 text-[0.875rem]">{nombre}</span>
-                        <button type="button" onClick={() => ajustar(clave, -1, max)} aria-label={`${nombre}: un minuto menos`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <button type="button" onClick={() => fijar(clave, configuracion[clave] - 1, max)} aria-label={`${nombre}: un minuto menos`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
                             <Minus className="size-3.5" />
                         </button>
-                        <b className="min-w-8 text-center text-[1.0625rem] font-semibold tabular-nums">{configuracion[clave]}</b>
-                        <button type="button" onClick={() => ajustar(clave, 1, max)} aria-label={`${nombre}: un minuto más`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <CampoMinutos nombre={nombre} valor={configuracion[clave]} max={max} onConfirmar={(minutos) => fijar(clave, minutos, max)} />
+                        <button type="button" onClick={() => fijar(clave, configuracion[clave] + 1, max)} aria-label={`${nombre}: un minuto más`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
                             <Plus className="size-3.5" />
                         </button>
                         <span className="text-[0.75rem] text-muted-foreground">min</span>
@@ -54,5 +57,53 @@ export function PanelTiempos({ configuracion, onCambiar, enLaSala }: PanelTiempo
                 </p>
             </PopoverContent>
         </Popover>
+    );
+}
+
+interface CampoMinutosProps {
+    nombre: string;
+    valor: number;
+    max: number;
+    onConfirmar: (minutos: number) => void;
+}
+
+/**
+ * El número de cada fase, que también se escribe a mano. Mientras se escribe vive en un
+ * borrador local (para no mandarle a la sala un 1 cuando se va a tipear 15) y se confirma
+ * con Enter o al salir del campo; Escape o un campo vacío vuelven al valor de antes. Sin
+ * borrador muestra el valor de la sala, así que acompaña los cambios de los demás.
+ */
+function CampoMinutos({ nombre, valor, max, onConfirmar }: CampoMinutosProps) {
+    const [borrador, setBorrador] = useState<string | null>(null);
+
+    const confirmar = () => {
+        if (borrador === null) return;
+        const minutos = Number.parseInt(borrador, 10);
+        if (!Number.isNaN(minutos)) onConfirmar(minutos);
+        setBorrador(null);
+    };
+
+    return (
+        <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={3}
+            aria-label={`${nombre}, en minutos (de 1 a ${max})`}
+            value={borrador ?? String(valor)}
+            onFocus={(e) => e.currentTarget.select()}
+            onChange={(e) => setBorrador(e.target.value.replace(/\D/g, ''))}
+            onBlur={confirmar}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') e.currentTarget.blur();
+                else if (e.key === 'Escape') setBorrador(null);
+                else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    onConfirmar(valor + (e.key === 'ArrowUp' ? 1 : -1));
+                    setBorrador(null);
+                }
+            }}
+            className="w-10 rounded-md bg-transparent py-0.5 text-center text-[1.0625rem] font-semibold tabular-nums outline-none hover:bg-muted focus:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
+        />
     );
 }

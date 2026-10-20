@@ -18,6 +18,8 @@ interface BandejaTareasProps {
     onSoltar: () => void
     onMarcarHecha: (tarea: Tarea) => void
     onCambiarChecklist: (tarea: Tarea, checklist: ItemChecklist[]) => void
+    /** Abre el detalle de la tarea del foco para editarla. */
+    onEditar: (tarea: Tarea) => void
     onCrear: (payload: TareaPayload) => void
     /** Lo que va arriba del foco (en la sala, las pestañas Mías / De la sala). */
     arriba?: ReactNode
