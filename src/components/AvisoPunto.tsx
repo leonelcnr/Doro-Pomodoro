@@ -29,7 +29,7 @@ export function AvisoPunto({ aviso, lugar = "libre", alTerminar }: AvisoPuntoPro
             role="status"
             aria-live="polite"
             className={cn(
-                "aviso-punto-lugar pointer-events-none fixed z-20 flex justify-end",
+                "aviso-punto-lugar pointer-events-none fixed z-40 flex justify-end",
                 lugar === "notas" ? "right-[calc(1.25rem+max(18.75rem,min(23.75rem,calc(50vw-19.5rem)))+0.75rem)] bottom-5" : "right-5",
                 lugar === "lapiz" && "bottom-[4.5rem]",
                 lugar === "libre" && "bottom-5",

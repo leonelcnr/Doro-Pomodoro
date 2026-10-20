@@ -168,7 +168,13 @@ export function DetalleItem({ tarea, nombreTema, temas, onCerrar, onCambiar, onA
         <div
             role="dialog"
             aria-label="Detalle"
-            onKeyDown={(e) => e.key === "Escape" && onCerrar()}
+            onKeyDown={(e) => {
+                // El Esc del desplegable de tema (en un portal, pero burbujea por React) solo cierra el desplegable
+                if (e.key !== "Escape" || (e.target as Element).closest('[data-slot="select-content"]')) return
+                // Antes de cerrar, el blur guarda lo que se estaba escribiendo (nombre, observaciones)
+                if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+                onCerrar()
+            }}
             className="detalle-esquina fixed right-4 bottom-4 z-30 flex max-h-[calc(100dvh-5.5rem)] w-[min(23.75rem,calc(100%-2rem))] origin-bottom-right flex-col gap-3.5 overflow-y-auto rounded-[0.875rem] border bg-card px-5 pt-[1.125rem] pb-[1.375rem] shadow-2xl"
         >
             <div className="flex items-start justify-between gap-3">

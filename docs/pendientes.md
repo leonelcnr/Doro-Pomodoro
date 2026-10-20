@@ -78,6 +78,11 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
 10. **Las vistas previas de links no tienen que entrar a la sala** (WhatsApp o Discord
    pueden crear un anónimo). Unirse recién cuando corre el JS en el navegador.
 
+11b. **Detalles de la revisión del 2026-10-20** (menores): mover una nota suelta con
+   teclado (hoy solo con puntero); `useSacarNota` saca los listeners de `window` solo al
+   soltar (falta limpiar al desmontar); el nombre en `DetalleItem` no se refresca si otro
+   lo cambia con el detalle abierto.
+
 ## P4 · Tareas y dashboard
 
 11. **Pasar una nota a tarea.** *(nota de Leo)* Quedó planteado como «más adelante» en
