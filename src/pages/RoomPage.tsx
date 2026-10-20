@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "sonner";
 import * as salasService from "@/features/room/services/salasService";
 import { TimerDisplay } from "@/features/timer/components/TimerDisplay";
 import { useTareas } from "@/features/tasks/hooks/useTareas";
@@ -8,10 +7,12 @@ import { useTemas } from "@/features/tasks/hooks/useTemas";
 import { useFoco } from "@/features/tasks/hooks/useFoco";
 import { usePresenciaSala } from "@/features/room/hooks/usePresenciaSala";
 import { useNotas } from "@/features/room/hooks/useNotas";
+import { useAvisoSala } from "@/features/room/hooks/useAvisoSala";
 import { useSincronizacionReloj } from "@/features/timer/hooks/useSincronizacionReloj";
 import { CabeceraSala } from "@/features/room/components/CabeceraSala";
 import { MenuCuentaApp } from "@/components/encabezado/MenuCuentaApp";
 import { BandejaNotas } from "@/features/room/components/BandejaNotas";
+import { AvisoPunto } from "@/features/room/components/AvisoPunto";
 import { PestanasTareas, TareasDeLaSala, type AmbitoBandeja } from "@/features/room/components/TareasDeLaSala";
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas";
 import { INFO_TIPO, estaPendiente } from "@/features/tasks/bandeja";
@@ -64,6 +65,7 @@ const RoomPage = () => {
     const { tareas, crearTarea, actualizarTareaCampos } = useTareas(salaIdValida);
     const { temas } = useTemas();
     const { notas, agregar, quitar, borrarTodas, ponerTema } = useNotas();
+    const { aviso, avisar, alTerminar } = useAvisoSala();
     useSincronizacionReloj(salaIdValida);
     const { estaActivo, modo } = useTimerStore();
     const quieto = useQuieto(estaActivo);
@@ -132,7 +134,7 @@ const RoomPage = () => {
             await actualizarTareaCampos(id, datos);
         } catch (e: unknown) {
             console.error("Error al guardar la tarea:", e);
-            toast.error("No se pudo guardar el cambio");
+            avisar("No se pudo guardar el cambio", { falla: true });
         }
     };
     const crear = async (payload: TareaPayload, enLaSala = false) => {
@@ -141,24 +143,24 @@ const RoomPage = () => {
             if (!enLaSala) {
                 const tema = temas.find((t) => t.id === payload.topic_id)?.name ?? "General";
                 const kind = payload.kind ?? "tarea";
-                toast.success(`${INFO_TIPO[kind].uno} ${kind === "tarea" ? "creada" : "creado"} en ${tema}`);
+                avisar(<>{INFO_TIPO[kind].uno} {kind === "tarea" ? "creada" : "creado"} en <b>{tema}</b></>);
             }
         } catch (e: unknown) {
             console.error("Error al crear la tarea:", e);
-            toast.error("No se pudo crear");
+            avisar("No se pudo crear", { falla: true });
         }
     };
     const alternarHecha = (t: Tarea) => void guardar(t.id, { status: t.status === "Completada" ? "Sin Empezar" : "Completada" });
     const marcarHecha = (t: Tarea) => {
         void guardar(t.id, { status: "Completada" });
         const vuelve = soltar();
-        toast(vuelve ? `Hecha. Volvés a ${vuelve.header.split(" — ")[0]}` : "Hecha. Elegí lo que sigue");
+        avisar(vuelve ? <>Hecha. Volvés a <b>{vuelve.header.split(" — ")[0]}</b></> : "Hecha. Elegí lo que sigue");
     };
     const cambiarChecklist = (t: Tarea, checklist: ItemChecklist[]) => {
         void guardar(t.id, { checklist });
         if (checklist.every((i) => i.hecho) && !t.checklist?.every((i) => i.hecho)) {
             const tipo = tipoDe(t);
-            toast(tipo === "informe" ? "Informe listo para entregar" : tipo === "parcial" ? "Repasaste todas las unidades" : `${t.header.split(" — ")[0]}: están todos los puntos`);
+            avisar(tipo === "informe" ? <><b>Informe</b> listo para entregar</> : tipo === "parcial" ? "Repasaste todas las unidades" : <><b>{t.header.split(" — ")[0]}</b>: están todos los puntos</>);
         }
     };
     const autorDe = (t: Tarea) =>
@@ -250,6 +252,8 @@ const RoomPage = () => {
                 onBorrarTodas={borrarTodas}
                 onPonerTema={ponerTema}
             />
+
+            <AvisoPunto aviso={aviso} notasAbiertas={notasAbiertas} alTerminar={alTerminar} />
         </div>
     );
 };

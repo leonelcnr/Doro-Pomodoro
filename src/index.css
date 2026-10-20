@@ -340,6 +340,53 @@ html {
   }
 }
 
+/* Avisos de la sala (R2 · El punto que se abre, bocetos/toast-sala.html): un punto en
+   el acento nace con un rebote, se abre hacia la izquierda con el mensaje, se cierra
+   y cae. Los estados los pone AvisoPunto en data-estado. */
+.aviso-punto {
+  max-width: 2.125rem;
+  padding-inline: 0.875rem;
+  background-color: var(--brand-strong);
+  color: var(--brand-foreground);
+  box-shadow: 0 0.5rem 1.375rem -0.625rem color-mix(in oklch, var(--brand-strong) 70%, transparent);
+  animation: aviso-nace 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: max-width 0.65s cubic-bezier(0.16, 1, 0.3, 1), padding 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease, translate 0.4s ease, scale 0.4s ease;
+}
+/* El rojo del relleno es el --destructive del claro en los dos temas (el del oscuro
+   es claro y el texto blanco no se leía), como hace --brand-strong con el violeta. */
+.aviso-punto[data-falla] {
+  --rojo-aviso: oklch(0.577 0.245 27.325);
+  background-color: var(--rojo-aviso);
+  color: oklch(0.985 0 0);
+  box-shadow: 0 0.5rem 1.375rem -0.625rem color-mix(in oklch, var(--rojo-aviso) 70%, transparent);
+}
+.aviso-punto-texto {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.aviso-punto[data-estado="abierta"] {
+  max-width: min(27.5rem, calc(100vw - 2.5rem));
+  padding-inline: 1.125rem;
+}
+.aviso-punto[data-estado="abierta"] .aviso-punto-texto {
+  opacity: 1;
+  transition-delay: 0.22s;
+}
+.aviso-punto[data-estado="sale"] {
+  opacity: 0;
+  translate: 0 0.625rem;
+  scale: 0.6;
+}
+@keyframes aviso-nace {
+  from {
+    scale: 0;
+  }
+  70% {
+    scale: 1.15;
+  }
+}
+
 /* La sala: la fase late con el reloj corriendo y cada dígito entra desde arriba
    cuando cambia (sin blur: son enormes). Con el reloj corriendo y el mouse quieto
    queda solo el reloj: se van los controles, la fase baja y la barra se desvanece. */
