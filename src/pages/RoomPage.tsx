@@ -7,12 +7,11 @@ import { useTemas } from "@/features/tasks/hooks/useTemas";
 import { useFoco } from "@/features/tasks/hooks/useFoco";
 import { usePresenciaSala } from "@/features/room/hooks/usePresenciaSala";
 import { useNotas } from "@/features/room/hooks/useNotas";
-import { useAvisoSala } from "@/features/room/hooks/useAvisoSala";
+import { avisar, useAvisoStore } from "@/store/avisoStore";
 import { useSincronizacionReloj } from "@/features/timer/hooks/useSincronizacionReloj";
 import { CabeceraSala } from "@/features/room/components/CabeceraSala";
 import { MenuCuentaApp } from "@/components/encabezado/MenuCuentaApp";
 import { BandejaNotas } from "@/features/room/components/BandejaNotas";
-import { AvisoPunto } from "@/features/room/components/AvisoPunto";
 import { PestanasTareas, TareasDeLaSala, type AmbitoBandeja } from "@/features/room/components/TareasDeLaSala";
 import { BandejaTareas } from "@/features/tasks/components/bandeja/BandejaTareas";
 import { INFO_TIPO, estaPendiente } from "@/features/tasks/bandeja";
@@ -65,7 +64,6 @@ const RoomPage = () => {
     const { tareas, crearTarea, actualizarTareaCampos } = useTareas(salaIdValida);
     const { temas } = useTemas();
     const { notas, agregar, quitar, borrarTodas, ponerTema } = useNotas();
-    const { aviso, avisar, alTerminar } = useAvisoSala();
     useSincronizacionReloj(salaIdValida);
     const { estaActivo, modo } = useTimerStore();
     const quieto = useQuieto(estaActivo);
@@ -76,6 +74,12 @@ const RoomPage = () => {
 
     const [bandejaAbierta, establecerBandejaAbierta] = useState(false);
     const [notasAbiertas, establecerNotasAbiertas] = useState(false);
+    // El aviso global se para encima del lápiz, o al lado de las notas abiertas; al salir vuelve a la esquina
+    const ponerLugar = useAvisoStore((s) => s.ponerLugar);
+    useEffect(() => {
+        ponerLugar(notasAbiertas ? "notas" : "lapiz");
+        return () => ponerLugar("libre");
+    }, [notasAbiertas, ponerLugar]);
     const [ambito, establecerAmbito] = useState<AmbitoBandeja>("mias");
     // Lo de la sala sumado por otros después de esta marca, sin haberlo mirado, pinta la rayita
     const [vistoHasta, establecerVistoHasta] = useState(() => new Date().toISOString());
@@ -252,8 +256,6 @@ const RoomPage = () => {
                 onBorrarTodas={borrarTodas}
                 onPonerTema={ponerTema}
             />
-
-            <AvisoPunto aviso={aviso} notasAbiertas={notasAbiertas} alTerminar={alTerminar} />
         </div>
     );
 };

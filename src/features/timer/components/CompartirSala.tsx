@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, Share2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { avisar } from '@/store/avisoStore';
 import { claseControl } from '../clasesReloj';
 
 /**
@@ -14,11 +14,11 @@ export function CompartirSala({ enlace }: { enlace: string }) {
         try {
             await navigator.clipboard.writeText(enlace);
             establecerCopiado(true);
-            toast.success('Link copiado. Pasalo y entran directo a la sala.');
+            avisar('Link copiado. Pasalo y entran directo a la sala');
             setTimeout(() => establecerCopiado(false), 2000);
         } catch (error: unknown) {
             console.error('No se pudo copiar el link:', error);
-            toast.error(`No se pudo copiar. El link es ${enlace}`);
+            avisar('No se pudo copiar el link', { falla: true });
         }
     };
 

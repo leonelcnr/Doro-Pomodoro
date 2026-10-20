@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
-import { toast } from "sonner"
+import { avisar } from "@/store/avisoStore"
 import { entrarCon, type Proveedor } from "@/features/auth/authHelpers"
 
 // Ícono de cada proveedor, a la izquierda del botón
@@ -57,7 +57,7 @@ export function LoginForm({
       await entrarCon(proveedor, volverA)
     } catch (error: unknown) {
       console.error(error)
-      toast.error("No se pudo abrir el proveedor. Probá de nuevo.")
+      avisar("No se pudo abrir el proveedor. Probá de nuevo.", { falla: true })
       establecerYendo(null)
     }
   }

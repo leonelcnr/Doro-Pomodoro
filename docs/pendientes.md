@@ -51,9 +51,10 @@ en los docs de `docs/rediseno/`. Al cerrar un punto: tacharlo y anotar fecha y c
    menú de la cuenta, que ahora también está en la sala (punto 7). `usePresenciaSala.ts:45` arma el nombre con el
    email: leer primero `user_metadata.nombre` y dejar cambiarlo desde la sala.
 6. ~~**Rehacer el toast de la sala.**~~ ✅ 2026-10-20: elegida **R2 · El punto que se abre**
-   (4ª ronda de `bocetos/toast-sala.html`). `AvisoPunto` + `useAvisoSala` en `features/room`;
-   los cinco avisos de `RoomPage` (crear, hecha, informe/parcial listo y los dos errores)
-   dejan sonner. El error de la música (`useMusicaSala`) sigue con el toast global. *(nota de Leo)* El aviso (sonner) al crear una
+   (4ª ronda de `bocetos/toast-sala.html`). 2026-10-20: el punto es el aviso de **toda la
+   app**: `avisar()` de `src/store/avisoStore.ts` (zustand, se llama también fuera de React),
+   `AvisoPunto` en `src/components/`, montado en `AuthProviderLayout`. Se fueron sonner y su
+   `Toaster`. En la sala el punto va encima del lápiz o al lado de las notas abiertas. *(nota de Leo)* El aviso (sonner) al crear una
    tarea, un informe o similar desde la sala se ve feo. Son los `toast(...)` de
    `RoomPage.tsx:134-160` («Tarea creada en *tema*», «Hecha. Volvés a…», «Informe listo
    para entregar») con el `Toaster` global de `HomeLayout.tsx`. Bocetar antes: puede

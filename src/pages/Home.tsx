@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { toast } from "sonner"
+import { avisar } from "@/store/avisoStore"
 import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 import { AnilloSala } from "@/features/home/components/AnilloSala"
 import { ContadorTareas } from "@/features/home/components/ContadorTareas"
@@ -39,7 +39,7 @@ const Home = () => {
             await actualizarTareaCampos(id, datos)
         } catch (error: unknown) {
             console.error("Error al actualizar la tarea:", error)
-            toast.error("No se pudo guardar el cambio")
+            avisar("No se pudo guardar el cambio", { falla: true })
         }
     }
 
@@ -48,10 +48,10 @@ const Home = () => {
         const tipo = INFO_TIPO[payload.kind ?? "tarea"].uno
         try {
             await crearTarea(payload, "personal")
-            toast.success(`${tipo} ${payload.kind === "tarea" ? "creada" : "creado"} en ${tema}`)
+            avisar(<>{tipo} {payload.kind === "tarea" ? "creada" : "creado"} en <b>{tema}</b></>)
         } catch (error: unknown) {
             console.error("Error al crear la tarea:", error)
-            toast.error("No se pudo crear")
+            avisar("No se pudo crear", { falla: true })
         }
     }
 
@@ -59,14 +59,14 @@ const Home = () => {
     const marcarHecha = (tarea: Tarea) => {
         void actualizar(tarea.id, { status: "Completada" })
         const vuelve = soltar()
-        toast(vuelve ? `Hecha. Volvés a ${vuelve.header.split(" — ")[0]}` : "Hecha. Elegí lo que sigue")
+        avisar(vuelve ? <>Hecha. Volvés a <b>{vuelve.header.split(" — ")[0]}</b></> : "Hecha. Elegí lo que sigue")
     }
 
     const cambiarChecklist = (tarea: Tarea, checklist: ItemChecklist[]) => {
         void actualizar(tarea.id, { checklist })
         if (checklist.every((i) => i.hecho) && !tarea.checklist?.every((i) => i.hecho)) {
             const tipo = tipoDe(tarea)
-            toast(tipo === "informe" ? "Informe listo para entregar" : tipo === "parcial" ? "Repasaste todas las unidades" : `${tarea.header.split(" — ")[0]}: están todos los puntos`)
+            avisar(tipo === "informe" ? <><b>Informe</b> listo para entregar</> : tipo === "parcial" ? "Repasaste todas las unidades" : <><b>{tarea.header.split(" — ")[0]}</b>: están todos los puntos</>)
         }
     }
 

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { toast } from "sonner"
+import { avisar } from "@/store/avisoStore"
 import { EncabezadoApp } from "@/components/encabezado/EncabezadoApp"
 import { TIPOS_ITEM, fraccion, itemsDelTema, sumarAvance, tipoDe } from "@/features/tasks/avance"
 import { INFO_TIPO, diasHasta, estaPendiente } from "@/features/tasks/bandeja"
@@ -88,7 +88,7 @@ const TareasPage = () => {
             await actualizarTareaCampos(id, datos)
         } catch (error: unknown) {
             console.error("Error al guardar la tarea:", error)
-            toast.error("No se pudo guardar el cambio")
+            avisar("No se pudo guardar el cambio", { falla: true })
         }
     }
     const crear = async (payload: TareaPayload) => {
@@ -96,7 +96,7 @@ const TareasPage = () => {
             await crearTarea(payload, "personal")
         } catch (error: unknown) {
             console.error("Error al crear:", error)
-            toast.error(`No se pudo crear ${payload.kind === "tarea" ? "la tarea" : `el ${INFO_TIPO[payload.kind ?? "tarea"].uno.toLowerCase()}`}`)
+            avisar(`No se pudo crear ${payload.kind === "tarea" ? "la tarea" : `el ${INFO_TIPO[payload.kind ?? "tarea"].uno.toLowerCase()}`}`, { falla: true })
         }
     }
     const alternarHecha = (t: Tarea) => void guardar(t.id, { status: t.status === "Completada" ? "Sin Empezar" : "Completada" })
@@ -105,7 +105,7 @@ const TareasPage = () => {
             await crearTema(nombre, icono)
         } catch (error: unknown) {
             console.error("Error al crear el tema:", error)
-            toast.error("No se pudo crear el tema")
+            avisar("No se pudo crear el tema", { falla: true })
         }
     }
 
